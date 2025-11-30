@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* A stunning and minimal 404 page inspired by your original CSS */
+        @keyframes subtle-fade-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+            50% { transform: scale(1.02); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); }
+            100% { transform: scale(1); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            
+            /* Enhanced background image with a more striking gradient overlay */
+            background-color: #446944; 
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url('https://life.minescout.net/favicon.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            animation: subtle-fade-in 1s ease-in-out;
+        }
+
+        .content {
+            padding: 20px;
+            max-width: 600px;
+            animation: subtle-fade-in 1s ease-in-out;
+        }
+
+        h1 {
+            font-size: 4rem;
+            color: #5a8a5a; /* A vibrant green from your palette for impact */
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+            font-weight: 700;
+        }
+
+        .status-code {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #ccc;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+            margin-bottom: 2rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #e0e0e0;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+
+        .back-link {
+            display: inline-block;
+            background-color: #5a8a5a;
+            color: #ffffff;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .back-link:hover {
+            background-color: #446944;
+            text-decoration: none;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            animation-play-state: paused;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+            .status-code {
+                font-size: 1.2rem;
+            }
+            p {
+                font-size: 1rem;
+            }
+            .back-link {
+                padding: 12px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Lost Your Way?</h1>
+        <div class="status-code">PAGE NOT FOUND</div>
+        <p>The path you followed seems to have vanished. The page you're looking for might have been moved or removed, but we can help you find your way back home.</p>
+        <a href="/" class="back-link">Go back to the homepage</a>
+    </div>
+</body>
+</html>

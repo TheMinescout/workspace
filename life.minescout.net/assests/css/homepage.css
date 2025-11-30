@@ -1,0 +1,783 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    overflow: visible;
+}
+
+/* ---------------------------------- */
+/* --- Header & Auth Styling (Theme Applied) --- */
+/* ---------------------------------- */
+.main-header {
+    /* Theme Color: Primary #5a8a5a */
+    background: #5a8a5a;
+    color: #fff;
+    padding: 1rem 0;
+    margin-bottom: 20px;
+}
+.main-header .site-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    padding: 0 20px;
+}
+.main-header .site-title-wrapper {
+    flex-grow: 1; 
+    text-align: center;
+}
+.main-header .site-title {
+    font-size: 2.5rem;
+    text-decoration: none;
+    line-height: 1;
+}
+/* This is the new rule that replaces the inline style */
+.main-header .site-title a {
+    color: white;
+    text-decoration: none;
+}
+.main-header .tagline {
+    font-size: 1.2rem;
+    /* Theme Color: Slightly off-white for contrast */
+    color: #e0e0e0;
+    opacity: 0.9;
+    text-align: center;
+}
+/* New Auth UI Styles */
+#auth-container, #user-display {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+#user-display.hidden {
+    display: none !important;
+}
+#auth-container a, #user-display span, #user-display button {
+    color: #fff;
+    font-size: 1.2rem;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease-in-out;
+}
+#auth-container a:hover, #user-display button:hover {
+    background-color: #446944;
+}
+
+/* THEME STYLE: Sign Out Button (Overrides default #user-display button styles above) */
+#signOut-btn {
+    background-color: white;
+    color: #5a8a5a; /* Theme Color: Primary */
+    border: 2px solid #5a8a5a; /* Theme Color: Primary */
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    font-size: 1.2rem; /* Ensure consistency with #auth-container a */
+    font-weight: bold;
+}
+#signOut-btn:hover {
+    background-color: #e0e0e0;
+}
+
+#user-email-display {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 150px;
+}
+/* --- END Header & Auth Styling --- */
+
+
+/* ---------------------------------- */
+/* --- Layout and Sidebar (Theme Applied) --- */
+/* ---------------------------------- */
+.main-content-area {
+    padding: 20px 0;
+}
+.main-content-area .container {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+main.main-content,
+main.post-main {
+    flex: 3;
+    min-width: 0;
+}
+#sidebar {
+    flex: 1;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    height: fit-content;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+#sidebar h3 {
+    font-size: 1.3rem;
+    color: #446944;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+#sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+#sidebar ul li {
+    margin-bottom: 10px;
+}
+#sidebar a {
+    /* THEME STYLE: Sidebar Category Links */
+    color: #5a8a5a;
+    text-decoration: none;
+}
+#sidebar a:hover {
+    /* THEME STYLE: Sidebar Category Links Hover */
+    text-decoration: underline;
+    color: #4c794c;
+}
+/* --- END Layout and Sidebar --- */
+
+
+/* ---------------------------------- */
+/* --- Admin Panel Styling (Theme Applied) --- */
+/* ---------------------------------- */
+.admin-section {
+    max-width: 100%;
+    margin-bottom: 3rem;
+    text-align: center;
+    /* Updated background for theme: use a lighter version of theme color */
+    background-color: #e6f0e6;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Updated border for theme */
+    border-left: 8px solid #5a8a5a;
+}
+.admin-info-text {
+    font-size: 0.875rem;
+    /* Updated text color for theme */
+    color: #446944; 
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+/* THEME STYLE: Admin Button (Overriding old style) */
+.admin-button {
+    display: inline-block;
+    background-color: #5a8a5a; /* Theme Color: Primary */
+    color: white !important; /* Force white text from inline style */
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    border: 2px solid #5a8a5a; /* Border from inline style */
+}
+.admin-button:hover {
+    background-color: #4c794c; /* Darker theme color for hover */
+}
+/* --- END Admin Panel Styling --- */
+
+
+/* ---------------------------------- */
+/* --- Post Grid and Cards (Theme Applied) --- */
+/* ---------------------------------- */
+.view-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+.view-btn {
+    background: #fff;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.view-btn svg {
+    stroke: #555;
+    transition: stroke 0.2s ease-in-out;
+}
+.view-btn.active {
+    background-color: #5a8a5a;
+    border-color: #5a8a5a;
+}
+.view-btn.active svg {
+    stroke: #fff;
+}
+/* NEW: Style for the Month/Year Header to span grid */
+.month-header-grouping {
+    grid-column: 1 / -1; /* This makes the element span all columns in the grid */
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #446944; /* Darker Green */
+    margin-top: 30px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 4px solid #ddd;
+    text-align: left;
+}
+.month-header-grouping a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.month-header-grouping a:hover {
+    color: #5a8a5a;
+}
+
+.posts-grid {
+    display: grid;
+    gap: 25px;
+}
+.posts-grid.view-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+.posts-grid.view-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+.posts-grid.view-1 {
+    grid-template-columns: 1fr;
+}
+.post-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.post-card img {
+    width: 100%;
+    /* Set fixed height for consistency, equivalent to h-40 */
+    height: 10rem; 
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
+}
+.post-card-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.post-card-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+.post-card-content h3 a {
+    color: #333;
+    text-decoration: none;
+}
+.post-card-content h3 a:hover {
+    color: #5a8a5a;
+}
+.post-meta {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 15px;
+}
+.post-card-content p {
+    flex-grow: 1;
+    margin-bottom: 15px;
+    /* Simulate line-clamp-3 */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* THEME STYLE: Post "Use Now!!!" Read More Button (Applies to post-footer .read-more) */
+.read-more {
+    display: inline-block;
+    background-color: #5a8a5a; /* Theme Color: Primary */
+    color: white !important; /* Force white text from inline style */
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    /* Added to align with existing .read-more styles for consistency */
+    align-self: flex-start;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+.read-more:hover {
+    background-color: #4c794c; /* Darker theme color for hover */
+    color: #ffffff;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+/* --- END Post Grid and Cards --- */
+
+
+/* ---------------------------------- */
+/* --- Footer and General Content (Theme Applied) --- */
+/* ---------------------------------- */
+.main-footer {
+    /* Theme Color: Primary #5a8a5a */
+    background: #5a8a5a;
+    color: #fff;
+    text-align: center;
+    padding: 2rem 0;
+    margin-top: 40px;
+}
+.main-footer a {
+    /* Use a lighter version of the theme color or white for links in footer */
+    color: #e0e0e0;
+}
+.main-footer a:hover {
+    color: white;
+}
+.hidden {
+    display: none !important;
+}
+.notice-box {
+    background-color: #fffbe6;
+    border-left: 4px solid #fcc419;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+/* --- END Footer and General Content --- */
+
+
+/* ---------------------------------- */
+/* --- Modal Styling (Theme Applied) --- */
+/* ---------------------------------- */
+.custom-modal-overlay {
+    position: fixed; 
+    inset: 0; 
+    background-color: rgba(107, 114, 128, 0.75); /* bg-gray-600 with opacity */
+    overflow-y: auto; 
+    height: 100%; 
+    width: 100%; 
+    z-index: 50; 
+    /* The display property must be controlled by JS, setting it to flex here 
+       matches the intended default *when visible*, but it must be hidden by default. 
+       The index.html JS sets display: 'none' and then display: 'flex' when showing.
+    */
+    display: none; /* Hidden by default (from index.html inline style) */
+    justify-content: center; /* From index.html inline style */
+    align-items: center; /* From index.html inline style */
+}
+.custom-modal-overlay.show {
+    display: block;
+}
+.custom-modal-content {
+    /* Merged with index.html inline styles */
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered (from index.html inline style) */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px; /* From index.html inline style */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* From index.html inline style */
+    text-align: center; /* From index.html inline style */
+}
+.modal-title {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: bold;
+    margin-bottom: 0.75rem; /* mb-3 */
+}
+.modal-title-error {
+    color: #dc2626; /* text-red-600 */
+}
+.modal-title-info {
+    color: #4f46e5; /* text-indigo-600 */
+}
+.modal-p {
+    color: #4b5563; /* text-gray-600 */
+    margin-bottom: 1rem; /* mb-4 */
+}
+
+/* THEME STYLE: Message Modal Close Button (Overriding old/default style) */
+.modal-close-btn {
+    background-color: #5a8a5a; /* Theme Color: Primary */
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%; /* Ensure this stays consistent with prior modal-close-btn width: 100% */
+}
+.modal-close-btn:hover {
+    background-color: #4c794c; /* Darker theme color for hover */
+}
+
+/* --- END Modal Styling --- */
+
+
+/* ---------------------------------- */
+/* --- Responsive Adjustments --- */
+/* ---------------------------------- */
+@media (max-width: 992px) {
+    .posts-grid.view-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+    .main-content-area .container { flex-direction: column; }
+    .posts-grid, .posts-grid.view-2, .posts-grid.view-3 { grid-template-columns: 1fr; }
+    .post-main { padding: 20px; }
+    .main-header .site-title-container { flex-direction: column; }
+    #auth-container, #user-display { margin-bottom: 10px; }
+}
+/* --- END Responsive Adjustments --- */
+
+
+/* Retaining existing unused styles for completeness */
+.progress-bar-wrapper {
+    position: relative;
+    width: 100%;
+    height: 24px;
+    background-color: #7b7b7b;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.progress-bar-fill {
+    height: 100%;
+    background-color: #5a8a5a ;
+    border-radius: 12px;
+    transition: width 0.4s ease-in-out;
+}
+.progress-bar-percent {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white; 
+    font-weight: bold;
+    font-size: 0.9em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+}
+.month-separator {
+    font-size: 1.8rem;
+    border-bottom: 2px solid #5a8a5a;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+.post-main {
+    background-color: #fff;
+    padding: 20px 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+.post-full ul {
+    list-style-position: inside;
+    padding-left: 20px;
+}
+.post-full h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+.post-full h2 {
+    font-size: 1.8em;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+.post-full h3 {
+    font-size: 1.4em;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+.post-full .post-meta {
+    margin-bottom: 20px;
+}
+.post-image-full {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+    max-height: auto;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: block;
+}
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin: 20px 0;
+    display: block;
+}
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #5a8a5a;
+    text-decoration: none;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+.comments-section {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+.comments-section h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+.comment-form-container {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+.comment-form-container h3 {
+    font-size: 1.5em;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1em;
+}
+.submit-button {
+    background-color: #5a8a5a;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+.submit-button:hover {
+    background-color: #446944;
+}
+.submit-button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+.comments-list {
+    margin-top: 20px;
+}
+.comment {
+    background-color: #ffffff;
+    border: 1px solid #e7e7e7;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.comment-meta {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 8px;
+}
+.comment p {
+    margin-bottom: 0;
+    word-wrap: break-word;
+}
+.vote-section {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 40px 0;
+}
+.vote-section h4 {
+    font-size: 1.3em;
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+.vote-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.vote-btn {
+    background-color: #5a8a5a;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+}
+.vote-btn:hover {
+    background-color: #446944;
+    transform: translateY(-2px);
+}
+.vote-btn:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+    transform: none;
+}
+.vote-btn.voted {
+    background-color: #333;
+}
+.vote-results {
+    font-size: 0.9em;
+}
+.vote-results p {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.vote-bar {
+    display: flex;
+    height: 30px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.vote-bar-gemini, .vote-bar-pixelcut, .vote-bar-new, .vote-bar-old, .vote-bar-geminipost, .vote-bar-gptpost, .vote-bar-copioltpost,.vote-bar-grokpost ,.vote-bar-claudepost,.vote-bar-perplexitypost,.vote-bar-metapost{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.9em;
+    white-space: nowrap;
+    transition: width 0.5s ease-in-out;
+}
+.vote-bar-gemini { background-color: #4CAF50; }
+.vote-bar-pixelcut { background-color: #ff6f61; }
+.vote-bar-new { background-color: #4CAF50; }
+.vote-bar-old { background-color: #ff6f61; }
+.vote-bar-geminipost { background-color: #5EBFD6; }
+.vote-bar-gptpost { background-color: #74aa9c; }
+.vote-bar-copioltpost { background-color: #0078D4; }
+.vote-bar-grokpost { background-color: #000000; }
+.vote-bar-claudepost { background-color: #FF6600; }
+.vote-bar-perplexitypost { background-color: #20808D; }
+.vote-bar-metapost { background-color: #0082fb; }
+.info-box {
+    position: relative; 
+    padding: 40px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    color: #fff;
+    overflow: hidden;
+    text-align: center;
+}
+.info-box .info-title {
+    font-size: 2.2rem;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.info-box .info-subtitle {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    opacity: 0.9;
+}
+.info-box-solid {
+    background-color: #446944;
+}
+.info-box-image {
+    background-size: cover;
+    background-position: center center;
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.5); 
+}
+.info-box .text-dark {
+    color: #333;
+}
+.info-box-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.info-box-link:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+.info-box-link:hover .info-box-image {
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.6);
+}
+.notice-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0 0;
+}
+.notice-box ul li {
+    margin-bottom: 5px;
+    padding-left: 20px;
+    position: relative;
+}
+.notice-box ul li::before {
+    content: "✔️";
+    position: absolute;
+    left: 0;
+    color: #5a8a5a;
+}
+.notice-box ul li.not-used::before {
+    content: "✖️";
+    color: #ff4500;
+}
+.modal-overlay { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.show { display: flex; }
+.modal-content { position: relative; width: 80%; max-width: auto; }
+.modal-close { position: absolute; top: -10px; right: -5px; color: #fff; font-size: 40px; font-weight: bold; cursor: pointer; text-shadow: 0 0 5px rgba(0,0,0,0.7); }
+.modal-close:hover { color: #bbb; }
+#single-image-container,
+.modal-image-comparison-container {
+    display: none;
+}
+.modal-overlay.single-view #single-image-container {
+    display: block;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.modal-overlay.comparison-view .modal-image-comparison-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    align-items: flex-start;
+}
+.modal-content figure { margin: 0; padding: 0; text-align: center; }
+.modal-content img { width: 100%; height: auto; display: block; border-radius: 5px; }
+.modal-content figcaption { margin-top: 15px; color: #ccc; font-size: 1.1em; }
+.modal-image-comparison-container figure { flex: 1; }
+a.modal-trigger, a.modal-comparison-trigger { color: #5a8a5a; text-decoration: underline; cursor: pointer; }
+a.modal-comparison-trigger { font-weight: bold; }

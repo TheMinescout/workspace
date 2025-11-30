@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>PROJECTS // MineScout</title>
+    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
+    <style>
+        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; margin: 0; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.3; }
+        .container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; z-index: 10; position: relative; }
+        
+        .code-block { 
+            background: rgba(0, 10, 20, 0.9); border: 1px solid #00FFFF; padding: 20px; 
+            width: 800px; max-width: 95%; box-shadow: 0 0 15px #00FFFF; 
+            color: #00FFFF;
+        }
+        
+        .var-line { font-size: 1.2rem; margin: 15px 0; border-bottom: 1px dotted #008888; padding: 10px; cursor: pointer; }
+        .var-line:hover { background: rgba(0, 255, 255, 0.1); }
+        .keyword { color: #ff00ff; } .string { color: #ffff00; } .comment { color: #008888; display: block; margin-top: 5px; font-size: 0.9rem; }
+        
+        .open-btn { position: fixed; top: 10px; left: 10px; border: 1px solid #00FFFF; padding: 5px; cursor: pointer; color: #00FFFF; z-index: 100; }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    <div class="open-btn" onclick="window.toggleCmd()">[ OPEN CMD ]</div>
+
+    <div class="container">
+        <div class="code-block">
+            <h2 style="border-bottom: 1px dashed #00FFFF;">// REPOSITORY: /var/www/projects/</h2>
+            <div id="project-list-container"></div>
+        </div>
+    </div>
+
+    <!-- 1. DATA -->
+    <script src="assets/js/filesystem.js"></script>
+    <!-- 2. CORE -->
+    <script src="assets/js/terminal-core.js?v=2.4"></script>
+
+    <script>
+        // PAGE LOGIC
+        const listContainer = document.getElementById('project-list-container');
+        
+        FILE_SYSTEM.projects.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'var-line';
+            div.innerHTML = `<span class="keyword">const</span> ${item.cmd} = <span class="string">"${item.title}"</span>;<span class="comment">${item.desc}</span>`;
+            
+            // Click to Download
+            div.onclick = () => triggerDownload(item.path, item.title);
+            listContainer.appendChild(div);
+        });
+
+        function triggerDownload(path, name) {
+            const link = document.createElement('a');
+            link.href = path; link.download = name;
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        }
+
+        // CMD HANDLER
+        window.handlePageCommand = function(cmd, args) {
+            const found = FILE_SYSTEM.projects.find(p => p.cmd === cmd);
+            if (found) {
+                triggerDownload(found.path, found.title);
+                return true; // Success (core clears input)
+            }
+            return null;
+        };
+
+        </script>
+</body>
+</html>

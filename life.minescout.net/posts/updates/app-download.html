@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Install - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Path updated to ../../assests/ -->
+    <link rel="stylesheet" href="../../assests/css/homepage.css?v=2.1">
+    <link rel="icon" type="image/png" href="../../assests/images/favicon.png?v=2">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container"><a href="../../login.html" id="login-link">Login</a></div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">App Install</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <span id="user-email-display"></span>
+                <button id="sign-out-btn">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            <main class="post-main" data-post-id="app-download">
+                
+                <a href="../../pages/updates.html" class="back-link">« Back to Updates</a>
+
+                <article class="post-full">
+                    <h1>Introducing Our New Minescout Life App!</h1>
+                    <p class="post-meta">Created on 9/12/2025, constantly updated</p>
+                    
+                    <div class="post-content">
+                        <p class="notice-box"><strong>Notice:</strong> This is still in development and will have errors. Please send them to <a href="mailto:theminescout@minescout.net">theminescout@minescout.net</a></p>
+                        
+                        <p>Welcome to the Minescout Life app download page. This app has all the capabilities of the website, with the added bonus of not needing wifi to connect and view. Download below:</p>
+                        
+                        <h4>Desktop App Download</h4>
+                        <!-- Linked to assests/downloads -->
+                        <a href="../../assests/downloads/MinescoutLife-Setup.exe" style="text-decoration: none; color: #5a8a5a; font-size: larger;font-weight: bold;" download>Download EXE</a>
+                        <h6>V1</h6>
+                        
+                        <h4>Phone App Download</h4>
+                        <a href="../../assests/downloads/app-release.apk" style="text-decoration: none; color: #5a8a5a; font-size: larger;font-weight: bold;" download>Download APK</a>
+                        <h6>V1.2</h6>
+                    </div>    
+                </article>
+
+                <section class="comments-section">
+                    <h2>Comments</h2>
+                    <div class="comment-form-container">
+                        <h3>Leave a Comment</h3>
+                        <form>
+                            <div class="form-group"><label for="name">Name:</label><input type="text" id="name" name="name" required></div>
+                            <div class="form-group"><label for="comment">Comment:</label><textarea id="comment" name="comment" rows="5" required></textarea></div>
+                            <button type="submit" class="submit-button">Post Comment</button>
+                        </form>
+                    </div>
+                    <div class="comments-list"></div>
+                </section>
+            </main>
+
+            <aside id="sidebar">
+                <h3>Categories</h3>
+                <ul>
+                    <li><a href="../../index.html">Home</a></li>
+                    <li><a href="../../pages/coding-projects.html">Coding Projects</a></li>
+                    <li><a href="../../pages/tech-tips.html">Tech Tips</a></li>
+                    <li><a href="../../pages/updates.html">Updates</a></li>
+                    <li><a href="../../pages/puppy-life.html">Puppy Life</a></li>
+                    <li><a href="../../pages/minecraft-server.html">Minecraft Server</a></li>
+                </ul>
+            </aside>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2025 Minescouts Life. All rights reserved.</p></div>
+    </footer>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyAZE1qCY8YCZLrZ2EWT0QTFRoBVHvabqDM",
+        authDomain: "minescout-life-4a668.firebaseapp.com",
+        databaseURL: "https://minescout-life-4a668-default-rtdb.firebaseio.com",
+        projectId: "minescout-life-4a668",
+        storageBucket: "minescout-life-4a668.appspot.com",
+        messagingSenderId: "351393417322",
+        appId: "1:351393417322:web:92c9a92a50e60890136213",
+        measurementId: "G-RFP78TP9KZ"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+    </script>
+    
+    <script src="../../assests/js/homepage.js" defer></script>
+</body>
+</html>

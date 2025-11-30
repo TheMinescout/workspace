@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minescouts Life - Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Path updated to assests/css/ -->
+    <link rel="stylesheet" href="assests/css/homepage.css?v=3.02">
+    <link rel="stylesheet" href="assests/css/AI-ASSISTANT.css">
+    <link rel="icon" type="image/png" href="assests/images/favicon.png?v=2">
+    
+    <style>
+        .dismiss-btn { background-color: #ef4444; color: white; border: none; padding: 2px 8px; font-size: 0.75rem; border-radius: 4px; cursor: pointer; margin-left: 15px; float: right; }
+        .dismiss-btn:hover { background-color: #dc2626; }
+        #user-display a { text-decoration: none; color: white; }
+    </style>
+</head>
+
+<body>
+
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container">
+                <a href="login.html" id="login-link">Login</a>
+            </div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Life of a Smart Kid</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <a href="account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            <main class="main-content">
+                
+                <div id="admin-panel" class="admin-section hidden">
+                    <p id="user-info-admin" class="admin-info-text">
+                        Admin Access: You are signed in.
+                    </p>
+                    <!-- Link updated to admin folder -->
+                    <a href="admin/admin-posting.html" class="admin-button">
+                        Go to Content Creation Page
+                    </a>
+                </div>
+                <div class="view-controls">
+                    <button id="grid-3" class="view-btn active" data-view="3" title="3 Columns"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></button>
+                    <button id="grid-2" class="view-btn" data-view="2" title="2 Columns"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg></button>
+                    <button id="grid-1" class="view-btn" data-view="1" title="1 Column"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+                </div>
+                
+                <div id="announcements-container"></div>
+                <div id="all-posts-container" class="posts-grid view-3">
+                    <p class="text-center" id="loading-message">Loading real-time content from Firebase...</p>
+                </div>
+                
+            </main>
+            <aside id="sidebar">
+                <h3>Categories</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <!-- Links updated to pages/ folder -->
+                    <li><a href="pages/coding-projects.html">Coding Projects</a></li>
+                    <li><a href="pages/tech-tips.html">Tech Tips</a></li>
+                    <li><a href="pages/updates.html">Updates</a></li>
+                    <li><a href="pages/puppy-life.html">Puppy Life</a></li>
+                    <li><a href="pages/minecraft-server.html">Minecraft Server</a></li>
+                    <!-- Beta link assumes it's in pages based on pattern, adjust if needed -->
+                    <li><a href="pages/beta.html">Beta</a></li>
+                    <!-- Links updated to posts/ or specific folders -->
+                    <li><a href="posts/updates/app-download.html">App Install</a></li>
+                    <li><a href="software stuff/feature-request.html">Feature Request</a></li>
+                </ul>
+                <h3>Archives</h3>
+                <ul>
+                    <li><a href="archives/archive.html">Archive Log</a></li>
+                </ul>
+            </aside>
+        </div>
+    </div>
+    <script src="https://cdn.commoninja.com/sdk/latest/commonninja.js" defer></script>
+    <div class="commonninja_component pid-4b7511cd-a6b3-4697-987d-985e648b84ec"></div>
+    <footer class="main-footer">
+        <div class="container">
+            <p> Phone Num: +1 (425) 559 9127</p>
+            <p> Email: <a href="mailto:theminescout@minescout.net">theminescout@minescouts.net</a></p>
+            <p id="copyright">© 2025 Minescouts Life. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <div id="message-modal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <h3 id="modal-title" class="modal-title">Message</h3>
+            <p id="modal-content" class="modal-p">Content here.</p>
+            <button id="close-modal" class="modal-close-btn">Close</button>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getDatabase, ref, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZE1qCY8YCZLrZ2EWT0QTFRoBVHvabqDM",
+            authDomain: "minescout-life-4a668.firebaseapp.com",
+            databaseURL: "https://minescout-life-4a668-default-rtdb.firebaseio.com",
+            projectId: "minescout-life-4a668",
+            storageBucket: "minescout-life-4a668.appspot.com",
+            messagingSenderId: "351393417322",
+            appId: "1:351393417322:web:92c9a92a50e60890136213",
+            measurementId: "G-RFP78TP9KZ"
+        };
+        const ADMIN_EMAIL = 'theminescout@minescout.net';
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+        
+        let currentUserIsAdmin = false;
+
+        const authContainer = document.getElementById('auth-container');
+        const userDisplay = document.getElementById('user-display');
+        const userEmailDisplay = document.getElementById('user-email-display');
+        const signOutBtn = document.getElementById('signOut-btn');
+        const adminPanel = document.getElementById('admin-panel');
+        const postsContainer = document.getElementById('all-posts-container');
+        const announcementsContainer = document.getElementById('announcements-container');
+        const loadingMessage = document.getElementById('loading-message');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserIsAdmin = user.email === ADMIN_EMAIL;
+                authContainer.style.display = 'none';
+                userDisplay.classList.remove('hidden');
+
+                const usernameRef = ref(db, `usernames/${user.uid}`);
+                const snapshot = await get(usernameRef);
+                const username = snapshot.exists() ? snapshot.val() : user.email;
+
+                if (currentUserIsAdmin) {
+                    userEmailDisplay.textContent = `Admin: ${username}`;
+                    adminPanel.classList.remove('hidden');
+                } else {
+                    userEmailDisplay.textContent = username;
+                    adminPanel.classList.add('hidden');
+                }
+            } else {
+                currentUserIsAdmin = false;
+                authContainer.style.display = 'block';
+                userDisplay.classList.add('hidden');
+                adminPanel.classList.add('hidden');
+            }
+            fetchAndDisplayContent();
+        });
+
+        if (signOutBtn) {
+            signOutBtn.addEventListener('click', () => signOut(auth).catch(err => console.error("Sign out failed:", err)));
+        }
+        
+        function createPostElement(postId, post) {
+            const date = new Date(post.timestamp).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            return `<article class="post-card" data-content-id="${postId}">${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}" onerror="this.onerror=null; this.src='https://placehold.co/400x300/e0e0e0/333333?text=Image+Unavailable';" />` : ''}<div class="post-card-content"><h3><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3><p class="post-meta">Posted on ${date} in ${post.category || 'General'}</p><p>${post.summary || 'No summary provided.'}</p><a href="${post.linkUrl || '#'}" class="read-more" target="_blank">${post.linkText || 'Use Now!!!'}</a></div></article>`;
+        }
+
+        function createAnnouncementElement(contentId, announcement) {
+            let dismissButtonHtml = '';
+            if (currentUserIsAdmin) {
+                dismissButtonHtml = `<button class="dismiss-btn" data-id="${contentId}">Dismiss</button>`;
+            }
+            return `<div class="notice-box" data-content-id="${contentId}">${dismissButtonHtml}<p><strong>${announcement.title}:</strong> ${announcement.text} Thanks, ${announcement.from}.</p></div>`;
+        }
+        
+        function fetchAndDisplayContent() {
+            const contentRef = ref(db, 'content'); 
+            onValue(contentRef, (snapshot) => {
+                const allContent = snapshot.val();
+                let postHtml = '';
+                let announcementHtml = '';
+                if (loadingMessage) loadingMessage.style.display = 'none';
+                if (allContent) {
+                    const sortedContent = Object.keys(allContent).map(key => ({ id: key, ...allContent[key] })).sort((a, b) => b.timestamp - a.timestamp);
+                    const announcements = sortedContent.filter(item => item.type === 'announcement');
+                    const posts = sortedContent.filter(item => item.type !== 'announcement');
+                    announcements.forEach(ann => announcementHtml += createAnnouncementElement(ann.id, ann));
+                    const currentYear = new Date().getFullYear();
+                    const previousYear = currentYear - 1;
+                    const thisYearPosts = posts.filter(post => new Date(post.timestamp).getFullYear() === currentYear);
+                    const olderPostsExist = posts.some(post => new Date(post.timestamp).getFullYear() < currentYear);
+                    let currentMonthYear = '';
+                    if (thisYearPosts.length > 0) {
+                        thisYearPosts.forEach(post => {
+                            const postDate = new Date(post.timestamp);
+                            const monthYear = postDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+                            if (monthYear !== currentMonthYear) {
+                                currentMonthYear = monthYear;
+                                const monthNum = postDate.getMonth() + 1;
+                                // Adjusted link to archives folder
+                                const monthArchiveUrl = `archives/2025/archive-${monthNum}-${currentYear}.html`;
+                                postHtml += `<h2 class="month-header-grouping"><a href="${monthArchiveUrl}">${monthYear}</a></h2>`;
+                            }
+                            postHtml += createPostElement(post.id, post);
+                        });
+                    } else {
+                        postHtml = '<p class="text-center">No posts found for this year yet.</p>';
+                    }
+                    if (olderPostsExist) {
+                        // Adjusted link to archives folder
+                        const archiveUrl = `archives/archive-${previousYear}.html`;
+                        postHtml += `<div class="month-header-grouping" style="text-align: center; margin-top: 40px; border-bottom: none;"><p>See previous posts here: <a href="${archiveUrl}" style="text-decoration: underline;">Archive for ${previousYear}</a></p></div>`;
+                    }
+                } else {
+                    postHtml = '<p class="text-center">No content found yet.</p>';
+                }
+                announcementsContainer.innerHTML = announcementHtml;
+                postsContainer.innerHTML = postHtml;
+            }, (error) => {
+                console.error("Firebase Read Error:", error);
+                if (loadingMessage) loadingMessage.textContent = 'Error loading content.';
+            });
+        }
+        
+        announcementsContainer.addEventListener('click', (event) => {
+            if (event.target.classList.contains('dismiss-btn')) {
+                const contentId = event.target.getAttribute('data-id');
+                if (confirm('Are you sure you want to permanently delete this announcement?')) {
+                    remove(ref(db, `content/${contentId}`)).catch(err => console.error('Failed to remove announcement:', err));
+                }
+            }
+        });
+
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const view = btn.getAttribute('data-view');
+                postsContainer.className = `posts-grid view-${view}`;
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                localStorage.setItem('gridView', view);
+            });
+        });
+        const savedView = localStorage.getItem('gridView') || '3';
+        postsContainer.className = `posts-grid view-${savedView}`;
+        const activeBtn = document.querySelector(`.view-btn[data-view='${savedView}']`);
+        if (activeBtn) activeBtn.classList.add('active');
+    </script>
+    
+    <!-- Path updated to assests/js/ -->
+    <script type="module" src="assests/js/homepage.js"></script>
+</body>
+</html>

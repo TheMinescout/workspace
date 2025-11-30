@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0xUNKNOWN // GLITCH_REALM</title>
+    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png">
+    
+    <style>
+        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.3; }
+        
+        .security-gate { text-align: center; z-index: 20; background: #000; border: 2px solid #FF0000; padding: 40px; box-shadow: 0 0 20px #FF0000; }
+        .security-gate h2 { color: #FF0000; margin: 0 0 20px 0; font-size: 2rem; }
+        #auth-input { background: #110000; border: 1px solid #FF0000; color: #FF0000; padding: 10px; font-family: inherit; font-size: 1.5rem; text-align: center; width: 150px; outline: none; text-transform: uppercase; }
+        .gate-msg { margin-top: 10px; color: #FF0000; height: 20px; font-weight: bold; }
+
+        .playground { display: none; background: rgba(0, 0, 0, 0.9); border: 2px dashed #00FFFF; padding: 30px; width: 600px; max-width: 90%; text-align: center; box-shadow: 0 0 20px #00FFFF; z-index: 10; }
+        h1 { color: #00FFFF; text-shadow: 2px 2px 0 #FF00FF; letter-spacing: 3px; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        
+        button { background: #000; color: #0F0; border: 1px solid #0F0; padding: 15px; font-family: inherit; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #0F0; color: #000; box-shadow: 0 0 10px #0F0; transform: scale(1.05); }
+        .active-mod { background: #003300; border-color: #00FF00; box-shadow: 0 0 5px #00FF00 inset; }
+        
+        .back-link { display: block; margin-top: 20px; color: #555; text-decoration: none; cursor: pointer; }
+        .back-link:hover { color: #fff; }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+
+    <div id="gate" class="security-gate">
+        <h2>// RESTRICTED AREA //</h2>
+        <p>ENTER OVERRIDE CODE FROM CONSOLE LOGS</p>
+        <input type="text" id="auth-input" maxlength="4" placeholder="____">
+        <div class="gate-msg" id="gate-msg"></div>
+    </div>
+
+    <div class="playground" id="box">
+        <h1>// SYSTEM_OVERRIDE //</h1>
+        <p>Changes apply instantly and persist across the network.</p>
+        
+        <div class="controls">
+            <button id="btn-rainbow" onclick="toggleRainbow()">[ TOGGLE RAINBOW ]</button>
+            <button id="btn-invert" onclick="toggleInvert()">[ INVERT REALITY ]</button>
+            <button id="btn-flip" onclick="toggleFlip()">[ FLIP WORLD ]</button>
+            <button id="btn-grav" onclick="toggleGravity()">[ GRAVITY FAIL ]</button>
+        </div>
+
+        <a href="../../index.html" class="back-link">&lt;&lt; REBOOT SYSTEM</a>
+    </div>
+
+    <script src="../../assets/js/firebase-config.js"></script>
+    <script src="../../assets/js/terminal-core.js?v=2.4"></script>
+
+    <script>
+        const gateInput = document.getElementById('auth-input');
+        const gateMsg = document.getElementById('gate-msg');
+        gateInput.focus();
+        
+        gateInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                const secret = sessionStorage.getItem('egg_code');
+                if (secret && gateInput.value.toUpperCase() === secret) {
+                    document.getElementById('gate').style.display = 'none';
+                    document.getElementById('box').style.display = 'block';
+                    loadButtonStates();
+                } else {
+                    gateMsg.innerText = "ACCESS DENIED";
+                    gateInput.value = "";
+                    setTimeout(() => window.location.href = "../../index.html", 1000);
+                }
+            }
+        });
+
+        function toggleRainbow() {
+            const current = sessionStorage.getItem('egg_rainbow') === 'true';
+            sessionStorage.setItem('egg_rainbow', !current);
+            document.getElementById('btn-rainbow').classList.toggle('active-mod');
+        }
+
+        function toggleInvert() {
+            const current = sessionStorage.getItem('egg_invert') === 'true';
+            sessionStorage.setItem('egg_invert', !current);
+            document.body.style.filter = !current ? "invert(1) hue-rotate(180deg)" : "none";
+            document.getElementById('btn-invert').classList.toggle('active-mod');
+        }
+
+        function toggleFlip() {
+            const current = sessionStorage.getItem('egg_flip') === 'true';
+            sessionStorage.setItem('egg_flip', !current);
+            document.body.style.transform = !current ? "scaleY(-1)" : "none";
+            document.getElementById('btn-flip').classList.toggle('active-mod');
+        }
+
+        function toggleGravity() {
+            // Reload page to start physics engine fresh
+            const current = sessionStorage.getItem('egg_gravity') === 'true';
+            sessionStorage.setItem('egg_gravity', !current);
+            location.reload(); 
+        }
+
+        function loadButtonStates() {
+            if(sessionStorage.getItem('egg_rainbow')==='true') document.getElementById('btn-rainbow').classList.add('active-mod');
+            if(sessionStorage.getItem('egg_invert')==='true') document.getElementById('btn-invert').classList.add('active-mod');
+            if(sessionStorage.getItem('egg_flip')==='true') document.getElementById('btn-flip').classList.add('active-mod');
+            if(sessionStorage.getItem('egg_gravity')==='true') document.getElementById('btn-grav').classList.add('active-mod');
+        }
+    </script>
+</body>
+</html>

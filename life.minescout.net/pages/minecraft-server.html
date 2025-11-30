@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carly Fam Survival Server - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Path updated to ../assests/ -->
+    <link rel="stylesheet" href="../assests/css/homepage.css?v=2.2">
+    <link rel="icon" type="image/png" href="../assests/images/favicon.png?v=2">
+    <style> #user-display a { text-decoration: none; color: white; } </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container"><a href="../login.html" id="login-link">Login</a></div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Carly Fam Server</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <a href="../account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            <main class="main-content">
+                <div class="post-main">
+                    <article class="post-full">
+                        <h1>Welcome to my Minecraft Life!</h1>
+                        <p class="post-meta">This is a homepage for my videos and summaries.</p>
+                        
+                        <!-- Image path updated to ../assests/ -->
+                        <img src="../assests/images/survival-server-images/Minecraft server title image.png" alt="Minecraft Survival World" class="post-image-full" onerror="this.style.display='none'">
+
+                        <p class="notice-box"><strong>Leaving of House and Farms Section:</strong> We are sorry to announce that we are removing the house and farm section compatibility with this website due to upkeep and UI issues. You can still access videos via the youtube playlist.</p>
+
+                        <div class="post-content">
+                            <p>The options below will take you to the main sections for my life in the Carly Fam Survival Server.</p>
+                        
+                            <a href="https://www.youtube.com/playlist?list=PLiilNDHdud15uVkuaWwQbiKfYpdlU-IU5" target="_blank" class="info-box-link">
+                                <!-- Image path updated to ../assests/ -->
+                                <div class="info-box info-box-image" style="background-image: url('../assests/images/survival-server-images/Youtube Logo.png');">
+                                    <h3 class="info-title">Youtube Playlist</h3>
+                                    <p class="info-subtitle">Click here to see my full youtube playlist (this is unlisted so be careful when sharing)!</p>
+                                </div>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </main>
+
+            <aside id="sidebar">
+                <h3>Categories</h3>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="coding-projects.html">Coding Projects</a></li>
+                    <li><a href="tech-tips.html">Tech Tips</a></li>
+                    <li><a href="updates.html">Updates</a></li>
+                    <li><a href="puppy-life.html">Puppy Life</a></li>
+                    <li><a href="beta.html">Beta</a></li>
+                </ul>
+                <h3>Archives</h3>
+                <ul>
+                    <li><a href="../archives/archive.html">Archive Log</a></li>
+                </ul>
+            </aside>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2025 Minescouts Life. All rights reserved.</p></div>
+    </footer>
+
+    <!-- Path updated to ../assests/js/ -->
+    <script type="module" src="../assests/js/homepage.js"></script>
+</body>
+</html>

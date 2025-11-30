@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>AUTH // MineScout</title>
+    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <style>
+        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; margin: 0; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.2; }
+        .login-box { border: 2px solid #0F0; padding: 40px; background: rgba(0,20,0,0.95); width: 400px; box-shadow: 0 0 20px #0F0; max-width: 90%; }
+        h2 { border-bottom: 2px dashed #0F0; padding-bottom: 15px; margin-bottom: 25px; text-align: center; }
+        .input-group { margin-bottom: 20px; }
+        input { width: 100%; background: #000; border: 1px solid #004400; color: #fff; padding: 10px; font-family: inherit; outline: none; }
+        input:focus { border-color: #0F0; }
+        button { width: 100%; padding: 12px; background: #003300; color: #0F0; border: 1px solid #0F0; font-weight: bold; cursor: pointer; }
+        button:hover { background: #0F0; color: #000; }
+        .error-msg { color: #ff3333; text-align: center; margin-top: 10px; min-height: 20px; font-size: 0.9rem; }
+        .open-btn { position: fixed; top: 10px; left: 10px; border: 1px solid #0F0; padding: 5px; cursor: pointer; z-index: 100; }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    <div class="open-btn" onclick="window.toggleCmd()">[ OPEN CMD ]</div>
+
+    <div class="login-box">
+        <h2>// SECURITY CHECKPOINT</h2>
+        <div class="input-group"><input type="email" id="email" placeholder="identity@minescout.net"></div>
+        <div class="input-group"><input type="password" id="password" placeholder="********"></div>
+        <button onclick="attemptLogin()">[ AUTHENTICATE ]</button>
+        <div id="error-display" class="error-msg"></div>
+    </div>
+
+    <!-- CORE -->
+    <script src="assets/js/firebase-config.js"></script>
+    <script src="assets/js/terminal-core.js?v=2.4"></script>
+
+    <script>
+        function attemptLogin() {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            const err = document.getElementById('error-display');
+            const btn = document.querySelector('button');
+
+            if(!email || !pass) { err.innerText = "CREDENTIALS MISSING"; return; }
+            btn.innerText = "VERIFYING..."; err.innerText = "";
+
+            firebase.auth().signInWithEmailAndPassword(email, pass)
+                .then(() => { btn.innerText = "ACCESS GRANTED"; setTimeout(() => window.location.href = "index.html", 1000); })
+                .catch((e) => { btn.innerText = "[ AUTHENTICATE ]"; err.innerText = "DENIED: " + e.code; });
+        }
+
+        // Matrix
+        </script>
+</body>
+</html>

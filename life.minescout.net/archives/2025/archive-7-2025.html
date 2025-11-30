@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scorecard Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use scorecard.css from assests folder -->
+    <link rel="stylesheet" href="../../assests/css/scorecard.css">
+    <link rel="icon" type="image/png" href="../../assests/images/favicon.png?v=2">
+
+    <!-- Firebase Script Block (Copied from your original) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // Global Firebase Objects
+        window.firebaseApp = null;
+        window.db = null;
+        window.auth = null;
+        window.currentUserId = null;
+        window.isFirebaseReady = false;
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZE1qCY8YCZLrZ2EWT0QTFRoBVHvabqDM",
+            authDomain: "minescout-life-4a668.firebaseapp.com",
+            databaseURL: "https://minescout-life-4a668-default-rtdb.firebaseio.com",
+            projectId: "minescout-life-4a668",
+            storageBucket: "minescout-life-4a668.appspot.com",
+            messagingSenderId: "351393417322",
+            appId: "1:351393417322:web:92c9a92a50e60890136213",
+            measurementId: "G-RFP78TP9KZ"
+        };
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                window.firebaseApp = initializeApp(firebaseConfig);
+                window.db = getFirestore(window.firebaseApp);
+                window.auth = getAuth(window.firebaseApp);
+                await setPersistence(window.auth, browserLocalPersistence);
+                onAuthStateChanged(window.auth, async (user) => {
+                    if (user) {
+                        window.currentUserId = user.uid;
+                    } else {
+                        const userCredential = await signInAnonymously(window.auth);
+                        window.currentUserId = userCredential.user.uid;
+                    }
+                    window.isFirebaseReady = true;
+                    if (typeof window.initApp === 'function') window.initApp();
+                });
+            } catch (error) {
+                console.error("Failed to initialize Firebase:", error);
+                window.isFirebaseReady = true; 
+                if (typeof window.initApp === 'function') window.initApp();
+            }
+        });
+
+        // Expose to window for the module script
+        window.firebase = { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, serverTimestamp };
+    </script>
+</head>
+<body class="bg-gray-100 font-sans antialiased text-gray-900">
+
+    <!-- Modal and Screens HTML (Keep exactly as your original) -->
+    <div id="customModal" class="modal-overlay hidden fixed top-0 left-0 w-full h-full bg-gray-600 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-auto">
+            <h3 id="modalTitle" class="text-xl font-semibold text-gray-900 mb-4"></h3>
+            <div id="modalMessageContainer" class="text-gray-700 mb-6">
+                <p id="modalMessage"></p>
+                <input type="text" id="modalInput" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-base hidden" placeholder="Enter new name">
+            </div>
+            <div class="modal-buttons flex justify-end gap-3">
+                <button id="modalCancelBtn" class="modal-button secondary px-4 py-2 rounded-md font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors hidden">Cancel</button>
+                <button id="modalConfirmBtn" class="modal-button primary px-4 py-2 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Start Screen -->
+    <section id="startScreen" class="view-section active flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div class="text-center w-full max-w-xs">
+            <h1 class="text-5xl font-extrabold text-gray-800 mb-12 drop-shadow-lg">Scorecard Pro</h1>
+            <div class="flex flex-col space-y-6 w-full">
+                <button id="savedGamesBtn" class="btn btn-green text-2xl py-4 rounded-xl shadow-lg hover:scale-105 transition-transform">Saved Games</button>
+                <button id="newGameBtn" class="btn btn-blue text-2xl py-4 rounded-xl shadow-lg hover:scale-105 transition-transform">New Game</button>
+                <button id="backToMainHomeBtn" class="btn btn-gray mt-8 py-3 text-lg rounded-lg shadow-md">Back to Main Site</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Game Options Screen -->
+    <section id="newGameOptionsScreen" class="view-section flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-purple-50 to-indigo-100">
+        <div class="text-center w-full max-w-xs">
+            <h2 class="text-4xl font-bold text-gray-800 mb-10">Choose Game Type</h2>
+            <div class="flex flex-col space-y-6 w-full">
+                <button id="selectStandardBtn" class="btn btn-purple text-2xl py-4 rounded-xl shadow-lg hover:scale-105 transition-transform">Standard</button>
+                <button id="selectCustomBtn" class="btn btn-indigo text-2xl py-4 rounded-xl shadow-lg hover:scale-105 transition-transform">Custom</button>
+                <button id="backFromNewOptionsBtn" class="btn btn-gray mt-8 py-3 text-lg rounded-lg shadow-md">Back</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Standard Setup Screen -->
+    <section id="standardSetupScreen" class="view-section flex-col items-center justify-center min-h-screen p-4">
+        <div class="w-full max-w-md">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center">Standard Game Setup</h2>
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-full space-y-6">
+                <div>
+                    <label for="numPlayersStandard" class="block text-gray-700 text-lg font-medium mb-2">Number of Players:</label>
+                    <input id="numPlayersStandard" type="number" min="1" value="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-lg"/>
+                </div>
+                <div id="playerNamesStandardContainer" class="space-y-4"></div>
+                <div class="flex justify-between space-x-4 pt-4">
+                    <button id="backFromStandardSetupBtn" class="btn btn-gray flex-1 text-xl">Back</button>
+                    <button id="startGameStandardBtn" class="btn btn-blue flex-1 text-xl">Start Game</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Setup Screen -->
+    <section id="customSetupScreen" class="view-section flex-col items-center justify-center min-h-screen p-4">
+        <div class="w-full max-w-md">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 text-center">Custom Game Setup</h2>
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-full space-y-6">
+                <div>
+                    <label for="numPlayersCustom" class="block text-gray-700 text-lg font-medium mb-2">Number of Players:</label>
+                    <input id="numPlayersCustom" type="number" min="1" value="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-lg"/>
+                </div>
+                <div id="playerNamesCustomContainer" class="space-y-4"></div>
+                <div>
+                    <label for="numRoundsCustom" class="block text-gray-700 text-lg font-medium mb-2">Number of Rounds (optional):</label>
+                    <input id="numRoundsCustom" type="number" min="1" placeholder="Leave blank for unlimited" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-lg"/>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <input id="showTotalColumnCheckbox" type="checkbox" checked class="h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500"/>
+                    <label for="showTotalColumnCheckbox" class="text-gray-700 text-lg">Show 'Total' column</label>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <input id="showTotalAtEndCheckbox" type="checkbox" class="h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500"/>
+                    <label for="showTotalAtEndCheckbox" class="text-gray-700 text-lg">Show grand total at end</label>
+                </div>
+                <div class="flex justify-between space-x-4 pt-4">
+                    <button id="backFromCustomSetupBtn" class="btn btn-gray flex-1 text-xl">Back</button>
+                    <button id="startGameCustomBtn" class="btn btn-indigo flex-1 text-xl">Start Game</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Board Screen -->
+    <section id="gameBoardScreen" class="view-section flex-col items-center p-4 sm:p-6">
+        <div class="w-full max-w-5xl bg-white rounded-xl shadow-2xl p-6">
+            <div class="game-board-header items-center justify-between mb-6">
+                <input type="text" id="gameNameInput" class="game-title-input text-4xl font-bold text-gray-800 bg-transparent border-b-2 border-gray-300 focus:border-blue-500 outline-none flex-grow min-w-0 mb-4 sm:mb-0 sm:mr-4"/>
+                <div class="game-buttons-container flex gap-3 flex-shrink-0">
+                    <button id="saveGameBtn" class="btn btn-green font-semibold">Save Game</button>
+                    <button id="backToHomeFromGameBtn" class="btn btn-gray font-semibold">Back to Home</button>
+                </div>
+            </div>
+            <div class="score-table-container shadow-sm border border-gray-200 rounded-lg overflow-x-auto">
+                <table id="scoreTable" class="score-table min-w-full">
+                    <thead class="bg-gray-50"><tr id="scoreTableHeaderRow"></tr></thead>
+                    <tbody id="scoreTableBody" class="bg-white divide-y divide-gray-200"></tbody>
+                </table>
+            </div>
+            <button id="addNewRoundBtn" class="btn btn-blue mt-4 font-semibold">Add New Round</button>
+            <div id="grandTotalAtEndDisplay" class="mt-6 p-4 bg-blue-50 rounded-lg text-blue-800 text-center font-medium hidden"></div>
+        </div>
+    </section>
+
+    <!-- Saved Games Screen -->
+    <section id="savedGamesScreen" class="view-section flex-col items-center min-h-screen p-4">
+        <div class="w-full max-w-2xl text-center">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8">Saved Games</h2>
+            <div id="savedGamesListContainer" class="w-full bg-white rounded-xl shadow-2xl p-6 mb-6">
+                <p id="noSavedGamesMessage" class="text-center text-gray-600 text-lg py-8">No saved games yet. Start a new game!</p>
+                <ul id="savedGamesList" class="divide-y divide-gray-200"></ul>
+            </div>
+            <button id="backToHomeFromSavedBtn" class="btn btn-gray text-xl">Back to Home</button>
+            <div id="userIdDisplay" class="mt-4 p-2 bg-gray-100 text-gray-600 text-sm rounded-md shadow-inner hidden">User ID: <span id="currentUserIdSpan" class="font-mono"></span></div>
+        </div>
+    </section>
+    
+    <!-- Use scorecard.js from assests folder -->
+    <script type="module" src="../../assests/js/scorecard.js"></script>
+
+</body>
+</html>

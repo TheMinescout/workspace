@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>ARTICLES // MineScout</title>
+    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
+    <style>
+        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; margin: 0; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.3; }
+        .container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; z-index: 10; position: relative; }
+        .code-block { background: rgba(0, 20, 0, 0.9); border: 1px solid #0F0; padding: 20px; width: 800px; max-width: 95%; box-shadow: 0 0 15px #0F0; }
+        .var-line { font-size: 1.2rem; margin: 15px 0; border-bottom: 1px dotted #004400; padding: 10px; cursor: pointer; }
+        .var-line:hover { background: #002200; }
+        .keyword { color: #ff00ff; } .string { color: #ffff00; } .comment { color: #008800; display: block; margin-top: 5px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    
+    <!-- 1. BUTTON TRIGGERS GLOBAL TOGGLE -->
+    <div style="position:fixed; top:10px; left:10px; border:1px solid #0F0; padding:5px; cursor:pointer;" onclick="window.toggleCmd()">
+        [ OPEN CMD ]
+    </div>
+
+    <div class="container">
+        <div class="code-block">
+            <h2>// DIRECTORY: /var/www/articles/</h2>
+            <div id="file-list-container"></div>
+        </div>
+    </div>
+
+    <script src="assets/js/filesystem.js"></script>
+    
+    <!-- 2. LOAD TERMINAL CORE -->
+    <script src="assets/js/terminal-core.js?v=2.4"></script>
+
+    <script>
+        // PAGE SPECIFIC: Populate List
+        const listContainer = document.getElementById('file-list-container');
+        
+        FILE_SYSTEM.articles.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'var-line';
+            div.innerHTML = `<span class="keyword">const</span> ${item.cmd} = <span class="string">"${item.title}"</span>;<span class="comment">${item.desc}</span>`;
+            div.onclick = () => window.location.href = item.path;
+            listContainer.appendChild(div);
+        });
+
+        // PAGE SPECIFIC: Handle Article Commands
+        window.handlePageCommand = function(cmd, args) {
+            // Check filesystem for matching command
+            const found = FILE_SYSTEM.articles.find(a => a.cmd === cmd);
+            if (found) {
+                window.location.href = found.path;
+                return true;
+            }
+            return null; // Not found
+        };
+
+        // Matrix Rain
+        </script>
+</body>
+</html>

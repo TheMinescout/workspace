@@ -1,0 +1,224 @@
+/* scorecard-pro.css */
+
+body {
+    font-family: "Inter", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.view-section {
+    display: none;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background: linear-gradient(to bottom right, #eff6ff, #e0e7ff);
+}
+.view-section.active {
+    display: flex;
+}
+.score-table-container {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.score-table {
+    min-width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+.score-table th, .score-table td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.score-table thead th {
+    background-color: #f9fafb;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.score-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.score-table tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+.score-table tbody tr:nth-child(odd) {
+    background-color: #f9fafb;
+}
+.score-table input[type="number"],
+.score-table input[type="text"] {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.score-table input[type="number"]:focus,
+.score-table input[type="text"]:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+.score-table .total-row {
+    background-color: #f3f4f6;
+    font-weight: 700;
+}
+.score-table .delete-button {
+    color: #ef4444;
+    font-size: 1.25rem;
+    line-height: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+.score-table .delete-button:hover {
+    color: #b91c1c;
+    background-color: #fee2e2;
+}
+.score-table .rename-clickable {
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+}
+.score-table .rename-clickable:hover {
+    color: #2563eb;
+}
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+.modal-content {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 24rem;
+    margin: auto;
+}
+.modal-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+.modal-content p {
+    color: #374151;
+    margin-bottom: 1.5rem;
+}
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+.modal-button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+    border: none;
+    cursor: pointer;
+}
+.modal-button.primary {
+    background-color: #2563eb;
+    color: #fff;
+}
+.modal-button.primary:hover {
+    background-color: #1d4ed8;
+}
+.modal-button.secondary {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+.modal-button.secondary:hover {
+    background-color: #d1d5db;
+}
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    outline: none;
+    border: none;
+}
+.btn:hover {
+    transform: scale(1.05);
+}
+.btn-green { background-color: #22c55e; color: white; }
+.btn-green:hover { background-color: #16a34a; }
+.btn-blue { background-color: #3b82f6; color: white; }
+.btn-blue:hover { background-color: #2563eb; }
+.btn-purple { background-color: #a855f7; color: white; }
+.btn-purple:hover { background-color: #9333ea; }
+.btn-indigo { background-color: #6366f1; color: white; }
+.btn-indigo:hover { background-color: #4f46e5; }
+.btn-gray { background-color: #d1d5db; color: #1f2937; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); }
+.btn-gray:hover { background-color: #9ca3af; }
+.btn-yellow { background-color: #f59e0b; color: white; }
+.btn-yellow:hover { background-color: #d97706; }
+.btn-red { background-color: #ef4444; color: white; }
+.btn-red:hover { background-color: #dc2626; }
+.game-board-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+@media (min-width: 640px) {
+    .game-board-header { flex-direction: row; }
+}
+.game-title-input {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    background-color: transparent;
+    border-bottom: 2px solid #d1d5db;
+    outline: none;
+    width: 100%;
+    flex-grow: 1;
+    min-width: 0;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s ease-in-out;
+}
+.game-title-input:focus {
+    border-color: #3b82f6;
+}
+@media (min-width: 640px) {
+    .game-title-input {
+        width: auto;
+        margin-bottom: 0;
+        margin-right: 1rem;
+    }
+}
+.game-buttons-container {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}

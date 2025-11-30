@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>MANUAL // MineScout</title>
+    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
+    
+    <!-- AUTH NEEDED FOR LOGOUT COMMAND -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <style>
+        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; margin: 0; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.3; }
+        .container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; z-index: 10; position: relative; }
+        
+        .manual-block { 
+            background: rgba(0, 10, 0, 0.95); border: 2px solid #0F0; 
+            width: 700px; max-width: 95%; height: 500px; 
+            box-shadow: 0 0 20px #0F0; display: flex; flex-direction: column; 
+        }
+        .header { background: #003300; color: #fff; padding: 10px; font-weight: bold; border-bottom: 1px solid #0F0; }
+        .screen-content { padding: 20px; flex-grow: 1; overflow-y: auto; }
+        
+        .folder { font-size: 1.2rem; margin: 15px 0; color: #88ff88; }
+        .cmd-item { margin-bottom: 10px; border-left: 2px solid #004400; padding-left: 10px; }
+        .cmd-name { color: #ffff00; font-weight: bold; }
+        
+        .open-btn { position: fixed; top: 10px; left: 10px; border: 1px solid #0F0; padding: 5px; cursor: pointer; z-index: 100; }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    <div class="open-btn" onclick="window.toggleCmd()">[ OPEN CMD ]</div>
+
+    <div class="container">
+        <div class="manual-block">
+            <div class="header">SYSTEM_MANUAL_V4.0</div>
+            <div id="display-area" class="screen-content"></div>
+        </div>
+    </div>
+
+    <!-- CORE -->
+    <script src="assets/js/firebase-config.js"></script>
+    <script src="assets/js/terminal-core.js?v=2.4"></script>
+
+    <script>
+        const CONTENT = {
+            root: `<h1>ROOT DIR</h1><div class="folder">[ AUTH ]</div><div class="folder">[ NAV ]</div><div class="folder">[ SYS ]</div><p>Type folder name in CMD to open.</p>`,
+            auth: `<h1>/ROOT/AUTH</h1><div class="cmd-item"><div class="cmd-name">login</div>Opens login page.</div><div class="cmd-item"><div class="cmd-name">logout</div>Ends session.</div>`,
+            nav: `<h1>/ROOT/NAV</h1><div class="cmd-item"><div class="cmd-name">atls</div>Articles.</div><div class="cmd-item"><div class="cmd-name">prds</div>Projects.</div><div class="cmd-item"><div class="cmd-name">reqs</div>Requests.</div>`,
+            sys: `<h1>/ROOT/SYS</h1><div class="cmd-item"><div class="cmd-name">err</div>Check logs.</div><div class="cmd-item"><div class="cmd-name">help</div>Reset manual.</div>`
+        };
+
+        const display = document.getElementById('display-area');
+        display.innerHTML = CONTENT.root;
+
+        // PAGE CMD HANDLER
+        window.handlePageCommand = function(cmd) {
+            if (cmd === 'auth') { display.innerHTML = CONTENT.auth; return true; }
+            if (cmd === 'nav') { display.innerHTML = CONTENT.nav; return true; }
+            if (cmd === 'sys') { display.innerHTML = CONTENT.sys; return true; }
+            if (cmd === 'back' || cmd === 'root') { display.innerHTML = CONTENT.root; return true; }
+            return null; // Let core handle global cmds
+        };
+
+        </script>
+</body>
+</html>

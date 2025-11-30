@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archives - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Path updated to ../assests/ -->
+    <link rel="stylesheet" href="../assests/css/homepage.css?v=2.1">
+    <link rel="icon" type="image/png" href="../assests/images/favicon.png?v=2">
+    <style> #user-display a { text-decoration: none; color: white; } </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container"><a href="../login.html" id="login-link">Login</a></div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Archive Log</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <a href="../account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            <main class="main-content">
+                <div class="view-controls">
+                    <!-- Standard grid buttons -->
+                    <button id="grid-3" class="view-btn active" data-view="3" title="3 Columns"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></button>
+                    <button id="grid-2" class="view-btn" data-view="2" title="2 Columns"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg></button>
+                    <button id="grid-1" class="view-btn" data-view="1" title="1 Column"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+                </div>
+
+                <div id="posts-container">
+                    <section>
+                        <h2 class="month-separator">Archives by Year</h2>
+                        <div class="posts-grid">
+                            <!-- 2025 Archive Card -->
+                            <article class="post-card">
+                                <!-- Image path updated to ../assests/ -->
+                                <img src="../assests/images/archive/2025 Archive.png" alt="2025 Archive" onerror="this.src='https://placehold.co/600x400?text=2025+Archive'">
+                                <div class="post-card-content">
+                                    <!-- Link updated to 2025 folder -->
+                                    <h3><a href="2025/archive-2025.html">2025</a></h3>
+                                    <p class="post-meta">View all posts from 2025.</p>
+                                    <a href="2025/archive-2025.html" class="read-more">View Year</a>
+                                </div>
+                            </article>
+                        </div> 
+                    </section>
+                </div> 
+            </main>
+
+            <aside id="sidebar">
+                <h3>Categories</h3>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../pages/coding-projects.html">Coding Projects</a></li>
+                    <li><a href="../pages/tech-tips.html">Tech Tips</a></li>
+                    <li><a href="../pages/updates.html">Updates</a></li>
+                    <li><a href="../pages/puppy-life.html">Puppy Life</a></li>
+                    <li><a href="../pages/minecraft-server.html">Minecraft Server</a></li>
+                </ul>
+            </aside>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2025 Minescouts Life. All rights reserved.</p></div>
+    </footer>
+    
+    <!-- Path updated to ../assests/js/ -->
+    <script type="module" src="../assests/js/homepage.js"></script>
+</body>
+</html>

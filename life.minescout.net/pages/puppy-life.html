@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Puppy Life - Minescouts Life</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assests/css/homepage.css?v=2.96">
+    <link rel="stylesheet" href="../assests/css/AI-ASSISTANT.css">
+    <link rel="icon" type="image/png" href="../assests/images/favicon.png?v=2">
+    <style>#user-display a { text-decoration: none; color: white; }</style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container"><a href="../login.html" id="login-link">Login</a></div>
+            <div class="site-title-wrapper"><h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1><p class="tagline">Puppy Life</p></div>
+            <div id="user-display" class="hidden"><a href="../account.html"><span id="user-email-display"></span></a><button id="signOut-btn">Sign Out</button></div>
+        </div>
+    </header>
+    <div class="main-content-area">
+        <div class="container">
+            <main class="main-content">
+                <div class="post-main">
+                    <article class="post-full">
+                        <h1>Welcome to Puppy Life!</h1>
+                        <p class="post-meta">Meet our dogs, Monty and Nigel.</p>
+                        <img src="../assests/images/Puppy-life/Puppy-Homepage.jpg" alt="Puppies" class="post-image-full" onerror="this.src='https://placehold.co/600'">
+                        <div class="post-content">
+                            <p>This section is dedicated to our dogs. Choose a puppy below!</p>
+                        </div>
+                        <a href="../posts/puppy/monty.html" class="info-box-link">
+                            <div class="info-box info-box-solid" style="background-color: black;"><h3 class="info-title">Monty</h3><p class="info-subtitle">Click here to see Monty's page</p></div>
+                        </a>
+                        <a href="../posts/puppy/nigel.html" class="info-box-link">
+                            <div class="info-box info-box-solid" style="background-color: tan;"><h3 class="info-title">Nigel</h3><p class="info-subtitle">Click here to see Nigel's page</p></div>
+                        </a>
+                    </article>
+                </div>
+            </main>
+            <aside id="sidebar">
+                <h3>Categories</h3>
+                <ul><li><a href="../index.html">Home</a></li><li><a href="coding-projects.html">Coding Projects</a></li><li><a href="tech-tips.html">Tech Tips</a></li><li><a href="updates.html">Updates</a></li><li><a href="puppy-life.html">Puppy Life</a></li><li><a href="minecraft-server.html">Minecraft Server</a></li></ul>
+            </aside>
+        </div>
+    </div>
+    <footer class="main-footer"><div class="container"><p id="copyright">© 2025 Minescouts Life. All rights reserved.</p></div></footer>
+    <script type="module" src="../assests/js/homepage.js"></script>
+</body>
+</html>

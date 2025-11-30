@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Portfolio Projection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Links updated -->
+    <link rel="icon" type="image/png" href="../../assests/images/favicon.png?v=2">
+    <link rel="stylesheet" href="../../assests/css/homepage.css">
+     
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .container { max-width: 1200px; }
+        .input-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .input-group > div { flex: 1; min-width: 250px; }
+        .tooltip-container { position: absolute; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 8px 12px; border-radius: 8px; pointer-events: none; transition: opacity 0.2s ease-in-out; opacity: 0; white-space: nowrap; z-index: 10; }
+        @media (max-width: 640px) { .input-group > div { min-width: 100%; } }
+        /* Style for back link button */
+        .back-link { display: inline-block; padding: 10px; color: #5a8a5a; text-decoration: none; font-weight: bold; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 sm:p-8 flex flex-col items-center">
+    <div class="container bg-white rounded-xl shadow-lg p-6 sm:p-10">
+        <!-- Back link to coding projects -->
+        <a href="../../pages/coding-projects.html" class="back-link">« Back to Coding Projects</a>
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-6">Portfolio Projection Tool</h1>
+        
+        <form id="projection-form" class="space-y-6">
+            <div class="input-group">
+                <div>
+                    <label for="initialValue" class="block text-sm font-medium text-gray-700">Initial Portfolio Value ($)</label>
+                    <input type="number" id="initialValue" value="5000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 p-2">
+                </div>
+                <div>
+                    <label for="years" class="block text-sm font-medium text-gray-700">Years of Projection</label>
+                    <input type="number" id="years" value="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 p-2">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div>
+                    <label for="baseCagr" class="block text-sm font-medium text-gray-700">Base CAGR (%)</label>
+                    <input type="number" id="baseCagr" value="30" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 p-2">
+                </div>
+                <div>
+                    <label for="cagrRange" class="block text-sm font-medium text-gray-700">CAGR Range (±%)</label>
+                    <input type="number" id="cagrRange" value="10" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 p-2">
+                </div>
+            </div>
+
+            <h3 class="text-lg font-semibold text-gray-700 mt-6">Monthly Contributions</h3>
+            <div id="contributions-container" class="space-y-4"></div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button type="button" id="addPhaseBtn" class="w-full sm:w-auto px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-200">Add Phase</button>
+                <button type="button" id="removePhaseBtn" class="w-full sm:w-auto px-4 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition duration-200">Remove Last Phase</button>
+            </div>
+            
+            <button type="submit" class="w-full px-4 py-3 bg-green-700 text-white font-bold text-lg rounded-lg shadow-lg hover:bg-green-800 transition duration-200 mt-6">Generate Plot</button>
+        </form>
+
+        <div id="customMessageBox" class="hidden absolute top-4 right-4 bg-red-500 text-white text-sm py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 ease-in-out"></div>
+
+        <div class="mt-8 relative h-[500px]" id="chart-container">
+            <canvas id="portfolioChart"></canvas>
+            <div id="customTooltip" class="tooltip-container opacity-0"></div>
+        </div>
+    </div>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialValueInput = document.getElementById('initialValue');
+            const yearsInput = document.getElementById('years');
+            const baseCagrInput = document.getElementById('baseCagr');
+            const cagrRangeInput = document.getElementById('cagrRange');
+            const contributionsContainer = document.getElementById('contributions-container');
+            const addPhaseBtn = document.getElementById('addPhaseBtn');
+            const removePhaseBtn = document.getElementById('removePhaseBtn');
+            const form = document.getElementById('projection-form');
+            const chartCanvas = document.getElementById('portfolioChart');
+            let portfolioChart; 
+
+            let phaseCount = 0;
+            function addContributionPhase(monthlyValue = 20, duration = 2) {
+                phaseCount++;
+                const phaseDiv = document.createElement('div');
+                phaseDiv.id = `phase-${phaseCount}`;
+                phaseDiv.className = 'flex flex-col sm:flex-row gap-4';
+                phaseDiv.innerHTML = `
+                    <div class="flex-1"><label for="monthlyContribution-${phaseCount}" class="block text-sm font-medium text-gray-700">Monthly Contribution ($) - Phase ${phaseCount}</label><input type="number" id="monthlyContribution-${phaseCount}" value="${monthlyValue}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"></div>
+                    <div class="flex-1"><label for="phaseYears-${phaseCount}" class="block text-sm font-medium text-gray-700">Duration (Years) - Phase ${phaseCount}</label><input type="number" id="phaseYears-${phaseCount}" value="${duration}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"></div>`;
+                contributionsContainer.appendChild(phaseDiv);
+            }
+
+            function removeLastContributionPhase() {
+                if (phaseCount > 1) { document.getElementById(`phase-${phaseCount}`).remove(); phaseCount--; }
+            }
+
+            addPhaseBtn.addEventListener('click', () => addContributionPhase());
+            removePhaseBtn.addEventListener('click', () => removeLastContributionPhase());
+            addContributionPhase(20, 2);
+            addContributionPhase(50, 3);
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const initial_portfolio_value = parseFloat(initialValueInput.value);
+                const years = parseInt(yearsInput.value);
+                const base_cagr_percentage = parseFloat(baseCagrInput.value);
+                const cagr_range_percentage = parseFloat(cagrRangeInput.value);
+                
+                const messageBox = document.getElementById('customMessageBox');
+                const showMessage = (text) => { messageBox.innerText = text; messageBox.style.display = 'block'; setTimeout(() => { messageBox.style.display = 'none'; }, 3000); };
+
+                if (isNaN(initial_portfolio_value) || isNaN(years) || isNaN(base_cagr_percentage) || isNaN(cagr_range_percentage) || years <= 0) { return showMessage("Please enter valid numbers for all fields."); }
+
+                const contributions_list = [];
+                let total_years_from_phases = 0;
+                for (let i = 1; i <= phaseCount; i++) {
+                    const monthly_contribution = parseFloat(document.getElementById(`monthlyContribution-${i}`).value);
+                    const phase_years = parseInt(document.getElementById(`phaseYears-${i}`).value);
+                    if (isNaN(monthly_contribution) || isNaN(phase_years) || phase_years < 0) { return showMessage(`Please enter valid numbers for Phase ${i}.`); }
+                    for (let j = 0; j < phase_years * 12; j++) { contributions_list.push(monthly_contribution); }
+                    total_years_from_phases += phase_years;
+                }
+                
+                if (total_years_from_phases !== years) { return showMessage("Warning: Phase years do not match total projection years."); }
+
+                const months = years * 12;
+                const base_cagr = base_cagr_percentage / 100;
+                const cagr_range = cagr_range_percentage / 100;
+                const annual_growth_rates = [base_cagr - cagr_range, base_cagr, base_cagr + cagr_range];
+                const portfolio_scenarios = {};
+
+                annual_growth_rates.forEach(growth => {
+                    const monthly_growth = Math.pow(1 + growth, 1/12) - 1;
+                    const values = [initial_portfolio_value];
+                    for (let month = 0; month < months; month++) { values.push(values[values.length - 1] * (1 + monthly_growth) + contributions_list[month]); }
+                    portfolio_scenarios[growth] = values;
+                });
+
+                const contribution_values = [initial_portfolio_value];
+                for (let month = 0; month < months; month++) { contribution_values.push(contribution_values[contribution_values.length - 1] + contributions_list[month]); }
+
+                const labels = Array.from({ length: months + 1 }, (_, i) => (i / 12).toFixed(1));
+                const datasets = [
+                    { label: `Compounded Growth (${base_cagr_percentage.toFixed(0)}% CAGR)`, data: portfolio_scenarios[base_cagr], borderColor: '#5a8a5a', backgroundColor: 'rgba(90, 138, 90, .2)', fill: false, tension: 0.1, pointRadius: 0 },
+                    { label: 'Total Contributions', data: contribution_values, borderColor: 'black', borderDash: [5, 5], fill: false, tension: 0.1, pointRadius: 0 },
+                    { label: 'Upper Bound', data: portfolio_scenarios[base_cagr + cagr_range], borderColor: 'transparent', backgroundColor: 'rgba(90, 138, 90, .2)', fill: '+1', tension: 0.1, pointRadius: 0 },
+                    { label: 'Lower Bound', data: portfolio_scenarios[base_cagr - cagr_range], borderColor: 'transparent', backgroundColor: 'transparent', fill: false, tension: 0.1, pointRadius: 0 }
+                ];
+
+                const ctx = chartCanvas.getContext('2d');
+                if (portfolioChart) portfolioChart.destroy();
+                portfolioChart = new Chart(ctx, {
+                    type: 'line', data: { labels: labels, datasets: datasets },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { usePointStyle: false, filter: (item) => item.text !== 'Upper Bound' && item.text !== 'Lower Bound' } },
+                            title: { display: true, text: `${years}-Year Projection with ±${cagr_range_percentage.toFixed(0)}% CAGR Range`, font: { size: 18, weight: 'bold' } },
+                            tooltip: {
+                                enabled: false,
+                                external: function(context) {
+                                    let tooltipEl = document.getElementById('customTooltip');
+                                    let tooltipModel = context.tooltip;
+                                    if (tooltipModel.opacity === 0 || tooltipModel.dataPoints.length === 0) { tooltipEl.style.opacity = 0; return; }
+                                    const dataIndex = tooltipModel.dataPoints[0].dataIndex;
+                                    tooltipEl.innerHTML = `<div>Contribution: $${contribution_values[dataIndex].toFixed(2)}</div><div>Worth: $${portfolio_scenarios[base_cagr - cagr_range][dataIndex].toFixed(2)} - $${portfolio_scenarios[base_cagr + cagr_range][dataIndex].toFixed(2)}</div>`;
+                                    tooltipEl.style.opacity = 1; tooltipEl.style.left = '10px'; tooltipEl.style.top = '10px';
+                                }
+                            }
+                        },
+                        scales: { x: { title: { display: true, text: 'Years' } }, y: { title: { display: true, text: 'Portfolio Value ($)' } } }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
