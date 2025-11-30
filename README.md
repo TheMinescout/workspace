@@ -38,7 +38,6 @@ Feature Requests
 
 This is the new companion site for all beta, in-progress, and experimental content. It features a unique terminal-style interface and serves as the development ground for new articles and projects before they are moved to the main blog.
 
-
 🤝 How to Contribute
 
 We are currently in the process of fixing major bugs and migrating content.
