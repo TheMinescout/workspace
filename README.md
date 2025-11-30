@@ -38,15 +38,6 @@ Feature Requests
 
 This is the new companion site for all beta, in-progress, and experimental content. It features a unique terminal-style interface and serves as the development ground for new articles and projects before they are moved to the main blog.
 
-⚠️ Status
-
-Warning: As of [Current Date, e.g., November 2025], the main life.minescout.net site is experiencing significant technical issues.
-
-WEBSITE DOWN: The site is suffering from loss of formatting, missing files, and broken content in articles.
-
-TRANSITION: We are actively transitioning to beta.minescout.net for all new and in-progress articles while we resolve these issues.
-
-SIGN IN/OUT ISSUES: Existing posts are using an outdated user database, which causes sign-out and formatting errors across the site.
 
 🤝 How to Contribute
 
