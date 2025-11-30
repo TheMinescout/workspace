@@ -52,9 +52,9 @@ SIGN IN/OUT ISSUES: Existing posts are using an outdated user database, which ca
 
 We are currently in the process of fixing major bugs and migrating content.
 
-Bug Reports: If you find a bug, please [open an issue][link-to-issues-page] and describe the problem, expected behavior, and steps to reproduce.
+Bug Reports: If you find a bug, please [open an issue][https://github.com/TheMinescout/workspace/issues] and describe the problem, expected behavior, and steps to reproduce.
 
-Feature Requests: Have an idea? [Open an issue][link-to-issues-page] and tag it as an "enhancement" or "feature request."
+Feature Requests: Have an idea? [Open an issue][https://github.com/TheMinescout/workspace/issues] and tag it as an "enhancement" or "feature request."
 
 Pull Requests:
 
@@ -71,6 +71,9 @@ Push to the branch (git push origin feature/YourAmazingFeature).
 Open a Pull Request.
 
 👥 Contributors
+[TheMinescout ][https://github.com/TheMinescout]
+
+acting as:
 
 Minescouts Coding Team
 
@@ -78,4 +81,3 @@ Minescouts Beta Team
 
 Minescouts PR Team
 
-[Add your name/GitHub profile link here]

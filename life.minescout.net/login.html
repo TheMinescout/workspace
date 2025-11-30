@@ -1,47 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login / Sign Up</title>
-    <!-- Path updated to assests/ -->
+    <!-- Link to your favicon.png file -->
     <link rel="icon" type="image/png" href="assests/images/favicon.png">
     <style>
-        body { font-family: 'Inter', sans-serif; line-height: 1.6; background-color: #f4f4f4; color: #333; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        .main-header { background: #5a8a5a; color: #fff; padding: 1rem 0; margin-bottom: 20px; }
-        .main-header .site-title-container { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        .main-header .site-title-wrapper { flex-grow: 1; text-align: center; }
-        .main-header .site-title { font-size: 2.5rem; color: #1d2d1d; text-decoration: none; line-height: 1; }
-        .main-header .tagline { font-size: 1.2rem; opacity: 0.9; text-align: center; }
-        .login-content-area { display: flex; justify-content: center; align-items: center; padding: 2rem 0; flex-grow: 1; }
-        .login-card { background-color: #fff; padding: 2.5rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); width: 100%; max-width: 450px; text-align: center; border: 1px solid #ddd; }
-        .login-card h2 { font-size: 2rem; margin-bottom: 2rem; color: #333; }
-        .form-group { margin-bottom: 1.5rem; text-align: left; }
-        .form-group label { display: block; margin-bottom: 0.5rem; color: #555; font-weight: bold; }
-        .form-group input { width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 1rem; transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
-        .form-group input:focus { outline: none; border-color: #5a8a5a; box-shadow: 0 0 0 3px rgba(90, 138, 90, 0.2); }
-        .btn-container { display: flex; justify-content: center; margin-top: 2rem; }
-        .btn { padding: 0.8rem 2rem; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: bold; color: #fff; transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out; background-color: #5a8a5a; }
-        .btn:hover { background-color: #446944; transform: translateY(-2px); }
-        #auth-message { margin-top: 1.5rem; font-weight: bold; font-size: 1rem; }
-        #toggle-auth-mode { margin-top: 1.5rem; font-size: 1rem; color: #555; }
-        #toggle-link { color: #5a8a5a; font-weight: bold; text-decoration: none; transition: color 0.2s ease-in-out; }
-        #toggle-link:hover { color: #446944; text-decoration: underline; }
-        .main-footer { background: #333; color: #fff; text-align: center; padding: 2rem 0; margin-top: 40px; }
+        /* All CSS is now defined here, with no external frameworks */
+
+        /* General body and typography styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Styling */
+        .main-header {
+            background: #5a8a5a;
+            color: #fff;
+            padding: 1rem 0;
+            margin-bottom: 20px;
+        }
+
+        .main-header .site-title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .main-header .site-title-wrapper {
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .main-header .site-title {
+            font-size: 2.5rem;
+            color: #1d2d1d;
+            text-decoration: none;
+            line-height: 1;
+        }
+
+        .main-header .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            text-align: center;
+        }
+
+        /* Main login content area */
+        .login-content-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 0;
+            flex-grow: 1;
+        }
+
+        /* Login/Sign Up Card */
+        .login-card {
+            background-color: #fff;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .login-card h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #5a8a5a;
+            box-shadow: 0 0 0 3px rgba(90, 138, 90, 0.2);
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+            background-color: #5a8a5a;
+        }
+
+        .btn:hover {
+            background-color: #446944;
+            transform: translateY(-2px);
+        }
+
+        /* Message and toggle link styling */
+        #auth-message {
+            margin-top: 1.5rem;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        #toggle-auth-mode {
+            margin-top: 1.5rem;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        #toggle-link {
+            color: #5a8a5a;
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.2s ease-in-out;
+        }
+
+        #toggle-link:hover {
+            color: #446944;
+            text-decoration: underline;
+        }
+
+        /* Footer styling */
+        .main-footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 40px;
+        }
     </style>
 </head>
+
 <body>
 
+    <!-- Main site header -->
     <header class="main-header">
         <div class="site-title-container">
-            <div id="auth-container"></div>
+            <div id="auth-container">
+                <!-- This will be handled by JavaScript to redirect -->
+            </div>
             <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <h1 class="site-title"><a href="index.html" style="color: white; text-decoration: none;">Minescouts
+                        Life</a></h1>
                 <p class="tagline">Life of a Smart Kid</p>
             </div>
         </div>
     </header>
 
+    <!-- The new, centered login form area -->
     <div class="login-content-area">
         <div class="login-card">
             <h2>Sign In</h2>
@@ -72,14 +218,176 @@
             <div id="auth-message"></div>
         </div>
     </div>
-    
+
+    <!-- Footer -->
     <footer class="main-footer">
         <div>
-            <p>&copy; 2025 Minescouts Life. All rights reserved.</p>
+            <p>&copy; 2024 Minescouts Life. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Path updated to assests/js/ -->
-    <script type="module" src="assests/js/login.js"></script>
+    <!-- Firebase SDK Scripts from CDN -->
+    <script type="module">
+        // Import all necessary Firebase modules using the modern modular syntax (v9)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+        // IMPORTANT: Replace the placeholder values below with your actual Firebase config.
+        // This is only for local testing. Do not share this file with your config.
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZE1qCY8YCZLrZ2EWT0QTFRoBVHvabqDM",
+
+            authDomain: "minescout-life-4a668.firebaseapp.com",
+            databaseURL: "https://minescout-life-4a668-default-rtdb.firebaseio.com",
+            projectId: "minescout-life-4a668",
+            storageBucket: "minescout-life-4a668.appspot.com",
+            messagingSenderId: "351393417322",
+            appId: "1:351393417322:web:92c9a92a50e60890136213",
+            measurementId: "G-RFP78TP9KZ"
+        };
+
+        let auth;
+        let database;
+
+        // Ensure Firebase is loaded before running the script
+        document.addEventListener('DOMContentLoaded', async () => {
+
+            // --- Firebase Initialization and Authentication ---
+            try {
+                // Initialize Firebase with the provided config
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                database = getDatabase(app); // Initialize Realtime Database
+                console.log("Firebase initialized successfully with your config.");
+
+            } catch (error) {
+                console.error("Firebase initialization failed:", error);
+                const authMessage = document.getElementById('auth-message');
+                if (authMessage) {
+                    authMessage.textContent = `Error: ${error.message}`;
+                    authMessage.style.color = 'red';
+                }
+            }
+
+            // --- Element References ---
+            const authForm = document.getElementById('auth-form');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const usernameInput = document.getElementById('username');
+            const authBtn = document.getElementById('auth-btn');
+            const authMessage = document.getElementById('auth-message');
+            const toggleLink = document.getElementById('toggle-link');
+            const usernameGroup = document.getElementById('username-group');
+            const passwordCheckGroup = document.getElementById('password-check-group');
+
+            let isSignInMode = true; // State variable to track if we're in sign-in or sign-up mode
+
+            /**
+             * Toggles the UI between sign-in and sign-up modes.
+             */
+            const toggleAuthMode = () => {
+                isSignInMode = !isSignInMode;
+                authBtn.textContent = isSignInMode ? 'Sign In' : 'Sign Up';
+                toggleLink.textContent = isSignInMode ? 'Sign up here' : 'Sign in here';
+
+                // Show/hide the extra fields for sign-up
+                usernameGroup.style.display = isSignInMode ? 'none' : 'block';
+                passwordCheckGroup.style.display = isSignInMode ? 'none' : 'block';
+
+                // Update required attribute for username in sign-up mode
+                if (!isSignInMode) {
+                    usernameInput.setAttribute('required', '');
+                } else {
+                    usernameInput.removeAttribute('required');
+                }
+
+                // Clear any previous messages
+                authMessage.textContent = '';
+            };
+
+            /**
+             * Saves user data to Firebase Realtime Database
+             * @param {string} userId - The user's Firebase UID
+             * @param {string} email - The user's email
+             * @param {string} username - The user's chosen username
+             */
+            const saveUserToDatabase = async (userId, email, username) => {
+                try {
+                    await set(ref(database, 'usernames/' + userId), {
+                        username: username,
+                        email: email,
+                        createdAt: new Date().toISOString(),
+                        lastLogin: new Date().toISOString()
+                    });
+                    console.log("User data saved to database successfully");
+                } catch (error) {
+                    console.error("Error saving user data:", error);
+                    throw error;
+                }
+            };
+
+            /**
+             * Handles the form submission for both sign-in and sign-up.
+             * @param {Event} e - The form submission event.
+             */
+            const handleAuthSubmit = async (e) => {
+                e.preventDefault(); // Prevent the default form submission that reloads the page
+
+                const email = emailInput.value;
+                const password = passwordInput.value;
+
+                try {
+                    if (isSignInMode) {
+                        // Sign In logic using the new modular syntax
+                        await signInWithEmailAndPassword(auth, email, password);
+                        authMessage.textContent = 'Signed in successfully! Returning to previous page...';
+                        authMessage.style.color = 'green';
+                    } else {
+                        // Sign Up logic
+                        const username = usernameInput.value.trim();
+                        const passwordCheck = document.getElementById('password-check').value;
+
+                        // Validate username
+                        if (!username) {
+                            throw new Error("Username is required!");
+                        }
+
+                        if (password !== passwordCheck) {
+                            throw new Error("Passwords do not match!");
+                        }
+
+                        // Create a new user with email and password
+                        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+                        // Save user data to Realtime Database
+                        await saveUserToDatabase(userCredential.user.uid, email, username);
+
+                        // User is automatically signed in after creation
+                        authMessage.textContent = 'Account created successfully! Username saved. Returning to previous page...';
+                        authMessage.style.color = 'green';
+                    }
+
+                    // Redirect the user to the previous page after a successful action
+                    setTimeout(() => {
+                        window.history.back();
+                    }, 2000);
+
+                } catch (error) {
+                    authMessage.textContent = `Error: ${error.message}`;
+                    authMessage.style.color = 'red';
+                    console.error("Authentication error:", error);
+                }
+            };
+
+            // --- Event Listeners ---
+            authForm.addEventListener('submit', handleAuthSubmit);
+            toggleLink.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent link from navigating
+                toggleAuthMode();
+            });
+        });
+    </script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,17 +8,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assests/css/homepage.css?v=2.96">
+    <link rel="stylesheet" href="../assests\css\homepage.css">
     <link rel="stylesheet" href="../assests/css/AI-ASSISTANT.css">
     <link rel="icon" type="image/png" href="../assests/images/favicon.png?v=2">
-    <style>#user-display a { text-decoration: none; color: white; }</style>
+    <style>
+        #user-display a {
+            text-decoration: none;
+            color: white;
+        }
+    </style>
 </head>
+
 <body>
     <header class="main-header">
         <div class="container site-title-container">
             <div id="auth-container"><a href="../login.html" id="login-link">Login</a></div>
             <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts
+                        Life</a></h1>
                 <p class="tagline">Beta Testing</p>
             </div>
             <div id="user-display" class="hidden">
@@ -30,9 +38,30 @@
         <div class="container">
             <main class="main-content">
                 <div class="view-controls">
-                    <button id="grid-3" class="view-btn active" data-view="3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></button>
-                    <button id="grid-2" class="view-btn" data-view="2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg></button>
-                    <button id="grid-1" class="view-btn" data-view="1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+                    <button id="grid-3" class="view-btn active" data-view="3"><svg xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg></button>
+                    <button id="grid-2" class="view-btn" data-view="2"><svg xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="12" y1="3" x2="12" y2="21"></line>
+                        </svg></button>
+                    <button id="grid-1" class="view-btn" data-view="1"><svg xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg></button>
                 </div>
                 <div id="posts-container" class="posts-grid view-3">
                     <p class="text-center" id="loading-message">Loading Beta Content...</p>
@@ -52,28 +81,149 @@
             </aside>
         </div>
     </div>
-    <footer class="main-footer"><div class="container"><p id="copyright">© 2025 Minescouts Life. All rights reserved.</p></div></footer>
+    <footer class="main-footer">
+        <div class="container">
+            <p id="copyright">© 2025 Minescouts Life. All rights reserved.</p>
+        </div>
+    </footer>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        const firebaseConfig = { apiKey: "AIzaSyAZE1qCY8YCZLrZ2EWT0QTFRoBVHvabqDM", authDomain: "minescout-life-4a668.firebaseapp.com", databaseURL: "https://minescout-life-4a668-default-rtdb.firebaseio.com", projectId: "minescout-life-4a668", storageBucket: "minescout-life-4a668.appspot.com", messagingSenderId: "351393417322", appId: "1:351393417322:web:92c9a92a50e60890136213", measurementId: "G-RFP78TP9KZ" };
-        const app = initializeApp(firebaseConfig); const db = getDatabase(app); const auth = getAuth(app);
-        onAuthStateChanged(auth, async (user) => { if (user && !user.isAnonymous) { document.getElementById('auth-container').classList.add('hidden'); document.getElementById('user-display').classList.remove('hidden'); const snap = await get(ref(db, `usernames/${user.uid}`)); document.getElementById('user-email-display').textContent = snap.exists() ? snap.val() : user.email; } else { document.getElementById('auth-container').classList.remove('hidden'); document.getElementById('user-display').classList.add('hidden'); } });
-        document.getElementById('signOut-btn').addEventListener('click', () => signOut(auth));
-        
-        const categoryTitle = "BETA"; 
-        onValue(ref(db, 'content'), (snap) => {
-            const data = snap.val();
-            let html = '';
-            document.getElementById('loading-message').style.display = 'none';
-            if (data) {
-                Object.keys(data).map(k => ({id:k, ...data[k]})).sort((a,b)=>b.timestamp-a.timestamp)
-                .filter(i => i.type !== 'announcement' && i.category === categoryTitle)
-                .forEach(p => html += `<article class="post-card">${p.imageUrl ? `<img src="${p.imageUrl}" onerror="this.src='https://placehold.co/400'"/>`:''}<div class="post-card-content"><h3><a href="${p.linkUrl}">${p.title}</a></h3><p class="post-meta">Posted on ${new Date(p.timestamp).toLocaleDateString()}</p><p>${p.summary}</p><a href="${p.linkUrl}" class="read-more">Read More</a></div></article>`);
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZE1qCY8YCZLrZ2EWT0QTFRoBVHvabqDM",
+            authDomain: "minescout-life-4a668.firebaseapp.com",
+            databaseURL: "https://minescout-life-4a668-default-rtdb.firebaseio.com",
+            projectId: "minescout-life-4a668",
+            storageBucket: "minescout-life-4a668.appspot.com",
+            messagingSenderId: "351393417322",
+            appId: "1:351393417322:web:92c9a92a50e60890136213",
+            measurementId: "G-RFP78TP9KZ"
+        };
+
+        const ADMIN_EMAIL = 'theminescout@minescout.net';
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        const authContainer = document.getElementById('auth-container');
+        const userDisplay = document.getElementById('user-display');
+        const userEmailDisplay = document.getElementById('user-email-display');
+        const signOutBtn = document.getElementById('signOut-btn');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user && !user.isAnonymous) {
+                const isAdmin = user.email === ADMIN_EMAIL;
+                if (authContainer) authContainer.classList.add('hidden');
+                if (userDisplay) userDisplay.classList.remove('hidden');
+
+                const usernameRef = ref(db, `usernames/${user.uid}`);
+                const snapshot = await get(usernameRef);
+                const username = snapshot.exists() ? snapshot.val() : user.email;
+
+                if (userEmailDisplay) userEmailDisplay.textContent = isAdmin ? `Admin: ${username}` : username;
+            } else {
+                if (authContainer) authContainer.classList.remove('hidden');
+                if (userDisplay) userDisplay.classList.add('hidden');
             }
-            document.getElementById('posts-container').innerHTML = html || '<p>No content.</p>';
+        });
+
+        if (signOutBtn) {
+            signOutBtn.addEventListener('click', () => signOut(auth).then(() => window.location.href = '../index.html').catch(err => console.error(err)));
+        }
+
+        let categoryTitle = document.title.split('-')[0].trim();
+        const path = window.location.pathname;
+        if (path.includes('coding-projects')) categoryTitle = "Coding Projects";
+        else if (path.includes('tech-tips')) categoryTitle = "Tech Tips";
+        else if (path.includes('updates')) categoryTitle = "Updates";
+        else if (path.includes('puppy-life')) categoryTitle = "Puppy Life";
+        else if (path.includes('minecraft-server')) categoryTitle = "Minecraft Server";
+        else if (path.includes('beta')) categoryTitle = "BETA";
+
+        const contentRef = ref(db, 'content');
+        const postsContainer = document.getElementById('posts-container');
+        const loadingMessage = document.getElementById('loading-message');
+
+        onValue(contentRef, (snapshot) => {
+            const contentData = snapshot.val();
+            let postHtml = '';
+            if (loadingMessage) loadingMessage.style.display = 'none';
+
+            if (contentData) {
+                const allContent = Object.keys(contentData).map(key => ({ id: key, ...contentData[key] }));
+
+                const filteredPosts = allContent
+                    .filter(item => item.type !== 'announcement' && item.category === categoryTitle)
+                    .sort((a, b) => b.timestamp - a.timestamp);
+
+                if (filteredPosts.length > 0) {
+                    filteredPosts.forEach(post => postHtml += createPostElement(post.id, post));
+                } else {
+                    postHtml = `<p class="text-center" style="grid-column: 1 / -1;">No posts found in the "${categoryTitle}" category yet.</p>`;
+                }
+            } else {
+                postHtml = `<p class="text-center" style="grid-column: 1 / -1;">No content found.</p>`;
+            }
+            if (postsContainer) postsContainer.innerHTML = postHtml;
+        }, (error) => {
+            console.error("Firebase Read Error:", error);
+            if (loadingMessage) loadingMessage.textContent = 'Error loading posts.';
+        });
+
+        function createPostElement(postId, post) {
+            const date = new Date(post.timestamp).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const fullContent = post.fullContent || post.content || post.body;
+
+            if (fullContent) {
+                return `
+                <article class="post-card full-post" data-post-id="${postId}">
+                    ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title || 'Post Image'}" onerror="this.onerror=null; this.src='https://placehold.co/400x300/e0e0e0/333333?text=Image+Unavailable';" />` : ''}
+                    <div class="post-card-content">
+                        <h3><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3>
+                        <p class="post-meta">Posted on ${date}</p>
+                        <div class="post-body">${fullContent}</div>
+                        <a href="${post.linkUrl || '#'}" class="read-more" target="_blank">${post.linkText || 'Use Now!!!'}</a>
+                    </div>
+                </article>
+            `;
+            }
+
+            return `
+                <article class="post-card" data-post-id="${postId}">
+                    ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title || 'Post Image'}" onerror="this.onerror=null; this.src='https://placehold.co/400x300/e0e0e0/333333?text=Image+Unavailable';" />` : ''}
+                    <div class="post-card-content">
+                        <h3><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3>
+                        <p class="post-meta">Posted on ${date}</p>
+                        <p>${post.summary || 'No summary provided.'}</p>
+                        <a href="${post.linkUrl || '#'}" class="read-more" target="_blank">${post.linkText || 'Use Now!!!'}</a>
+                    </div>
+                </article>
+            `;
+        }
+
+        function updateGridLayout(view) {
+            const container = document.getElementById('posts-container');
+            if (container) {
+                container.className = `posts-grid view-${view}`;
+                document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+                const btn = document.getElementById(`grid-${view}`);
+                if (btn) btn.classList.add('active');
+                localStorage.setItem('gridView', view);
+            }
+        }
+        const savedView = localStorage.getItem('gridView') || '3';
+        updateGridLayout(savedView);
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const view = btn.getAttribute('data-view');
+                updateGridLayout(view);
+            });
         });
     </script>
+    <script src="../assests/js/homepage.js" defer></script>
 </body>
+
 </html>
