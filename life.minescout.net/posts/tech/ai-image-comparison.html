@@ -226,21 +226,9 @@
 
             <!-- The sidebar is a direct child of the container, alongside <main> -->
             <aside id="sidebar">
-                <h3>Categories</h3>
-                <ul>
-                    <li><a href="../../index.html">Home</a></li>
-                    <li><a href="../Footer/coding-projects.html">Coding Projects</a></li>
-                    <li><a href="../Footer/tech-tips.html">Tech Tips</a></li>
-                    <li><a href="../Footer/updates.html">Updates</a></li>
-                    <li><a href="../Footer/puppy-life.html">Puppy Life</a></li>
-                    <li><a href="../Footer/Carly-Fam-Survival-Server.html">Minecraft Server</a></li>
-                </ul>
-                <h3>Archives</h3>
-                <ul>
-                    <li><a href="../Footer/archive.html">Archive Log</a></li>
-
-                </ul>
-            </aside>
+    <!-- This empty div is where the sidebar will appear -->
+    <div id="sidebar-container"></div> 
+</aside>
 
         </div> <!-- /.container -->
     </div> <!-- /.main-content-area -->
@@ -280,8 +268,11 @@
     </script>
 
     <!-- The path goes up one directory to find the JS file -->
+        <!-- The path goes up one directory to find the JS file -->
     <script src="../../assests/js/homepage.js" defer></script>
-
+    <script src="../../assests/js/loader.js"></script>
+    <!-- Adjust the path ../ if you are inside a folder -->
+    <script type="module" src="../../assests/js/auth.js"></script>
 </body>
 
 </html>

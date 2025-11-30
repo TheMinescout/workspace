@@ -61,16 +61,9 @@
             </main>
 
             <aside id="sidebar">
-                <h3>Categories</h3>
-                <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../pages/coding-projects.html">Coding Projects</a></li>
-                    <li><a href="../pages/tech-tips.html">Tech Tips</a></li>
-                    <li><a href="../pages/updates.html">Updates</a></li>
-                    <li><a href="../pages/puppy-life.html">Puppy Life</a></li>
-                    <li><a href="../pages/minecraft-server.html">Minecraft Server</a></li>
-                </ul>
-            </aside>
+    <!-- This empty div is where the sidebar will appear -->
+    <div id="sidebar-container"></div> 
+</aside>
         </div>
     </div>
 
@@ -79,6 +72,10 @@
     </footer>
     
     <!-- Path updated to ../assests/js/ -->
-    <script type="module" src="../assests/js/homepage.js"></script>
+            <!-- The path goes up one directory to find the JS file -->
+    <script src="../assests/js/homepage.js" defer></script>
+    <script src="../assests/js/loader.js"></script>
+    <!-- Adjust the path ../ if you are inside a folder -->
+    <script type="module" src="../assests/js/auth.js"></script>
 </body>
 </html>

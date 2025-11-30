@@ -65,7 +65,7 @@
                     <p id="user-info-admin" class="admin-info-text">
                         Admin Access: You are signed in.
                     </p>
-                    <a href="admin-posting.html" class="admin-button">
+                    <a href="admin/admin-posting.html" class="admin-button">
                         Go to Content Creation Page
                     </a>
                 </div>
@@ -102,25 +102,17 @@
                 </div>
 
             </main>
-            <aside id="sidebar">
-                <h3>Categories</h3>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="pages/coding-projects.html">Coding Projects</a></li>
-                    <li><a href="pages/tech-tips.html">Tech Tips</a></li>
-                    <li><a href="pages/updates.html">Updates</a></li>
-                    <li><a href="pages/puppy-life.html">Puppy Life</a></li>
-                    <li><a href="pages/minecraft-server.html">Minecraft Server</a></li>
-                    <li><a href="pages/beta.html">Beta</a></li>
-                    <li><a href="posts/updates/app-download.html">App Install</a></li>
-                    <li><a href="pages/feature-request.html">Feature Request</a></li>
-                </ul>
-                <h3>Archives</h3>
-                <ul>
-                    <li><a href="pages/archive.html">Archive Log</a></li>
-                </ul>
-            </aside>
+            <!-- Inside your main content area wrapper -->
+
+<aside id="sidebar">
+    <!-- This empty div is where the sidebar will appear -->
+    <div id="sidebar-container"></div> 
+</aside>
+
+<!-- Add this script at the bottom of your body, near your other scripts -->
+
         </div>
+        <script src="assests/js/loader.js"></script>
     </div>
     <script src="https://cdn.commoninja.com/sdk/latest/commonninja.js" defer></script>
     <div class="commonninja_component pid-4b7511cd-a6b3-4697-987d-985e648b84ec"></div>
