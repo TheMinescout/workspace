@@ -6,29 +6,27 @@
     <title>BETA // MineScout</title>
     <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
     
-    <!-- FIREBASE -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
     <style>
-        /* ONLY PAGE SPECIFIC STYLES HERE */
+        /* --- CORE STYLES --- */
         :root { --green: #0F0; --red: #FF3333; --gold: #FFD700; --bg: #000; --glass: rgba(0, 10, 0, 0.95); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: var(--bg); font-family: 'Courier New', monospace; color: var(--green); height: 100vh; overflow: hidden; }
         canvas { position: fixed; top: 0; left: 0; z-index: 0; }
         .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%); background-size: 100% 4px; pointer-events: none; z-index: 100; opacity: 0.6; }
         .terminal-container { height: 100%; width: 100%; display: flex; justify-content: center; align-items: center; position: relative; z-index: 200; }
-        .content-box { background: var(--glass); border: 1px solid var(--green); padding: 3rem; text-align: center; max-width: 500px; width: 90%; }
+        .content-box { background: var(--glass); border: 1px solid var(--green); padding: 3rem; text-align: center; max-width: 500px; width: 90%; transition: border-color 0.5s, box-shadow 0.5s; }
         .content-box.error-state { border-color: var(--red); box-shadow: 0 0 10px var(--red); }
         .beta-logo { width: 80px; border-radius: 50%; border: 2px solid var(--green); margin-bottom: 1rem; }
+        .terminal-text p { margin: 8px 0; opacity: 0.9; text-align: left; }
+        .status-line { transition: color 0.3s; }
+        .status-error { color: var(--red); font-weight: bold; animation: blink-fast 1s infinite; }
+        .blink-instruction { color: #000; background: var(--green); padding: 8px; font-weight: bold; animation: blink 1.5s infinite; cursor: pointer; text-align: center; border: 1px solid var(--green); margin-top: 15px; }
+        .blink-instruction:hover { background: #fff; box-shadow: 0 0 15px var(--green); }
+        @keyframes blink { 50% { opacity: 0.5; } }
+        @keyframes blink-fast { 50% { opacity: 0.2; } }
         .glitch { font-size: 2.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 20px; }
         
-        .blink-instruction { 
-            color: #000; background: var(--green); padding: 8px; font-weight: bold; 
-            animation: blink 1.5s infinite; cursor: pointer; text-align: center; border: 1px solid var(--green); margin-top: 15px; 
-        }
-        @keyframes blink { 50% { opacity: 0.5; } }
+        @media (max-width: 600px) { .glitch { font-size: 1.8rem; letter-spacing: 1px; } .content-box { width: 95%; padding: 1.5rem; } }
     </style>
 </head>
 <body>
@@ -40,12 +38,14 @@
             <div class="logo-container">
                 <img src="assets/images/BETAFAVICON.png" alt="Beta Logo" class="beta-logo">
             </div>
+            
             <h1 class="glitch" data-text="BETA ACCESS">BETA ACCESS</h1>
+            
             <div class="terminal-text">
                 <p id="user-display">> USER_ID: GUEST</p>
-                <p id="sys-status" style="transition:0.3s;">> STATUS: UNLOCKED</p>
+                <p id="device-display">> DEVICE: DETECTING...</p>
+                <p id="sys-status" class="status-line">> STATUS: INITIALIZING...</p>
                 <br>
-                <!-- This calls the function inside terminal-core.js -->
                 <div class="blink-instruction" onclick="window.toggleCmd()">
                     [ CLICK HERE OR PRESS '/' TO RUN ]
                 </div>
@@ -53,63 +53,70 @@
         </div>
     </div>
 
-    <!-- 1. LOAD FILESYSTEM (For updates check) -->
-    <script src="assets/js/filesystem.js"></script>
+    <!-- 1. LOAD CONFIG (Now handles SDK loading) -->
+    <script src="assets/js/firebase-config.js?v=3.1"></script>
     
-    <!-- 2. LOAD TERMINAL CORE (This adds the CMD window and logic) -->
-    <script src="assets/js/terminal-core.js?v=2.4"></script>
+    <!-- 2. LOAD DATA -->
+    <script src="assets/js/filesystem.js?v=2.6"></script>
+    
+    <!-- 3. LOAD CORE TERMINAL -->
+    <script src="assets/js/terminal-core.js?v=3.1"></script>
 
     <script>
-        // PAGE SPECIFIC LOGIC (Matrix Rain, Auth, Update Checks)
         console.log("Index Logic Loaded");
 
-        // --- AUTH & NOTIFICATIONS ---
-        const firebaseConfig = { apiKey: "AIzaSyAZE1qCY8YCZLrZ2EWT0QTFRoBVHvabqDM", authDomain: "minescout-life-4a668.firebaseapp.com", databaseURL: "https://minescout-life-4a668-default-rtdb.firebaseio.com", projectId: "minescout-life-4a668", storageBucket: "minescout-life-4a668.appspot.com", messagingSenderId: "351393417322", appId: "1:351393417322:web:92c9a92a50e60890136213", measurementId: "G-RFP78TP9KZ" };
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        
+        // --- PAGE SPECIFIC LOGIC ---
         const ADMIN_EMAIL = "theminescout@minescout.net";
         let isAdmin = false;
 
-        firebase.auth().onAuthStateChanged((user) => {
-            const userDisplay = document.getElementById('user-display');
-            if (user) {
-                isAdmin = (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
-                const idLabel = isAdmin ? "ADMIN_ID" : "USER_ID";
-                if(isAdmin) userDisplay.style.color = "#FFD700";
-                
-                // Get Name
-                const emailPrefix = user.email.split('@')[0].toUpperCase();
-                userDisplay.innerText = `> ${idLabel}: ${emailPrefix}`;
-                
-                // Check Admin Messages
-                if(isAdmin) checkAdminMessages();
-            } else {
-                userDisplay.innerText = "> USER_ID: GUEST";
+        function detectDevice() {
+            const width = window.innerWidth;
+            const ua = navigator.userAgent.toLowerCase();
+            const isMobile = width <= 600 || ua.includes("android") || ua.includes("iphone");
+            const display = document.getElementById('device-display');
+            if (display) {
+                if (isMobile) { display.innerText = "> DEVICE: MOBILE_TERMINAL"; display.style.color = "#FFFF00"; } 
+                else { display.innerText = "> DEVICE: DESKTOP_STATION"; }
             }
+        }
+        detectDevice();
+
+        // --- WAIT FOR FIREBASE TO LOAD ---
+        document.addEventListener('firebase-ready', () => {
+            console.log("Index received firebase-ready event.");
+            
+            // Update Status
+            document.getElementById('sys-status').innerText = "> STATUS: UNLOCKED";
+
+            // Auth Logic
+            firebase.auth().onAuthStateChanged((user) => {
+                const userDisplay = document.getElementById('user-display');
+                
+                if (user) {
+                    isAdmin = (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+                    const idLabel = isAdmin ? "ADMIN_ID" : "USER_ID";
+                    if(isAdmin) userDisplay.style.color = "#FFD700";
+                    
+                    const emailPrefix = user.email.split('@')[0].toUpperCase();
+                    userDisplay.innerText = `> ${idLabel}: ${emailPrefix}`;
+                    
+                    const db = firebase.database();
+                    db.ref('users/' + user.uid).once('value').then((snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            const dbName = data.username || data.name || data.displayName;
+                            if (dbName) userDisplay.innerText = `> ${idLabel}: ${dbName.toUpperCase()}`;
+                        }
+                    });
+
+                    if(isAdmin) checkAdminMessages();
+                } else {
+                    userDisplay.innerText = "> USER_ID: GUEST";
+                }
+            });
         });
 
-        // --- PAGE SPECIFIC COMMANDS ---
-        // The core script calls this if it doesn't recognize a command
-        window.handlePageCommand = function(cmd, args) {
-            const statusEl = document.getElementById('sys-status');
-            const output = document.getElementById('global-cmd-output'); // Access core output
-
-            if (cmd === 'err') {
-                let msg = "SYSTEM NORMAL.";
-                if (isAdmin && window.adminMsgCount > 0) msg = `> CRITICAL: ${window.adminMsgCount} ADMIN ALERTS. TYPE 'VM'`;
-                else if (window.missedUpdates) msg = `> MISSED: ${window.missedUpdates.join(', ')}`;
-                
-                // We return the string, the core script prints it
-                return msg; 
-            }
-            if (cmd === 'vm') {
-                if(isAdmin) window.location.href = 'admin-messages.html';
-                else return "ACCESS DENIED.";
-                return true;
-            }
-            return null; // Command not found in page specific logic
-        };
-
+        // 3. ADMIN MESSAGE CHECKER
         function checkAdminMessages() {
             const db = firebase.database();
             const statusEl = document.getElementById('sys-status');
@@ -122,13 +129,73 @@
                 
                 if (count > 0) {
                     statusEl.innerText = "ERROR : ADMIN ALERT (TYPE ERR)";
-                    statusEl.style.color = "#FF3333";
+                    statusEl.className = "status-line status-error";
                     boxEl.classList.add('error-state');
+                } else {
+                    checkNewPosts(); 
                 }
             });
         }
 
-        // Matrix Rain
-       </script>
+        // 4. REGULAR POST CHECKER
+        function checkNewPosts() {
+            if(window.adminMsgCount > 0) return; 
+
+            const lastVisitRaw = localStorage.getItem('minescout_last_visit');
+            const lastVisit = lastVisitRaw ? new Date(lastVisitRaw) : new Date('2000-01-01');
+            let missedCount = 0; let missedTitles = [];
+
+            if (typeof FILE_SYSTEM !== 'undefined') {
+                FILE_SYSTEM.articles.forEach(art => {
+                    if (new Date(art.date) > lastVisit) {
+                        missedCount++; missedTitles.push(art.title);
+                    }
+                });
+            }
+
+            const statusEl = document.getElementById('sys-status');
+            const boxEl = document.getElementById('main-box');
+
+            if (missedCount > 0) {
+                statusEl.innerText = `ERROR : MISSED UPDATES (TYPE ERR)`;
+                statusEl.className = "status-line status-error";
+                boxEl.classList.add('error-state');
+                window.missedUpdates = missedTitles;
+            } else {
+                statusEl.innerText = "> STATUS: UNLOCKED (SYSTEM UP TO DATE)";
+                statusEl.className = "status-line";
+                boxEl.classList.remove('error-state');
+            }
+            localStorage.setItem('minescout_last_visit', new Date().toISOString());
+        }
+
+        // 5. PAGE SPECIFIC COMMANDS
+        window.handlePageCommand = function(cmd, args) {
+            const statusEl = document.getElementById('sys-status');
+            
+            if (cmd === 'err') {
+                let msg = "";
+                if (isAdmin && window.adminMsgCount > 0) {
+                    msg += `> CRITICAL: ${window.adminMsgCount} NEW ENCRYPTED SIGNALS.\n> TYPE 'VM' TO DECRYPT.\n\n`;
+                }
+                if (window.missedUpdates && window.missedUpdates.length > 0) {
+                    msg += "> MISSED ARTICLES:\n" + window.missedUpdates.map(t => "- " + t).join("\n");
+                }
+                if(msg === "") msg = "SYSTEM NORMAL. No logs found.";
+                return msg;
+            }
+            if (cmd === 'vm') {
+                if(isAdmin) window.location.href = 'admin-messages.html';
+                else return "ACCESS DENIED. ADMIN PRIVILEGES REQUIRED.";
+                return true;
+            }
+            return null;
+        };
+
+        // If firebase is already ready (rare case where cache loads scripts super fast)
+        if (window.firebaseReady) {
+            document.dispatchEvent(new Event('firebase-ready'));
+        }
+    </script>
 </body>
 </html>

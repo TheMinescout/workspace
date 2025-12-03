@@ -13,14 +13,29 @@
         .code-block { 
             background: rgba(0, 10, 20, 0.9); border: 1px solid #00FFFF; padding: 20px; 
             width: 800px; max-width: 95%; box-shadow: 0 0 15px #00FFFF; 
-            color: #00FFFF;
+            color: #00FFFF; max-height: 80vh; overflow-y: auto;
         }
         
+        h2 { border-bottom: 1px dashed #00FFFF; padding-bottom: 10px; margin-bottom: 10px; margin-top: 0; }
+        
+        .archive-header { 
+            border-bottom: 1px dashed #005555; padding-bottom: 10px; margin-bottom: 10px; 
+            margin-top: 30px; color: #005555; 
+        }
+
         .var-line { font-size: 1.2rem; margin: 15px 0; border-bottom: 1px dotted #008888; padding: 10px; cursor: pointer; }
         .var-line:hover { background: rgba(0, 255, 255, 0.1); }
+        
+        .archive-item .var-line { opacity: 0.6; border-color: #004444; }
+        .archive-item .var-line:hover { opacity: 1; background: #001111; }
+
         .keyword { color: #ff00ff; } .string { color: #ffff00; } .comment { color: #008888; display: block; margin-top: 5px; font-size: 0.9rem; }
         
         .open-btn { position: fixed; top: 10px; left: 10px; border: 1px solid #00FFFF; padding: 5px; cursor: pointer; color: #00FFFF; z-index: 100; }
+        
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #008888; }
     </style>
 </head>
 <body>
@@ -29,29 +44,44 @@
 
     <div class="container">
         <div class="code-block">
-            <h2 style="border-bottom: 1px dashed #00FFFF;">// REPOSITORY: /var/www/projects/</h2>
+            <h2>// REPOSITORY: /var/www/projects/</h2>
             <div id="project-list-container"></div>
+
+            <!-- ARCHIVE -->
+            <h2 class="archive-header">// LEGACY_BUILDS (UNSTABLE)</h2>
+            <div id="archive-list-container" class="archive-item"></div>
         </div>
     </div>
 
-    <!-- 1. DATA -->
-    <script src="assets/js/filesystem.js"></script>
-    <!-- 2. CORE -->
-    <script src="assets/js/terminal-core.js?v=2.4"></script>
+    <script src="assets/js/firebase-config.js?v=2.8"></script>
+    <script src="assets/js/filesystem.js?v=2.8"></script>
+    <script src="assets/js/terminal-core.js?v=2.8"></script>
 
     <script>
-        // PAGE LOGIC
         const listContainer = document.getElementById('project-list-container');
-        
+        const archiveContainer = document.getElementById('archive-list-container');
+
+        // 1. ACTIVE
         FILE_SYSTEM.projects.forEach(item => {
             const div = document.createElement('div');
             div.className = 'var-line';
             div.innerHTML = `<span class="keyword">const</span> ${item.cmd} = <span class="string">"${item.title}"</span>;<span class="comment">${item.desc}</span>`;
-            
-            // Click to Download
             div.onclick = () => triggerDownload(item.path, item.title);
             listContainer.appendChild(div);
         });
+
+        // 2. ARCHIVE
+        if (FILE_SYSTEM.archived_projects && FILE_SYSTEM.archived_projects.length > 0) {
+            FILE_SYSTEM.archived_projects.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'var-line';
+                div.innerHTML = `<span class="keyword" style="color:#888">const</span> ${item.cmd} = <span class="string" style="color:#aaa">"${item.title}"</span>;<span class="comment" style="color:#444">${item.desc}</span>`;
+                div.onclick = () => triggerDownload(item.path, item.title);
+                archiveContainer.appendChild(div);
+            });
+        } else {
+            archiveContainer.innerHTML = "<div style='padding:10px; color:#003333;'>// NO LEGACY BUILDS FOUND</div>";
+        }
 
         function triggerDownload(path, name) {
             const link = document.createElement('a');
@@ -60,15 +90,21 @@
         }
 
         // CMD HANDLER
-        window.handlePageCommand = function(cmd, args) {
-            const found = FILE_SYSTEM.projects.find(p => p.cmd === cmd);
+        window.handlePageCommand = function(cmd) {
+            let found = FILE_SYSTEM.projects.find(p => p.cmd === cmd);
+            if (!found) found = FILE_SYSTEM.archived_projects.find(p => p.cmd === cmd);
+
             if (found) {
                 triggerDownload(found.path, found.title);
-                return true; // Success (core clears input)
+                return true; 
             }
             return null;
         };
 
-        </script>
+        const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d');
+        function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r;
+        const s='XYZ',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1;
+        setInterval(()=>{ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#00FFFF';ctx.font='16px mono';for(let i=0;i<d.length;i++){ctx.fillText(s[Math.floor(Math.random()*s.length)],i*16,d[i]*16);if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;d[i]++}},33);
+    </script>
 </body>
 </html>

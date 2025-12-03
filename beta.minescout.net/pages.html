@@ -9,36 +9,61 @@
         body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; margin: 0; }
         canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.3; }
         .container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; z-index: 10; position: relative; }
-        .code-block { background: rgba(0, 20, 0, 0.9); border: 1px solid #0F0; padding: 20px; width: 800px; max-width: 95%; box-shadow: 0 0 15px #0F0; }
+        
+        .code-block { 
+            background: rgba(0, 20, 0, 0.9); border: 1px solid #0F0; padding: 20px; 
+            width: 800px; max-width: 95%; box-shadow: 0 0 15px #0F0; 
+            max-height: 80vh; overflow-y: auto;
+        }
+
+        h2 { border-bottom: 1px dashed #0F0; padding-bottom: 10px; margin-bottom: 10px; margin-top: 0; }
+        
+        /* ARCHIVE HEADER STYLE */
+        .archive-header { 
+            border-bottom: 1px dashed #555; padding-bottom: 10px; margin-bottom: 10px; 
+            margin-top: 30px; color: #555; 
+        }
+
         .var-line { font-size: 1.2rem; margin: 15px 0; border-bottom: 1px dotted #004400; padding: 10px; cursor: pointer; }
         .var-line:hover { background: #002200; }
+        
+        /* Archived items look dimmer */
+        .archive-item .var-line { opacity: 0.6; border-color: #333; }
+        .archive-item .var-line:hover { opacity: 1; background: #111; }
+
         .keyword { color: #ff00ff; } .string { color: #ffff00; } .comment { color: #008800; display: block; margin-top: 5px; font-size: 0.9rem; }
+        
+        .open-btn { position: fixed; top: 10px; left: 10px; border: 1px solid #0F0; padding: 5px; cursor: pointer; z-index: 100; }
+        
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #004400; }
     </style>
 </head>
 <body>
     <canvas id="matrixCanvas"></canvas>
     
-    <!-- 1. BUTTON TRIGGERS GLOBAL TOGGLE -->
-    <div style="position:fixed; top:10px; left:10px; border:1px solid #0F0; padding:5px; cursor:pointer;" onclick="window.toggleCmd()">
-        [ OPEN CMD ]
-    </div>
+    <div class="open-btn" onclick="window.toggleCmd()">[ OPEN CMD ]</div>
 
     <div class="container">
         <div class="code-block">
             <h2>// DIRECTORY: /var/www/articles/</h2>
             <div id="file-list-container"></div>
+
+            <!-- ARCHIVE SECTION -->
+            <h2 class="archive-header">// LEGACY_STORAGE (OLD_VERSIONS)</h2>
+            <div id="archive-list-container" class="archive-item"></div>
         </div>
     </div>
 
-    <script src="assets/js/filesystem.js"></script>
-    
-    <!-- 2. LOAD TERMINAL CORE -->
-    <script src="assets/js/terminal-core.js?v=2.4"></script>
+    <script src="assets/js/firebase-config.js?v=2.8"></script>
+    <script src="assets/js/filesystem.js?v=2.8"></script>
+    <script src="assets/js/terminal-core.js?v=2.8"></script>
 
     <script>
-        // PAGE SPECIFIC: Populate List
+        // 1. POPULATE ACTIVE FILES
         const listContainer = document.getElementById('file-list-container');
-        
         FILE_SYSTEM.articles.forEach(item => {
             const div = document.createElement('div');
             div.className = 'var-line';
@@ -47,18 +72,38 @@
             listContainer.appendChild(div);
         });
 
-        // PAGE SPECIFIC: Handle Article Commands
-        window.handlePageCommand = function(cmd, args) {
-            // Check filesystem for matching command
-            const found = FILE_SYSTEM.articles.find(a => a.cmd === cmd);
+        // 2. POPULATE ARCHIVED FILES
+        const archiveContainer = document.getElementById('archive-list-container');
+        if (FILE_SYSTEM.archived_articles && FILE_SYSTEM.archived_articles.length > 0) {
+            FILE_SYSTEM.archived_articles.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'var-line';
+                div.innerHTML = `<span class="keyword" style="color:#888">const</span> ${item.cmd} = <span class="string" style="color:#aaa">"${item.title}"</span>;<span class="comment" style="color:#555">${item.desc}</span>`;
+                div.onclick = () => window.location.href = item.path;
+                archiveContainer.appendChild(div);
+            });
+        } else {
+            archiveContainer.innerHTML = "<div style='padding:10px; color:#333;'>// NO LEGACY DATA FOUND</div>";
+        }
+
+        // 3. COMMAND HANDLER
+        window.handlePageCommand = function(cmd) {
+            // Check Active
+            let found = FILE_SYSTEM.articles.find(a => a.cmd === cmd);
+            // Check Archive
+            if (!found) found = FILE_SYSTEM.archived_articles.find(a => a.cmd === cmd);
+
             if (found) {
                 window.location.href = found.path;
                 return true;
             }
-            return null; // Not found
+            return null;
         };
 
-        // Matrix Rain
-        </script>
+        const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d');
+        function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r;
+        const s='01',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1;
+        setInterval(()=>{ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0F0';ctx.font='16px mono';for(let i=0;i<d.length;i++){ctx.fillText(s[Math.floor(Math.random()*2)],i*16,d[i]*16);if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;d[i]++}},33);
+    </script>
 </body>
 </html>

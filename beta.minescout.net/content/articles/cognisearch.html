@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nano /docs/cognisearch.txt</title>
+    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png">
+    
+    <!-- FIREBASE SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <style>
+        /* TERMINAL EDITOR STYLE */
+        body { background-color: #111; color: #ccc; font-family: 'Courier New', monospace; margin: 0; padding: 20px; padding-bottom: 100px; }
+        
+        .editor-header {
+            background: #fff; color: #000; padding: 5px; font-weight: bold; position: sticky; top: 0;
+            display: flex; justify-content: space-between; z-index: 100;
+        }
+
+        .content { max-width: 800px; margin: 20px auto; white-space: pre-wrap; line-height: 1.5; }
+        
+        h1 { color: #00FFFF; border-bottom: 1px double #00FFFF; } /* Cyan for V5 */
+        h2 { color: #00FFFF; margin-top: 30px; }
+        code { background: #333; color: #fff; padding: 2px 5px; }
+        a { color: #00FFFF; text-decoration: underline; }
+
+        .instruction {
+            position: fixed; bottom: 10px; right: 10px;
+            background: #00FFFF; color: #000; padding: 5px 10px; font-weight: bold; cursor: pointer; z-index: 100;
+        }
+        
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+
+    <div class="editor-header">
+        <span>GNU nano 6.0</span>
+        <span>File: cognisearch.txt</span>
+        <span>Modified</span>
+    </div>
+
+    <div class="content">
+<h1>RELEASE: Cognisearch (v5)</h1>
+<p>Date: Nov 30, 2025 | Branch: Stable</p>
+
+-----------------------------------------------------------
+SYSTEM ENTRY: DEPLOYMENT PROTOCOL
+-----------------------------------------------------------
+
+Notice: "AI News Synthesis" has been rebranded to "Cognisearch".
+The core logic remains, but the engine is faster.
+
+Step 1: Acquire Source
+Download the updated V5 architecture.
+> <a href="../../content/projects/cognisearch-v5.zip" download>Download Package [73MB]</a>
+
+Step 2: Terminal Access
+Open your local shell:
+- macOS: Terminal
+- Windows: PowerShell / CMD
+
+Step 3: Navigation
+Move to the directory:
+<code>cd Downloads/cognisearch</code>
+
+Step 4: Dependencies
+Install node modules:
+<code>npm install</code>
+
+Step 5: Initialization
+Launch the development server:
+<code>npm run dev</code>
+
+-----------------------------------------------------------
+END OF LOG
+-----------------------------------------------------------
+    </div>
+
+    <div class="instruction" onclick="window.toggleCmd()">
+        [ ^X EXIT ] (Click or Type '/')
+    </div>
+
+    <!-- SCRIPTS (v2.8) -->
+    <script src="../../assets/js/firebase-config.js?v=2.8"></script>
+    <script src="../../assets/js/filesystem.js?v=2.8"></script>
+    <script src="../../assets/js/terminal-core.js?v=2.8"></script>
+
+    <script>
+        // Page Specific Command Handler
+        window.handlePageCommand = function(cmd, args) {
+            if (cmd === 'return' || cmd === 'exit' || cmd === 'back') {
+                window.location.href = '../../pages.html';
+                return true;
+            }
+            return null;
+        };
+    </script>
+</body>
+</html>

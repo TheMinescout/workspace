@@ -1,54 +1,28 @@
 /* 
-    TERMINAL CORE V2.4 (ADDED 'MAIN' COMMAND)
+    TERMINAL CORE V2.6 (GHOST MESSAGES)
     - Global Command Center
-    - Reactive Matrix Rain
     - Interactive Physics
+    - Subliminal "Check Corners" Hint in Matrix Rain
 */
 
 (function() {
-    console.log("Initializing Terminal Core V2.4...");
+    console.log("Initializing Terminal Core V2.6...");
 
     // 1. INJECT CSS
     const style = document.createElement('style');
     style.innerHTML = `
-        /* OVERLAY */
-        .cmd-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0, 0, 0, 0.2); 
-            z-index: 9999; 
-            display: flex; justify-content: flex-start; align-items: flex-end; 
-            padding: 20px; backdrop-filter: blur(1px); 
-        }
+        .cmd-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; justify-content: flex-start; align-items: flex-end; padding: 20px; backdrop-filter: blur(1px); }
         .hidden { display: none !important; }
-
-        /* WINDOW */
-        .cmd-window { 
-            width: 450px; background: rgba(0, 15, 0, 0.95); 
-            border: 1px solid #0F0; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); 
-            display: flex; flex-direction: column; font-family: 'Courier New', monospace; 
-            color: #0F0; margin-bottom: 20px; 
-        }
-        .cmd-title-bar { 
-            background: #003300; color: #0F0; padding: 8px 12px; font-weight: bold; 
-            font-size: 14px; display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 1px solid #0F0; user-select: none; 
-        }
+        .cmd-window { width: 450px; background: rgba(0, 15, 0, 0.95); border: 1px solid #0F0; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); display: flex; flex-direction: column; font-family: 'Courier New', monospace; color: #0F0; margin-bottom: 20px; }
+        .cmd-title-bar { background: #003300; color: #0F0; padding: 8px 12px; font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #0F0; user-select: none; }
         .close-btn { background: transparent; color: #0F0; padding: 0 6px; cursor: pointer; border: 1px solid transparent; font-weight: bold; }
         .close-btn:hover { border-color: #0F0; box-shadow: 0 0 5px #0F0; background: #002200; }
         .cmd-body { padding: 15px; display: flex; flex-direction: column; gap: 10px; }
         .input-line { display: flex; align-items: center; gap: 10px; border-bottom: 1px dashed #004400; padding-bottom: 5px; }
-        
-        #global-cmd-input { 
-            flex-grow: 1; background: transparent; border: none; color: #fff; 
-            font-family: 'Courier New', monospace; font-size: 16px; outline: none; 
-        }
+        #global-cmd-input { flex-grow: 1; background: transparent; border: none; color: #fff; font-family: 'Courier New', monospace; font-size: 16px; outline: none; }
         #global-cmd-input::placeholder { color: #005500; }
-        #global-cmd-output { 
-            color: #FF3333; font-family: 'Courier New', monospace; font-size: 12px; 
-            min-height: 15px; margin-top: 5px; white-space: pre-wrap; 
-        }
+        #global-cmd-output { color: #FF3333; font-family: 'Courier New', monospace; font-size: 12px; min-height: 15px; margin-top: 5px; white-space: pre-wrap; }
         
-        /* PHYSICS & EGG CLASSES */
         .hidden-node { position: fixed; width: 50px; height: 50px; z-index: 9000; cursor: help; opacity: 0; transition: opacity 0.5s, background 0.3s; display: flex; align-items: center; justify-content: center; font-family: 'Courier New'; font-weight: bold; font-size: 10px; color: #000; }
         .hidden-node:hover { opacity: 1; background: #0F0; box-shadow: 0 0 15px #0F0; border: 1px dashed #000; }
         .physics-active { cursor: grab !important; user-select: none; }
@@ -121,7 +95,7 @@
     `;
     document.body.insertAdjacentHTML('beforeend', overlayHtml);
 
-    // 5. EASTER EGG
+    // 5. EASTER EGG (INDEX ONLY)
     function spawnHiddenNode() {
         const path = window.location.pathname;
         const isIndex = path.endsWith("index.html") || path.endsWith("/") || path.endsWith("/mineScout/");
@@ -140,17 +114,66 @@
     }
     setTimeout(spawnHiddenNode, 2000);
 
-    // 6. MATRIX RAIN
+    // 6. GLOBAL MATRIX RAIN (WITH GHOST MESSAGE)
     function initGlobalMatrix() {
         const canvas = document.getElementById('matrixCanvas'); if (!canvas) return;
         const ctx = canvas.getContext('2d'); let width, height;
         function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; } resize(); window.addEventListener('resize', resize);
-        const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ'; const fontSize = 16; let columns = width / fontSize; let drops = []; for(let i=0; i<columns; i++) drops[i] = 1;
+        
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const chars = katakana + latin;
+        
+        const fontSize = 16; let columns = width / fontSize; let drops = []; for(let i=0; i<columns; i++) drops[i] = 1;
+
+        // GHOST MESSAGE LOGIC
+        const isIndex = window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/") || window.location.pathname.endsWith("/mineScout/");
+        let ghostCol = -1;
+        let ghostTimer = 0;
+        const GHOST_MSG = "CHECK_THE_CORNERS";
+
         setInterval(() => {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, width, height);
+            
+            // Randomly trigger ghost message on Index page
+            if (isIndex && ghostTimer <= 0 && Math.random() > 0.995) {
+                ghostCol = Math.floor(Math.random() * columns);
+                ghostTimer = 100; // Duration of effect
+            }
+            if (ghostTimer > 0) ghostTimer--;
+
             const isRainbow = sessionStorage.getItem('egg_rainbow') === 'true';
-            if(isRainbow) { const colors = ['#0F0', '#F0F', '#0FF', '#FF0', '#F00']; ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)]; } else { ctx.fillStyle = '#0F0'; }
-            ctx.font = fontSize + 'px monospace'; for(let i=0; i<drops.length; i++) { const text = chars[Math.floor(Math.random() * chars.length)]; ctx.fillText(text, i * fontSize, drops[i] * fontSize); if(drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0; drops[i]++; }
+            
+            ctx.font = fontSize + 'px monospace';
+            
+            for(let i=0; i<drops.length; i++) {
+                let text = chars[Math.floor(Math.random() * chars.length)];
+                let fillStyle = '#0F0';
+
+                // Rainbow Mode Override
+                if(isRainbow) {
+                    const colors = ['#0F0', '#F0F', '#0FF', '#FF0', '#F00'];
+                    fillStyle = colors[Math.floor(Math.random() * colors.length)];
+                }
+
+                // Ghost Message Override (Higher Priority)
+                if (isIndex && i === ghostCol && ghostTimer > 0) {
+                    // Calculate which letter of the message to show based on row
+                    const charIndex = Math.floor(drops[i]) % GHOST_MSG.length;
+                    text = GHOST_MSG[charIndex];
+                    fillStyle = '#FFF'; // Bright White
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = "#FFF";
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+
+                ctx.fillStyle = fillStyle;
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if(drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
         }, 33);
     }
     if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initGlobalMatrix); else initGlobalMatrix();
@@ -175,20 +198,13 @@
     input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             const raw = input.value.trim(); const parts = raw.split(' '); const cmd = parts[0].toLowerCase(); const args = parts.slice(1).join(' ');
-            
-            // CLEAR INPUT IMMEDIATELY
             input.value = ''; 
-            
             const secret = sessionStorage.getItem('egg_code');
             if (secret && cmd === secret.toLowerCase()) { window.location.href = isDeep ? '../posts/easteregg.html' : 'content/posts/easteregg.html'; return; }
             output.innerText = "";
 
             switch(cmd) {
-                // --- ADDED MAIN COMMAND HERE ---
-                case 'main': 
-                    window.location.href = "https://life.minescout.net"; 
-                    return;
-
+                case 'main': window.location.href = "https://life.minescout.net"; return;
                 case 'home': case 'return': case 'root': window.location.href = prefix + 'index.html'; return;
                 case 'email': case 'mail': window.location.href = prefix + 'email.html'; return;
                 case 'atls': window.location.href = prefix + 'pages.html'; return;
@@ -196,7 +212,20 @@
                 case 'reqs': window.location.href = prefix + 'feature-requests.html'; return;
                 case 'help': window.location.href = prefix + 'help.html'; return;
                 case 'login': window.location.href = prefix + 'login.html'; return;
-                case 'logout': if (typeof firebase !== 'undefined') { firebase.auth().signOut().then(() => { output.style.color = '#0F0'; output.innerText = "Logged out successfully."; }); } else { output.innerText = "Error: Auth system not loaded."; } return;
+                // ... inside switch(cmd) ...
+
+                case 'logout': 
+                    if (typeof firebase !== 'undefined' && firebase.auth) { 
+                        firebase.auth().signOut().then(() => { 
+                            output.style.color = '#0F0'; 
+                            output.innerText = "Logged out successfully."; 
+                        }); 
+                    } else { 
+                        output.innerText = "System loading... please wait."; 
+                    } 
+                    return;
+
+                // ... rest of code ...
                 case 'exit': window.toggleCmd(); return;
             }
             if (typeof window.handlePageCommand === 'function') { const result = window.handlePageCommand(cmd, args); if (result === true) return; if (typeof result === 'string') { output.innerText = result; return; } }
