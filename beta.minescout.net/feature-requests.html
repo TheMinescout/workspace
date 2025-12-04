@@ -6,21 +6,42 @@
     <title>UPLINK // Feature Request</title>
     <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
     
+    <!-- FIREBASE SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    
+    <!-- EMAILJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
         body { background-color: #050505; color: #0F0; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; margin: 0; }
         canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.2; }
+        
         .container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; z-index: 10; }
-        .form-block { background: rgba(0, 20, 0, 0.95); border: 2px solid #0F0; padding: 20px; width: 600px; max-width: 95%; box-shadow: 0 0 20px #0F0; }
+        
+        .form-block { 
+            background: rgba(0, 20, 0, 0.95); border: 2px solid #0F0; 
+            padding: 20px; width: 600px; max-width: 95%; 
+            box-shadow: 0 0 20px #0F0; 
+        }
+        
         h2 { border-bottom: 2px solid #0F0; padding-bottom: 10px; margin-bottom: 15px; }
         .input-group { margin-bottom: 15px; }
+        
         label { display: block; font-weight: bold; margin-bottom: 5px; color: #88ff88; }
-        input, textarea, select { width: 100%; background: #000; border: 1px solid #004400; color: #0F0; font-family: inherit; padding: 10px; outline: none; }
-        input:focus, textarea:focus { border-color: #0F0; }
-        .transmit-btn { background: #003300; color: #0F0; border: 1px solid #0F0; padding: 15px; width: 100%; font-weight: bold; cursor: pointer; }
+        input, textarea, select { 
+            width: 100%; background: #000; border: 1px solid #004400; 
+            color: #0F0; font-family: inherit; padding: 10px; outline: none; 
+        }
+        input:focus, textarea:focus, select:focus { border-color: #0F0; box-shadow: 0 0 5px #004400; }
+        
+        .transmit-btn { 
+            background: #003300; color: #0F0; border: 1px solid #0F0; 
+            padding: 15px; width: 100%; font-weight: bold; cursor: pointer; text-transform: uppercase;
+        }
         .transmit-btn:hover { background: #0F0; color: #000; }
+        
         .progress-bar { height: 10px; background: #0F0; width: 0%; margin-top:10px; }
         .open-btn { position: fixed; top: 10px; left: 10px; border: 1px solid #0F0; padding: 5px; cursor: pointer; z-index: 100; }
     </style>
@@ -32,8 +53,13 @@
     <div class="container">
         <div class="form-block">
             <h2>// UPLINK: FEATURE_REQ</h2>
-            <div class="input-group"><input type="text" id="sender" placeholder="Sender Name (Optional)"></div>
-            <div class="input-group"><input type="text" id="subject" placeholder="Subject / Feature Title"></div>
+            
+            <div class="input-group">
+                <input type="text" id="sender" placeholder="Sender Name (Optional)">
+            </div>
+            <div class="input-group">
+                <input type="text" id="subject" placeholder="Subject / Feature Title">
+            </div>
             <div class="input-group">
                 <select id="priority">
                     <option value="LOW">LOW PRIORITY</option>
@@ -41,43 +67,88 @@
                     <option value="HIGH">HIGH PRIORITY</option>
                 </select>
             </div>
-            <div class="input-group"><textarea id="desc" rows="4" placeholder="Description..."></textarea></div>
+            <div class="input-group">
+                <textarea id="desc" rows="4" placeholder="Description..."></textarea>
+            </div>
+            
             <button class="transmit-btn" onclick="transmitData()">[ TRANSMIT DATA ]</button>
-            <div style="display:none;" id="prog-cont"><div class="progress-bar" id="prog-bar"></div></div>
+            
+            <div style="display:none;" id="prog-cont">
+                <div class="progress-bar" id="prog-bar"></div>
+            </div>
             <div id="status-msg" style="text-align:center; margin-top:5px;"></div>
         </div>
     </div>
 
-    <!-- CORE -->
-    <script src="assets/js/firebase-config.js"></script>
-    <script src="assets/js/terminal-core.js?v=2.6"></script>
+    <!-- SCRIPTS -->
+    <script src="assets/js/firebase-config.js?v=2.8"></script>
+    <script src="assets/js/terminal-core.js?v=2.8"></script>
 
     <script>
-        // PAGE LOGIC
+        // --- EMAILJS SETUP ---
+        const EMAIL_SERVICE_ID = "service_khgjq1e";   // <--- PASTE HERE
+        const EMAIL_TEMPLATE_ID = "template_yb9xkyy"; // <--- PASTE HERE
+        const EMAIL_PUBLIC_KEY = "Fa69EL7WS0e4EWsl-";   // <--- PASTE HERE
+
+        (function(){ emailjs.init(EMAIL_PUBLIC_KEY); })();
+
         function transmitData() {
             const db = firebase.database();
+            
+            // 1. Get Values
+            const senderName = document.getElementById('sender').value || "Guest";
             const subject = document.getElementById('subject').value;
             const desc = document.getElementById('desc').value;
+            const priority = document.getElementById('priority').value;
             const status = document.getElementById('status-msg');
             
-            if(!subject || !desc) { status.style.color='red'; status.innerText="ERROR: NULL DATA"; return; }
+            // 2. Validate
+            if(!subject || !desc) { 
+                status.style.color='red'; 
+                status.innerText="ERROR: NULL DATA"; 
+                return; 
+            }
 
+            // 3. Animation & Send
             document.getElementById('prog-cont').style.display='block';
-            let w=0; const int=setInterval(()=>{
+            let w=0; 
+            
+            const int = setInterval(()=>{
                 if(w>=100){
                     clearInterval(int);
+                    
+                    // A. Save to Firebase (Internal Admin Inbox)
                     db.ref('messages').push({
-                        sender: document.getElementById('sender').value || "Guest",
-                        subject: subject, desc: desc, priority: document.getElementById('priority').value,
+                        sender: senderName,
+                        subject: subject, desc: desc, priority: priority,
                         timestamp: Date.now(), read: false
                     });
-                    status.style.color='#0F0'; status.innerText="UPLOAD COMPLETE.";
+
+                    // B. Send Email Notification
+                    const emailParams = {
+                        name: senderName,
+                        time: new Date().toLocaleString(),
+                        message: `
+[PRIORITY]: ${priority}
+[SUBJECT]: ${subject}
+
+[CONTENT]:
+${desc}`
+                    };
+
+                    emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, emailParams)
+                        .then(() => console.log("Email Sent"), (err) => console.warn("Email Error:", err));
+
+                    // C. Redirect
+                    status.style.color='#0F0'; 
+                    status.innerText="UPLOAD COMPLETE.";
                     setTimeout(()=>window.location.href='index.html', 1500);
-                } else { w+=10; document.getElementById('prog-bar').style.width=w+'%'; }
+                } else { 
+                    w+=10; 
+                    document.getElementById('prog-bar').style.width=w+'%'; 
+                }
             }, 50);
         }
-
-        // Matrix Rain
-        </script>
+    </script>
 </body>
 </html>

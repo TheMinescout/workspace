@@ -8,57 +8,46 @@
     
     <!-- FIREBASE SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    
+    <!-- EMAILJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
-        /* BASE THEME */
         body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; }
         canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.2; }
         
         .email-client {
             width: 700px; max-width: 95%; height: 600px; max-height: 90vh;
             background: rgba(0, 20, 0, 0.95); border: 2px solid #0F0;
-            box-shadow: 0 0 25px #0F0;
-            display: flex; flex-direction: column;
+            box-shadow: 0 0 25px #0F0; display: flex; flex-direction: column;
             position: relative; z-index: 10;
         }
 
-        /* HEADER */
         .client-header {
             background: #003300; color: #fff; padding: 10px 15px;
             font-weight: bold; border-bottom: 1px solid #0F0;
             display: flex; justify-content: space-between;
         }
 
-        /* FIELDS */
-        .field-row {
-            display: flex; border-bottom: 1px solid #004400;
-        }
-        .field-label {
-            width: 100px; background: #001100; padding: 10px;
-            border-right: 1px solid #004400; color: #88ff88; font-weight: bold;
-            display: flex; align-items: center;
-        }
-        .field-input {
-            flex-grow: 1;
-        }
+        .field-row { display: flex; border-bottom: 1px solid #004400; }
+        .field-label { width: 100px; background: #001100; padding: 10px; border-right: 1px solid #004400; color: #88ff88; font-weight: bold; display: flex; align-items: center; }
+        .field-input { flex-grow: 1; }
         
         input, textarea {
             width: 100%; background: transparent; border: none; color: #0F0;
             font-family: 'Courier New', monospace; font-size: 16px; padding: 10px;
             outline: none; resize: none;
         }
-        input::placeholder, textarea::placeholder { color: #005500; }
-
+        
         .body-input { flex-grow: 1; display: flex; flex-direction: column; }
         textarea { flex-grow: 1; padding: 15px; line-height: 1.5; }
 
-        /* FOOTER / SEND BTN */
         .client-footer {
             border-top: 1px solid #0F0; padding: 10px;
             display: flex; justify-content: flex-end; background: #001100;
         }
-        
         .send-btn {
             background: #0F0; color: #000; border: none; padding: 10px 30px;
             font-weight: bold; cursor: pointer; font-family: 'Courier New', monospace;
@@ -66,7 +55,6 @@
         }
         .send-btn:hover { background: #fff; box-shadow: 0 0 10px #fff; }
 
-        /* OVERLAY STATUS */
         #status-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); display: none;
@@ -74,14 +62,11 @@
         }
         .loading-bar { width: 200px; height: 20px; border: 1px solid #0F0; margin-top: 20px; }
         .fill { width: 0%; height: 100%; background: #0F0; }
-
         .open-btn { position: fixed; top: 10px; left: 10px; border: 1px solid #0F0; padding: 5px; cursor: pointer; z-index: 100; }
     </style>
 </head>
 <body>
     <canvas id="matrixCanvas"></canvas>
-    
-    <!-- Open CMD Trigger -->
     <div class="open-btn" onclick="window.toggleCmd()">[ OPEN CMD ]</div>
 
     <div class="email-client">
@@ -90,54 +75,45 @@
             <span>SECURE_SMTP_TUNNEL</span>
         </div>
 
-        <!-- TO FIELD (LOCKED) -->
         <div class="field-row">
             <div class="field-label">TO:</div>
-            <div class="field-input">
-                <input type="text" value="theminescout@minescout.net" readonly style="color: #88ff88; cursor: not-allowed;">
-            </div>
+            <div class="field-input"><input type="text" value="theminescout@minescout.net" readonly style="color:#555; cursor:not-allowed;"></div>
         </div>
-
-        <!-- FROM FIELD -->
         <div class="field-row">
             <div class="field-label">FROM:</div>
-            <div class="field-input">
-                <input type="email" id="sender" placeholder="your_email@domain.com">
-            </div>
+            <div class="field-input"><input type="text" id="sender" placeholder="Your Name / Email"></div>
         </div>
-
-        <!-- SUBJECT FIELD -->
         <div class="field-row">
             <div class="field-label">SUBJ:</div>
-            <div class="field-input">
-                <input type="text" id="subject" placeholder="Enter subject line...">
-            </div>
+            <div class="field-input"><input type="text" id="subject" placeholder="Subject..."></div>
         </div>
-
-        <!-- BODY -->
         <div class="body-input">
-            <textarea id="body" placeholder="Type your secure message here..."></textarea>
+            <textarea id="body" placeholder="Compose message..."></textarea>
         </div>
-
         <div class="client-footer">
-            <button class="send-btn" onclick="sendEmail()">[ SEND TRANSMISSION ]</button>
+            <button class="send-btn" onclick="sendEmail()">[ SEND ]</button>
         </div>
 
-        <!-- SENDING ANIMATION -->
         <div id="status-overlay">
             <div id="status-text" style="font-size: 1.5rem; font-weight: bold;">ENCRYPTING...</div>
             <div class="loading-bar"><div class="fill" id="fill-bar"></div></div>
         </div>
     </div>
 
-    <!-- CORE SCRIPTS -->
-    <script src="assets/js/firebase-config.js"></script>
-    <script src="assets/js/terminal-core.js?v=2.6"></script>
+    <!-- SCRIPTS -->
+    <script src="assets/js/firebase-config.js?v=2.8"></script>
+    <script src="assets/js/terminal-core.js?v=2.8"></script>
 
     <script>
-        const db = firebase.database();
+        // --- EMAILJS SETUP ---
+        const EMAIL_SERVICE_ID = "service_khgjq1e";   // <--- PASTE HERE
+        const EMAIL_TEMPLATE_ID = "template_yb9xkyy"; // <--- PASTE HERE
+        const EMAIL_PUBLIC_KEY = "Fa69EL7WS0e4EWsl-";   // <--- PASTE HERE
+
+        (function(){ emailjs.init(EMAIL_PUBLIC_KEY); })();
 
         function sendEmail() {
+            const db = firebase.database();
             const sender = document.getElementById('sender').value;
             const subject = document.getElementById('subject').value;
             const body = document.getElementById('body').value;
@@ -145,48 +121,49 @@
             const fill = document.getElementById('fill-bar');
             const text = document.getElementById('status-text');
 
-            if (!sender || !subject || !body) {
-                alert("ERROR: ALL FIELDS REQUIRED FOR PROTOCOL.");
-                return;
-            }
+            if (!sender || !subject || !body) { alert("ALL FIELDS REQUIRED."); return; }
 
-            // Start Animation
             overlay.style.display = 'flex';
             let width = 0;
             
-            const interval = setInterval(() => {
+            const int = setInterval(() => {
                 if (width >= 100) {
-                    clearInterval(interval);
+                    clearInterval(int);
                     
-                    // SAVE TO FIREBASE (Same place as feature requests)
-                    // We mark priority as 'EMAIL' so you know it came from this page
+                    // A. Save to Firebase (Mark priority as EMAIL so you know)
                     db.ref('messages').push({
                         sender: sender,
-                        subject: subject,
-                        desc: body,
-                        priority: "EMAIL", // Special tag for Admin Inbox
-                        timestamp: Date.now(),
-                        read: false
-                    }).then(() => {
-                        text.innerText = "SENT SUCCESSFULLY.";
-                        text.style.color = "#0F0";
-                        setTimeout(() => {
-                            window.location.href = "index.html";
-                        }, 1500);
+                        subject: subject, desc: body, priority: "EMAIL",
+                        timestamp: Date.now(), read: false
                     });
+
+                    // B. Send Email Notification
+                    const emailParams = {
+                        name: sender,
+                        time: new Date().toLocaleString(),
+                        message: `
+[TYPE]: DIRECT EMAIL
+[SUBJECT]: ${subject}
+
+[BODY]:
+${body}`
+                    };
+
+                    emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, emailParams)
+                        .then(() => console.log("Sent"), (err) => console.warn(err));
+
+                    text.innerText = "SENT SUCCESSFULLY.";
+                    text.style.color = "#0F0";
+                    setTimeout(() => window.location.href = "index.html", 1500);
 
                 } else {
                     width += Math.random() * 15;
-                    if(width > 100) width = 100;
+                    if(width>100) width=100;
                     fill.style.width = width + '%';
-                    
-                    if(width > 30) text.innerText = "ESTABLISHING UPLINK...";
-                    if(width > 70) text.innerText = "UPLOADING PACKETS...";
+                    if(width > 50) text.innerText = "UPLOADING...";
                 }
             }, 150);
         }
-
-        // MATRIX RAIN
-       </script>
+    </script>
 </body>
 </html>

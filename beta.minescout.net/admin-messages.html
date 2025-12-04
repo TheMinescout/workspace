@@ -6,26 +6,46 @@
     <title>ADMIN // INBOX</title>
     <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
 
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <!-- REMOVED MANUAL FIREBASE TAGS (Handled by config) -->
     
     <style>
         body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; height: 100vh; overflow: hidden; margin: 0; display: flex; flex-direction: column; }
-        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
-        .header { padding: 15px; border-bottom: 2px solid #0F0; background: rgba(0, 20, 0, 0.9); display: flex; justify-content: space-between; }
+        
+        /* Canvas is Z-Index 0, Content must be higher */
+        canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.3; pointer-events: none; }
+        
+        /* MAIN CONTAINER (Now Z-Index 10) */
+        #main-interface {
+            position: relative; z-index: 10; 
+            height: 100%; display: none; flex-direction: column;
+            background: rgba(0, 0, 0, 0.5); /* Slight dim */
+        }
+
+        .header { 
+            padding: 15px; border-bottom: 2px solid #0F0; 
+            background: rgba(0, 20, 0, 0.95); 
+            display: flex; justify-content: space-between; 
+        }
         .status-secure { background: #003300; padding: 2px 8px; font-weight: bold; }
+        
         #inbox-view { flex-grow: 1; overflow-y: auto; display: none; padding: 10px; }
         
-        .msg-bar { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px dashed #004400; cursor: pointer; }
-        .msg-bar.unread { color: #0F0; font-weight: bold; background: rgba(0, 50, 0, 0.2); }
+        .msg-bar { 
+            display: flex; justify-content: space-between; padding: 12px; 
+            border-bottom: 1px dashed #004400; cursor: pointer; 
+            background: rgba(0, 0, 0, 0.8); /* Readable background */
+        }
+        .msg-bar:hover { background: rgba(0, 50, 0, 0.5); }
+        .msg-bar.unread { color: #0F0; font-weight: bold; background: rgba(0, 50, 0, 0.3); }
         .msg-bar.read { color: #006600; }
         
         #message-view { display: none; flex-grow: 1; padding: 20px; overflow-y: auto; }
-        .view-frame { border: 1px solid #0F0; padding: 15px; background: rgba(0, 20, 0, 0.9); }
+        .view-frame { border: 1px solid #0F0; padding: 15px; background: rgba(0, 20, 0, 0.95); }
         .view-body { white-space: pre-wrap; line-height: 1.5; color: #ccffcc; margin: 15px 0; }
         
         .open-btn { position: fixed; bottom: 20px; right: 20px; border: 1px solid #0F0; padding: 10px; background:#000; cursor: pointer; z-index: 100; }
+        
+        #lockout { display:none; height:100%; justify-content:center; align-items:center; color:red; font-size:2rem; font-weight:bold; position:relative; z-index:20; }
     </style>
 </head>
 <body>
@@ -34,9 +54,9 @@
     <!-- Open CMD Trigger -->
     <div class="open-btn" onclick="window.toggleCmd()">[ CMD ]</div>
 
-    <div id="lockout" style="display:none; height:100%; justify-content:center; align-items:center; color:red; font-size:2rem; font-weight:bold;">ACCESS DENIED</div>
+    <div id="lockout">ACCESS DENIED</div>
 
-    <div id="main-interface" style="display:none; height:100%; flex-direction:column;">
+    <div id="main-interface">
         <div class="header"><span>// INBOX</span><span class="status-secure">SECURE</span></div>
         <div id="inbox-view"><div>LOADING...</div></div>
         <div id="message-view">
@@ -50,93 +70,106 @@
         </div>
     </div>
 
-    <script src="assets/js/firebase-config.js"></script>
-    <script src="assets/js/terminal-core.js?v=2.6"></script>
+    <!-- SCRIPTS -->
+    <script src="assets/js/firebase-config.js?v=2.8"></script>
+    <script src="assets/js/terminal-core.js?v=2.8"></script>
 
     <script>
-        const db = firebase.database();
-        const auth = firebase.auth();
-        const ADMIN_EMAIL = "theminescout@minescout.net";
-        let currentMessages = [];
-        let viewMode = 'LIST';
+        // WAIT FOR FIREBASE
+        document.addEventListener('firebase-ready', () => {
+            const db = firebase.database();
+            const auth = firebase.auth();
+            const ADMIN_EMAIL = "theminescout@minescout.net";
+            let currentMessages = [];
+            let viewMode = 'LIST';
 
-        auth.onAuthStateChanged((user) => {
-            if (user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                document.getElementById('main-interface').style.display = 'flex';
-                initInbox();
-            } else {
-                document.getElementById('lockout').style.display = 'flex';
-                setTimeout(() => window.location.href = 'index.html', 3000);
+            auth.onAuthStateChanged((user) => {
+                if (user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                    document.getElementById('main-interface').style.display = 'flex';
+                    initInbox();
+                } else {
+                    document.getElementById('lockout').style.display = 'flex';
+                    setTimeout(() => window.location.href = 'index.html', 3000);
+                }
+            });
+
+            function initInbox() {
+                db.ref('messages').on('value', (snapshot) => {
+                    currentMessages = [];
+                    const data = snapshot.val();
+                    if (data) Object.keys(data).forEach(key => currentMessages.push({ id: key, ...data[key] }));
+                    // Newest first
+                    currentMessages.reverse(); 
+                    renderList();
+                });
+            }
+
+            function renderList() {
+                if(viewMode === 'READ') return;
+                const inboxEl = document.getElementById('inbox-view');
+                inboxEl.style.display = 'block'; 
+                document.getElementById('message-view').style.display = 'none';
+                inboxEl.innerHTML = '';
+                
+                if(currentMessages.length === 0) {
+                    inboxEl.innerHTML = "<div style='padding:20px; color:#555;'>// NO MESSAGES FOUND</div>";
+                    return;
+                }
+
+                currentMessages.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = msg.read ? 'msg-bar read' : 'msg-bar unread';
+                    div.onclick = () => {
+                        // Pre-fill CMD logic via Core UI
+                        const input = document.getElementById('global-cmd-input');
+                        input.value = `open ${msg.subject}`;
+                        window.toggleCmd();
+                    };
+                    div.innerHTML = `<span>${msg.subject}</span><span>${msg.sender}</span>`;
+                    inboxEl.appendChild(div);
+                });
+            }
+
+            // PAGE SPECIFIC HANDLER
+            window.handlePageCommand = function(cmd, args) {
+                if (cmd === 'open' || cmd === 'read') {
+                    // Fuzzy search
+                    const target = currentMessages.find(m => m.subject.toLowerCase().includes(args));
+                    if (target) {
+                        openMessage(target);
+                        return true;
+                    }
+                    return "Msg not found.";
+                }
+                if (cmd === 'close' || cmd === 'back') {
+                    viewMode = 'LIST'; renderList();
+                    return "Returned to inbox.";
+                }
+                if (cmd === 'delete' || cmd === 'del') {
+                    const target = currentMessages.find(m => m.subject.toLowerCase().includes(args));
+                    if (target) {
+                        db.ref('messages/' + target.id).remove();
+                        if(viewMode === 'READ') { viewMode = 'LIST'; renderList(); }
+                        return "Message deleted.";
+                    }
+                    return "Msg not found.";
+                }
+                return null;
+            };
+
+            function openMessage(msg) {
+                viewMode = 'READ';
+                if (!msg.read) db.ref('messages/' + msg.id).update({ read: true });
+                document.getElementById('inbox-view').style.display = 'none';
+                document.getElementById('message-view').style.display = 'block';
+                document.getElementById('view-subject').innerText = msg.subject;
+                document.getElementById('view-sender').innerText = msg.sender;
+                document.getElementById('view-body').innerText = msg.desc;
             }
         });
 
-        function initInbox() {
-            db.ref('messages').on('value', (snapshot) => {
-                currentMessages = [];
-                const data = snapshot.val();
-                if (data) Object.keys(data).forEach(key => currentMessages.push({ id: key, ...data[key] }));
-                renderList();
-            });
-        }
-
-        function renderList() {
-            if(viewMode === 'READ') return;
-            const inboxEl = document.getElementById('inbox-view');
-            inboxEl.style.display = 'block'; document.getElementById('message-view').style.display = 'none';
-            inboxEl.innerHTML = '';
-            
-            currentMessages.forEach(msg => {
-                const div = document.createElement('div');
-                div.className = msg.read ? 'msg-bar read' : 'msg-bar unread';
-                div.onclick = () => {
-                    // Pre-fill CMD logic via Core UI
-                    const input = document.getElementById('global-cmd-input');
-                    input.value = `open ${msg.subject}`;
-                    window.toggleCmd();
-                };
-                div.innerHTML = `<span>${msg.subject}</span><span>${msg.sender}</span>`;
-                inboxEl.appendChild(div);
-            });
-        }
-
-        // PAGE SPECIFIC HANDLER
-        window.handlePageCommand = function(cmd, args) {
-            if (cmd === 'open' || cmd === 'read') {
-                const target = currentMessages.find(m => m.subject.toLowerCase().includes(args));
-                if (target) {
-                    window.toggleCmd(); // Close window to show message
-                    openMessage(target);
-                    return true;
-                }
-                return "Msg not found.";
-            }
-            if (cmd === 'close' || cmd === 'back') {
-                viewMode = 'LIST'; renderList();
-                window.toggleCmd();
-                return true;
-            }
-            if (cmd === 'delete' || cmd === 'del') {
-                const target = currentMessages.find(m => m.subject.toLowerCase().includes(args));
-                if (target) {
-                    db.ref('messages/' + target.id).remove();
-                    if(viewMode === 'READ') { viewMode = 'LIST'; renderList(); }
-                    return "Message deleted.";
-                }
-                return "Msg not found.";
-            }
-            return null;
-        };
-
-        function openMessage(msg) {
-            viewMode = 'READ';
-            if (!msg.read) db.ref('messages/' + msg.id).update({ read: true });
-            document.getElementById('inbox-view').style.display = 'none';
-            document.getElementById('message-view').style.display = 'flex';
-            document.getElementById('view-subject').innerText = msg.subject;
-            document.getElementById('view-sender').innerText = msg.sender;
-            document.getElementById('view-body').innerText = msg.desc;
-        }
-
-       </script>
+        // Manual Trigger if already ready
+        if(window.firebaseReady) document.dispatchEvent(new Event('firebase-ready'));
+    </script>
 </body>
 </html>
