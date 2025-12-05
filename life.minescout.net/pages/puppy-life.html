@@ -11,109 +11,120 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- The path goes up one directory to find the CSS file -->
-    <link rel="stylesheet" href="../assests\css\homepage.css">
-    <link rel="icon" type="image/png" href="../assests\images\favicon.png?v=2">
+    <!-- CSS Links (Updated paths) -->
+    <link rel="stylesheet" href="../assests/css/homepage.css?v=3.02">
+    <link rel="icon" type="image/png" href="../assests/images/favicon.png?v=2">
 
+    <style>
+        .dismiss-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 15px;
+            float: right;
+        }
+
+        .dismiss-btn:hover {
+            background-color: #dc2626;
+        }
+
+        #user-display a {
+            text-decoration: none;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Header Section with correct class -->
+    <!-- Header Section -->
     <header class="main-header">
         <div class="container site-title-container">
             <div id="auth-container">
-                <a href="/login.html" id="login-link">Login</a>
+                <a href="../login.html" id="login-link">Login</a>
             </div>
             <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts
-                        Life</a></h1>
+                <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
                 <p class="tagline">Puppy Life</p>
             </div>
             <div id="user-display" class="hidden">
-                <span id="user-email-display"></span>
-                <button id="sign-out-btn">Sign Out</button>
+                <a href="../account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
             </div>
         </div>
     </header>
 
-    <!-- This is the corrected full-width wrapper -->
+    <!-- Main Content Wrapper -->
     <div class="main-content-area">
-        <!-- This container inside constrains the content width and enables flexbox -->
         <div class="container">
 
-            <!-- Main content area -->
+            <!-- Main Content -->
             <main class="main-content">
-                <!-- Using .post-main class for consistent padding and background -->
                 <div class="post-main">
                     <article class="post-full">
                         <h1>Welcome to Puppy Life!</h1>
                         <p class="post-meta">Meet our dogs, Monty and Nigel.</p>
 
-                        <!-- Using the standard class for full-width images -->
-                        <img src="../Images/Puppy-life/Puppy-Homepage.jpg" alt="Two puppies playing"
-                            class="post-image-full">
+                        <!-- Image path updated to assests/images -->
+                        <img src="../assests/images/Puppy-life/Puppy-Homepage.jpg" alt="Two puppies playing" class="post-image-full" onerror="this.style.display='none'">
 
                         <div class="post-content">
-                            <p>This section of the site is dedicated to the lives of our wonderful dogs. Choose a puppy
-                                below to see all of their posts, pictures, and updates!</p>
+                            <p>This section of the site is dedicated to the lives of our wonderful dogs. Choose a puppy below to see all of their posts, pictures, and updates!</p>
                         </div>
-                        <a href="../Puppy Life/Montys Homepage.html" class="info-box-link">
+
+                        <!-- Links updated to posts/puppy/ folder -->
+                        <a href="../posts/puppy/monty.html" class="info-box-link">
                             <div class="info-box info-box-solid" style="background-color: black;">
-
                                 <h3 class="info-title">Monty</h3>
-
-                                <p class="info-subtitle">Click here to see Monty's (in progress) page</p>
-
+                                <p class="info-subtitle">Click here to see Monty's page</p>
                             </div>
                         </a>
 
-                        <a href="../Puppy Life/Nigels Homepage.html" class="info-box-link">
+                        <a href="../posts/puppy/nigel.html" class="info-box-link">
                             <div class="info-box info-box-solid" style="background-color: tan;">
-
                                 <h3 class="info-title">Nigel</h3>
-
-                                <p class="info-subtitle">Click here to see Nigel's (in progress) page</p>
-
+                                <p class="info-subtitle">Click here to see Nigel's page</p>
                             </div>
-                            <!-- Elfsight Before and After Slider | Untitled Before and After Slider -->
-                            <script src="https://elfsightcdn.com/platform.js" async></script>
-                            <div class="elfsight-app-38f1d3cf-1351-4d60-a267-3a1bb50966f1" data-elfsight-app-lazy></div>
                         </a>
-
+                        
+                        <!-- Elfsight Widget -->
+                        <script src="https://elfsightcdn.com/platform.js" async></script>
+                        <div class="elfsight-app-38f1d3cf-1351-4d60-a267-3a1bb50966f1" data-elfsight-app-lazy></div>
 
                     </article>
                 </div>
             </main>
 
-            <!-- The sidebar is a direct child of the container, alongside <main> -->
+            <!-- Modular Sidebar -->
             <aside id="sidebar">
-    <!-- This empty div is where the sidebar will appear -->
-    <div id="sidebar-container"></div> 
-</aside>
+                <div id="sidebar-container"></div> 
+            </aside>
 
-        </div> <!-- /.container -->
-    </div> <!-- /.main-content-area -->
+        </div>
+    </div>
 
-    <!-- Footer with correct class -->
+    <!-- Footer -->
     <footer class="main-footer">
         <div class="container">
+            <p>Phone Num: +1 (425) 559 9127</p>
+            <p>Email: <a href="mailto:theminescout@minescout.net">theminescout@minescouts.net</a></p>
             <p id="copyright">© 2025 Minescouts Life. All rights reserved.</p>
         </div>
     </footer>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-
-
-    <!-- Corrected JS path -->
-            <!-- The path goes up one directory to find the JS file -->
-    <script src="../assests/js/homepage.js" defer></script>
-    <script src="../assests/js/loader.js"></script>
-    <!-- Adjust the path ../ if you are inside a folder -->
+    <!-- Modular Scripts -->
+    <!-- 1. Auth (Login/Signout) -->
     <script type="module" src="../assests/js/auth.js"></script>
-</body>
+    
+    <!-- 2. Homepage Logic (Grid/UI) -->
+    <script type="module" src="../assests/js/homepage.js"></script>
+    
+    <!-- 3. Sidebar Loader -->
+    <script src="../assests/js/loader.js"></script>
 
+</body>
 </html>

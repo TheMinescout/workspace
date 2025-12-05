@@ -1,90 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beta - Minescouts Life</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assests\css\homepage.css">
-    <link rel="stylesheet" href="../assests/css/AI-ASSISTANT.css">
+
+    <!-- Fixed paths to use forward slashes / -->
+    <link rel="stylesheet" href="../assests/css/homepage.css?v=3.02">
     <link rel="icon" type="image/png" href="../assests/images/favicon.png?v=2">
+    
     <style>
-        #user-display a {
-            text-decoration: none;
-            color: white;
-        }
+        #user-display a { text-decoration: none; color: white; }
 
         /* --- THE CRAWL EFFECT --- */
         #matrix-overlay {
-            position: fixed;
-            left: 0;
-            width: 100vw;
-            z-index: 9999;
-            background-color: black;
-            overflow: hidden;
-            
-            /* CENTERING LOGIC */
-            top: 50%;
-            transform: translateY(-50%);
-            
-            /* START STATE: A thin glowing line */
+            position: fixed; left: 0; width: 100vw; z-index: 9999;
+            background-color: black; overflow: hidden;
+            top: 50%; transform: translateY(-50%);
             height: 0.5vh; 
-            border-top: 2px solid #0F0;
-            border-bottom: 2px solid #0F0;
-            box-shadow: 0 0 20px #0F0; /* The Glow */
-            
-            /* ANIMATION SPEED: 4 Seconds */
+            border-top: 2px solid #0F0; border-bottom: 2px solid #0F0;
+            box-shadow: 0 0 20px #0F0;
             transition: height 4s ease-in-out;
-            
-            display: none; /* Hidden until triggered */
+            display: none;
         }
-
-        #matrix-overlay.seeping {
-            /* END STATE: Full Screen */
-            height: 100vh;
-        }
-
-        /* The Canvas stays full size inside the window */
+        #matrix-overlay.seeping { height: 100vh; }
         canvas {
-            display: block;
-            /* We force the canvas to be taller than the container initially 
-               so the rain looks like it's already there waiting */
-            height: 100vh; 
-            width: 100%;
-            /* Keep rain centered as window opens */
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+            display: block; height: 100vh; width: 100%;
+            position: absolute; top: 50%; transform: translateY(-50%);
         }
 
         /* BUTTON STYLE */
         .beta-portal-btn {
-            background: #000;
-            color: #0F0;
-            border: 1px solid #0F0;
-            padding: 10px 20px;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            cursor: pointer;
-            margin-right: 15px;
-            text-transform: uppercase;
-            box-shadow: 0 0 5px #0F0;
-            transition: 0.3s;
+            background: #000; color: #0F0; border: 1px solid #0F0;
+            padding: 10px 20px; font-family: 'Courier New', monospace;
+            font-weight: bold; cursor: pointer; margin-right: 15px;
+            text-transform: uppercase; box-shadow: 0 0 5px #0F0; transition: 0.3s;
         }
-        .beta-portal-btn:hover {
-            background: #0F0;
-            color: #000;
-            box-shadow: 0 0 15px #0F0;
-        }
+        .beta-portal-btn:hover { background: #0F0; color: #000; box-shadow: 0 0 15px #0F0; }
         
         .controls-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
         }
     </style>
 </head>
@@ -95,9 +54,12 @@
         <canvas id="transitionCanvas"></canvas>
     </div>
 
+    <!-- HEADER -->
     <header class="main-header">
         <div class="container site-title-container">
-            <div id="auth-container"><a href="../login.html" id="login-link">Login</a></div>
+            <div id="auth-container">
+                <a href="../login.html" id="login-link">Login</a>
+            </div>
             <div class="site-title-wrapper">
                 <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
                 <p class="tagline">Beta Testing</p>
@@ -128,6 +90,8 @@
                     <p class="text-center" id="loading-message">Loading Beta Content...</p>
                 </div>
             </main>
+
+            <!-- MODULAR SIDEBAR -->
             <aside id="sidebar">
                 <div id="sidebar-container"></div> 
             </aside>
@@ -140,18 +104,16 @@
         </div>
     </footer>
 
-    <!-- TRANSITION LOGIC -->
+    <!-- MATRIX TRANSITION LOGIC (Kept Inline as it is unique to this page) -->
     <script>
         function enterTheMatrix() {
             const overlay = document.getElementById('matrix-overlay');
             const canvas = document.getElementById('transitionCanvas');
             const ctx = canvas.getContext('2d');
 
-            // 1. Setup Canvas (Full Screen Size)
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             
-            // Mix of Katakana and standard chars for "Hacker" look
             const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
             const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             const chars = katakana + latin;
@@ -160,14 +122,11 @@
             const columns = canvas.width / fontSize;
             const drops = [];
             
-            // Initialize drops at random Y positions so it looks like it's already raining
             for(let i = 0; i < columns; i++) {
                 drops[i] = Math.floor(Math.random() * canvas.height/fontSize); 
             }
 
-            // 2. Animation Loop
             function draw() {
-                // Slower trail fade (0.05) creates "ghosting"
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = '#0F0';
@@ -176,8 +135,6 @@
                 for(let i = 0; i < drops.length; i++) {
                     const text = chars.charAt(Math.floor(Math.random() * chars.length));
                     ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                    
-                    // Reset to top randomly
                     if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                         drops[i] = 0;
                     }
@@ -187,79 +144,20 @@
             }
             draw();
 
-            // 3. Trigger The Crawl
             overlay.style.display = 'block';
-            
-            // Small delay to allow display:block to render, then expand height
-            setTimeout(() => {
-                overlay.classList.add('seeping');
-            }, 10);
-
-            // 4. Redirect after 4 seconds
-            setTimeout(() => {
-                window.location.href = "https://beta.minescout.net";
-            }, 4000);
+            setTimeout(() => { overlay.classList.add('seeping'); }, 10);
+            setTimeout(() => { window.location.href = "https://beta.minescout.net"; }, 4000);
         }
     </script>
 
-    <!-- EXISTING FIREBASE LOGIC -->
+    <!-- CONTENT LOADING LOGIC -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        // Import connection from your config file
+        import { db } from "../assests/js/firebase-config.js";
+        import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAZE1qCY8YCZLrZ2EWT0QTFRoBVHvabqDM",
-            authDomain: "minescout-life-4a668.firebaseapp.com",
-            databaseURL: "https://minescout-life-4a668-default-rtdb.firebaseio.com",
-            projectId: "minescout-life-4a668",
-            storageBucket: "minescout-life-4a668.appspot.com",
-            messagingSenderId: "351393417322",
-            appId: "1:351393417322:web:92c9a92a50e60890136213",
-            measurementId: "G-RFP78TP9KZ"
-        };
-
-        const ADMIN_EMAIL = 'theminescout@minescout.net';
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const auth = getAuth(app);
-
-        const authContainer = document.getElementById('auth-container');
-        const userDisplay = document.getElementById('user-display');
-        const userEmailDisplay = document.getElementById('user-email-display');
-        const signOutBtn = document.getElementById('signOut-btn');
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user && !user.isAnonymous) {
-                const isAdmin = user.email === ADMIN_EMAIL;
-                if (authContainer) authContainer.classList.add('hidden');
-                if (userDisplay) userDisplay.classList.remove('hidden');
-
-                const usernameRef = ref(db, `usernames/${user.uid}`);
-                const snapshot = await get(usernameRef);
-                const username = snapshot.exists() ? snapshot.val() : user.email;
-
-                if (userEmailDisplay) userEmailDisplay.textContent = isAdmin ? `Admin: ${username}` : username;
-            } else {
-                if (authContainer) authContainer.classList.remove('hidden');
-                if (userDisplay) userDisplay.classList.add('hidden');
-            }
-        });
-
-        if (signOutBtn) {
-            signOutBtn.addEventListener('click', () => signOut(auth).then(() => window.location.href = '../index.html').catch(err => console.error(err)));
-        }
-
-        let categoryTitle = document.title.split('-')[0].trim();
-        const path = window.location.pathname;
-        if (path.includes('coding-projects')) categoryTitle = "Coding Projects";
-        else if (path.includes('tech-tips')) categoryTitle = "Tech Tips";
-        else if (path.includes('updates')) categoryTitle = "Updates";
-        else if (path.includes('puppy-life')) categoryTitle = "Puppy Life";
-        else if (path.includes('minecraft-server')) categoryTitle = "Minecraft Server";
-        else if (path.includes('beta')) categoryTitle = "BETA";
-
+        // Logic to fetch posts specifically for the BETA category
+        const categoryTitle = "BETA"; 
         const contentRef = ref(db, 'content');
         const postsContainer = document.getElementById('posts-container');
         const loadingMessage = document.getElementById('loading-message');
@@ -292,25 +190,9 @@
 
         function createPostElement(postId, post) {
             const date = new Date(post.timestamp).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-            const fullContent = post.fullContent || post.content || post.body;
-
-            if (fullContent) {
-                return `
-                <article class="post-card full-post" data-post-id="${postId}">
-                    ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title || 'Post Image'}" onerror="this.onerror=null; this.src='https://placehold.co/400x300/e0e0e0/333333?text=Image+Unavailable';" />` : ''}
-                    <div class="post-card-content">
-                        <h3><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3>
-                        <p class="post-meta">Posted on ${date}</p>
-                        <div class="post-body">${fullContent}</div>
-                        <a href="${post.linkUrl || '#'}" class="read-more" target="_blank">${post.linkText || 'Use Now!!!'}</a>
-                    </div>
-                </article>
-            `;
-            }
-
             return `
                 <article class="post-card" data-post-id="${postId}">
-                    ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title || 'Post Image'}" onerror="this.onerror=null; this.src='https://placehold.co/400x300/e0e0e0/333333?text=Image+Unavailable';" />` : ''}
+                    ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}" onerror="this.onerror=null; this.src='https://placehold.co/400x300/e0e0e0/333333?text=Image+Unavailable';" />` : ''}
                     <div class="post-card-content">
                         <h3><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3>
                         <p class="post-meta">Posted on ${date}</p>
@@ -320,28 +202,12 @@
                 </article>
             `;
         }
-
-        function updateGridLayout(view) {
-            const container = document.getElementById('posts-container');
-            if (container) {
-                container.className = `posts-grid view-${view}`;
-                document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-                const btn = document.getElementById(`grid-${view}`);
-                if (btn) btn.classList.add('active');
-                localStorage.setItem('gridView', view);
-            }
-        }
-        const savedView = localStorage.getItem('gridView') || '3';
-        updateGridLayout(savedView);
-        document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const view = btn.getAttribute('data-view');
-                updateGridLayout(view);
-            });
-        });
     </script>
-    <script src="../assests/js/homepage.js" defer></script>
-    <script src="../assests/js/loader.js"></script>
+
+    <!-- STANDARD MODULAR SCRIPTS -->
     <script type="module" src="../assests/js/auth.js"></script>
+    <script src="../assests/js/loader.js"></script>
+    <script type="module" src="../assests/js/homepage.js"></script>
+
 </body>
 </html>

@@ -10,97 +10,25 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="assests\css\homepage.css">
+    <!-- Paths assume file is in root -->
+    <link rel="stylesheet" href="assests/css/homepage.css?v=3.02">
     <link rel="icon" type="image/png" href="assests/images/favicon.png?v=2">
 
     <style>
-        body {
-            background-color: #f4f4f4;
-            color: #333;
-        }
-
-        .account-container {
-            max-width: 672px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .account-section {
-            background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            border: 1px solid #ddd;
-            margin-bottom: 2rem;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 0.75rem;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 0.375rem;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #5a8a5a;
-            box-shadow: 0 0 0 2px rgba(90, 138, 90, 0.3);
-        }
-
-        .update-btn {
-            display: inline-block;
-            padding: 0.6rem 1.2rem;
-            background-color: #5a8a5a;
-            color: white;
-            font-weight: 600;
-            border: none;
-            border-radius: 0.375rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .update-btn:hover {
-            background-color: #446944;
-        }
-
-        .update-btn:disabled {
-            background-color: #999;
-            cursor: not-allowed;
-        }
-
-        #status-message {
-            text-align: center;
-            font-weight: 500;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .status-success {
-            background-color: #e6f0e6;
-            color: #446944;
-        }
-
-        .status-error {
-            background-color: #fde8e8;
-            color: #dc2626;
-        }
+        body { background-color: #f4f4f4; color: #333; }
+        .account-container { max-width: 672px; margin: 0 auto; padding: 2rem; }
+        .account-section { background-color: #ffffff; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); border: 1px solid #ddd; margin-bottom: 2rem; }
+        .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 0.75rem; }
+        .form-label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+        .form-input { width: 100%; padding: 0.75rem; border-radius: 0.375rem; border: 1px solid #ccc; background-color: #f9f9f9; transition: border-color 0.2s, box-shadow 0.2s; }
+        .form-input:focus { outline: none; border-color: #5a8a5a; box-shadow: 0 0 0 2px rgba(90, 138, 90, 0.3); }
+        .update-btn { display: inline-block; padding: 0.6rem 1.2rem; background-color: #5a8a5a; color: white; font-weight: 600; border: none; border-radius: 0.375rem; cursor: pointer; transition: background-color 0.3s; }
+        .update-btn:hover { background-color: #446944; }
+        .update-btn:disabled { background-color: #999; cursor: not-allowed; }
+        #status-message { text-align: center; font-weight: 500; padding: 1rem; border-radius: 0.5rem; margin-bottom: 2rem; }
+        .status-success { background-color: #e6f0e6; color: #446944; }
+        .status-error { background-color: #fde8e8; color: #dc2626; }
+        .hidden { display: none; }
     </style>
 </head>
 
@@ -109,10 +37,10 @@
     <header class="main-header">
         <div class="container site-title-container">
             <div id="auth-container">
-                <a href="/login.html" id="login-link">Login</a>
+                <a href="login.html" id="login-link">Login</a>
             </div>
             <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="/" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <h1 class="site-title"><a href="index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
                 <p class="tagline">Account Management</p>
             </div>
             <div id="user-display" class="hidden">
@@ -126,15 +54,14 @@
         <div class="account-container">
             <div id="status-message" class="hidden"></div>
             <div id="logged-out-message" class="hidden account-section text-center">
-                <p>Please <a href="/login.html" class="font-bold underline">log in</a> to manage your account.</p>
+                <p>Please <a href="login.html" class="font-bold underline">log in</a> to manage your account.</p>
             </div>
 
             <div id="account-forms" class="hidden">
                 <!-- Change Username -->
                 <div class="account-section">
                     <h3 class="section-title">Change Username</h3>
-                    <p class="text-gray-600 mb-4">Your current username is: <strong
-                            id="current-username">Loading...</strong></p>
+                    <p class="text-gray-600 mb-4">Your current username is: <strong id="current-username">Loading...</strong></p>
                     <form id="username-form">
                         <label for="username" class="form-label">New Username</label>
                         <input type="text" id="username" required class="form-input mb-4" minlength="3">
@@ -164,6 +91,7 @@
                             <label for="confirm-password" class="form-label">Confirm New Password</label>
                             <input type="password" id="confirm-password" required class="form-input">
                         </div>
+                        <br>
                         <button type="submit" class="update-btn">Update Password</button>
                     </form>
                 </div>
@@ -177,24 +105,19 @@
         </div>
     </footer>
 
+    <!-- Updated Modular Script -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        // 1. Import secure config
+        import { auth, db } from "./assests/js/firebase-config.js";
+        
+        // 2. Import specific functions needed for this page
+        import { onAuthStateChanged, signOut, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAZE1qCY8YCZLrZ2EWT0QTFRoBVHvabqDM", authDomain: "minescout-life-4a668.firebaseapp.com",
-            databaseURL: "https://minescout-life-4a668-default-rtdb.firebaseio.com", projectId: "minescout-life-4a668",
-            storageBucket: "minescout-life-4a668.appspot.com", messagingSenderId: "351393417322",
-            appId: "1:351393417322:web:92c9a92a50e60890136213", measurementId: "G-RFP78TP9KZ"
-        };
         const ADMIN_EMAIL = 'theminescout@minescout.net';
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
-
         const statusMessage = document.getElementById('status-message');
 
+        // Auth Listener
         onAuthStateChanged(auth, user => {
             const authContainer = document.getElementById('auth-container');
             const userDisplay = document.getElementById('user-display');
@@ -202,9 +125,9 @@
 
             if (user && !user.isAnonymous) {
                 // Show user in header
-                authContainer.style.display = 'none';
-                userDisplay.style.display = 'flex';
-                userEmailDisplay.textContent = user.email === ADMIN_EMAIL ? `Admin: ${user.email}` : user.email;
+                if(authContainer) authContainer.style.display = 'none';
+                if(userDisplay) userDisplay.classList.remove('hidden');
+                if(userEmailDisplay) userEmailDisplay.textContent = user.email === ADMIN_EMAIL ? `Admin: ${user.email}` : user.email;
 
                 // Show account forms
                 document.getElementById('logged-out-message').classList.add('hidden');
@@ -222,8 +145,8 @@
 
             } else {
                 // Hide user in header
-                authContainer.style.display = 'block';
-                userDisplay.style.display = 'none';
+                if(authContainer) authContainer.style.display = 'block';
+                if(userDisplay) userDisplay.classList.add('hidden');
 
                 // Hide forms and show login message
                 document.getElementById('logged-out-message').classList.remove('hidden');
@@ -231,12 +154,13 @@
             }
         });
 
-        document.getElementById('signOut-btn').addEventListener('click', () => signOut(auth));
+        document.getElementById('signOut-btn').addEventListener('click', () => signOut(auth).then(() => window.location.href = 'index.html'));
 
         function showStatus(message, isError = false) {
             statusMessage.textContent = message;
             statusMessage.className = isError ? 'status-error' : 'status-success';
-            setTimeout(() => statusMessage.className = 'hidden', 5000);
+            statusMessage.classList.remove('hidden');
+            setTimeout(() => statusMessage.classList.add('hidden'), 5000);
         }
 
         // --- FORM HANDLERS ---
@@ -303,5 +227,4 @@
 
     </script>
 </body>
-
 </html>

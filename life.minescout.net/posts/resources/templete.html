@@ -11,10 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- CSS LINKS (Assuming this file is 2 folders deep, e.g. posts/tech/) -->
-    <!-- If your folder is named 'assets' remove the extra 's'. If 'assests', keep it. -->
+    <!-- CSS LINKS (Assumes file is 2 folders deep, e.g. posts/tech/) -->
     <link rel="stylesheet" href="../../assests/css/homepage.css?v=3.02">
-    <link rel="stylesheet" href="../../assests/css/AI-ASSISTANT.css">
     <link rel="icon" type="image/png" href="../../assests/images/favicon.png?v=2">
 </head>
 <body>
@@ -22,7 +20,6 @@
     <!-- HEADER -->
     <header class="main-header">
         <div class="container site-title-container">
-            <!-- Note: relative paths ../../ used here for deep folders -->
             <div id="auth-container"><a href="../../login.html" id="login-link">Login</a></div>
             <div class="site-title-wrapper">
                 <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
@@ -53,7 +50,6 @@
                     <p class="post-meta">Posted on [DATE] by [AUTHOR]</p>
 
                     <!-- [6] MAIN IMAGE (Optional) -->
-                    <!-- Upload image to assests/images/ and link below -->
                     <img src="../../assests/images/[YOUR-IMAGE].png" alt="Title Image" class="post-image-full" onerror="this.style.display='none'">
                     
                     <!-- [7] ARTICLE BODY -->
@@ -98,16 +94,14 @@
         <div class="container"><p id="copyright">© 2025 Minescouts Life. All rights reserved.</p></div>
     </footer>
 
-    <!-- SCRIPTS -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
-    
     <!-- DYNAMIC LOADERS -->
-    <script type="module" src="../../assests/js/auth.js"></script>
-    <script src="../../assests/js/homepage.js" defer></script>
+    <!-- 1. Auth (Login/User logic) -->
+    <script type="module" src="../../assests/js/auth.js?v=1.1"></script>
+
+    <!-- 2. Homepage Logic (Votes/Comments/Grid) -->
+    <script type="module" src="../../assests/js/homepage.js"></script>
+
+    <!-- 3. Sidebar Loader -->
     <script src="../../assests/js/loader.js"></script>
 
 </body>

@@ -1,6 +1,7 @@
 # Ignore the secret config
 
 assests/js/firebase-config.js
+.gitignore
 # Ignore system files
 .DS_Store
 Thumbs.db
