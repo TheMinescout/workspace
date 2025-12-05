@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Number Guessing Game</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#7c3aed;--muted:#9aa4b2;--success:#16a34a;--danger:#ef4444}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,#071023 0%, #061020 100%);color:#e6eef8;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .card{width:100%;max-width:680px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:16px;padding:22px;box-shadow:0 8px 30px rgba(2,6,23,0.7);border:1px solid rgba(255,255,255,0.03)}
+    h1{margin:0 0 6px;font-size:20px}
+    p.lead{margin:0 0 18px;color:var(--muted)}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+    label{font-size:13px;color:var(--muted)}
+    input[type=number],input[type=text]{padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);color:inherit;width:120px}
+    button{background:var(--accent);border:0;padding:10px 14px;border-radius:10px;color:white;font-weight:600;cursor:pointer}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:500}
+    .main-row{display:flex;gap:20px;align-items:flex-start}
+    .left{flex:1}
+    .right{width:220px}
+    .feedback{min-height:44px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.01);display:flex;align-items:center}
+    .big{font-size:28px;font-weight:700;letter-spacing:1px}
+    .meta{margin-top:12px;color:var(--muted);font-size:13px}
+    .history{margin-top:12px;background:rgba(255,255,255,0.01);padding:10px;border-radius:10px;max-height:180px;overflow:auto}
+    .hint{display:inline-block;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.02);font-weight:600}
+    .success{color:var(--success)}
+    .danger{color:var(--danger)}
+    footer{margin-top:14px;color:var(--muted);font-size:13px}
+    @media (max-width:640px){.main-row{flex-direction:column}.right{width:100%}}
+  </style>
+</head>
+<body>
+  <div class="card" role="application" aria-labelledby="title">
+    <div class="top">
+      <h1 id="title">Number Guessing Game</h1>
+      <p class="lead">Pick a range, make guesses, and try to find the secret number. Feedback will tell you if you're too high or too low.</p>
+    </div>
+
+    <div class="controls" aria-hidden="false">
+      <div>
+        <label for="min">Min</label><br>
+        <input id="min" type="number" value="1" aria-label="minimum number" />
+      </div>
+      <div>
+        <label for="max">Max</label><br>
+        <input id="max" type="number" value="100" aria-label="maximum number" />
+      </div>
+      <div style="display:flex;align-items:flex-end;gap:8px">
+        <button id="start">Start / Restart</button>
+        <button class="ghost" id="hintBtn">Show Hint</button>
+      </div>
+    </div>
+
+    <div class="main-row">
+      <div class="left">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+          <label for="guess" style="font-size:13px">Your guess</label>
+          <input id="guess" type="number" aria-label="your guess" placeholder="Enter a number" />
+          <button id="submit">Guess</button>
+          <button class="ghost" id="giveUp">Give Up</button>
+        </div>
+
+        <div class="feedback" id="feedback" aria-live="polite">Make a guess to begin — good luck!</div>
+
+        <div class="meta">
+          Attempts: <span id="attempts">0</span> &nbsp; • &nbsp; Best (least attempts): <span id="best">—</span>
+        </div>
+
+        <div class="history" id="history" aria-label="guess history">
+          <strong style="display:block;margin-bottom:8px">Guess history</strong>
+          <ul id="histList" style="margin:0;padding-left:18px"></ul>
+        </div>
+      </div>
+
+      <aside class="right">
+        <div style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.02);">
+          <div class="big" id="rangeDisplay">1 — 100</div>
+          <div style="margin-top:8px" class="hint">Range</div>
+          <div style="margin-top:12px;color:var(--muted)">Keyboard: press <kbd>Enter</kbd> to submit. Use Start to change range.</div>
+        </div>
+
+        <div style="margin-top:12px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.01)">
+          <strong>Quick actions</strong>
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+            <button id="autoPlay" class="ghost">Autoplay 5</button>
+            <button id="clearHistory" class="ghost">Clear History</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      Tip: you can change the range before starting. The secret number resets when you click Start / Restart.
+    </footer>
+  </div>
+
+  <script>
+    // Utility
+    const $ = id => document.getElementById(id);
+
+    let secret = null;
+    let attempts = 0;
+    let min = 1, max = 100;
+
+    function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a }
+
+    function startGame(){
+      const minVal = parseInt($('min').value,10);
+      const maxVal = parseInt($('max').value,10);
+      if (Number.isNaN(minVal) || Number.isNaN(maxVal) || minVal>=maxVal){
+        alert('Please enter a valid range where min < max.');
+        return;
+      }
+      min = minVal; max = maxVal;
+      secret = randInt(min,max);
+      attempts = 0;
+      $('attempts').textContent = attempts;
+      $('histList').innerHTML = '';
+      $('feedback').textContent = 'Game started — make your first guess!';
+      $('rangeDisplay').textContent = `${min} — ${max}`;
+      $('guess').value = '';
+      $('guess').focus();
+      // persist current range
+      localStorage.setItem('ng_range', JSON.stringify({min,max}));
+      // store secret in session so Give Up can reveal (not persisted long-term)
+      sessionStorage.setItem('ng_secret', String(secret));
+    }
+
+    function loadBest(){
+      const best = localStorage.getItem('ng_best');
+      $('best').textContent = best ? best : '—';
+    }
+
+    function updateHistory(guess, result){
+      const li = document.createElement('li');
+      li.textContent = `${guess} — ${result}`;
+      $('histList').prepend(li);
+    }
+
+    function submitGuess(){
+      const val = parseInt($('guess').value,10);
+      if (Number.isNaN(val)){
+        $('feedback').textContent = 'Please enter a number.';
+        return;
+      }
+      attempts += 1;
+      $('attempts').textContent = attempts;
+      if (secret === null){
+        // restore if page reloaded but session secret present
+        const s = sessionStorage.getItem('ng_secret');
+        if (s) secret = parseInt(s,10);
+      }
+      if (secret === null){
+        $('feedback').textContent = 'No active game. Click Start / Restart.';
+        return;
+      }
+      if (val === secret){
+        $('feedback').innerHTML = `Correct! The number was <strong class="success">${secret}</strong>.`;
+        updateHistory(val,'Correct');
+        // update best
+        const best = parseInt(localStorage.getItem('ng_best') || '0',10);
+        if (!best || attempts < best) localStorage.setItem('ng_best', String(attempts));
+        loadBest();
+        // end game
+        sessionStorage.removeItem('ng_secret');
+        secret = null;
+      } else if (val < secret){
+        $('feedback').textContent = 'Too low — try a higher number.';
+        updateHistory(val,'Too low');
+      } else {
+        $('feedback').textContent = 'Too high — try a lower number.';
+        updateHistory(val,'Too high');
+      }
+      $('guess').value = '';
+      $('guess').focus();
+    }
+
+    // Controls wiring
+    $('start').addEventListener('click', startGame);
+    $('submit').addEventListener('click', submitGuess);
+    $('guess').addEventListener('keydown', e => { if (e.key === 'Enter') submitGuess() });
+
+    $('giveUp').addEventListener('click', ()=>{
+      const s = sessionStorage.getItem('ng_secret');
+      if (!s){ alert('No active game to give up on. Start a new game.'); return }
+      alert('The secret number was: ' + s);
+      sessionStorage.removeItem('ng_secret');
+      secret = null;
+      $('feedback').textContent = 'You gave up — click Start / Restart to play again.';
+    });
+
+    $('hintBtn').addEventListener('click', ()=>{
+      const s = sessionStorage.getItem('ng_secret');
+      if (!s){ $('feedback').textContent = 'No active game. Click Start to create one.'; return }
+      const val = parseInt(s,10);
+      const mid = Math.floor((min+max)/2);
+      let hint = '';
+      if (val === mid) hint = `It's exactly the midpoint (${mid}) — surprising!`;
+      else hint = val < mid ? `The secret is in the lower half (${min}–${mid}).` : `The secret is in the upper half (${mid+1}–${max}).`;
+      $('feedback').textContent = hint;
+    });
+
+    $('clearHistory').addEventListener('click', ()=>{ $('histList').innerHTML=''; });
+
+    $('autoPlay').addEventListener('click', ()=>{
+      // make up to 5 automated binary-search guesses (for demo)
+      const s = sessionStorage.getItem('ng_secret');
+      if (!s){ $('feedback').textContent = 'Start a game first.'; return }
+      let low = min, high = max;
+      for (let i=0;i<5;i++){
+        const g = Math.floor((low+high)/2);
+        const num = parseInt(sessionStorage.getItem('ng_secret'),10);
+        attempts += 1;
+        if (g===num){ updateHistory(g,'Correct (auto)'); $('feedback').textContent = `Autoplay guessed correctly: ${g}`; sessionStorage.removeItem('ng_secret'); secret=null; break }
+        if (g < num){ updateHistory(g,'Too low (auto)'); low = g+1 }
+        else { updateHistory(g,'Too high (auto)'); high = g-1 }
+        $('attempts').textContent = attempts;
+      }
+    });
+
+    // state restore
+    window.addEventListener('load', ()=>{
+      const range = JSON.parse(localStorage.getItem('ng_range')||'null');
+      if (range){ $('min').value = range.min; $('max').value = range.max; $('rangeDisplay').textContent = `${range.min} — ${range.max}` }
+      startGame(); // start automatically on load
+      loadBest();
+    });
+
+    // keep session secret in sync if user opened another tab
+    window.addEventListener('storage', (e)=>{
+      if (e.key === 'ng_secret'){
+        // no UI action required, but we keep internal secret track consistent
+        const s = sessionStorage.getItem('ng_secret');
+        if (s) secret = parseInt(s,10);
+      }
+    });
+  </script>
+</body>
+</html>

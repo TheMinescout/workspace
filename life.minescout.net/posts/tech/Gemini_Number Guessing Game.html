@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Number</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for Inter font and general body styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        /* Custom scrollbar to match theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #a78bfa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="p-4">
+
+<div id="app" class="w-full max-w-lg bg-white p-8 rounded-xl shadow-2xl border border-gray-100">
+    
+    <h1 class="text-3xl font-extrabold text-indigo-700 mb-2 text-center">
+        The Cuboid Oracle
+    </h1>
+    <p class="text-center text-gray-500 mb-6">
+        Guess the Secret Number before time runs out! (Just kidding, take your time.)
+    </p>
+
+    <!-- Difficulty Selection Screen -->
+    <div id="difficulty-screen" class="space-y-4">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Choose Difficulty:</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <button onclick="setDifficulty(50)" class="difficulty-btn bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg font-bold transition duration-150">
+                Easy (1-50)
+            </button>
+            <button onclick="setDifficulty(100)" class="difficulty-btn bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-lg font-bold transition duration-150">
+                Medium (1-100)
+            </button>
+            <button onclick="setDifficulty(200)" class="difficulty-btn bg-red-500 hover:bg-red-600 text-white p-3 rounded-lg font-bold transition duration-150">
+                Hard (1-200)
+            </button>
+        </div>
+    </div>
+
+    <!-- Game Play Screen -->
+    <div id="game-screen" class="hidden space-y-4">
+        
+        <div class="bg-indigo-50 p-4 rounded-lg text-center shadow-inner">
+            <p id="range-display" class="text-lg font-medium text-indigo-700">
+                I am thinking of a number between 1 and <span id="max-range-span">100</span>.
+            </p>
+            <p id="attempts-display" class="text-sm text-gray-500 mt-1">
+                Attempts: <span id="attempts-count">0</span>
+            </p>
+        </div>
+
+        <!-- Guess Input -->
+        <div class="flex space-x-2">
+            <input type="number" id="guess-input" placeholder="Enter your guess" 
+                   class="flex-grow p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" 
+                   min="1" required>
+            <button id="guess-button" onclick="checkGuess()" 
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-lg font-semibold transition duration-150 active:scale-95">
+                Guess
+            </button>
+        </div>
+
+        <!-- Feedback Message Area -->
+        <div id="message-box" class="min-h-[50px] p-3 text-center rounded-lg font-bold transition duration-300 ease-in-out">
+            <!-- Game feedback appears here -->
+        </div>
+
+        <!-- Action Button (Reset/Play Again) -->
+        <div class="flex justify-center pt-2">
+            <button id="reset-button" onclick="resetGame()" 
+                    class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-medium transition duration-150 shadow-md">
+                Change Difficulty
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Global Game State
+    let secretNumber;
+    let maxRange;
+    let attempts;
+    let gameActive = false;
+
+    // DOM Elements
+    const difficultyScreen = document.getElementById('difficulty-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const maxRangeSpan = document.getElementById('max-range-span');
+    const attemptsCount = document.getElementById('attempts-count');
+    const guessInput = document.getElementById('guess-input');
+    const guessButton = document.getElementById('guess-button');
+    const messageBox = document.getElementById('message-box');
+    
+    // --- Utility Functions ---
+
+    /**
+     * Updates the feedback message box.
+     * @param {string} message - The text to display.
+     * @param {string} type - 'info', 'success', or 'error'.
+     */
+    function showFeedback(message, type) {
+        let bgColor, textColor;
+        
+        switch (type) {
+            case 'success':
+                bgColor = 'bg-green-100';
+                textColor = 'text-green-700';
+                break;
+            case 'error':
+                bgColor = 'bg-red-100';
+                textColor = 'text-red-700';
+                break;
+            case 'info':
+            default:
+                bgColor = 'bg-blue-100';
+                textColor = 'text-blue-700';
+                break;
+        }
+
+        messageBox.className = `min-h-[50px] p-3 text-center rounded-lg font-bold transition duration-300 ease-in-out ${bgColor} ${textColor}`;
+        messageBox.textContent = message;
+    }
+
+    // --- Game Logic ---
+
+    /**
+     * Initializes the game with the selected maximum range.
+     * @param {number} range - The upper limit of the guessing range.
+     */
+    function startGame(range) {
+        maxRange = range;
+        secretNumber = Math.floor(Math.random() * maxRange) + 1;
+        attempts = 0;
+        gameActive = true;
+
+        // Update UI
+        maxRangeSpan.textContent = maxRange;
+        attemptsCount.textContent = attempts;
+        guessInput.value = '';
+        guessInput.min = 1;
+        guessInput.max = maxRange;
+        guessInput.disabled = false;
+        guessButton.disabled = false;
+        
+        showFeedback(`New game started! Guess a number between 1 and ${maxRange}.`, 'info');
+    }
+    
+    /**
+     * Handles the difficulty selection and transitions to the game screen.
+     * @param {number} range - The maximum number for the game.
+     */
+    function setDifficulty(range) {
+        difficultyScreen.classList.add('hidden');
+        gameScreen.classList.remove('hidden');
+        startGame(range);
+    }
+
+    /**
+     * Checks the user's guess against the secret number.
+     */
+    function checkGuess() {
+        if (!gameActive) return;
+
+        const guessStr = guessInput.value.trim();
+        
+        if (!guessStr) {
+            showFeedback("Please enter a guess.", 'error');
+            return;
+        }
+        
+        const guess = parseInt(guessStr, 10);
+
+        if (isNaN(guess) || guess < 1 || guess > maxRange) {
+            showFeedback(`Invalid input. Please enter a whole number between 1 and ${maxRange}.`, 'error');
+            guessInput.value = '';
+            return;
+        }
+
+        attempts++;
+        attemptsCount.textContent = attempts;
+
+        if (guess === secretNumber) {
+            showFeedback(`🎉 YOU WON! It took you ${attempts} attempts to guess ${secretNumber}!`, 'success');
+            gameActive = false;
+            guessInput.disabled = true;
+            guessButton.disabled = true;
+        } else if (guess < secretNumber) {
+            showFeedback("Too low! Try a higher number.", 'info');
+        } else {
+            showFeedback("Too high! Try a lower number.", 'info');
+        }
+    }
+    
+    /**
+     * Resets the game and returns to the difficulty selection screen.
+     */
+    function resetGame() {
+        gameScreen.classList.add('hidden');
+        difficultyScreen.classList.remove('hidden');
+        showFeedback("Select a new difficulty to begin.", 'info');
+    }
+
+    // Event Listener for Enter key
+    guessInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            checkGuess();
+            e.preventDefault(); // Prevent default form submit (if any)
+        }
+    });
+
+    // Initial setup when the page loads
+    window.onload = function() {
+        // Initially show a welcome message on the difficulty screen
+        showFeedback("Select a difficulty to begin playing.", 'info');
+    };
+    
+</script>
+
+</body>
+</html>

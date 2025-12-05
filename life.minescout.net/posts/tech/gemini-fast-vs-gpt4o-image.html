@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- [1] PAGE TITLE -->
+    <title>Gemini Fast vs GPT-4o: Image Gen Battle - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- CSS LINKS -->
+    <link rel="stylesheet" href="../../assests/css/homepage.css?v=3.02">
+    <link rel="stylesheet" href="../../assests/css/AI-ASSISTANT.css">
+    <link rel="icon" type="image/png" href="../../assests/images/favicon.png?v=2">
+    
+    <style>
+        /* Image Comparison Styles */
+        .image-row { 
+            display: flex; 
+            gap: 20px; 
+            margin-bottom: 30px; 
+            flex-wrap: wrap; 
+        }
+        .image-col { 
+            flex: 1; 
+            min-width: 300px; 
+            background: #fff; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 10px; 
+        }
+        .image-col h3 { 
+            text-align: center; 
+            margin-top: 0; 
+            color: #333; 
+            font-size: 1.2rem; 
+        }
+        .image-col img { 
+            width: 100%; 
+            height: auto; 
+            border-radius: 4px; 
+            border: 1px solid #eee;
+        }
+        .prompt-box {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-left: 4px solid #5a8a5a;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container"><a href="../../login.html" id="login-link">Login</a></div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Tech Tips</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <a href="../../account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            
+            <!-- MAIN CONTENT -->
+            <main class="post-main" data-post-id="gemini-fast-vs-gpt4o-image">
+                
+                <a href="../../pages/tech-tips.html" class="back-link">« Back to Tech Tips</a>
+
+                <article class="post-full">
+                    <h1>Gemini Fast vs. GPT-4o: The Ultimate Image Generation Contest</h1>
+                    <p class="post-meta">Posted on [INSERT DATE] by TheMinescouter</p>
+
+                    <!-- TITLE IMAGE -->
+                    <img src="../../assests/images/tech/nano-banana-vs-gpt-image/Title.png" alt="Gemini vs GPT-4o Image Battle" class="post-image-full" onerror="this.style.display='none'">
+                    
+                    <div class="post-content">
+                        <p>Google's <strong>Gemini Fast</strong> (previously rumored as Nano Banana) has arrived with promises of perfect text rendering and photorealism. Can it dethrone the reigning creative king, <strong>GPT-4o</strong> (DALL-E 3)? I ran them through three difficult visual tests.</p>
+                        
+                        <!-- TEST 1 -->
+                        <h2>Test 1: Text Rendering</h2>
+                        <p>The hardest thing for AI to do is spell correctly. Let's see who handles text better.</p>
+                        
+                        <div class="prompt-box">
+                            <strong>The Prompt:</strong> "A neon sign on a rainy street that says 'Minescouts Life' in cursive purple letters"
+                        </div>
+                        
+                        <div class="image-row">
+                            <div class="image-col">
+                                <h3>Gemini Fast</h3>
+                                <!-- Upload image to assests/images/tech/ and link here -->
+                                <img src="../../assests/images/tech/nano-banana-vs-gpt-image/Gemini_Prompt1.png" alt="Gemini Fast Text Result" onerror="this.src='https://placehold.co/600x600?text=Gemini+Result'">
+                                <p><strong>Verdict:</strong> Great image and text, yet the placement in what must be a window takes a moment to detangle.</p>
+                            </div>
+                            <div class="image-col">
+                                <h3>GPT-4o</h3>
+                                <!-- Upload image to assests/images/tech/ and link here -->
+                                <img src="../../assests/images/tech/nano-banana-vs-gpt-image/GPT_Prompt1.png" alt="GPT-4o Text Result" onerror="this.src='https://placehold.co/600x600?text=GPT+Result'">
+                                <p><strong>Verdict:</strong> Another great image and text, and with a placement on a wall makes it more belivable, but the perspective makes this almost impossible to enjoy.</p>
+                            </div>
+                        </div>
+                        <p><strong>Winner:</strong> Gemini Fast</p>
+
+                        <hr>
+
+                        <!-- TEST 2 -->
+                        <h2>Test 2: Photorealism & Human Hands</h2>
+                        <p>AI often struggles with hands and realistic skin textures. I asked for a close-up portrait holding an object.</p>
+                        
+                        <div class="prompt-box">
+                            <strong>The Prompt:</strong> "A close up photo of an elderly carpenter holding a wooden chess piece, cinematic lighting"
+                        </div>
+                        
+                        <div class="image-row">
+                            <div class="image-col">
+                                <h3>Gemini Fast</h3>
+                                <img src="../../assests/images/tech/nano-banana-vs-gpt-image/Gemini_Prompt2.png" alt="Gemini Fast Realism Result" onerror="this.src='https://placehold.co/600x600?text=Gemini+Result'">
+                                <p><strong>Verdict:</strong> Not a terribly close close-up image, but great human face and lighting.</p>
+                            </div>
+                            <div class="image-col">
+                                <h3>GPT-4o</h3>
+                                <img src="../../assests/images/tech/nano-banana-vs-gpt-image/GPT_Prompt2.png" alt="GPT-4o Realism Result" onerror="this.src='https://placehold.co/600x600?text=GPT+Result'">
+                                <p><strong>Verdict:</strong> Even farther from a close-up. Not great lighting and an unimaginative background.</p>
+                            </div>
+                        </div>
+                        <p><strong>Winner:</strong> Gemini Fast</p>
+
+                        <hr>
+
+                        <!-- TEST 3 -->
+                        <h2>Test 3: Complex Instruction Following</h2>
+                        <p>Can the AI follow a prompt with multiple specific characters and placement instructions?</p>
+                        
+                        <div class="prompt-box">
+                            <strong>The Prompt:</strong> "A blue robot shaking hands with a red alien on Mars, with a green rocket in the background launching into a starry sky"
+                        </div>
+                        
+                        <div class="image-row">
+                            <div class="image-col">
+                                <h3>Gemini Fast</h3>
+                                <img src="../../assests/images/tech/nano-banana-vs-gpt-image/Gemini_Prompt3.png" alt="Gemini Fast Complex Result" onerror="this.src='https://placehold.co/600x600?text=Gemini+Result'">
+                                <p><strong>Verdict:</strong> Seems to be more on the realistic side for images, while not requested it is nice to see that this is something they think about. Not many stars in the starry night.</p>
+                            </div>
+                            <div class="image-col">
+                                <h3>GPT-4o</h3>
+                                <img src="../../assests/images/tech/nano-banana-vs-gpt-image/GPT_Prompt3.png" alt="GPT-4o Complex Result" onerror="this.src='https://placehold.co/600x600?text=GPT+Result'">
+                                <p><strong>Verdict:</strong> Really like the different vibes this one gives. Great at depicting the red-planet while making the alien still perfectly visible. Plenty of stars in the sky.</p>
+                            </div>
+                        </div>
+                        <p><strong>Winner:</strong> GPT-4o</p>
+
+                        <h2>Final Verdict</h2>
+                        <p>Gemini Fast blows GPT-4o out of the water on many occasions. Many of these choices are personal preferences, so feel free to vote below.</p>
+                    </div>
+
+                    <!-- VOTING SECTION -->
+                    <div class="vote-section" data-vote-id="gemini-fast-vs-gpt4o-image-vote">
+                        <h4>Which AI generated better images?</h4>
+                        <div class="vote-buttons">
+                            <button class="vote-btn" data-vote-option="GeminiFast">Vote Gemini Fast</button>
+                            <button class="vote-btn" data-vote-option="GPT4o">Vote GPT-4o</button>
+                        </div>
+                        <div class="vote-results">
+                            <p>Live Results:</p>
+                            <div class="vote-bar">
+                                <!-- Blue for Gemini, Green for GPT -->
+                                <div class="vote-bar-GeminiFast" style="width: 50%; background-color: #4285F4; color: white;">Gemini: <span class="GeminiFast-votes">0</span></div>
+                                <div class="vote-bar-GPT4o" style="width: 50%; background-color: #10a37f; color: white;">GPT-4o: <span class="GPT4o-votes">0</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </article>
+                
+                <!-- COMMENTS SECTION -->
+                <section class="comments-section">
+                    <h2>Comments</h2>
+                    <div class="comment-form-container">
+                        <h3>Leave a Comment</h3>
+                        <form>
+                            <div class="form-group"><label for="name">Name:</label><input type="text" id="name" name="name" required></div>
+                            <div class="form-group"><label for="comment">Comment:</label><textarea id="comment" name="comment" rows="5" required></textarea></div>
+                            <button type="submit" class="submit-button">Post Comment</button>
+                        </form>
+                    </div>
+                    <div class="comments-list"></div>
+                </section>
+            </main>
+
+            <!-- SIDEBAR (Auto Loaded) -->
+            <aside id="sidebar">
+                <div id="sidebar-container"></div>
+            </aside>
+
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2025 Minescouts Life. All rights reserved.</p></div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <script>
+      // [8] FIREBASE CONFIG
+      const firebaseConfig = {
+        apiKey: "AIzaSyAZE1qCY8YCZLrZ2EWT0QTFRoBVHvabqDM", 
+        authDomain: "minescout-life-4a668.firebaseapp.com",
+        databaseURL: "https://minescout-life-4a668-default-rtdb.firebaseio.com",
+        projectId: "minescout-life-4a668",
+        storageBucket: "minescout-life-4a668.appspot.com",
+        messagingSenderId: "351393417322",
+        appId: "1:351393417322:web:92c9a92a50e60890136213",
+        measurementId: "G-RFP78TP9KZ"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+    </script>
+    
+    <!-- DYNAMIC LOADERS -->
+    <script type="module" src="../../assests/js/auth.js"></script>
+    <script src="../../assests/js/homepage.js" defer></script>
+    <script src="../../assests/js/loader.js"></script>
+
+</body>
+</html>
