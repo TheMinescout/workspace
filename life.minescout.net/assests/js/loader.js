@@ -1,49 +1,71 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const sidebarContainer = document.getElementById('sidebar-container');
     
+    // --- 1. PATH CALCULATION ---
+    const path = window.location.pathname;
+    const filename = path.split('/').pop() || "index.html"; // Default to index if root
+    
+    let relativePrefix = "./"; 
+    if (path.includes("/pages/") || path.includes("/admin/")) {
+        relativePrefix = "../";
+    } else if (path.includes("/posts/") || path.includes("/projects/") || path.includes("/archives/")) {
+        relativePrefix = "../../";
+    }
+
+    // --- 2. SIDEBAR INJECTION ---
+    const sidebarContainer = document.getElementById('sidebar-container');
     if (sidebarContainer) {
-        // 1. Calculate how deep we are in the folder structure
-        // We look for specific folder names to determine depth
-        const path = window.location.pathname;
-        let relativePrefix = "./"; // Default for index.html
-
-        if (path.includes("/pages/") || path.includes("/admin/")) {
-            relativePrefix = "../";
-        } else if (path.includes("/posts/") || path.includes("/projects/") || path.includes("/archives/")) {
-            // These folders are usually 2 levels deep (e.g. posts/tech/file.html)
-            relativePrefix = "../../";
-        }
-
-        // 2. Construct the path to the sidebar file
-        const sidebarUrl = relativePrefix + "assests/includes/sidebar.html";
-
-        // 3. Fetch and Inject
-        fetch(sidebarUrl)
-            .then(response => {
-                if (!response.ok) throw new Error(`Could not find sidebar at ${sidebarUrl}`);
-                return response.text();
-            })
+        fetch(relativePrefix + "assests/includes/sidebar.html")
+            .then(res => { if(!res.ok) throw new Error("Sidebar missing"); return res.text(); })
             .then(data => {
-                // 4. Fix the links inside the sidebar HTML before injecting
-                // This replaces the root slash "/" with the correct relative path
-                // e.g. href="/index.html" becomes href="../../index.html"
+                // Fix links
                 const fixedData = data.replace(/href="\//g, `href="${relativePrefix}`);
-                
                 sidebarContainer.innerHTML = fixedData;
                 
-                // 5. Highlight the active link
-                const currentFilename = path.split('/').pop();
+                // Highlight active link
                 const links = sidebarContainer.querySelectorAll('a');
                 links.forEach(link => {
-                    if (link.getAttribute('href').includes(currentFilename)) {
+                    if (link.getAttribute('href').includes(filename)) {
                         link.style.fontWeight = 'bold';
                         link.style.color = '#2e4d2e';
                     }
                 });
             })
-            .catch(error => {
-                console.error('Sidebar Error:', error);
-                sidebarContainer.innerHTML = `<p style="color:red; padding:10px;">Error loading sidebar. check console.</p>`;
-            });
+            .catch(err => console.error(err));
+    }
+
+    // --- 3. COMMENTS INJECTION ---
+    // The Manual List of pages that should NOT have comments
+    const noCommentsList = [
+        "index.html",
+        "login.html",
+        "account.html",
+        "404.html",
+        "admin-posting.html",
+        "archive.html", // The main archive list
+        "archive-2025.html",// Yearly archives
+        "tech-tips.html" ,
+        
+        // Add any other pages here
+    ];
+
+    // Only load comments if the current file is NOT in the list
+    if (!noCommentsList.includes(filename)) {
+        
+        // We inject comments into the <main> tag
+        const mainElement = document.querySelector('main');
+        
+        if (mainElement) {
+            fetch(relativePrefix + "assests/includes/comments.html")
+                .then(res => { if(!res.ok) throw new Error("Comments file missing"); return res.text(); })
+                .then(data => {
+                    // Append comments to the bottom of Main
+                    mainElement.insertAdjacentHTML('beforeend', data);
+                    
+                    // IMPORTANT: Tell homepage.js that comments are ready
+                    const event = new Event('minescout-comments-ready');
+                    document.dispatchEvent(event);
+                })
+                .catch(err => console.log("Comments skipped or error:", err.message));
+        }
     }
 });

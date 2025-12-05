@@ -1,4 +1,5 @@
 // assests/js/homepage.js
+
 import { db, auth } from "./firebase-config.js";
 import { ref, onValue, push, serverTimestamp, runTransaction } 
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -7,8 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     initGridControls();
     initModals();
     initVoting();
+    // REMOVED: initComments();  <-- Don't run immediately!
+});
+
+// NEW: Listen for the loader to finish injecting HTML
+document.addEventListener('minescout-comments-ready', () => {
+    console.log("Comments HTML injected, initializing Firebase logic...");
     initComments();
-    // Sidebar highlight handled by loader.js now
 });
 
 // --- GRID CONTROLS ---

@@ -12,6 +12,7 @@
 
     <!-- CSS LINKS -->
     <link rel="stylesheet" href="../../assests/css/homepage.css?v=3.02">
+    <link rel="stylesheet" href="../../assests/css/AI-ASSISTANT.css">
     <link rel="icon" type="image/png" href="../../assests/images/favicon.png?v=2">
     
     <style>
@@ -186,19 +187,8 @@
 
                 </article>
                 
-                <!-- COMMENTS SECTION -->
-                <section class="comments-section">
-                    <h2>Comments</h2>
-                    <div class="comment-form-container">
-                        <h3>Leave a Comment</h3>
-                        <form>
-                            <div class="form-group"><label for="name">Name:</label><input type="text" id="name" name="name" required></div>
-                            <div class="form-group"><label for="comment">Comment:</label><textarea id="comment" name="comment" rows="5" required></textarea></div>
-                            <button type="submit" class="submit-button">Post Comment</button>
-                        </form>
-                    </div>
-                    <div class="comments-list"></div>
-                </section>
+                <!-- NOTE: Comment section removed. loader.js will inject it automatically. -->
+
             </main>
 
             <!-- SIDEBAR -->
@@ -222,7 +212,7 @@
 
     <!-- DYNAMIC LOADERS -->
     <script type="module" src="../../assests/js/auth.js?v=1.1"></script>
-    <script src="../../assests/js/homepage.js" defer></script>
+    <script type="module" src="../../assests/js/homepage.js"></script>
     <script src="../../assests/js/loader.js"></script>
 
 </body>
