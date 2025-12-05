@@ -28,30 +28,24 @@ The site is built as a static web application enhanced with **Firebase** for rea
 *   **Styling:** Custom CSS (`homepage.css`, `AI-ASSISTANT.css`) + Tailwind CSS (for specific tools).
 *   **Fonts:** Google Fonts (Inter).
 
-## 📂 Project Structure
-```text
-life.minescout.net/
-├── assets/           # CSS, JS, and Images
-├── pages/            # Category hubs (Tech Tips, Updates, etc.)
-├── posts/            # Individual articles organized by topic
-├── projects/         # Standalone Web Apps (Scorecard, Beat Saber)
-├── archives/         # Monthly/Yearly archive pages
-├── admin/            # CMS for creating posts
-└── index.html        # Entry point
-🔧 Installation & Local Development
-Because this project uses ES6 Modules (type="module"), you cannot simply double-click the HTML files. You must use a local server.
-Clone the Repo:
-code
-Bash
-git clone https://github.com/your-username/minescout-life.git
-Run a Local Server:
-VS Code: Install "Live Server" extension -> Right-click index.html -> "Open with Live Server".
-Python: python -m http.server 8000
-Firebase Config:
-Ensure assets/js/auth.js contains your valid Firebase API keys.
-📬 Contact & Support
-Email: theminescout@minescout.net
-Phone Support (AI): +1 (425) 559 9127
+## 🔧 Installation & Local Development
+Because this project uses ES6 Modules (`type="module"`), you cannot simply double-click the HTML files. You must use a local server.
+
+1.  **Clone the Repo:**
+    ```bash
+    git clone https://github.com/your-username/minescout-life.git
+    ```
+2.  **Run a Local Server:**
+    *   **VS Code:** Install "Live Server" extension -> Right-click `index.html` -> "Open with Live Server".
+    *   **Python:** `python -m http.server 8000`
+3.  **Firebase Config:**
+    Ensure `assets/js/auth.js` contains your valid Firebase API keys.
+
+## 📬 Contact & Support
+*   **Email:** theminescout@minescout.net
+*   **Phone Support (AI):** +1 (425) 559 9127
+
+---
 <div align="center">
-<sub>© 2025 Minescouts Life. All Rights Reserved.</sub>
+  <sub>© 2025 Minescouts Life. All Rights Reserved.</sub>
 </div>
