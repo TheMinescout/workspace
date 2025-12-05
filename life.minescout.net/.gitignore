@@ -1,0 +1,6 @@
+# Ignore the secret config
+
+assests/js/firebase-config.js
+# Ignore system files
+.DS_Store
+Thumbs.db

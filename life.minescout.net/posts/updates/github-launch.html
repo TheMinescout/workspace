@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Minescouts Life Goes Open Source - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- CSS LINKS (2 Levels Deep) -->
+    <link rel="stylesheet" href="../../assests/css/homepage.css?v=3.02">
+    <link rel="stylesheet" href="../../assests/css/AI-ASSISTANT.css">
+    <link rel="icon" type="image/png" href="../../assests/images/favicon.png?v=2">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container">
+                <a href="../../login.html" id="login-link">Login</a>
+            </div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Updates</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <a href="../../account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            
+            <!-- MAIN CONTENT -->
+            <main class="post-main" data-post-id="github-launch-post">
+                
+                <a href="../../pages/updates.html" class="back-link">« Back to Updates</a>
+
+                <article class="post-full">
+                    
+                    <h1>We Are Live on GitHub!</h1>
+                    <p class="post-meta">Posted on December 4, 2025 by TheMinescouter</p>
+
+                    <!-- TITLE IMAGE -->
+                    <img src="../../assests/images/updates/github-launch-title.png" alt="Minescouts Life on GitHub" class="post-image-full" onerror="this.style.display='none'">
+                    
+                    <div class="post-content">
+                        <p>Have you ever wondered how Minescouts Life works under the hood? Today, we are excited to announce that our official project repository is now live on GitHub!</p>
+                        
+                        <h2>Why Open Source?</h2>
+                        <p>We believe in transparency and learning. Over the last few months, this website has evolved from a simple HTML collection into a dynamic web application featuring:</p>
+                        <ul>
+                            <li><strong>Modular Architecture:</strong> A smart loading system that injects sidebars and headers automatically.</li>
+                            <li><strong>Real-Time Voting:</strong> An interactive comparison system powered by Firebase.</li>
+                            <li><strong>Live AI Integrations:</strong> Experiments with Gemini, ChatGPT, and more.</li>
+                        </ul>
+                        
+                        <p>By publishing our code, we hope to help other developers learn how to structure static sites and integrate cloud services without complex frameworks.</p>
+
+                        <h2>Explore the Code</h2>
+                        <p>You can view the full file structure, check out our <code>assests</code> folder organization, and see exactly how our JavaScript modules communicate.</p>
+
+                        <div class="info-box-link" style="margin-top: 30px;">
+                            <a href="https://github.com/TheMinescout/workspace" target="_blank" style="text-decoration: none;">
+                                <div class="info-box info-box-solid" style="background-color: #24292e; cursor: pointer;">
+                                    <h3 class="info-title">View on GitHub</h3>
+                                    <p class="info-subtitle">https://github.com/TheMinescout/workspace</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <h2>What's Next?</h2>
+                        <p>We will be pushing updates to the <code>main</code> branch regularly. If you spot a bug or have a suggestion for the code, feel free to use the <a href="../../pages/feature-request.html" style="color: #5a8a5a; font-weight: bold;">Feature Request</a> page or check out the issues tab on GitHub.</p>
+                    </div>
+                </article>
+                
+                <!-- COMMENTS SECTION -->
+                <section class="comments-section">
+                    <h2>Comments</h2>
+                    <div class="comment-form-container">
+                        <h3>Leave a Comment</h3>
+                        <form>
+                            <div class="form-group">
+                                <label for="name">Name:</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="comment">Comment:</label>
+                                <textarea id="comment" name="comment" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="submit-button">Post Comment</button>
+                        </form>
+                    </div>
+                    <div class="comments-list"></div>
+                </section>
+            </main>
+
+            <!-- SIDEBAR (Auto-loaded) -->
+            <aside id="sidebar">
+                <div id="sidebar-container"></div>
+            </aside>
+
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>Phone Num: +1 (425) 559 9127</p>
+            <p>Email: <a href="mailto:theminescout@minescout.net">theminescout@minescouts.net</a></p>
+            <p id="copyright">© 2025 Minescouts Life. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+
+    
+    <!-- MODULAR SCRIPTS -->
+    <script type="module" src="../../assests/js/auth.js"></script>
+    <script src="../../assests/js/homepage.js" defer></script>
+    <script src="../../assests/js/loader.js"></script>
+
+</body>
+</html>

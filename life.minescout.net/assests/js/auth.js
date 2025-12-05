@@ -1,25 +1,11 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+// assests/js/auth.js
 
-// Your Config
-const firebaseConfig = {
-    apiKey: "AIzaSyAZE1qCY8YCZLrZ2EWT0QTFRoBVHvabqDM",
-    authDomain: "minescout-life-4a668.firebaseapp.com",
-    databaseURL: "https://minescout-life-4a668-default-rtdb.firebaseio.com",
-    projectId: "minescout-life-4a668",
-    storageBucket: "minescout-life-4a668.appspot.com",
-    messagingSenderId: "351393417322",
-    appId: "1:351393417322:web:92c9a92a50e60890136213",
-    measurementId: "G-RFP78TP9KZ"
-};
+// IMPORT from your new config file
+import { auth, db } from "./firebase-config.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const ADMIN_EMAIL = 'theminescout@minescout.net';
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
 
 // --- THE MAIN USER LOGIC ---
 onAuthStateChanged(auth, async (user) => {
@@ -27,7 +13,7 @@ onAuthStateChanged(auth, async (user) => {
     const authContainer = document.getElementById('auth-container');
     const userDisplay = document.getElementById('user-display');
     const userEmailDisplay = document.getElementById('user-email-display');
-    const adminPanel = document.getElementById('admin-panel'); // Optional, might not exist on all pages
+    const adminPanel = document.getElementById('admin-panel'); 
 
     if (user) {
         // --- USER IS LOGGED IN ---
@@ -46,7 +32,6 @@ onAuthStateChanged(auth, async (user) => {
         if(userEmailDisplay) {
             if (isAdmin) {
                 userEmailDisplay.textContent = `Admin: ${username}`;
-                // Show Admin Panel if it exists on this page
                 if (adminPanel) adminPanel.classList.remove('hidden');
             } else {
                 userEmailDisplay.textContent = username;
@@ -67,13 +52,8 @@ if (signOutBtn) {
     signOutBtn.addEventListener('click', () => {
         signOut(auth)
             .then(() => {
-                // Determine where to redirect based on current location
-                // If deep in folders, go back to root
                 window.location.href = "/index.html"; 
             })
             .catch(err => console.error("Sign out failed:", err));
     });
 }
-
-// Export auth/db in case other scripts need them
-export { auth, db, app };
