@@ -2,6 +2,7 @@
 
 assests/js/firebase-config.js
 .gitignore
+../my-sites.conf
 # Ignore system files
 .DS_Store
 Thumbs.db
