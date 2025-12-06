@@ -7,7 +7,6 @@
     <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
     
     <style>
-        /* --- CORE STYLES --- */
         :root { --green: #0F0; --red: #FF3333; --gold: #FFD700; --bg: #000; --glass: rgba(0, 10, 0, 0.95); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: var(--bg); font-family: 'Courier New', monospace; color: var(--green); height: 100vh; overflow: hidden; }
@@ -20,6 +19,10 @@
         .terminal-text p { margin: 8px 0; opacity: 0.9; text-align: left; }
         .status-line { transition: color 0.3s; }
         .status-error { color: var(--red); font-weight: bold; animation: blink-fast 1s infinite; }
+        
+        /* NEW HINT STYLE */
+        .system-hint { color: #005500; font-size: 0.8rem; font-style: italic; margin-top: 5px; }
+        
         .blink-instruction { color: #000; background: var(--green); padding: 8px; font-weight: bold; animation: blink 1.5s infinite; cursor: pointer; text-align: center; border: 1px solid var(--green); margin-top: 15px; }
         .blink-instruction:hover { background: #fff; box-shadow: 0 0 15px var(--green); }
         @keyframes blink { 50% { opacity: 0.5; } }
@@ -44,7 +47,12 @@
             <div class="terminal-text">
                 <p id="user-display">> USER_ID: GUEST</p>
                 <p id="device-display">> DEVICE: DETECTING...</p>
-                <p id="sys-status" class="status-line">> STATUS: INITIALIZING...</p>
+                <p id="sys-status" class="status-line">> STATUS: UNLOCKED</p>
+                
+                <!-- NEW HINT LINE -->
+                <p class="system-hint">> SYSTEM_MSG: CMD 'help' AVAILABLE</p>
+                <p class="system-hint">> Use / to open CMD Panel</p>
+                
                 <br>
                 <div class="blink-instruction" onclick="window.toggleCmd()">
                     [ CLICK HERE OR PRESS '/' TO RUN ]
@@ -53,19 +61,13 @@
         </div>
     </div>
 
-    <!-- 1. LOAD CONFIG (Now handles SDK loading) -->
-    <script src="assets/js/firebase-config.js?v=3.1"></script>
-    
-    <!-- 2. LOAD DATA -->
-    <script src="assets/js/filesystem.js?v=2.6"></script>
-    
-    <!-- 3. LOAD CORE TERMINAL -->
-    <script src="assets/js/terminal-core.js?v=3.1"></script>
+    <!-- SCRIPTS -->
+    <script src="assets/js/firebase-config.js?v=2.9"></script>
+    <script src="assets/js/filesystem.js?v=2.9"></script>
+    <script src="assets/js/terminal-core.js?v=2.9"></script>
 
     <script>
         console.log("Index Logic Loaded");
-
-        // --- PAGE SPECIFIC LOGIC ---
         const ADMIN_EMAIL = "theminescout@minescout.net";
         let isAdmin = false;
 
@@ -81,25 +83,15 @@
         }
         detectDevice();
 
-        // --- WAIT FOR FIREBASE TO LOAD ---
         document.addEventListener('firebase-ready', () => {
-            console.log("Index received firebase-ready event.");
-            
-            // Update Status
-            document.getElementById('sys-status').innerText = "> STATUS: UNLOCKED";
-
-            // Auth Logic
             firebase.auth().onAuthStateChanged((user) => {
                 const userDisplay = document.getElementById('user-display');
-                
                 if (user) {
                     isAdmin = (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
                     const idLabel = isAdmin ? "ADMIN_ID" : "USER_ID";
                     if(isAdmin) userDisplay.style.color = "#FFD700";
-                    
                     const emailPrefix = user.email.split('@')[0].toUpperCase();
                     userDisplay.innerText = `> ${idLabel}: ${emailPrefix}`;
-                    
                     const db = firebase.database();
                     db.ref('users/' + user.uid).once('value').then((snapshot) => {
                         const data = snapshot.val();
@@ -108,7 +100,6 @@
                             if (dbName) userDisplay.innerText = `> ${idLabel}: ${dbName.toUpperCase()}`;
                         }
                     });
-
                     if(isAdmin) checkAdminMessages();
                 } else {
                     userDisplay.innerText = "> USER_ID: GUEST";
@@ -116,46 +107,34 @@
             });
         });
 
-        // 3. ADMIN MESSAGE CHECKER
         function checkAdminMessages() {
             const db = firebase.database();
             const statusEl = document.getElementById('sys-status');
             const boxEl = document.getElementById('main-box');
-            
             db.ref('messages').on('value', (snapshot) => {
                 let count = 0;
                 snapshot.forEach(c => { if(c.val().read === false) count++; });
                 window.adminMsgCount = count;
-                
                 if (count > 0) {
                     statusEl.innerText = "ERROR : ADMIN ALERT (TYPE ERR)";
                     statusEl.className = "status-line status-error";
                     boxEl.classList.add('error-state');
-                } else {
-                    checkNewPosts(); 
-                }
+                } else { checkNewPosts(); }
             });
         }
 
-        // 4. REGULAR POST CHECKER
         function checkNewPosts() {
             if(window.adminMsgCount > 0) return; 
-
             const lastVisitRaw = localStorage.getItem('minescout_last_visit');
             const lastVisit = lastVisitRaw ? new Date(lastVisitRaw) : new Date('2000-01-01');
             let missedCount = 0; let missedTitles = [];
-
             if (typeof FILE_SYSTEM !== 'undefined') {
                 FILE_SYSTEM.articles.forEach(art => {
-                    if (new Date(art.date) > lastVisit) {
-                        missedCount++; missedTitles.push(art.title);
-                    }
+                    if (new Date(art.date) > lastVisit) { missedCount++; missedTitles.push(art.title); }
                 });
             }
-
             const statusEl = document.getElementById('sys-status');
             const boxEl = document.getElementById('main-box');
-
             if (missedCount > 0) {
                 statusEl.innerText = `ERROR : MISSED UPDATES (TYPE ERR)`;
                 statusEl.className = "status-line status-error";
@@ -169,18 +148,11 @@
             localStorage.setItem('minescout_last_visit', new Date().toISOString());
         }
 
-        // 5. PAGE SPECIFIC COMMANDS
         window.handlePageCommand = function(cmd, args) {
-            const statusEl = document.getElementById('sys-status');
-            
             if (cmd === 'err') {
                 let msg = "";
-                if (isAdmin && window.adminMsgCount > 0) {
-                    msg += `> CRITICAL: ${window.adminMsgCount} NEW ENCRYPTED SIGNALS.\n> TYPE 'VM' TO DECRYPT.\n\n`;
-                }
-                if (window.missedUpdates && window.missedUpdates.length > 0) {
-                    msg += "> MISSED ARTICLES:\n" + window.missedUpdates.map(t => "- " + t).join("\n");
-                }
+                if (isAdmin && window.adminMsgCount > 0) msg += `> CRITICAL: ${window.adminMsgCount} NEW ENCRYPTED SIGNALS.\n> TYPE 'VM' TO DECRYPT.\n\n`;
+                if (window.missedUpdates && window.missedUpdates.length > 0) msg += "> MISSED ARTICLES:\n" + window.missedUpdates.map(t => "- " + t).join("\n");
                 if(msg === "") msg = "SYSTEM NORMAL. No logs found.";
                 return msg;
             }
@@ -192,10 +164,7 @@
             return null;
         };
 
-        // If firebase is already ready (rare case where cache loads scripts super fast)
-        if (window.firebaseReady) {
-            document.dispatchEvent(new Event('firebase-ready'));
-        }
+        if (window.firebaseReady) document.dispatchEvent(new Event('firebase-ready'));
     </script>
 </body>
 </html>

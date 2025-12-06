@@ -6,7 +6,6 @@
     <title>MANUAL // MineScout</title>
     <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
     
-    <!-- AUTH NEEDED FOR LOGOUT COMMAND -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -21,14 +20,27 @@
             width: 700px; max-width: 95%; height: 500px; 
             box-shadow: 0 0 20px #0F0; display: flex; flex-direction: column; 
         }
-        .header { background: #003300; color: #fff; padding: 10px; font-weight: bold; border-bottom: 1px solid #0F0; }
+        .header { background: #003300; color: #fff; padding: 10px; font-weight: bold; border-bottom: 1px solid #0F0; display: flex; justify-content: space-between; }
         .screen-content { padding: 20px; flex-grow: 1; overflow-y: auto; }
         
-        .folder { font-size: 1.2rem; margin: 15px 0; color: #88ff88; }
-        .cmd-item { margin-bottom: 10px; border-left: 2px solid #004400; padding-left: 10px; }
-        .cmd-name { color: #ffff00; font-weight: bold; }
+        /* INTERACTIVE FOLDERS */
+        .folder { 
+            font-size: 1.2rem; margin: 15px 0; color: #88ff88; 
+            cursor: pointer; padding: 5px; border: 1px solid transparent;
+        }
+        .folder:hover { background: rgba(0, 255, 0, 0.1); border-color: #004400; color: #fff; }
         
+        .cmd-item { margin-bottom: 15px; border-left: 2px solid #004400; padding-left: 10px; }
+        .cmd-name { color: #ffff00; font-weight: bold; cursor: pointer; }
+        .cmd-name:hover { text-decoration: underline; }
+        
+        .hint { margin-top: 20px; font-size: 0.8rem; color: #005500; border-top: 1px dashed #004400; padding-top: 10px; }
+
         .open-btn { position: fixed; top: 10px; left: 10px; border: 1px solid #0F0; padding: 5px; cursor: pointer; z-index: 100; }
+        
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #004400; }
     </style>
 </head>
 <body>
@@ -37,35 +49,85 @@
 
     <div class="container">
         <div class="manual-block">
-            <div class="header">SYSTEM_MANUAL_V4.0</div>
+            <div class="header">
+                <span>MANUAL_V4.0</span>
+                <span id="current-path">/ROOT</span>
+            </div>
             <div id="display-area" class="screen-content"></div>
         </div>
     </div>
 
-    <!-- CORE -->
-    <script src="assets/js/firebase-config.js"></script>
-    <script src="assets/js/terminal-core.js?v=2.6"></script>
+    <!-- SCRIPTS -->
+    <script src="assets/js/firebase-config.js?v=2.9"></script>
+    <script src="assets/js/terminal-core.js?v=2.9"></script>
 
     <script>
         const CONTENT = {
-            root: `<h1>ROOT DIR</h1><div class="folder">[ AUTH ]</div><div class="folder">[ NAV ]</div><div class="folder">[ SYS ]</div><p>Type folder name in CMD to open.</p>`,
-            auth: `<h1>/ROOT/AUTH</h1><div class="cmd-item"><div class="cmd-name">login</div>Opens login page.</div><div class="cmd-item"><div class="cmd-name">logout</div>Ends session.</div>`,
-            nav: `<h1>/ROOT/NAV</h1><div class="cmd-item"><div class="cmd-name">atls</div>Articles.</div><div class="cmd-item"><div class="cmd-name">prds</div>Projects.</div><div class="cmd-item"><div class="cmd-name">reqs</div>Requests.</div>`,
-            sys: `<h1>/ROOT/SYS</h1><div class="cmd-item"><div class="cmd-name">err</div>Check logs.</div><div class="cmd-item"><div class="cmd-name">help</div>Reset manual.</div>`
+            root: `
+                <h1>ROOT DIRECTORY</h1>
+                <div class="folder" onclick="loadDir('auth')">📁 [ AUTH ] - User Protocols</div>
+                <div class="folder" onclick="loadDir('nav')">📁 [ NAV  ] - Navigation Links</div>
+                <div class="folder" onclick="loadDir('sys')">📁 [ SYS  ] - System Diagnostics</div>
+                <div class="hint">Click a folder to open or type its name.</div>
+            `,
+            auth: `
+                <div class="folder" onclick="loadDir('root')">⬅ [ .. ] UP</div>
+                <h1>/AUTH</h1>
+                <div class="cmd-item">
+                    <div class="cmd-name" onclick="window.location.href='login.html'">login</div>
+                    Opens the security checkpoint.
+                </div>
+                <div class="cmd-item">
+                    <div class="cmd-name" onclick="triggerLogout()">logout</div>
+                    Terminates current session.
+                </div>
+            `,
+            nav: `
+                <div class="folder" onclick="loadDir('root')">⬅ [ .. ] UP</div>
+                <h1>/NAV</h1>
+                <div class="cmd-item"><div class="cmd-name" onclick="window.location.href='pages.html'">atls</div>Access Articles & News.</div>
+                <div class="cmd-item"><div class="cmd-name" onclick="window.location.href='projects.html'">prds</div>Access Projects & Downloads.</div>
+                <div class="cmd-item"><div class="cmd-name" onclick="window.location.href='feature-requests.html'">reqs</div>Submit Feature Requests.</div>
+            `,
+            sys: `
+                <div class="folder" onclick="loadDir('root')">⬅ [ .. ] UP</div>
+                <h1>/SYS</h1>
+                <div class="cmd-item"><div class="cmd-name">err</div>Checks logs for missed updates.</div>
+                <div class="cmd-item"><div class="cmd-name" onclick="loadDir('root')">help</div>Reset this manual.</div>
+                <div class="cmd-item"><div class="cmd-name">exit</div>Close Command Window.</div>
+            `
         };
 
         const display = document.getElementById('display-area');
+        const pathDisplay = document.getElementById('current-path');
         display.innerHTML = CONTENT.root;
 
-        // PAGE CMD HANDLER
-        window.handlePageCommand = function(cmd) {
-            if (cmd === 'auth') { display.innerHTML = CONTENT.auth; return true; }
-            if (cmd === 'nav') { display.innerHTML = CONTENT.nav; return true; }
-            if (cmd === 'sys') { display.innerHTML = CONTENT.sys; return true; }
-            if (cmd === 'back' || cmd === 'root') { display.innerHTML = CONTENT.root; return true; }
-            return null; // Let core handle global cmds
+        // --- INTERACTIVE FUNCTION ---
+        window.loadDir = function(dir) {
+            if (CONTENT[dir]) {
+                display.innerHTML = CONTENT[dir];
+                pathDisplay.innerText = dir === 'root' ? '/ROOT' : '/ROOT/' + dir.toUpperCase();
+            }
         };
 
-        </script>
+        window.triggerLogout = function() {
+            if(typeof firebase !== 'undefined') {
+                firebase.auth().signOut().then(() => alert("Logged Out"));
+            }
+        }
+
+        // --- PAGE CMD HANDLER ---
+        window.handlePageCommand = function(cmd) {
+            if (CONTENT[cmd]) { loadDir(cmd); return true; }
+            if (cmd === 'back') { loadDir('root'); return true; }
+            return null; 
+        };
+
+        // Matrix Rain
+        const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d');
+        function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r;
+        const s='01',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1;
+        setInterval(()=>{ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0F0';ctx.font='16px mono';for(let i=0;i<d.length;i++){ctx.fillText(s[Math.floor(Math.random()*2)],i*16,d[i]*16);if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;d[i]++}},33);
+    </script>
 </body>
 </html>

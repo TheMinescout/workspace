@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     
-    <!-- Fixed paths to use forward slashes -->
     <link rel="stylesheet" href="assests/css/homepage.css?v=3.02">
     <link rel="stylesheet" href="assests/css/AI-ASSISTANT.css">
     <link rel="icon" type="image/png" href="assests/images/favicon.png?v=2">
@@ -20,6 +19,27 @@
         }
         .dismiss-btn:hover { background-color: #dc2626; }
         #user-display a { text-decoration: none; color: white; }
+        
+        /* Admin Notification Badge Styles */
+        .admin-button { position: relative; transition: border-color 0.3s, color 0.3s; }
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ef4444; /* Red */
+            color: white;
+            border-radius: 50%;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
     </style>
 </head>
 
@@ -47,17 +67,18 @@
             <!-- MAIN CONTENT -->
             <main class="main-content">
                 
-                <!-- Admin Panel (Logic handled by auth.js) -->
+                <!-- Admin Panel (Logic handled by auth.js + inline script) -->
                 <div id="admin-panel" class="admin-section hidden">
                     <p id="user-info-admin" class="admin-info-text">
                         Admin Access: You are signed in.
                     </p>
-                    <a href="admin/admin-posting.html" class="admin-button">
-                        Go to Content Creation Page
+                    <!-- BUTTON WITH BADGE -->
+                    <a href="admin/admin-posting.html" id="admin-link-btn" class="admin-button">
+                        Go to Admin Dashboard
+                        <span id="admin-badge" class="notification-badge hidden">0</span>
                     </a>
                 </div>
                 
-                <!-- Grid Controls (Logic handled by homepage.js) -->
                 <div class="view-controls">
                     <button id="grid-3" class="view-btn active" data-view="3" title="3 Columns"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></button>
                     <button id="grid-2" class="view-btn" data-view="2" title="2 Columns"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg></button>
@@ -108,15 +129,57 @@
         // Import database connection from secure config
         import { db, auth } from "./assests/js/firebase-config.js";
         import { ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         const ADMIN_EMAIL = 'theminescout@minescout.net';
         const postsContainer = document.getElementById('all-posts-container');
         const announcementsContainer = document.getElementById('announcements-container');
         const loadingMessage = document.getElementById('loading-message');
+        
+        let currentUserIsAdmin = false;
 
-        // Initialize content fetching
-        fetchAndDisplayContent();
+        // --- AUTH & NOTIFICATION LOGIC ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserIsAdmin = user.email === ADMIN_EMAIL;
+                
+                // If Admin, check for new Feature Requests
+                if (currentUserIsAdmin) {
+                    const badge = document.getElementById('admin-badge');
+                    const adminBtn = document.getElementById('admin-link-btn');
+                    
+                    onValue(ref(db, 'feature_requests'), (snapshot) => {
+                        const data = snapshot.val();
+                        let unreadCount = 0;
+                        
+                        if (data) {
+                            // FIXED: Only count requests where status is 'new'
+                            Object.values(data).forEach(req => {
+                                if (req.status === 'new') {
+                                    unreadCount++;
+                                }
+                            });
+                        }
 
+                        if (unreadCount > 0) {
+                            badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                            badge.classList.remove('hidden');
+                            // Turn border Red to grab attention
+                            adminBtn.style.border = "2px solid #ef4444";
+                            adminBtn.style.color = "#ef4444";
+                        } else {
+                            badge.classList.add('hidden');
+                            // Reset style
+                            adminBtn.style.border = "";
+                            adminBtn.style.color = "";
+                        }
+                    });
+                }
+            }
+            fetchAndDisplayContent();
+        });
+
+        // --- CONTENT FETCHING ---
         function fetchAndDisplayContent() {
             const contentRef = ref(db, 'content');
             
@@ -159,7 +222,7 @@
                             if (monthYear !== currentMonthYear) {
                                 currentMonthYear = monthYear;
                                 const monthNum = postDate.getMonth() + 1;
-                                const monthArchiveUrl = `archives/${currentYear}/archive-${monthNum}-${currentYear}.html`;
+                                const monthArchiveUrl = `archives/2025/archive-${monthNum}-${currentYear}.html`;
                                 postHtml += `<h2 class="month-header-grouping"><a href="${monthArchiveUrl}">${monthYear}</a></h2>`;
                             }
                             postHtml += createPostElement(post.id, post);
@@ -194,7 +257,7 @@
                         <h3><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3>
                         <p class="post-meta">Posted on ${date} in ${post.category || 'General'}</p>
                         <p>${post.summary || 'No summary provided.'}</p>
-                        <a href="${post.linkUrl || '#'}" class="read-more" target="_blank">${post.linkText || 'Use Now!!!'}</a>
+                        <a href="${post.linkUrl || '#'}" class="read-more" target="_blank">${post.linkText || 'Read More'}</a>
                     </div>
                 </article>
             `;

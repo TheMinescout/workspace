@@ -3,274 +3,379 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Content Creator</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Admin Dashboard - Minescouts Life</title>
+    
+    <!-- Tailwind CSS for Admin UI -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <style>
-        #post-content::-webkit-scrollbar, #announcement-text::-webkit-scrollbar { width: 8px; }
-        #post-content::-webkit-scrollbar-thumb, #announcement-text::-webkit-scrollbar-thumb { background-color: #A7F3D0; border-radius: 4px; }
-        #post-content::-webkit-scrollbar-track, #announcement-text::-webkit-scrollbar-track { background-color: #1F2937; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background-color: #10B981; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background-color: #1F2937; }
+        
         .container-bg { background-color: #111827; }
-        .main-header { width: 100%; background-color: #1F2937; padding: 1rem 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); position: fixed; top: 0; left: 0; z-index: 50; }
-        .site-title-container { display: flex; justify-content: space-between; align-items: center; max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
-        .site-title-wrapper { text-align: center; flex-grow: 1; }
-        .site-title { font-size: 2.25rem; font-weight: 800; color: white; line-height: 1; }
-        .tagline { font-size: 0.875rem; color: #9CA3AF; line-height: 1; }
-        #auth-container { text-align: left; }
-        #user-display { display: flex; align-items: center; justify-content: flex-end; min-width: 100px; }
-        #login-link, #signOut-btn { color: #A7F3D0; font-weight: 600; text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.375rem; border: 1px solid #A7F3D0; transition: all 0.2s; }
-        #login-link:hover, #signOut-btn:hover { background-color: #A7F3D0; color: #111827; }
-        #user-email-display { color: white; font-size: 0.875rem; margin-right: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .hidden { display: none !important; }
+        
+        /* Tab Styles */
+        .tab-btn { border-bottom: 2px solid transparent; color: #9CA3AF; }
+        .tab-btn:hover { color: #E5E7EB; }
+        .tab-btn.active { border-bottom: 2px solid #10B981; color: #10B981; }
+        
+        /* Request Card Priority Colors */
+        .request-item { border-left: 4px solid #374151; transition: all 0.3s ease; }
+        .request-item:hover { background-color: #1f2937; }
+        
+        /* Priority Colors */
+        .request-item.HIGH { border-left-color: #EF4444; }
+        .request-item.MED { border-left-color: #F59E0B; }
+        .request-item.LOW { border-left-color: #10B981; }
+
+        /* READ STATE (Dimmed) */
+        .request-item.read { opacity: 0.5; background-color: #111827; border-left-color: #4B5563; }
+        .request-item.read:hover { opacity: 1; background-color: #1f2937; }
     </style>
 </head>
-<body class="container-bg min-h-screen flex flex-col items-center p-0">
+<body class="container-bg min-h-screen text-gray-300 font-sans flex flex-col">
 
-    <header class="main-header">
-        <div class="site-title-container">
-            <div id="auth-container">
-                <a href="../login.html" id="login-link">Login</a>
+    <!-- HEADER -->
+    <header class="w-full bg-gray-800 p-4 shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <h1 class="text-xl font-bold text-white tracking-wide">Minescout Admin</h1>
+                <a href="../index.html" class="text-sm text-green-400 hover:underline">← Back to Site</a>
             </div>
-            <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
-                <p class="tagline">Admin Content Creator</p>
-            </div>
-            <div id="user-display" class="hidden">
-                <span id="user-email-display"></span>
-                <button id="signOut-btn">Sign Out</button>
+            <div id="user-display" class="hidden text-sm flex items-center gap-4">
+                <span id="user-email-display" class="text-gray-400"></span>
+                <button id="signOut-btn" class="bg-gray-700 hover:bg-red-600 text-white px-3 py-1 rounded transition">Sign Out</button>
             </div>
         </div>
     </header>
 
-    <div id="app" class="w-full max-w-2xl bg-gray-900 shadow-2xl rounded-xl p-8 space-y-6 border border-gray-700 mt-24 mb-8">
-        <h1 class="text-3xl font-extrabold text-white text-center tracking-tight">Create New Content</h1>
+    <div class="max-w-4xl mx-auto w-full mt-8 px-4 mb-12">
         
-        <form id="post-form" class="space-y-6">
-            
-            <!-- Content Type Selector -->
-            <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Content Type</label>
-                <div class="flex gap-4 items-center bg-gray-800 border-2 border-gray-700 rounded-lg p-2">
-                    <label class="flex-1 text-center p-2 rounded-md transition cursor-pointer has-[:checked]:bg-green-600">
-                        <input type="radio" name="contentType" value="post" class="sr-only" checked>
-                        <span class="font-semibold text-white">Post</span>
-                    </label>
-                    <label class="flex-1 text-center p-2 rounded-md transition cursor-pointer has-[:checked]:bg-green-600">
-                        <input type="radio" name="contentType" value="announcement" class="sr-only">
-                        <span class="font-semibold text-white">Announcement</span>
-                    </label>
-                </div>
-            </div>
-
-            <!-- Fields for a Post -->
-            <div id="post-fields" class="space-y-6">
-                <div>
-                    <label for="post-title" class="block text-sm font-medium text-gray-300 mb-2">Post Title</label>
-                    <input type="text" id="post-title" class="w-full p-3 rounded-lg border-2 border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:ring-green-400 focus:border-green-400 transition" placeholder="Enter the catchy title for the post">
-                </div>
-                <div>
-                    <label for="post-category" class="block text-sm font-medium text-gray-300 mb-2">Category</label>
-                    <select id="post-category" class="w-full p-3 rounded-lg border-2 border-gray-700 bg-gray-800 text-white focus:ring-green-400 focus:border-green-400 transition">
-                        <option value="" disabled selected>Select a category...</option>
-                        <option value="Coding Projects">Coding Projects</option>
-                        <option value="Tech Tips">Tech Tips</option>
-                        <option value="Updates">Updates</option>
-                        <option value="Puppy Life">Puppy Life</option>
-                        <option value="Minecraft Server">Minecraft Server</option>
-                        <option value="General">General</option>
-                        <option value="BETA">Beta Software</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="post-link" class="block text-sm font-medium text-gray-300 mb-2">Post Link (URL)</label>
-                    <input type="url" id="post-link" class="w-full p-3 rounded-lg border-2 border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:ring-green-400 focus:border-green-400 transition" placeholder="posts/tech/your-article.html">
-                </div>
-                <div>
-                    <label for="image-link" class="block text-sm font-medium text-gray-300 mb-2">Title Image Link (URL) - Optional</label>
-                    <input type="url" id="image-link" class="w-full p-3 rounded-lg border-2 border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:ring-green-400 focus:border-green-400 transition" placeholder="../assests/images/...">
-                </div>
-                <div>
-                    <label for="post-content" class="block text-sm font-medium text-gray-300 mb-2">Summary</label>
-                    <textarea id="post-content" rows="10" class="w-full p-3 rounded-lg border-2 border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:ring-green-400 focus:border-green-400 transition resize-none" placeholder="Write the summary of your post here..."></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Custom Publish Date & Time (Optional)</label>
-                    <div class="flex gap-4">
-                        <input type="date" id="post-date" class="w-full p-3 rounded-lg border-2 border-gray-700 bg-gray-800 text-white">
-                        <input type="time" id="post-time" class="w-full p-3 rounded-lg border-2 border-gray-700 bg-gray-800 text-white">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fields for an Announcement -->
-            <div id="announcement-fields" class="space-y-6 hidden">
-                 <div>
-                    <label for="announcement-title" class="block text-sm font-medium text-gray-300 mb-2">Title (the bolded part)</label>
-                    <input type="text" id="announcement-title" class="w-full p-3 rounded-lg border-2 border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:ring-green-400 focus:border-green-400 transition" placeholder="e.g., Updates Underway">
-                </div>
-                <div>
-                    <label for="announcement-text" class="block text-sm font-medium text-gray-300 mb-2">Announcement Text</label>
-                    <textarea id="announcement-text" rows="5" class="w-full p-3 rounded-lg border-2 border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:ring-green-400 focus:border-green-400 transition resize-none" placeholder="The main content of the announcement..."></textarea>
-                </div>
-                 <div>
-                    <label for="announcement-from" class="block text-sm font-medium text-gray-300 mb-2">From</label>
-                    <input type="text" id="announcement-from" class="w-full p-3 rounded-lg border-2 border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:ring-green-400 focus:border-green-400 transition" placeholder="e.g., Minescouts Coding Team">
-                </div>
-            </div>
-
-            <button type="submit" id="publish-btn" disabled class="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md transition duration-200 ease-in-out disabled:bg-gray-600 disabled:cursor-not-allowed">
-                Publish Content
+        <!-- TABS NAVIGATION -->
+        <div class="flex border-b border-gray-700 mb-6">
+            <button class="tab-btn active px-6 py-3 font-semibold transition" onclick="switchTab('create')">
+                Create Content
             </button>
-        </form>
+            <button class="tab-btn px-6 py-3 font-semibold transition relative" onclick="switchTab('inbox')">
+                Inbox / Requests
+                <span id="notification-badge" class="hidden absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            </button>
+        </div>
 
-        <div id="status-message" class="text-center p-3 rounded-lg hidden"></div>
+        <!-- TAB 1: CREATE CONTENT -->
+        <div id="tab-create" class="tab-content">
+            <div class="bg-gray-900 p-6 rounded-xl border border-gray-700 shadow-xl">
+                <h2 class="text-2xl font-bold text-white mb-6">Publish New Content</h2>
+                
+                <form id="post-form" class="space-y-6">
+                    
+                    <!-- Content Type Toggle -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">What are you posting?</label>
+                        <div class="flex gap-4 items-center bg-gray-800 p-1 rounded-lg border border-gray-700">
+                            <label class="flex-1 text-center p-2 cursor-pointer rounded transition hover:bg-gray-700 has-[:checked]:bg-green-600 has-[:checked]:text-white">
+                                <input type="radio" name="contentType" value="post" class="sr-only" checked onchange="toggleForm('post')">
+                                <span class="font-semibold">Article Post</span>
+                            </label>
+                            <label class="flex-1 text-center p-2 cursor-pointer rounded transition hover:bg-gray-700 has-[:checked]:bg-green-600 has-[:checked]:text-white">
+                                <input type="radio" name="contentType" value="announcement" class="sr-only" onchange="toggleForm('announcement')">
+                                <span class="font-semibold">Announcement</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- POST FIELDS -->
+                    <div id="post-fields" class="space-y-5">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Title</label>
+                            <input type="text" id="post-title" class="w-full p-3 bg-gray-800 border border-gray-700 rounded focus:border-green-500 focus:outline-none transition" placeholder="Enter post title...">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-1">Category</label>
+                                <select id="post-category" class="w-full p-3 bg-gray-800 border border-gray-700 rounded focus:border-green-500 focus:outline-none">
+                                    <option value="" disabled selected>Select...</option>
+                                    <option value="Coding Projects">Coding Projects</option>
+                                    <option value="Tech Tips">Tech Tips</option>
+                                    <option value="Updates">Updates</option>
+                                    <option value="Puppy Life">Puppy Life</option>
+                                    <option value="Minecraft Server">Minecraft Server</option>
+                                    <option value="General">General</option>
+                                    <option value="BETA">Beta Software</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-1">Link URL</label>
+                                <input type="text" id="post-link" class="w-full p-3 bg-gray-800 border border-gray-700 rounded focus:border-green-500 focus:outline-none" placeholder="posts/tech/filename.html">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Image URL (Optional)</label>
+                            <input type="text" id="image-link" class="w-full p-3 bg-gray-800 border border-gray-700 rounded focus:border-green-500 focus:outline-none" placeholder="../assests/images/...">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Summary</label>
+                            <textarea id="post-content" rows="4" class="w-full p-3 bg-gray-800 border border-gray-700 rounded focus:border-green-500 focus:outline-none" placeholder="Short description for the card..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Custom Date (Optional)</label>
+                            <div class="flex gap-2">
+                                <input type="date" id="post-date" class="bg-gray-800 border border-gray-700 rounded p-2 text-white">
+                                <input type="time" id="post-time" class="bg-gray-800 border border-gray-700 rounded p-2 text-white">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ANNOUNCEMENT FIELDS -->
+                    <div id="announcement-fields" class="space-y-5 hidden">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Announcement Title</label>
+                            <input type="text" id="announcement-title" class="w-full p-3 bg-gray-800 border border-gray-700 rounded focus:border-green-500 focus:outline-none" placeholder="Bold header text...">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Message</label>
+                            <textarea id="announcement-text" rows="3" class="w-full p-3 bg-gray-800 border border-gray-700 rounded focus:border-green-500 focus:outline-none" placeholder="The main text body..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-1">Signed By</label>
+                            <input type="text" id="announcement-from" class="w-full p-3 bg-gray-800 border border-gray-700 rounded focus:border-green-500 focus:outline-none" placeholder="e.g. Minescout Team">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="publish-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg transition duration-200">
+                        Publish Now
+                    </button>
+                </form>
+                
+                <div id="status-message" class="mt-4 p-3 rounded text-center hidden font-bold"></div>
+            </div>
+        </div>
+
+        <!-- TAB 2: INBOX (FEATURE REQUESTS) -->
+        <div id="tab-inbox" class="tab-content hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">Feature Requests</h2>
+                <!-- Filter buttons could go here in future -->
+            </div>
+            
+            <div id="requests-list" class="space-y-4">
+                <p class="text-center text-gray-500 py-10">Loading requests...</p>
+            </div>
+        </div>
+
     </div>
 
+    <!-- JAVASCRIPT LOGIC -->
     <script type="module">
-        // 1. Import connection from secure config (Note: ../ because admin is 1 folder deep)
-        import { auth, db } from "../assests/js/firebase-config.js";
-        
-        // 2. Import specific functions needed for this page
+        import { db, auth } from "../assests/js/firebase-config.js";
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import { ref, push, serverTimestamp, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
         let userId = null;
 
-        const publishBtn = document.getElementById('publish-btn');
-        const statusMessage = document.getElementById('status-message');
-        const postForm = document.getElementById('post-form');
-        const loginLink = document.getElementById('login-link');
-        const userDisplay = document.getElementById('user-display');
-        const userEmailDisplay = document.getElementById('user-email-display');
-        const signOutBtn = document.getElementById('signOut-btn');
-        const contentTypeRadios = document.querySelectorAll('input[name="contentType"]');
-        const postFieldsContainer = document.getElementById('post-fields');
-        const announcementFieldsContainer = document.getElementById('announcement-fields');
-        
-        function toggleForm(type) {
-            if (type === 'post') {
-                postFieldsContainer.classList.remove('hidden');
-                announcementFieldsContainer.classList.add('hidden');
-                document.getElementById('post-title').required = true;
-                document.getElementById('post-category').required = true;
-                document.getElementById('post-link').required = true;
-                document.getElementById('post-content').required = true;
-                document.getElementById('announcement-title').required = false;
-                document.getElementById('announcement-text').required = false;
-                document.getElementById('announcement-from').required = false;
-            } else {
-                postFieldsContainer.classList.add('hidden');
-                announcementFieldsContainer.classList.remove('hidden');
-                document.getElementById('post-title').required = false;
-                document.getElementById('post-category').required = false;
-                document.getElementById('post-link').required = false;
-                document.getElementById('post-content').required = false;
-                document.getElementById('announcement-title').required = true;
-                document.getElementById('announcement-text').required = true;
-                document.getElementById('announcement-from').required = true;
-            }
-        }
-        
-        contentTypeRadios.forEach(radio => radio.addEventListener('change', (e) => toggleForm(e.target.value)));
-        toggleForm('post'); // Initialize form view
-
+        // --- AUTH LOGIC ---
         onAuthStateChanged(auth, user => {
-            if (user && !user.isAnonymous) {
+            if(user) {
                 userId = user.uid;
-                loginLink.classList.add('hidden');
-                userDisplay.classList.remove('hidden');
-                userEmailDisplay.textContent = user.email;
-                publishBtn.disabled = false;
-                publishBtn.textContent = "Publish Content";
+                document.getElementById('user-email-display').textContent = user.email;
+                document.getElementById('user-display').classList.remove('hidden');
+                loadRequests(); // Pre-load inbox data
             } else {
-                userId = null;
-                loginLink.classList.remove('hidden');
-                userDisplay.classList.add('hidden');
-                publishBtn.disabled = true;
-                publishBtn.textContent = "Sign In To Publish";
+                // Kick out if not logged in
+                window.location.href = "../login.html";
             }
         });
-        
-        signOutBtn.addEventListener('click', () => signOut(auth).catch(err => console.error(err)));
-        
-        function displayMessage(message, isError = false) {
-            statusMessage.textContent = message;
-            statusMessage.className = `text-center p-3 rounded-lg ${isError ? 'bg-red-900 text-red-300' : 'bg-green-900 text-green-300'}`;
-            statusMessage.classList.remove('hidden');
-            setTimeout(() => statusMessage.classList.add('hidden'), 3000);
+
+        document.getElementById('signOut-btn').addEventListener('click', () => {
+            signOut(auth).then(() => window.location.href = "../index.html");
+        });
+
+        // --- UI FUNCTIONS (Global for onclick) ---
+        window.switchTab = (tabName) => {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        };
+
+        window.toggleForm = (type) => {
+             if (type === 'post') {
+                document.getElementById('post-fields').classList.remove('hidden');
+                document.getElementById('announcement-fields').classList.add('hidden');
+            } else {
+                document.getElementById('post-fields').classList.add('hidden');
+                document.getElementById('announcement-fields').classList.remove('hidden');
+            }
+        };
+
+        window.deleteRequest = (id) => {
+            if(confirm("Permanently delete this request?")) {
+                remove(ref(db, `feature_requests/${id}`));
+            }
+        };
+
+        // NEW: Function to Toggle Read/Unread Status
+        window.toggleStatus = (id, currentStatus) => {
+            const newStatus = currentStatus === 'new' ? 'read' : 'new';
+            update(ref(db, `feature_requests/${id}`), {
+                status: newStatus
+            });
+        };
+
+        // --- INBOX LOGIC ---
+        function loadRequests() {
+            const list = document.getElementById('requests-list');
+            const badge = document.getElementById('notification-badge');
+            
+            onValue(ref(db, 'feature_requests'), (snapshot) => {
+                list.innerHTML = '';
+                const data = snapshot.val();
+                
+                if(!data) {
+                    list.innerHTML = '<div class="text-center text-gray-500 py-10 bg-gray-900 rounded-lg">No pending requests.</div>';
+                    badge.classList.add('hidden');
+                    return;
+                }
+
+                let unreadCount = 0;
+                const keys = Object.keys(data).reverse(); // Newest first
+
+                keys.forEach(key => {
+                    const req = data[key];
+                    const isRead = req.status === 'read';
+                    if(!isRead) unreadCount++;
+                    
+                    const date = req.timestamp ? new Date(req.timestamp).toLocaleDateString() : 'Unknown Date';
+                    
+                    const div = document.createElement('div');
+                    // Apply 'read' class if status is read (dims opacity)
+                    div.className = `request-item ${req.priority} ${isRead ? 'read' : ''} bg-gray-900 p-4 rounded-lg shadow-md flex justify-between items-start`;
+                    
+                    div.innerHTML = `
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-xs font-bold px-2 py-0.5 rounded bg-gray-800 border border-gray-600 text-gray-300">
+                                    ${req.priority}
+                                </span>
+                                <h3 class="font-bold text-white text-lg">
+                                    ${escapeHtml(req.subject)}
+                                    ${!isRead ? '<span class="ml-2 inline-block w-2 h-2 bg-green-500 rounded-full"></span>' : ''}
+                                </h3>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-2">From: ${escapeHtml(req.sender)} • ${date}</p>
+                            <p class="text-gray-300 whitespace-pre-wrap text-sm">${escapeHtml(req.description)}</p>
+                        </div>
+                        <div class="ml-4 flex flex-col gap-2">
+                             <button class="text-xs px-3 py-1 rounded border border-gray-600 hover:bg-gray-700 transition text-gray-300" onclick="toggleStatus('${key}', '${req.status}')">
+                                ${isRead ? 'Mark Unread' : 'Mark Read'}
+                             </button>
+                             <button class="text-xs bg-red-900/50 text-red-200 px-3 py-1 rounded hover:bg-red-900 transition border border-red-800" onclick="deleteRequest('${key}')">
+                                Delete
+                             </button>
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+
+                // Update Badge
+                if(unreadCount > 0) {
+                    badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            });
         }
 
-        async function publishContent(event) {
-            event.preventDefault();
-            if (!userId) return displayMessage("You must be signed in.", true);
+        // --- PUBLISH LOGIC (Same as before) ---
+        const postForm = document.getElementById('post-form');
+        const statusMessage = document.getElementById('status-message');
+        const publishBtn = document.getElementById('publish-btn');
 
-            const selectedType = document.querySelector('input[name="contentType"]:checked').value;
+        postForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const type = document.querySelector('input[name="contentType"]:checked').value;
+            
             publishBtn.disabled = true;
             publishBtn.textContent = "Publishing...";
+            publishBtn.classList.add('opacity-50');
 
             try {
-                if (selectedType === 'post') {
-                    await publishPost();
+                if (type === 'post') {
+                    const title = document.getElementById('post-title').value.trim();
+                    const category = document.getElementById('post-category').value;
+                    const summary = document.getElementById('post-content').value.trim();
+                    const linkUrl = document.getElementById('post-link').value.trim();
+                    const imageUrl = document.getElementById('image-link').value.trim();
+                    
+                    const dateInput = document.getElementById('post-date').value;
+                    const timeInput = document.getElementById('post-time').value;
+                    let timestamp = serverTimestamp();
+                    
+                    if (dateInput) {
+                        const timeStr = timeInput || '12:00:00';
+                        timestamp = new Date(`${dateInput}T${timeStr}`).getTime();
+                    }
+
+                    if(!title || !linkUrl) throw new Error("Title and Link are required");
+
+                    await push(ref(db, 'content'), {
+                        type: 'post', title, category, summary, linkUrl, imageUrl,
+                        timestamp: timestamp, authorId: userId
+                    });
+
                 } else {
-                    await publishAnnouncement();
+                    const title = document.getElementById('announcement-title').value.trim();
+                    const text = document.getElementById('announcement-text').value.trim();
+                    const from = document.getElementById('announcement-from').value.trim();
+
+                    if(!title || !text) throw new Error("Title and Message are required");
+
+                    await push(ref(db, 'content'), {
+                        type: 'announcement', title, text, from,
+                        timestamp: serverTimestamp(), authorId: userId
+                    });
                 }
-                displayMessage(`Success! ${selectedType.charAt(0).toUpperCase() + selectedType.slice(1)} published.`, false);
+
+                showMessage("Published Successfully!", false);
                 postForm.reset();
+                document.querySelector('input[value="post"]').checked = true;
                 toggleForm('post');
+
             } catch (error) {
-                console.error("Publishing Error:", error);
-                displayMessage(error.message, true);
+                console.error(error);
+                showMessage(error.message, true);
             } finally {
-                if (userId) {
-                    publishBtn.disabled = false;
-                    publishBtn.textContent = "Publish Content";
-                }
+                publishBtn.disabled = false;
+                publishBtn.textContent = "Publish Now";
+                publishBtn.classList.remove('opacity-50');
             }
-        }
-        
-        async function publishPost() {
-            const title = document.getElementById('post-title').value.trim();
-            const category = document.getElementById('post-category').value;
-            const summary = document.getElementById('post-content').value.trim();
-            const linkUrl = document.getElementById('post-link').value.trim();
+        });
 
-            if (!title || !summary || !linkUrl || !category) throw new Error("Please fill out all required post fields.");
+        function showMessage(msg, isError) {
+            statusMessage.textContent = msg;
+            statusMessage.classList.remove('hidden', 'bg-green-900', 'text-green-200', 'bg-red-900', 'text-red-200');
             
-            const postDate = document.getElementById('post-date').value;
-            const postTime = document.getElementById('post-time').value;
-            let timestamp;
-            if (postDate || postTime) {
-                const datePart = postDate || new Date().toISOString().split('T')[0];
-                const timePart = postTime || '00:00:00';
-                timestamp = new Date(`${datePart}T${timePart}`).getTime();
+            if(isError) {
+                statusMessage.classList.add('bg-red-900', 'text-red-200');
             } else {
-                timestamp = serverTimestamp();
+                statusMessage.classList.add('bg-green-900', 'text-green-200');
             }
-
-            const newPostData = {
-                type: 'post', title, summary, linkUrl, category, authorId: userId, timestamp
-            };
-            const imageUrl = document.getElementById('image-link').value.trim();
-            if (imageUrl) newPostData.imageUrl = imageUrl;
-
-            await push(ref(db, 'content'), newPostData);
+            statusMessage.classList.remove('hidden');
+            setTimeout(() => statusMessage.classList.add('hidden'), 4000);
         }
 
-        async function publishAnnouncement() {
-            const title = document.getElementById('announcement-title').value.trim();
-            const text = document.getElementById('announcement-text').value.trim();
-            const from = document.getElementById('announcement-from').value.trim();
-            if (!title || !text || !from) throw new Error("Please fill out all announcement fields.");
-
-            const newAnnouncementData = {
-                type: 'announcement', title, text, from, authorId: userId, timestamp: serverTimestamp()
-            };
-            await push(ref(db, 'content'), newAnnouncementData);
+        function escapeHtml(text) {
+            if(!text) return "";
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
-
-        postForm.addEventListener('submit', publishContent);
-
     </script>
-    <!-- Note: Admin uses its own local logic for the form, so we don't load the generic auth.js here to avoid conflicts -->
 </body>
 </html>

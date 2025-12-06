@@ -44,7 +44,13 @@ document.addEventListener("DOMContentLoaded", function() {
         "archive.html", // The main archive list
         "archive-2025.html",// Yearly archives
         "tech-tips.html" ,
-        
+        "feature-request.html",
+        "coding-projects.html",
+        "updates.html",
+        "beta.html",
+        "",
+        "",
+
         // Add any other pages here
     ];
 

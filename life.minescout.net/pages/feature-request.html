@@ -1,30 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feature Request - Minescouts Life</title>
-
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- Updated to ../assets/ -->
-    <link rel="stylesheet" href="../assests/css/homepage.css">
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png?v=2">
-</head>
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assests/css/homepage.css?v=2.96">
+    <link rel="icon" type="image/png" href="../assests/images/favicon.png?v=2">
+    
+    <!-- EMAILJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
+    <style>
+        .request-form-container {
+            max-width: 600px; margin: 0 auto; background: #fff; padding: 30px;
+            border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;
+        }
+        .form-group select {
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;
+            font-family: 'Inter', sans-serif; font-size: 1rem; background-color: white;
+        }
+        #status-msg { margin-top: 15px; text-align: center; font-weight: bold; }
+        .success-msg { color: #446944; }
+        .error-msg { color: #dc2626; }
+    </style>
+</head>
 <body>
 
     <header class="main-header">
         <div class="container site-title-container">
-            <div id="auth-container">
-                <a href="../login.html" id="login-link">Login</a>
-            </div>
+            <div id="auth-container"><a href="../login.html" id="login-link">Login</a></div>
             <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts
-                        Life</a></h1>
+                <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
                 <p class="tagline">Feature Request</p>
             </div>
             <div id="user-display" class="hidden">
@@ -39,59 +51,149 @@
             <main class="main-content">
                 <article class="post-full">
                     <h1>Request a Feature</h1>
-                    <p>Have an idea for the website or an app? Let us know below!</p>
+                    <p class="post-meta">Help us improve Minescouts Life</p>
                     <div class="post-content">
-                        <!-- Embed Google Form or similar here if you have one, or just a placeholder for comments -->
-                        <p>Please use the comments section below to describe the feature you would like to see.</p>
+                        <p>Have an idea for a new web app, article topic, or improvement? Fill out the form below. Our admin team reviews these regularly.</p>
                     </div>
                 </article>
 
                 <section class="comments-section">
-                    <h2>Requests</h2>
-                    <div class="comment-form-container">
-                        <h3>Submit Request</h3>
-                        <form>
+                    <div class="request-form-container">
+                        <h3>Submit New Request</h3>
+                        <form id="featureRequestForm">
                             <div class="form-group">
-                                <label for="name">Name:</label>
-                                <input type="text" id="name" name="name" required>
+                                <label for="name">Your Name (Optional):</label>
+                                <input type="text" id="name" name="name" placeholder="Guest">
                             </div>
+                            
                             <div class="form-group">
-                                <label for="comment">Feature Idea:</label>
-                                <textarea id="comment" name="comment" rows="5" required></textarea>
+                                <label for="subject">Subject / Title:</label>
+                                <input type="text" id="subject" name="subject" required placeholder="e.g. Dark Mode Toggle">
                             </div>
-                            <button type="submit" class="submit-button">Submit</button>
+
+                            <div class="form-group">
+                                <label for="priority">Priority Level:</label>
+                                <select id="priority" name="priority">
+                                    <option value="LOW">Low - Nice to have</option>
+                                    <option value="MED">Medium - Important improvement</option>
+                                    <option value="HIGH">High - Critical issue or bug</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="comment">Description:</label>
+                                <textarea id="comment" name="comment" rows="5" required placeholder="Describe the feature in detail..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="submit-button">Submit Request</button>
                         </form>
+                        <div id="status-msg"></div>
                     </div>
-                    <div class="comments-list"></div>
                 </section>
             </main>
 
             <aside id="sidebar">
-    <!-- This empty div is where the sidebar will appear -->
-    <div id="sidebar-container"></div> 
-</aside>
+                <div id="sidebar-container"></div> 
+            </aside>
         </div>
     </div>
 
     <footer class="main-footer">
-        <div class="container">
-            <p id="copyright">© 2025 Minescouts Life. All rights reserved.</p>
-        </div>
+        <div class="container"><p id="copyright">© 2025 Minescouts Life. All rights reserved.</p></div>
     </footer>
 
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <!-- FIREBASE & EMAIL LOGIC -->
+    <script type="module">
+        import { db, auth } from "../assests/js/firebase-config.js";
+        import { ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    
+        // --- EMAILJS CONFIGURATION ---
+        // FILL THESE IN FROM YOUR EMAILJS DASHBOARD
+        const EMAIL_SERVICE_ID = "service_khgjq1e";
+        const EMAIL_TEMPLATE_ID = "template_2p930wd";
+        const EMAIL_PUBLIC_KEY = "Fa69EL7WS0e4EWsl-";
 
-    <!-- Updated path -->
-            <!-- The path goes up one directory to find the JS file -->
-    <script src="../assests/js/homepage.js" defer></script>
+        // Initialize EmailJS
+        (function(){
+            emailjs.init(EMAIL_PUBLIC_KEY);
+        })();
+
+        const form = document.getElementById('featureRequestForm');
+        const statusMsg = document.getElementById('status-msg');
+        const nameInput = document.getElementById('name');
+
+        // Auto-fill name if logged in
+        onAuthStateChanged(auth, user => {
+            if(user) {
+                // Try to get display name, fall back to email prefix
+                const displayName = user.displayName || (user.email ? user.email.split('@')[0] : "User");
+                nameInput.value = displayName;
+                nameInput.readOnly = true;
+                nameInput.style.backgroundColor = "#f0f0f0";
+            }
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = form.querySelector('button');
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Transmitting...";
+
+            const name = document.getElementById('name').value || "Anonymous";
+            const subject = document.getElementById('subject').value;
+            const priority = document.getElementById('priority').value;
+            const desc = document.getElementById('comment').value;
+
+            try {
+                // 1. Save to Firebase Database (Primary Storage)
+                await push(ref(db, 'feature_requests'), {
+                    sender: name,
+                    subject: subject,
+                    description: desc,
+                    priority: priority,
+                    timestamp: serverTimestamp(),
+                    status: 'new'
+                });
+
+                // 2. Send Email Notification via EmailJS
+                const templateParams = {
+                    from_name: name,
+                    subject: subject,
+                    priority: priority,
+                    message: desc
+                };
+
+                // We don't await this to block the UI, but we log it
+                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
+                    .then(() => {
+                        console.log('Email sent successfully!');
+                    }, (error) => {
+                        console.error('Email failed:', error);
+                    });
+
+                // 3. Success UI
+                statusMsg.textContent = "Request received successfully.";
+                statusMsg.className = "success-msg";
+                form.reset();
+
+                // Redirect after delay
+                setTimeout(() => {
+                    window.location.href = "../index.html";
+                }, 2000);
+
+            } catch (error) {
+                console.error("Database Error:", error);
+                statusMsg.textContent = "Error submitting request. Please try again.";
+                statusMsg.className = "error-msg";
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Request";
+            }
+        });
+    </script>
+
+    <!-- MODULAR SCRIPTS -->
+    <script type="module" src="../assests/js/auth.js?v=1.1"></script>
     <script src="../assests/js/loader.js"></script>
-    <!-- Adjust the path ../ if you are inside a folder -->
-    <script type="module" src="../assests/js/auth.js?v=1.1"></script>dy>
-
+</body>
 </html>
