@@ -1,17 +1,24 @@
 /* 
-    TERMINAL CORE V2.6 (GHOST MESSAGES)
-    - Global Command Center
-    - Interactive Physics
-    - Subliminal "Check Corners" Hint in Matrix Rain
+    TERMINAL CORE V3.2
+    - Global Command Center (Max Z-Index)
+    - Ghost Messages in Matrix
+    - Firebase Safety Checks
+    - Crash Prevention (Safe Storage)
 */
 
 (function() {
-    console.log("Initializing Terminal Core V2.6...");
+    console.log("Initializing Terminal Core V3.2...");
 
     // 1. INJECT CSS
     const style = document.createElement('style');
     style.innerHTML = `
-        .cmd-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; justify-content: flex-start; align-items: flex-end; padding: 20px; backdrop-filter: blur(1px); }
+        .cmd-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.6); 
+            z-index: 2147483647 !important; /* MAX POSSIBLE LAYER */
+            display: flex; justify-content: flex-start; align-items: flex-end; 
+            padding: 20px; backdrop-filter: blur(2px); 
+        }
         .hidden { display: none !important; }
         .cmd-window { width: 450px; background: rgba(0, 15, 0, 0.95); border: 1px solid #0F0; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); display: flex; flex-direction: column; font-family: 'Courier New', monospace; color: #0F0; margin-bottom: 20px; }
         .cmd-title-bar { background: #003300; color: #0F0; padding: 8px 12px; font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #0F0; user-select: none; }
@@ -34,12 +41,15 @@
     `;
     document.head.appendChild(style);
 
-    // 2. APPLY VISUAL STATES
+    // 2. SAFE STORAGE & VISUALS
+    function safeGet(key) { try { return sessionStorage.getItem(key); } catch(e) { return null; } }
+    function safeSet(key, val) { try { sessionStorage.setItem(key, val); } catch(e) {} }
+
     function applyVisuals() {
-        if (sessionStorage.getItem('egg_flip') === 'true') document.body.style.transform = "scaleY(-1)";
+        if (safeGet('egg_flip') === 'true') document.body.style.transform = "scaleY(-1)";
         else document.body.style.transform = "none";
 
-        if (sessionStorage.getItem('egg_invert') === 'true') document.body.style.filter = "invert(1) hue-rotate(180deg)";
+        if (safeGet('egg_invert') === 'true') document.body.style.filter = "invert(1) hue-rotate(180deg)";
         else document.body.style.filter = "none";
     }
     applyVisuals();
@@ -47,7 +57,7 @@
     // 3. PHYSICS ENGINE
     let physicsLoop;
     function enablePhysics() {
-        if (sessionStorage.getItem('egg_gravity') !== 'true') return;
+        if (safeGet('egg_gravity') !== 'true') return;
         const box = document.querySelector('.content-box') || document.querySelector('.manual-block') || document.querySelector('.code-block') || document.querySelector('.playground') || document.querySelector('.login-box') || document.querySelector('.form-block');
         if (!box) return;
 
@@ -105,8 +115,8 @@
         if(pick === 'TL') { egg.style.top = '0'; egg.style.left = '0'; } if(pick === 'TR') { egg.style.top = '0'; egg.style.right = '0'; } if(pick === 'BL') { egg.style.bottom = '0'; egg.style.left = '0'; } if(pick === 'BR') { egg.style.bottom = '0'; egg.style.right = '0'; }
         egg.onmouseover = () => { egg.innerText = "CLICK"; }; egg.onmouseout = () => { egg.innerText = "???"; };
         egg.onclick = () => {
-            let secretCode = sessionStorage.getItem('egg_code');
-            if (!secretCode) { const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; secretCode = ""; for(let i=0; i<4; i++) secretCode += chars.charAt(Math.floor(Math.random() * chars.length)); sessionStorage.setItem('egg_code', secretCode); }
+            let secretCode = safeGet('egg_code');
+            if (!secretCode) { const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; secretCode = ""; for(let i=0; i<4; i++) secretCode += chars.charAt(Math.floor(Math.random() * chars.length)); safeSet('egg_code', secretCode); }
             console.clear(); console.warn("SYSTEM BREACH DETECTED."); console.log(`%c ACCESS CODE: [ ${secretCode} ]`, "color: black; background: #0F0; font-size: 20px; padding: 10px; border: 2px dashed black;");
             alert("ENCRYPTED SIGNAL FOUND.\n\nCheck your Developer Console (F12) to retrieve the Access Code.");
         };
@@ -126,51 +136,33 @@
         
         const fontSize = 16; let columns = width / fontSize; let drops = []; for(let i=0; i<columns; i++) drops[i] = 1;
 
-        // GHOST MESSAGE LOGIC
         const isIndex = window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/") || window.location.pathname.endsWith("/mineScout/");
-        let ghostCol = -1;
-        let ghostTimer = 0;
-        const GHOST_MSG = "CHECK_THE_CORNERS";
+        let ghostCol = -1; let ghostTimer = 0; const GHOST_MSG = "CHECK_THE_CORNERS";
 
         setInterval(() => {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, width, height);
             
-            // Randomly trigger ghost message on Index page
             if (isIndex && ghostTimer <= 0 && Math.random() > 0.995) {
-                ghostCol = Math.floor(Math.random() * columns);
-                ghostTimer = 100; // Duration of effect
+                ghostCol = Math.floor(Math.random() * columns); ghostTimer = 100;
             }
             if (ghostTimer > 0) ghostTimer--;
 
-            const isRainbow = sessionStorage.getItem('egg_rainbow') === 'true';
+            const isRainbow = safeGet('egg_rainbow') === 'true';
             
             ctx.font = fontSize + 'px monospace';
-            
             for(let i=0; i<drops.length; i++) {
                 let text = chars[Math.floor(Math.random() * chars.length)];
                 let fillStyle = '#0F0';
 
-                // Rainbow Mode Override
-                if(isRainbow) {
-                    const colors = ['#0F0', '#F0F', '#0FF', '#FF0', '#F00'];
-                    fillStyle = colors[Math.floor(Math.random() * colors.length)];
-                }
+                if(isRainbow) { const colors = ['#0F0', '#F0F', '#0FF', '#FF0', '#F00']; fillStyle = colors[Math.floor(Math.random() * colors.length)]; }
 
-                // Ghost Message Override (Higher Priority)
                 if (isIndex && i === ghostCol && ghostTimer > 0) {
-                    // Calculate which letter of the message to show based on row
                     const charIndex = Math.floor(drops[i]) % GHOST_MSG.length;
-                    text = GHOST_MSG[charIndex];
-                    fillStyle = '#FFF'; // Bright White
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = "#FFF";
-                } else {
-                    ctx.shadowBlur = 0;
-                }
+                    text = GHOST_MSG[charIndex]; fillStyle = '#FFF';
+                    ctx.shadowBlur = 10; ctx.shadowColor = "#FFF";
+                } else { ctx.shadowBlur = 0; }
 
-                ctx.fillStyle = fillStyle;
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                
+                ctx.fillStyle = fillStyle; ctx.fillText(text, i * fontSize, drops[i] * fontSize);
                 if(drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             }
@@ -199,7 +191,7 @@
         if (e.key === 'Enter') {
             const raw = input.value.trim(); const parts = raw.split(' '); const cmd = parts[0].toLowerCase(); const args = parts.slice(1).join(' ');
             input.value = ''; 
-            const secret = sessionStorage.getItem('egg_code');
+            const secret = safeGet('egg_code');
             if (secret && cmd === secret.toLowerCase()) { window.location.href = isDeep ? '../posts/easteregg.html' : 'content/posts/easteregg.html'; return; }
             output.innerText = "";
 
@@ -212,20 +204,14 @@
                 case 'reqs': window.location.href = prefix + 'feature-requests.html'; return;
                 case 'help': window.location.href = prefix + 'help.html'; return;
                 case 'login': window.location.href = prefix + 'login.html'; return;
-                // ... inside switch(cmd) ...
-
+                
+                // SAFE LOGOUT CHECK
                 case 'logout': 
                     if (typeof firebase !== 'undefined' && firebase.auth) { 
-                        firebase.auth().signOut().then(() => { 
-                            output.style.color = '#0F0'; 
-                            output.innerText = "Logged out successfully."; 
-                        }); 
-                    } else { 
-                        output.innerText = "System loading... please wait."; 
-                    } 
+                        firebase.auth().signOut().then(() => { output.style.color = '#0F0'; output.innerText = "Logged out successfully."; }); 
+                    } else { output.innerText = "System loading... please wait."; } 
                     return;
 
-                // ... rest of code ...
                 case 'exit': window.toggleCmd(); return;
             }
             if (typeof window.handlePageCommand === 'function') { const result = window.handlePageCommand(cmd, args); if (result === true) return; if (typeof result === 'string') { output.innerText = result; return; } }

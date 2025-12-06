@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nano /docs/crypto-tool.txt</title>
+    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png">
+    
+    <!-- FIREBASE & CORE -->
+    <script src="../../assets/js/firebase-config.js?v=3.2"></script>
+    <script src="../../assets/js/terminal-core.js?v=3.2"></script>
+
+    <style>
+        body { background-color: #111; color: #ccc; font-family: 'Courier New', monospace; margin: 0; padding: 20px; }
+        .editor-header { background: #fff; color: #000; padding: 5px; font-weight: bold; display: flex; justify-content: space-between; }
+        .content { max-width: 800px; margin: 20px auto; white-space: pre-wrap; line-height: 1.5; }
+        h1 { color: #0F0; border-bottom: 1px double #0F0; }
+        a { color: #0F0; text-decoration: underline; cursor: pointer; }
+        
+        .instruction {
+            position: fixed; bottom: 10px; right: 10px;
+            background: #0F0; color: #000; padding: 5px 10px; font-weight: bold; cursor: pointer; z-index: 100;
+        }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    
+    <div class="editor-header"><span>GNU nano 6.0</span><span>File: crypto-release.txt</span><span>Modified</span></div>
+
+    <div class="content">
+<h1>RELEASE: Vigenère Crypto Tool (Offline)</h1>
+<p>Date: Dec 05, 2025 | Type: Standalone Utility</p>
+
+-----------------------------------------------------------
+SYSTEM ENTRY: TOOL DEPLOYMENT
+-----------------------------------------------------------
+
+We have compiled the Vigenère Cracker into a standalone local file.
+This ensures you can perform cryptographic operations without an active internet connection (Air-Gapped Mode).
+
+FEATURES:
+1. Local Encryption/Decryption.
+2. Dictionary Attack (Requires Internet for API).
+3. Brute Force Engine.
+
+> <a href="../../content/projects/vigenere-tool.zip" download>DOWNLOAD_TOOLKIT.ZIP</a>
+
+INSTRUCTIONS:
+1. Download the archive.
+2. Unzip to your local machine.
+3. Open `vigenere-tool.html` in your browser.
+
+-----------------------------------------------------------
+END OF LOG
+-----------------------------------------------------------
+    </div>
+
+    <div class="instruction" onclick="window.toggleCmd()">
+        [ ^X EXIT ] (Click or Type '/')
+    </div>
+
+    <script>
+        // Page Specific Command Handler
+        window.handlePageCommand = function(cmd, args) {
+            if (cmd === 'return' || cmd === 'back' || cmd === 'exit') { 
+                window.location.href = '../../pages.html'; 
+                return true; 
+            }
+            if (cmd === 'download' || cmd === 'get') {
+                // Trigger Download via Core logic or manual link click
+                const link = document.createElement('a');
+                link.href = '../../content/projects/vigenere-tool.zip';
+                link.download = 'vigenere-tool.zip';
+                link.click();
+                return "Downloading...";
+            }
+            return null;
+        };
+    </script>
+</body>
+</html>
