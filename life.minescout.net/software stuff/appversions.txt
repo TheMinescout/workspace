@@ -1,3 +1,4 @@
 minescoutlifeexe = "1.2"
 minescoutlifeapk = "1.0"
 weighttracker = "1.0"
+minescoutlifelinux= "1.0"

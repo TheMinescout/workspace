@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vigenère Decoder // Matrix Protocol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --hex-green: #00ff41;
+            --hex-dark: #051005;
+            --hex-dim: #003b00;
+        }
+
+        body {
+            background-color: black;
+            color: var(--hex-green);
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+        }
+
+        /* CRT Overlay */
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(33, 255, 0, 0.04) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100%; }
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.25;
+        }
+
+        .neo-box {
+            background: rgba(0, 10, 0, 0.9);
+            border: 1px solid var(--hex-green);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+        }
+
+        .neo-input {
+            background: #000;
+            border: 1px solid var(--hex-dim);
+            color: var(--hex-green);
+            transition: 0.3s;
+        }
+        
+        .neo-input:focus {
+            border-color: var(--hex-green);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+            outline: none;
+        }
+
+        .neo-btn {
+            background: var(--hex-dim);
+            border: 1px solid var(--hex-green);
+            color: var(--hex-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .neo-btn:hover {
+            background: var(--hex-green);
+            color: black;
+            box-shadow: 0 0 20px var(--hex-green);
+        }
+
+        .tab-active {
+            background: var(--hex-green);
+            color: black;
+            font-weight: bold;
+        }
+
+        .confidence-meter {
+            height: 4px;
+            background: #111;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: var(--hex-green);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .result-card {
+            transition: all 0.5s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #68D391;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #68D391;
+        }
+        .toggle-checkbox {
+            right: 0;
+            z-index: 1;
+            border-color: #ccc;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #004400; }
+        ::-webkit-scrollbar-thumb:hover { background: #00ff41; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-2 md:p-6">
+
+    <canvas id="bg-canvas"></canvas>
+    <div class="scanline"></div>
+
+    <!-- Header -->
+    <header class="w-full max-w-5xl mb-6 mt-2 text-center z-10">
+        <h1 class="text-4xl md:text-5xl font-bold tracking-[0.2em] mb-2" style="text-shadow: 0 0 10px var(--hex-green);">
+            CIPHER<span class="text-white">_</span>BREAKER
+        </h1>
+        <div class="text-xs md:text-sm opacity-70 tracking-widest">
+            VIGENÈRE DECRYPTION PROTOCOL v8.1 (EXPANDED_DICTIONARY)
+        </div>
+    </header>
+
+    <!-- Main Interface -->
+    <main class="w-full max-w-5xl z-10 flex flex-col gap-4">
+        
+        <!-- Tabs -->
+        <div class="flex w-full neo-box">
+            <button onclick="setMode('encrypt')" id="btn-encrypt" class="flex-1 py-3 hover:bg-green-900 transition-colors tab-active">ENCRYPT</button>
+            <button onclick="setMode('decrypt')" id="btn-decrypt" class="flex-1 py-3 hover:bg-green-900 transition-colors">DECRYPT</button>
+            <button onclick="setMode('break')" id="btn-break" class="flex-1 py-3 hover:bg-green-900 transition-colors border-l border-green-900">AUTO-BREAK</button>
+        </div>
+
+        <!-- Working Area -->
+        <div class="neo-box p-6 flex flex-col gap-6 relative">
+            
+            <!-- Standard Cipher UI -->
+            <div id="standard-ui" class="flex flex-col gap-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs uppercase tracking-widest opacity-80">Input Data Stream</label>
+                        <textarea id="input-text" rows="8" class="neo-input w-full p-4 font-mono text-sm resize-none" placeholder="Enter text..."></textarea>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs uppercase tracking-widest opacity-80">Output Stream</label>
+                        <textarea id="output-text" readonly rows="8" class="neo-input bg-black w-full p-4 font-mono text-sm resize-none opacity-80 cursor-not-allowed"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-4 items-end border-t border-green-900 pt-6">
+                    <div class="w-full">
+                        <label class="text-xs uppercase tracking-widest opacity-80">Encryption Key</label>
+                        <input type="text" id="key-input" class="neo-input w-full p-3 uppercase font-bold tracking-widest" placeholder="KEY">
+                    </div>
+                    <button onclick="process()" id="action-btn" class="neo-btn w-full md:w-auto px-10 py-3 font-bold whitespace-nowrap">
+                        EXECUTE
+                    </button>
+                </div>
+            </div>
+
+            <!-- Auto Break UI -->
+            <div id="break-ui" class="hidden flex flex-col gap-6">
+                <div class="bg-green-900/20 border-l-4 border-green-500 p-4">
+                    <h3 class="font-bold text-lg mb-1">INTELLIGENT BRUTE FORCE</h3>
+                    <p class="text-xs opacity-80 max-w-2xl">
+                        This module analyzes sentence structure using an expanded dictionary (~1000 words).
+                        <br><strong>LIVE API LINK:</strong> Active. Verifies candidates against external dictionary.
+                    </p>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs uppercase tracking-widest opacity-80">Encrypted Payload</label>
+                    <textarea id="break-input" rows="4" class="neo-input w-full p-4 font-mono text-sm resize-none" placeholder="Paste encrypted text here..."></textarea>
+                </div>
+
+                <!-- Dev Mode Toggle -->
+                <div class="flex items-center justify-between border-t border-b border-green-900 py-3">
+                    <div class="flex items-center gap-2">
+                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle" id="dev-mode-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" onclick="toggleDevUI()"/>
+                            <label for="dev-mode-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-900 border border-green-900 cursor-pointer"></label>
+                        </div>
+                        <label for="dev-mode-toggle" class="text-xs font-bold uppercase tracking-widest cursor-pointer select-none">Developer Benchmarking</label>
+                    </div>
+                    
+                    <div id="dev-input-container" class="hidden flex-1 ml-4 flex items-center gap-2 animate-pulse">
+                        <span class="text-xs text-green-400">TARGET KEY:</span>
+                        <input type="text" id="target-key" class="neo-input p-1 px-2 text-xs w-32 uppercase font-bold" placeholder="EXPECTED KEY">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                    <!-- Config -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs uppercase tracking-widest opacity-80">Candidates to Display</label>
+                        <input type="number" id="candidate-count" min="1" max="10" value="3" class="neo-input p-2 w-full font-mono text-center" onchange="if(this.value>10)this.value=10; if(this.value<1)this.value=1;">
+                    </div>
+                    
+                    <!-- NEW: Key Length Selector -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs uppercase tracking-widest opacity-80">Target Key Length</label>
+                        <select id="key-length-select" class="neo-input p-2 w-full font-mono text-center cursor-pointer">
+                            <option value="auto">UNKNOWN (AUTO)</option>
+                            <option value="1">1 CHAR (26 CHECKS)</option>
+                            <option value="2">2 CHARS (676 CHECKS)</option>
+                            <option value="3">3 CHARS (17k CHECKS)</option>
+                            <option value="4">4 CHARS (456k CHECKS)</option>
+                            <option value="5">5 CHARS (STATISTICAL)</option>
+                            <option value="6">6 CHARS (STATISTICAL)</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-1 flex justify-end items-end">
+                        <div id="status-line" class="text-xs font-mono opacity-50 mb-2 md:mb-0 w-full text-right hidden md:block">STATUS: IDLE</div>
+                        <button onclick="startBreak()" class="neo-btn px-6 py-3 font-bold w-full">INITIATE CRACK</button>
+                    </div>
+                </div>
+                
+                <div class="block md:hidden text-center text-xs font-mono opacity-50 mt-2">
+                    STATUS: IDLE
+                </div>
+
+                <!-- Candidates List Area -->
+                <div id="candidates-container" class="hidden flex flex-col gap-4">
+                    <div class="text-xs uppercase tracking-widest opacity-50 border-b border-green-900 pb-2">Top Matches (Ranked by Realness Score)</div>
+                    <div id="candidates-list" class="flex flex-col gap-4">
+                        <!-- Cards injected here -->
+                    </div>
+                </div>
+
+                <!-- Fail Message Area -->
+                <div id="fail-area" class="hidden border border-red-500 bg-red-900/20 p-6 text-center">
+                    <h3 class="text-red-500 font-bold text-xl mb-2">DECRYPTION FAILED</h3>
+                    <p class="text-sm opacity-80">
+                        No valid English text detected with any tested key.
+                        <br>The text may be random, double-encrypted, or using a key longer than supported limits.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- 1. CONFIG & DATA ---
+        
+        let mode = 'encrypt';
+        let allCandidates = []; 
+        let benchTargetKey = "";
+        let benchTimeTaken = null;
+        
+        // Expanded list of common English words (Top ~1000 common words + specialized)
+        const commonWords = new Set([
+            // Pronouns & Basic
+            "the","of","and","a","to","in","is","you","that","it","he","was","for","on","are","as","with","his","they","i",
+            "at","be","this","have","from","or","one","had","by","word","but","not","what","all","were","we","when","your",
+            "can","said","there","use","an","each","which","she","do","how","their","if","will","up","other","about","out","many",
+            "then","them","these","so","some","her","would","make","like","him","into","time","has","look","two","more","write",
+            "go","see","number","no","way","could","people","my","than","first","water","been","call","who","oil","its","now",
+            "find","long","down","day","did","get","come","made","may","part","over","new","sound","take","only","little","work",
+            "know","place","year","live","me","back","give","most","very","after","things","our","just","name","good","sentence",
+            "man","think","say","great","where","help","through","much","before","line","right","too","mean","old","any","same",
+            "tell","boy","follow","came","want","show","also","around","farm","three","small","set","put","end","does","another",
+            "well","large","must","big","even","such","because","turn","here","why","ask","went","men","read","need","land",
+            "different","home","us","move","try","kind","hand","picture","again","change","off","play","spell","air","away",
+            "animal","house","point","page","letter","mother","answer","found","study","still","learn","should","america",
+            "world","high","every","near","add","food","between","own","below","country","plant","last","school","father","keep",
+            "tree","never","start","city","earth","eyes","light","thought","head","under","story","saw","left","few",
+            "while","along","might","close","something","seem","next","hard","open","example","begin","life","always","those",
+            "both","paper","together","got","group","often","run","important","until","children","side","feet","car","mile","night",
+            "walk","white","sea","began","grow","took","river","four","carry","state","once","book","hear","stop","without","second",
+            "late","miss","idea","enough","eat","face","watch","far","indian","real","almost","let","above","girl","sometimes",
+            "mountains","cut","young","talk","soon","list","song","being","leave","family","it's", "don't", "can't", "won't", "I'm", "we're",
+            // Common Short Nouns & Verbs
+            "dog", "cat", "bird", "fish", "cow", "pig", "fox", "ant", "bee", "fly", "red", "green", "blue", "cyan", "gold", 
+            "one", "two", "six", "ten", "zero", "win", "lose", "game", "play", "fun", "run", "sun", "moon", "star", "sky",
+            "cool", "hot", "cold", "warm", "wet", "dry", "day", "eve", "mom", "dad", "son", "bro", "sis", "art", "car", "bus",
+            "box", "hat", "cap", "cup", "mug", "jar", "pen", "ink", "oil", "gas", "air", "ice", "fire",
+            "bad", "good", "evil", "nice", "let", "make", "take", "fake", "love", "hate", "war", "peace", "joy", "sad",
+            // Tech & Modern
+            "test", "testing", "tester", "text", "code", "cipher", "secret", "pass", "hello", "flag", "key", "lock", "data", "admin", "user", "root",
+            "computer", "system", "hack", "crack", "byte", "bit", "web", "net", "site", "link", "click", "app", "soft", "hard",
+            // Contractions expanded
+            "dont", "cant", "wont", "im", "were", "youre", "theyre", "isnt", "arent", "wasnt", "werent", "hasnt", "havent", "hadnt",
+            "didnt", "doesnt", "couldnt", "shouldnt", "wouldnt", "thats", "theres", "heres", "whats", "wheres", "whos", "lets"
+        ]);
+
+        const englishFreq = [
+            0.08167, 0.01492, 0.02782, 0.04253, 0.12702, 0.02228, 0.02015,
+            0.06094, 0.06966, 0.00153, 0.00772, 0.04025, 0.02406, 0.06749,
+            0.07507, 0.01929, 0.00095, 0.05987, 0.06327, 0.09056, 0.02758,
+            0.00978, 0.02360, 0.00150, 0.01974, 0.00074
+        ];
+
+        const commonBigrams = new Set([
+            "TH", "HE", "IN", "ER", "AN", "RE", "ND", "AT", "ON", "NT", "HA", "ES", "ST", "EN", "ED", "TO", "IT", "OU", "EA", "HI", "IS", "OR"
+        ]);
+
+        // --- 2. CORE FUNCTIONS ---
+        
+        window.onload = function() {
+            const savedKey = localStorage.getItem('vigenere_last_key');
+            if (savedKey) {
+                document.getElementById('key-input').value = savedKey;
+            }
+        };
+
+        function setMode(newMode) {
+            mode = newMode;
+            document.querySelectorAll('button[id^="btn-"]').forEach(b => b.classList.remove('tab-active'));
+            document.getElementById(`btn-${mode}`).classList.add('tab-active');
+
+            const stdUI = document.getElementById('standard-ui');
+            const brkUI = document.getElementById('break-ui');
+            const actionBtn = document.getElementById('action-btn');
+
+            if (mode === 'break') {
+                stdUI.classList.add('hidden');
+                brkUI.classList.remove('hidden');
+            } else {
+                stdUI.classList.remove('hidden');
+                brkUI.classList.add('hidden');
+                actionBtn.innerText = mode === 'encrypt' ? 'ENCRYPT' : 'DECRYPT';
+                document.getElementById('output-text').value = '';
+            }
+        }
+
+        function toggleDevUI() {
+            const toggle = document.getElementById('dev-mode-toggle');
+            const inputContainer = document.getElementById('dev-input-container');
+            if (toggle.checked) {
+                inputContainer.classList.remove('hidden');
+                inputContainer.classList.add('flex');
+            } else {
+                inputContainer.classList.add('hidden');
+                inputContainer.classList.remove('flex');
+            }
+        }
+
+        function vigenere(text, key, isDecrypt) {
+            if (!text || !key) return "";
+            let result = "";
+            let keyIndex = 0;
+            key = key.toUpperCase().replace(/[^A-Z]/g, '');
+            if (!key) return text;
+
+            for (let i = 0; i < text.length; i++) {
+                const c = text.charCodeAt(i);
+                if (c >= 65 && c <= 90) { // Upper
+                    const k = key.charCodeAt(keyIndex % key.length) - 65;
+                    const shift = isDecrypt ? (26 - k) : k;
+                    result += String.fromCharCode(((c - 65 + shift) % 26) + 65);
+                    keyIndex++;
+                } else if (c >= 97 && c <= 122) { // Lower
+                    const k = key.charCodeAt(keyIndex % key.length) - 65;
+                    const shift = isDecrypt ? (26 - k) : k;
+                    result += String.fromCharCode(((c - 97 + shift) % 26) + 97);
+                    keyIndex++;
+                } else {
+                    result += text[i]; 
+                }
+            }
+            return result;
+        }
+
+        function process() {
+            const txt = document.getElementById('input-text').value;
+            const key = document.getElementById('key-input').value;
+            const res = vigenere(txt, key, mode === 'decrypt');
+            document.getElementById('output-text').value = res;
+            if(key && key.length > 0) localStorage.setItem('vigenere_last_key', key);
+        }
+
+        // --- 3. AUTO-BREAK LOGIC ---
+
+        function calculateChiSquaredScore(text) {
+            const clean = text.toUpperCase().replace(/[^A-Z]/g, "");
+            if (clean.length === 0) return Infinity;
+            const counts = new Array(26).fill(0);
+            for (let i = 0; i < clean.length; i++) counts[clean.charCodeAt(i) - 65]++;
+            let chi = 0;
+            for (let i = 0; i < 26; i++) {
+                const observed = counts[i];
+                const expected = clean.length * englishFreq[i];
+                chi += Math.pow(observed - expected, 2) / expected;
+            }
+            return chi;
+        }
+
+        function calculateBigramScore(text) {
+            const clean = text.toUpperCase().replace(/[^A-Z]/g, "");
+            if (clean.length < 2) return 0;
+            let hits = 0;
+            for(let i=0; i<clean.length-1; i++) {
+                const bi = clean.substring(i, i+2);
+                if (commonBigrams.has(bi)) hits++;
+            }
+            return (hits / (clean.length - 1)) * 100;
+        }
+
+        // Updated for better punctuation handling (contractions)
+        function calculateWordConfidence(text) {
+            // Replace smart quotes or weird punctuation that might break words
+            const cleaned = text.replace(/['’]/g, ""); 
+            
+            const words = cleaned.toLowerCase().split(/[^a-z]+/);
+            let validCount = 0;
+            let totalWords = 0;
+            let hasSubstringMatch = false;
+
+            words.forEach(w => {
+                if (w.length >= 1) { // Accept 'a', 'i'
+                    totalWords++;
+                    if (commonWords.has(w) || (w.length === 1 && (w==='a' || w==='i'))) validCount++;
+                }
+            });
+
+            // Fallback substring scan for run-on sentences or short texts
+            if (validCount === 0) {
+                const lowerText = text.toLowerCase();
+                for (let common of commonWords) {
+                    if (common.length >= 3 && lowerText.includes(common)) {
+                         hasSubstringMatch = true;
+                         break;
+                    }
+                }
+            }
+
+            if (totalWords === 0) return 0;
+            
+            let score = (validCount / totalWords) * 100;
+            if (score === 0 && hasSubstringMatch) return 40; 
+            return score;
+        }
+
+        async function startBreak() {
+            const input = document.getElementById('break-input').value;
+            const status = document.getElementById('status-line');
+            const candidatesContainer = document.getElementById('candidates-container');
+            const failArea = document.getElementById('fail-area');
+            const keyLengthSelect = document.getElementById('key-length-select').value;
+            
+            // Dev Mode Vars
+            const isDevMode = document.getElementById('dev-mode-toggle').checked;
+            let targetKey = document.getElementById('target-key').value.toUpperCase().replace(/[^A-Z]/g, "");
+            let foundTime = null;
+            let benchmarkFound = false;
+
+            if (!input || input.length < 5) {
+                alert("ERROR: Input too short. (Min 5 chars).");
+                return;
+            }
+
+            candidatesContainer.classList.add('hidden');
+            failArea.classList.add('hidden');
+            allCandidates = []; 
+            status.innerHTML = "STATUS: <span class='animate-pulse text-green-400'>ANALYZING...</span>";
+
+            const startTime = performance.now();
+
+            setTimeout(async () => {
+                const cleanText = input.replace(/[^a-zA-Z]/g, "").toUpperCase().substring(0, 500);
+                
+                function addCandidate(k, text) {
+                    if (isDevMode && targetKey && !benchmarkFound && k === targetKey) {
+                        foundTime = performance.now();
+                        benchmarkFound = true;
+                    }
+                    const dictScore = calculateWordConfidence(text);
+                    const bigramScore = calculateBigramScore(text);
+                    const chiScore = calculateChiSquaredScore(text); 
+                    
+                    allCandidates.push({
+                        key: k,
+                        text: text,
+                        dictScore: dictScore,
+                        bigramScore: bigramScore,
+                        chiScore: chiScore,
+                        originalInputWasSingleWord: !input.includes(' ')
+                    });
+                }
+
+                const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                
+                // --- STRATEGY SELECTION ---
+                if (keyLengthSelect !== 'auto' && parseInt(keyLengthSelect) <= 4) {
+                    // EXHAUSTIVE BRUTE FORCE
+                    status.innerHTML = `STATUS: <span class='animate-pulse text-green-400'>FULL SCAN (${keyLengthSelect} CHARS)...</span>`;
+                    const len = parseInt(keyLengthSelect);
+                    
+                    function check(k) {
+                        const attempt = vigenere(input, k, true);
+                        addCandidate(k, attempt);
+                    }
+
+                    if (len === 1) {
+                         for (let a of alphabet) check(a);
+                    } else if (len === 2) {
+                         for (let a of alphabet) for (let b of alphabet) check(a+b);
+                    } else if (len === 3) {
+                         for (let a of alphabet) for (let b of alphabet) for (let c of alphabet) check(a+b+c);
+                    } else if (len === 4) {
+                         for (let a of alphabet) for (let b of alphabet) for (let c of alphabet) for (let d of alphabet) check(a+b+c+d);
+                    }
+                } else {
+                    // STATISTICAL / AUTO MODE
+                    status.innerHTML = "STATUS: <span class='animate-pulse text-green-400'>STATISTICAL ANALYSIS...</span>";
+                    
+                    let minLen = 1, maxLen = 6;
+                    if (keyLengthSelect !== 'auto') {
+                        minLen = parseInt(keyLengthSelect);
+                        maxLen = parseInt(keyLengthSelect);
+                    }
+
+                    for (let len = minLen; len <= maxLen; len++) {
+                        let candidateKey = "";
+                        // Solve per column
+                        for (let i = 0; i < len; i++) {
+                            let col = "";
+                            for (let j = i; j < cleanText.length; j += len) col += cleanText[j];
+                            let bestShift = 0;
+                            let minChi = Infinity;
+                            for (let s = 0; s < 26; s++) {
+                                const counts = new Array(26).fill(0);
+                                let total = 0;
+                                for (let c = 0; c < col.length; c++) {
+                                    counts[(col.charCodeAt(c) - 65 - s + 26) % 26]++;
+                                    total++;
+                                }
+                                let chi = 0;
+                                for (let k = 0; k < 26; k++) {
+                                    let observed = counts[k];
+                                    let expected = total * englishFreq[k];
+                                    chi += Math.pow(observed - expected, 2) / expected;
+                                }
+                                if (chi < minChi) {
+                                    minChi = chi;
+                                    bestShift = s;
+                                }
+                            }
+                            candidateKey += String.fromCharCode(bestShift + 65);
+                        }
+                        const attempt = vigenere(input, candidateKey, true);
+                        addCandidate(candidateKey, attempt);
+                    }
+                }
+
+                // Final Sort: Answer Quality
+                allCandidates.sort((a, b) => {
+                    if (b.dictScore !== a.dictScore) return b.dictScore - a.dictScore;
+                    if (Math.abs(b.bigramScore - a.bigramScore) > 5) return b.bigramScore - a.bigramScore; 
+                    return a.chiScore - b.chiScore; 
+                });
+                
+                // Deduplicate
+                const unique = [];
+                const seen = new Set();
+                for(let c of allCandidates) {
+                    if(!seen.has(c.key)) {
+                        seen.add(c.key);
+                        unique.push(c);
+                    }
+                }
+                allCandidates = unique;
+
+                if (allCandidates.length === 0 || (allCandidates[0].dictScore === 0 && allCandidates[0].bigramScore < 10)) {
+                    status.innerHTML = "STATUS: <span class='text-red-500 font-bold'>FAILED</span>";
+                    failArea.classList.remove('hidden');
+                } else {
+                    status.innerHTML = "STATUS: CHECKING API...";
+                    benchTargetKey = targetKey;
+                    benchTimeTaken = benchmarkFound ? (foundTime - startTime).toFixed(2) : null;
+                    renderCandidates();
+                }
+
+            }, 100);
+        }
+
+        function renderCandidates() {
+            const list = document.getElementById('candidates-list');
+            const container = document.getElementById('candidates-container');
+            const limit = parseInt(document.getElementById('candidate-count').value) || 3;
+            
+            list.innerHTML = "";
+            container.classList.remove('hidden');
+            
+            if (benchTimeTaken) {
+                const benchHeader = document.createElement('div');
+                benchHeader.className = "p-2 mb-2 bg-blue-900/30 border border-blue-500 text-center text-blue-300 font-bold animate-pulse";
+                benchHeader.innerHTML = `BENCHMARK COMPLETE: TARGET KEY "${benchTargetKey}" FOUND IN ${benchTimeTaken}ms`;
+                list.appendChild(benchHeader);
+            } else if (benchTargetKey && benchTargetKey.length > 0) {
+                const benchHeader = document.createElement('div');
+                benchHeader.className = "p-2 mb-2 bg-red-900/30 border border-red-500 text-center text-red-300 font-bold";
+                benchHeader.innerHTML = `BENCHMARK FAILED: TARGET KEY "${benchTargetKey}" NOT DETECTED IN SCAN`;
+                list.appendChild(benchHeader);
+            }
+
+            if (benchTargetKey) {
+                const targetIndex = allCandidates.findIndex(c => c.key === benchTargetKey);
+                if (targetIndex > -1) {
+                    const targetCandidate = allCandidates.splice(targetIndex, 1)[0];
+                    allCandidates.unshift(targetCandidate);
+                }
+            }
+
+            const toShow = allCandidates.slice(0, limit);
+
+            toShow.forEach((c, index) => {
+                const isTarget = c.key === benchTargetKey;
+                
+                let confInt = Math.round(c.dictScore);
+                if (confInt < 30 && c.bigramScore > 40) confInt = Math.min(60, Math.round(c.bigramScore)); 
+
+                let colorClass, textColor, borderColor, bgColor;
+
+                if (isTarget) {
+                    colorClass = 'bg-blue-500';
+                    textColor = 'text-blue-400';
+                    borderColor = 'border-blue-500';
+                    bgColor = 'bg-blue-900/10';
+                    confInt = "OVERRIDE";
+                } else {
+                    colorClass = confInt > 60 ? 'bg-green-500' : (confInt > 30 ? 'bg-yellow-500' : 'bg-red-500');
+                    textColor = confInt > 60 ? 'text-green-400' : (confInt > 30 ? 'text-yellow-400' : 'text-red-400');
+                    borderColor = 'border-green-900';
+                    bgColor = 'bg-black';
+                    confInt = confInt + "%";
+                }
+                
+                const card = document.createElement('div');
+                card.id = `candidate-card-${index}`;
+                card.className = `result-card neo-box p-4 ${bgColor} border ${borderColor} flex flex-col gap-2 relative`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="text-xs opacity-50 mb-1">KEY DETECTED</div>
+                            <div class="text-2xl font-bold text-white tracking-widest break-all">${c.key}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs opacity-50 mb-1">CONFIDENCE</div>
+                            <div class="${textColor} font-bold text-xl" id="conf-text-${index}">
+                                ${confInt} <span id="api-status-${index}" class="text-[10px] opacity-50 block">LOCAL</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full h-1 bg-gray-800 rounded overflow-hidden">
+                        <div class="h-full ${colorClass}" id="conf-bar-${index}" style="width: ${isTarget ? '100' : parseInt(confInt)}%"></div>
+                    </div>
+
+                    <div class="mt-2 bg-green-900/10 p-2 rounded text-sm font-mono text-gray-300 h-20 overflow-y-auto">
+                        ${c.text}
+                    </div>
+
+                    <div class="flex gap-2 mt-2 pt-2 border-t border-green-900/50">
+                        <button onclick="selectCandidate(${index})" class="flex-1 py-2 bg-green-900/30 hover:bg-green-900/60 text-xs font-bold transition-colors">
+                            SELECT & USE
+                        </button>
+                        <button onclick="discardCandidate(${index})" class="px-4 py-2 bg-red-900/20 hover:bg-red-900/50 text-red-400 text-xs font-bold transition-colors border border-red-900/30">
+                            DISCARD (X)
+                        </button>
+                    </div>
+                `;
+                list.appendChild(card);
+                
+                if (index === 0 || isTarget || parseInt(confInt) > 50) {
+                    verifyFullSentenceWithAPI(c, index);
+                }
+            });
+            
+            document.getElementById('status-line').innerHTML = "STATUS: RESULTS READY";
+        }
+
+        async function verifyFullSentenceWithAPI(candidate, index) {
+            const apiStatusEl = document.getElementById(`api-status-${index}`);
+            const confText = document.getElementById(`conf-text-${index}`);
+            const confBar = document.getElementById(`conf-bar-${index}`);
+            
+            if (!apiStatusEl) return;
+            const isTarget = candidate.key === benchTargetKey;
+
+            // Better splitting to handle words like "don't" from API calls
+            const cleanedText = candidate.text.replace(/['’]/g, ""); // strip apostrophes for api search
+            const words = cleanedText.match(/[a-z]+/gi) || [];
+            const uniqueWords = [...new Set(words.map(w => w.toLowerCase()))].filter(w => w.length > 1);
+            
+            if(uniqueWords.length === 0) return;
+
+            apiStatusEl.innerText = `SCANNING ${uniqueWords.length} WORDS...`;
+            
+            let confirmed = 0;
+            let total = uniqueWords.length;
+
+            for (const word of uniqueWords) {
+                if (commonWords.has(word)) {
+                    confirmed++;
+                } else {
+                    try {
+                        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+                        if (response.ok) confirmed++;
+                    } catch (e) {
+                        console.log("API Fail for " + word);
+                    }
+                }
+            }
+
+            const realness = Math.round((confirmed / total) * 100);
+            
+            if (isTarget) {
+                 apiStatusEl.innerHTML = `<span class="text-blue-300">REALNESS: ${realness}% (${confirmed}/${total})</span>`;
+            } else {
+                 if (realness === 0) {
+                     confText.innerHTML = `0% <span class="text-red-500 font-bold block">FAILED SCAN</span>`;
+                     confText.className = "text-red-600 font-bold text-xl";
+                     confBar.className = "h-full bg-red-600";
+                     confBar.style.width = "100%";
+                     apiStatusEl.innerText = "NO REAL WORDS";
+                 } else {
+                     const finalScore = Math.max(realness, 10);
+                     confText.innerHTML = `${realness}% <span class="text-green-300 block">SENTENCE VERIFIED</span>`;
+                     confText.className = "text-green-400 font-bold text-xl";
+                     confBar.className = "h-full bg-green-500";
+                     confBar.style.width = `${realness}%`;
+                     apiStatusEl.innerText = `${confirmed}/${total} WORDS REAL`;
+                 }
+            }
+        }
+
+        function discardCandidate(index) {
+            allCandidates.splice(index, 1);
+            renderCandidates();
+            if (allCandidates.length === 0) {
+                 document.getElementById('candidates-container').classList.add('hidden');
+                 document.getElementById('fail-area').classList.remove('hidden');
+                 document.getElementById('status-line').innerHTML = "STATUS: NO MORE CANDIDATES";
+            }
+        }
+
+        function selectCandidate(index) {
+            const selected = allCandidates[index];
+            const key = selected.key;
+            
+            const list = document.getElementById('candidates-list');
+            Array.from(list.children).forEach((child, i) => {
+                if(i !== index) child.style.display = 'none';
+            });
+            
+            localStorage.setItem('vigenere_last_key', key);
+            
+            setTimeout(() => {
+                setMode('decrypt');
+                document.getElementById('key-input').value = key;
+                document.getElementById('input-text').value = document.getElementById('break-input').value;
+                process();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                document.getElementById('candidates-container').classList.add('hidden');
+                document.getElementById('status-line').innerHTML = "STATUS: IDLE";
+            }, 600);
+        }
+
+        // --- 4. MATRIX BACKGROUND ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const cols = Math.floor(200); 
+        const ypos = Array(cols).fill(0);
+
+        function matrix() {
+            ctx.fillStyle = '#0001';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#0f0';
+            ctx.font = '14pt monospace';
+
+            ypos.forEach((y, i) => {
+                const text = String.fromCharCode(Math.random() * 128);
+                const x = i * 20;
+                ctx.fillText(text, x, y);
+                if (y > 100 + Math.random() * 10000) ypos[i] = 0;
+                else ypos[i] = y + 20;
+            });
+        }
+        setInterval(matrix, 50);
+
+    </script>
+</body>
+</html>
