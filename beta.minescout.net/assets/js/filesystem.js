@@ -15,6 +15,13 @@ const FILE_SYSTEM = {
             desc: "// Rebrand & Optimization Update",
             date: "2025-11-30"
         },
+         { 
+        cmd: "read_ai_tool", 
+        title: "TOOL: AI Writer Assistant", 
+        path: "content/articles/ai-writer-release.html", 
+        desc: "// New Web-Based Generator",
+        date: "2025-12-25"
+    },
         // ... (Keep other articles) ...
     ],
 
@@ -33,7 +40,13 @@ const FILE_SYSTEM = {
             title: "AI News Synthesis V4.zip", 
             path: "content/projects/ai-news-synthesis.zip", 
             desc: "// Size: 45MB | React/Node Source" 
-        }
+        },
+        { 
+        cmd: "run_writer", 
+        title: "AI Writer Assistant (Web)", 
+        path: "content/projects/ai-writer.html", 
+        desc: "// Live HTML/Blob Generator" 
+    },
     ],
 
     // ... (Keep archives) ...

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOOL // AI_WRITER_ASSISTANT</title>
+    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png">
+    
+    <script src="../../assets/js/firebase-config.js?v=3.2"></script>
+    <script src="../../assets/js/terminal-core.js?v=3.2"></script>
+
+    <style>
+        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; margin: 0; padding: 20px; overflow-y: auto; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; pointer-events: none; }
+        
+        .container { max-width: 1000px; margin: 0 auto; border: 2px solid #0F0; background: rgba(0, 20, 0, 0.95); padding: 20px; box-shadow: 0 0 20px #0F0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        h1 { grid-column: span 2; border-bottom: 1px dashed #0F0; padding-bottom: 10px; margin-top: 0; cursor: pointer; }
+        
+        .input-sect { display: flex; flex-direction: column; gap: 15px; }
+        .log-sect { border-left: 1px solid #004400; padding-left: 20px; display: flex; flex-direction: column; }
+
+        label { font-weight: bold; color: #88ff88; display: block; margin-bottom: 5px; }
+        
+        input, textarea, select { 
+            width: 100%; background: #001100; border: 1px solid #004400; color: #0F0; 
+            font-family: inherit; padding: 10px; outline: none; box-sizing: border-box;
+        }
+        input:focus, textarea:focus { border-color: #0F0; box-shadow: 0 0 5px #0F0; }
+        
+        /* FILE INPUT STYLE */
+        input[type="file"] { border: 1px dashed #004400; cursor: pointer; }
+        
+        button {
+            background: #003300; color: #0F0; border: 1px solid #0F0; padding: 15px; 
+            cursor: pointer; font-weight: bold; text-transform: uppercase; margin-top: 10px; transition: 0.2s;
+        }
+        button:hover { background: #0F0; color: #000; }
+        
+        /* LOG CONSOLE */
+        #ai-console {
+            flex-grow: 1; background: #000; border: 1px solid #004400; 
+            padding: 10px; font-size: 12px; overflow-y: auto; height: 400px;
+            white-space: pre-wrap; font-family: 'Courier New', monospace;
+        }
+        .log-line { margin-bottom: 5px; animation: fadeIn 0.2s; }
+        .log-info { color: #0FF; }
+        .log-warn { color: #FF0; }
+        .log-success { color: #0F0; font-weight: bold; }
+
+        .blob-btn {
+            display: none; background: #005555; color: #0FF; border-color: #0FF; margin-top: 10px; text-align: center; padding: 15px; text-decoration: none; font-weight: bold;
+        }
+        .blob-btn:hover { background: #0FF; color: #000; }
+
+        .open-btn { position: fixed; top: 10px; left: 10px; border: 2px solid #0F0; padding: 8px; cursor: pointer; z-index: 100; background: #000; font-weight: bold; }
+        .open-btn:hover { background: #0F0; color: #000; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } h1 { grid-column: span 1; } .log-sect { border-left: none; border-top: 1px solid #004400; padding-left: 0; padding-top: 20px; } }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    <div class="open-btn" onclick="window.toggleCmd()">[ OPEN TERMINAL ]</div>
+
+    <div class="container">
+        <h1 onclick="window.toggleCmd()">// AI_WRITER_ASSISTANT (DOM_BUILDER)</h1>
+        
+        <!-- LEFT: INPUTS -->
+        <div class="input-sect">
+            <div>
+                <label>PROJECT_TITLE ({{title}}):</label>
+                <input type="text" id="inp-title" placeholder="My Awesome Project">
+            </div>
+            
+            <div>
+                <label>CORE_INFORMATION ({{info}}):</label>
+                <textarea id="inp-info" rows="4" placeholder="Paste your article text, descriptions, or data here..."></textarea>
+            </div>
+
+            <div>
+                <label>ASSET_IMAGE ({{img}}):</label>
+                <input type="file" id="inp-file" accept="image/*">
+                <div style="font-size:10px; color:#555; margin-top:2px;">*Converts to Base64 for standalone portability.</div>
+            </div>
+
+            <div>
+                <label>HTML_TEMPLATE_CODE:</label>
+                <textarea id="inp-template" rows="10" spellcheck="false"><!-- DEFAULT TEMPLATE -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{title}}</title>
+    <style>
+        body { font-family: sans-serif; background: #111; color: #eee; padding: 40px; text-align: center; }
+        .card { border: 1px solid #333; padding: 20px; max-width: 600px; margin: 0 auto; background: #222; }
+        img { max-width: 100%; border-radius: 8px; margin-bottom: 20px; border: 2px solid #555; }
+        h1 { color: #00ffcc; }
+        p { line-height: 1.6; text-align: left; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>{{title}}</h1>
+        <img src="{{img}}" alt="Project Image">
+        <p>{{info}}</p>
+    </div>
+</body>
+</html></textarea>
+            </div>
+
+            <button onclick="startGeneration()">[ INITIALIZE GENERATION ]</button>
+        </div>
+
+        <!-- RIGHT: CONSOLE -->
+        <div class="log-sect">
+            <label>AI_PROCESSING_LOG:</label>
+            <div id="ai-console">
+                <div class="log-line">> SYSTEM READY. WAITING FOR INPUTS...</div>
+            </div>
+            <a id="preview-link" class="blob-btn" target="_blank">[ OPEN PREVIEW (BLOB) ]</a>
+        </div>
+    </div>
+
+    <script>
+        const consoleDiv = document.getElementById('ai-console');
+        const previewBtn = document.getElementById('preview-link');
+        
+        // 1. LOGGER FUNCTION
+        function log(msg, type='') {
+            const div = document.createElement('div');
+            div.className = 'log-line ' + type;
+            div.innerText = `> ${msg}`;
+            consoleDiv.appendChild(div);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        // 2. MAIN PROCESS
+        async function startGeneration() {
+            previewBtn.style.display = 'none';
+            consoleDiv.innerHTML = ''; // Clear logs
+            
+            const title = document.getElementById('inp-title').value;
+            const info = document.getElementById('inp-info').value;
+            let template = document.getElementById('inp-template').value;
+            const fileInput = document.getElementById('inp-file');
+
+            if(!title || !info) { log("ERROR: MISSING TEXT DATA.", "log-warn"); return; }
+
+            log("INITIALIZING AI CORE...", "log-info");
+            await delay(500);
+            
+            // IMAGE PROCESSING
+            let imgData = "https://placehold.co/600x400/000/FFF?text=NO+IMAGE"; // Fallback
+            if (fileInput.files && fileInput.files[0]) {
+                log(`DETECTED ASSET: ${fileInput.files[0].name}`, "log-info");
+                log("CONVERTING TO BASE64...", "log-warn");
+                try {
+                    imgData = await toBase64(fileInput.files[0]);
+                    log("ASSET ENCODED SUCCESSFULLY.", "log-success");
+                } catch (e) {
+                    log("ERROR ENCODING IMAGE.", "log-warn");
+                }
+            } else {
+                log("NO IMAGE UPLOADED. USING PLACEHOLDER.", "log-warn");
+            }
+
+            await delay(800);
+            log("PARSING TEMPLATE STRUCTURE...", "log-info");
+            
+            // SYNTHESIS (Replacing Variables)
+            await delay(400);
+            log(`INJECTING TITLE: "${title.substring(0,15)}..."`);
+            template = template.replace(/{{title}}/g, title);
+            
+            await delay(300);
+            log("INJECTING CORE INFORMATION...");
+            // Convert newlines to <br> for HTML safety
+            const safeInfo = info.replace(/\n/g, "<br>");
+            template = template.replace(/{{info}}/g, safeInfo);
+            
+            await delay(300);
+            log("EMBEDDING BINARY IMAGE DATA...");
+            template = template.replace(/{{img}}/g, imgData);
+
+            await delay(600);
+            log("OPTIMIZING DOM TREE...", "log-info");
+            
+            // BLOB CREATION
+            const blob = new Blob([template], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            log("COMPILATION COMPLETE.", "log-success");
+            log(`GENERATED BLOB: ${blob.size} bytes`, "log-success");
+
+            previewBtn.href = url;
+            previewBtn.style.display = 'block';
+        }
+
+        // HELPERS
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        // PAGE COMMANDS
+        window.handlePageCommand = function(cmd, args) {
+            if (cmd === 'return' || cmd === 'back') { window.location.href = '../../projects.html'; return true; }
+            if (cmd === 'gen' || cmd === 'run') { startGeneration(); return true; }
+            return null;
+        };
+
+        // MATRIX BACKGROUND
+        const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d');
+        function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r;
+        const s='AI01',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1;
+        setInterval(()=>{ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0F0';ctx.font='16px mono';for(let i=0;i<d.length;i++){ctx.fillText(s[Math.floor(Math.random()*s.length)],i*16,d[i]*16);if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;d[i]++}},33);
+    </script>
+</body>
+</html>

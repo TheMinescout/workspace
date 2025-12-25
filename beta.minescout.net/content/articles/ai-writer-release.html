@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nano /docs/ai-writer.txt</title>
+    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png">
+    <script src="../../assets/js/firebase-config.js?v=3.2"></script>
+    <script src="../../assets/js/terminal-core.js?v=3.2"></script>
+
+    <style>
+        body { background-color: #111; color: #ccc; font-family: 'Courier New', monospace; margin: 0; padding: 20px; padding-bottom: 100px; }
+        .editor-header { background: #fff; color: #000; padding: 5px; font-weight: bold; position: sticky; top: 0; display: flex; justify-content: space-between; z-index: 100; }
+        .content { max-width: 800px; margin: 20px auto; white-space: pre-wrap; line-height: 1.5; }
+        h1 { color: #0F0; border-bottom: 1px double #0F0; }
+        a { color: #0F0; text-decoration: underline; cursor: pointer; }
+        .instruction { position: fixed; bottom: 10px; right: 10px; background: #0F0; color: #000; padding: 5px 10px; font-weight: bold; cursor: pointer; z-index: 100; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    <div class="editor-header"><span>GNU nano 6.0</span><span>File: ai-writer.txt</span><span>Modified</span></div>
+
+    <div class="content">
+<h1>RELEASE: AI Writer Assistant (Web Tool)</h1>
+<p>Date: Dec 25, 2025 | Type: DOM Generator</p>
+
+-----------------------------------------------------------
+SYSTEM ENTRY: AUTOMATED CONTENT GENERATION
+-----------------------------------------------------------
+
+We have deployed a new browser-based tool to the Projects directory: **The AI Writer Assistant**.
+
+This tool allows you to rapidly compile single-file HTML documents by injecting text and images into a pre-defined code structure.
+
+**CAPABILITIES:**
+1.  **Blob Generation:** Compiles code instantly in-memory. No server required.
+2.  **Base64 Encoding:** Upload an image, and it is converted to text string data, making the final HTML file completely standalone (portable).
+3.  **Template Engine:** Uses `{{variable}}` logic to inject content.
+
+**ACCESS:**
+> <a href="../../content/projects/ai-writer.html">OPEN_AI_WRITER.EXE</a>
+
+**HOW TO USE:**
+1.  Enter your Title and Main Text.
+2.  Upload an image (optional).
+3.  Modify the HTML Template on the left if desired.
+4.  Click **INITIALIZE GENERATION**.
+5.  Click **OPEN PREVIEW** to view your generated site in a Blob URL.
+
+-----------------------------------------------------------
+END OF LOG
+-----------------------------------------------------------
+    </div>
+
+    <div class="instruction" onclick="window.toggleCmd()">[ ^X EXIT ] (Click or Type '/')</div>
+
+    <script>
+        window.handlePageCommand = function(cmd) {
+            if (cmd === 'return' || cmd === 'back') { window.location.href = '../../pages.html'; return true; }
+            if (cmd === 'run') { window.location.href = '../../content/projects/ai-writer.html'; return true; }
+            return null;
+        };
+    </script>
+</body>
+</html>
