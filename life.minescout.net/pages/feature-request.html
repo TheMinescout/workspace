@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feature Request - Minescouts Life</title>
+    <title>Submit a Request - Minescouts Life</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,13 +21,14 @@
             max-width: 600px; margin: 0 auto; background: #fff; padding: 30px;
             border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;
         }
-        .form-group select {
+        .form-group select, .form-group input {
             width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;
             font-family: 'Inter', sans-serif; font-size: 1rem; background-color: white;
         }
         #status-msg { margin-top: 15px; text-align: center; font-weight: bold; }
         .success-msg { color: #446944; }
         .error-msg { color: #dc2626; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -37,7 +38,7 @@
             <div id="auth-container"><a href="../login.html" id="login-link">Login</a></div>
             <div class="site-title-wrapper">
                 <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
-                <p class="tagline">Feature Request</p>
+                <p class="tagline">Requests</p>
             </div>
             <div id="user-display" class="hidden">
                 <a href="../account.html"><span id="user-email-display"></span></a>
@@ -50,38 +51,70 @@
         <div class="container">
             <main class="main-content">
                 <article class="post-full">
-                    <h1>Request a Feature</h1>
-                    <p class="post-meta">Help us improve Minescouts Life</p>
+                    <h1>Submit a Request</h1>
+                    <p class="post-meta">Features, Bugs, Content Ideas & More</p>
                     <div class="post-content">
-                        <p>Have an idea for a new web app, article topic, or improvement? Fill out the form below. Our admin team reviews these regularly.</p>
+                        <p>Found a bug? Want to see a specific tech tip? Have an idea for a new app? Let us know below! Our team reviews these requests regularly.</p>
                     </div>
                 </article>
 
                 <section class="comments-section">
                     <div class="request-form-container">
-                        <h3>Submit New Request</h3>
+                        <h3>New Request Form</h3>
                         <form id="featureRequestForm">
-                            <div class="form-group">
-                                <label for="name">Your Name (Optional):</label>
-                                <input type="text" id="name" name="name" placeholder="Guest">
-                            </div>
                             
+                            <!-- 1. Request Type -->
                             <div class="form-group">
-                                <label for="subject">Subject / Title:</label>
-                                <input type="text" id="subject" name="subject" required placeholder="e.g. Dark Mode Toggle">
+                                <label for="requestType">Request Type:</label>
+                                <select id="requestType" name="requestType" onchange="updateFormFields()">
+                                    <option value="Feature">✨ Feature Request</option>
+                                    <option value="Content">📝 New Content Idea</option>
+                                    <option value="Bug">🐛 Bug / Broken Stuff</option>
+                                    <option value="Other">❓ Other</option>
+                                </select>
                             </div>
 
+                            <!-- 2. Priority (Always Visible) -->
                             <div class="form-group">
                                 <label for="priority">Priority Level:</label>
                                 <select id="priority" name="priority">
                                     <option value="LOW">Low - Nice to have</option>
-                                    <option value="MED">Medium - Important improvement</option>
-                                    <option value="HIGH">High - Critical issue or bug</option>
+                                    <option value="MED">Medium - Important</option>
+                                    <option value="HIGH">High - Urgent / Site Broken</option>
                                 </select>
                             </div>
 
+                            <!-- 3. Dynamic Subject Line -->
                             <div class="form-group">
-                                <label for="comment">Description:</label>
+                                <label for="subject" id="lbl-subject">Feature Title:</label>
+                                <input type="text" id="subject" name="subject" required placeholder="e.g. Dark Mode Toggle">
+                            </div>
+
+                            <!-- 4. Dynamic Extra Fields (Bug URL or Content Category) -->
+                            <div id="extra-field-bug" class="form-group hidden">
+                                <label for="bugUrl">Page URL / Device:</label>
+                                <input type="text" id="bugUrl" placeholder="e.g. Homepage on iPhone Safari">
+                            </div>
+
+                            <div id="extra-field-content" class="form-group hidden">
+                                <label for="contentCategory">Target Category:</label>
+                                <select id="contentCategory">
+                                    <option value="Tech Tips">Tech Tips</option>
+                                    <option value="Coding">Coding Projects</option>
+                                    <option value="Puppy">Puppy Life</option>
+                                    <option value="General">General/Other</option>
+                                </select>
+                            </div>
+
+                            <!-- 5. Name -->
+                            <div class="form-group">
+                                <label for="name">Your Name (Optional):</label>
+                                <input type="text" id="name" name="name" placeholder="Guest">
+                            </div>
+
+                            <!-- 6. Description -->
+                            <div class="form-group">
+                                <label for="comment" id="lbl-desc">Description:</label>
                                 <textarea id="comment" name="comment" rows="5" required placeholder="Describe the feature in detail..."></textarea>
                             </div>
                             
@@ -109,15 +142,11 @@
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         // --- EMAILJS CONFIGURATION ---
-        // FILL THESE IN FROM YOUR EMAILJS DASHBOARD
-        const EMAIL_SERVICE_ID = "service_khgjq1e";
-        const EMAIL_TEMPLATE_ID = "template_2p930wd";
-        const EMAIL_PUBLIC_KEY = "Fa69EL7WS0e4EWsl-";
+        const EMAIL_SERVICE_ID = "service_khgjq1e";   
+        const EMAIL_TEMPLATE_ID = "template_yb9xkyy"; 
+        const EMAIL_PUBLIC_KEY = "Fa69EL7WS0e4EWsl-";   
 
-        // Initialize EmailJS
-        (function(){
-            emailjs.init(EMAIL_PUBLIC_KEY);
-        })();
+        (function(){ emailjs.init(EMAIL_PUBLIC_KEY); })();
 
         const form = document.getElementById('featureRequestForm');
         const statusMsg = document.getElementById('status-msg');
@@ -126,7 +155,6 @@
         // Auto-fill name if logged in
         onAuthStateChanged(auth, user => {
             if(user) {
-                // Try to get display name, fall back to email prefix
                 const displayName = user.displayName || (user.email ? user.email.split('@')[0] : "User");
                 nameInput.value = displayName;
                 nameInput.readOnly = true;
@@ -134,50 +162,102 @@
             }
         });
 
+        // --- DYNAMIC FORM LOGIC ---
+        // Attached to window so the HTML 'onchange' works
+        window.updateFormFields = function() {
+            const type = document.getElementById('requestType').value;
+            const lblSubject = document.getElementById('lbl-subject');
+            const subjectInput = document.getElementById('subject');
+            const lblDesc = document.getElementById('lbl-desc');
+            const descInput = document.getElementById('comment');
+            
+            // Toggle Extra Fields
+            document.getElementById('extra-field-bug').classList.add('hidden');
+            document.getElementById('extra-field-content').classList.add('hidden');
+
+            if (type === 'Feature') {
+                lblSubject.textContent = "Feature Title:";
+                subjectInput.placeholder = "e.g. Dark Mode Toggle";
+                lblDesc.textContent = "Description:";
+                descInput.placeholder = "Describe how this feature should work...";
+            } 
+            else if (type === 'Content') {
+                lblSubject.textContent = "Topic Idea:";
+                subjectInput.placeholder = "e.g. How to Build a PC";
+                lblDesc.textContent = "Content Details:";
+                descInput.placeholder = "What specific points should this article/video cover?";
+                document.getElementById('extra-field-content').classList.remove('hidden');
+            } 
+            else if (type === 'Bug') {
+                lblSubject.textContent = "Issue Summary:";
+                subjectInput.placeholder = "e.g. Images not loading on homepage";
+                lblDesc.textContent = "Steps to Reproduce:";
+                descInput.placeholder = "1. Go to homepage\n2. Click login\n3. Error appears...";
+                document.getElementById('extra-field-bug').classList.remove('hidden');
+            } 
+            else {
+                lblSubject.textContent = "Subject:";
+                subjectInput.placeholder = "Summary of request";
+                lblDesc.textContent = "Details:";
+                descInput.placeholder = "Explain your request...";
+            }
+        };
+
+        // --- SUBMIT LOGIC ---
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitBtn = form.querySelector('button');
             submitBtn.disabled = true;
             submitBtn.textContent = "Transmitting...";
 
-            const name = document.getElementById('name').value || "Anonymous";
-            const subject = document.getElementById('subject').value;
+            const requestType = document.getElementById('requestType').value;
             const priority = document.getElementById('priority').value;
-            const desc = document.getElementById('comment').value;
+            const subject = document.getElementById('subject').value;
+            const name = document.getElementById('name').value || "Anonymous";
+            let desc = document.getElementById('comment').value;
+
+            // Combine Extra Fields into Description for Admin Panel Visibility
+            if (requestType === 'Bug') {
+                const bugUrl = document.getElementById('bugUrl').value;
+                if(bugUrl) desc = `[URL/DEVICE]: ${bugUrl}\n\n${desc}`;
+            } 
+            else if (requestType === 'Content') {
+                const category = document.getElementById('contentCategory').value;
+                desc = `[CATEGORY]: ${category}\n\n${desc}`;
+            }
+
+            const taggedSubject = `[${requestType.toUpperCase()}] ${subject}`;
 
             try {
-                // 1. Save to Firebase Database (Primary Storage)
+                // 1. Save to Firebase
                 await push(ref(db, 'feature_requests'), {
+                    type: requestType,
                     sender: name,
-                    subject: subject,
+                    subject: taggedSubject,
                     description: desc,
                     priority: priority,
                     timestamp: serverTimestamp(),
                     status: 'new'
                 });
 
-                // 2. Send Email Notification via EmailJS
+                // 2. Send Email
                 const templateParams = {
                     from_name: name,
-                    subject: subject,
-                    priority: priority,
+                    subject: taggedSubject,
+                    priority: `${priority} (${requestType})`,
                     message: desc
                 };
 
-                // We don't await this to block the UI, but we log it
                 emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
-                    .then(() => {
-                        console.log('Email sent successfully!');
-                    }, (error) => {
-                        console.error('Email failed:', error);
-                    });
+                    .then(() => console.log('Email sent successfully!'))
+                    .catch((err) => console.error('Email failed:', err));
 
                 // 3. Success UI
                 statusMsg.textContent = "Request received successfully.";
                 statusMsg.className = "success-msg";
                 form.reset();
+                updateFormFields(); // Reset UI state
 
-                // Redirect after delay
                 setTimeout(() => {
                     window.location.href = "../index.html";
                 }, 2000);
@@ -190,6 +270,9 @@
                 submitBtn.textContent = "Submit Request";
             }
         });
+        
+        // Initialize default view
+        updateFormFields();
     </script>
 
     <!-- MODULAR SCRIPTS -->
