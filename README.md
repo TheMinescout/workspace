@@ -39,7 +39,7 @@ Because this project uses ES6 Modules (`type="module"`), you cannot simply doubl
     *   **VS Code:** Install "Live Server" extension -> Right-click `index.html` -> "Open with Live Server".
     *   **Python:** `python -m http.server 8000`
 3.  **Firebase Config:**
-    Ensure `assets/js/auth.js?v=1.1` contains your valid Firebase API keys.
+    Ensure `assets/js/auth.js` contains your valid Firebase API keys.
 
 ## 📬 Contact & Support
 *   **Email:** theminescout@minescout.net
