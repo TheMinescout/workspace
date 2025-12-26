@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>PROJECTS // MineScout</title>
-    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png?v=1.01">
+    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
     <style>
         body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; margin: 0; }
         canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.3; }
@@ -25,10 +25,6 @@
 
         .var-line { font-size: 1.2rem; margin: 15px 0; border-bottom: 1px dotted #008888; padding: 10px; cursor: pointer; }
         .var-line:hover { background: rgba(0, 255, 255, 0.1); }
-        
-        .archive-item .var-line { opacity: 0.6; border-color: #004444; }
-        .archive-item .var-line:hover { opacity: 1; background: #001111; }
-
         .keyword { color: #ff00ff; } .string { color: #ffff00; } .comment { color: #008888; display: block; margin-top: 5px; font-size: 0.9rem; }
         
         .open-btn { position: fixed; top: 10px; left: 10px; border: 1px solid #00FFFF; padding: 5px; cursor: pointer; color: #00FFFF; z-index: 100; }
@@ -46,61 +42,73 @@
         <div class="code-block">
             <h2>// REPOSITORY: /var/www/projects/</h2>
             <div id="project-list-container"></div>
-
-            <!-- ARCHIVE -->
+            
             <h2 class="archive-header">// LEGACY_BUILDS (UNSTABLE)</h2>
-            <div id="archive-list-container" class="archive-item"></div>
+            <div id="archive-list-container"></div>
         </div>
     </div>
 
-    <script src="assets/js/firebase-config.js"></script>
+    <script src="assets/js/firebase-config.js?v=3.2"></script>
     <script src="assets/js/filesystem.js"></script>
-    <script src="assets/js/terminal-core.js"></script>
+    <script src="assets/js/terminal-core.js?v=3.2"></script>
 
     <script>
         const listContainer = document.getElementById('project-list-container');
         const archiveContainer = document.getElementById('archive-list-container');
 
-        // 1. ACTIVE
+        // --- SMART ACTION LOGIC ---
+        function executeProject(path) {
+            // Check file extension
+            const isDownload = path.endsWith('.zip') || path.endsWith('.exe') || path.endsWith('.7z') || path.endsWith('.rar');
+            
+            if (isDownload) {
+                // Create invisible download link
+                const link = document.createElement('a');
+                link.href = path;
+                link.download = path.split('/').pop(); // Extract filename
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                // Open Web Tools / HTML Pages in New Tab
+                window.open(path, '_blank');
+            }
+        }
+
+        // 1. Render Active
         FILE_SYSTEM.projects.forEach(item => {
             const div = document.createElement('div');
             div.className = 'var-line';
             div.innerHTML = `<span class="keyword">const</span> ${item.cmd} = <span class="string">"${item.title}"</span>;<span class="comment">${item.desc}</span>`;
-            div.onclick = () => triggerDownload(item.path, item.title);
+            div.onclick = () => executeProject(item.path);
             listContainer.appendChild(div);
         });
 
-        // 2. ARCHIVE
+        // 2. Render Archive
         if (FILE_SYSTEM.archived_projects && FILE_SYSTEM.archived_projects.length > 0) {
             FILE_SYSTEM.archived_projects.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'var-line';
+                div.style.opacity = "0.6";
                 div.innerHTML = `<span class="keyword" style="color:#888">const</span> ${item.cmd} = <span class="string" style="color:#aaa">"${item.title}"</span>;<span class="comment" style="color:#444">${item.desc}</span>`;
-                div.onclick = () => triggerDownload(item.path, item.title);
+                div.onclick = () => executeProject(item.path);
                 archiveContainer.appendChild(div);
             });
-        } else {
-            archiveContainer.innerHTML = "<div style='padding:10px; color:#003333;'>// NO LEGACY BUILDS FOUND</div>";
         }
 
-        function triggerDownload(path, name) {
-            const link = document.createElement('a');
-            link.href = path; link.download = name;
-            document.body.appendChild(link); link.click(); document.body.removeChild(link);
-        }
-
-        // CMD HANDLER
+        // 3. Handle CMD Input
         window.handlePageCommand = function(cmd) {
             let found = FILE_SYSTEM.projects.find(p => p.cmd === cmd);
             if (!found) found = FILE_SYSTEM.archived_projects.find(p => p.cmd === cmd);
-
+            
             if (found) {
-                triggerDownload(found.path, found.title);
+                executeProject(found.path);
                 return true; 
             }
             return null;
         };
-
+        
+        // Matrix Rain (Cyan Theme)
         const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d');
         function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r;
         const s='XYZ',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1;

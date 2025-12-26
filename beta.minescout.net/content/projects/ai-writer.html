@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOOL // AI_WRITER_SUITE</title>
-    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png?v=1.01">
+    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png">
     
-    <script src="../../assets/js/firebase-config.js"></script>
-    <script src="../../assets/js/terminal-core.js"></script>
+    <script src="../../assets/js/firebase-config.js?v=3.2"></script>
+    <script src="../../assets/js/terminal-core.js?v=3.2"></script>
     <script src="https://js.puter.com/v2/"></script>
 
     <style>
@@ -16,6 +16,7 @@
         
         .container { max-width: 1400px; margin: 0 auto; border: 2px solid #0F0; background: rgba(0, 20, 0, 0.95); padding: 20px; box-shadow: 0 0 20px #0F0; display: grid; grid-template-columns: 300px 1fr 300px; gap: 20px; }
         
+        /* Title is still clickable to open CMD if needed */
         h1 { grid-column: span 3; border-bottom: 1px dashed #0F0; padding-bottom: 10px; margin-top: 0; cursor: pointer; display: flex; justify-content: space-between; }
         
         .col-config, .col-logs { display: flex; flex-direction: column; gap: 15px; }
@@ -67,7 +68,6 @@
 
         .ai-loading { animation: pulse 1s infinite; opacity: 0.7; cursor: wait; }
         #ai-console { height: 200px; overflow-y: auto; border: 1px solid #004400; padding: 5px; font-size: 11px; margin-bottom: 10px; }
-        .open-btn { position: fixed; top: 10px; left: 10px; border: 2px solid #0F0; padding: 8px; cursor: pointer; z-index: 100; background: #000; font-weight: bold; }
 
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
         @media (max-width: 1200px) { .container { grid-template-columns: 1fr; } h1 { grid-column: span 1; } .col-editor { border: none; height: 600px; } }
@@ -75,11 +75,13 @@
 </head>
 <body>
     <canvas id="matrixCanvas"></canvas>
-    <div class="open-btn" onclick="window.toggleCmd()">[ OPEN TERMINAL ]</div>
+    
+    <!-- BUTTON REMOVED -->
 
     <div class="container">
-        <h1>
-            <span>// AI_WRITER_SUITE (v20.0)</span>
+        <!-- Title is still interactive -->
+        <h1 onclick="window.toggleCmd()">
+            <span>// AI_WRITER_SUITE (v21.0)</span>
             <span style="font-size:12px; margin-top:5px;">MODE: <span id="mode-status">STANDARD</span></span>
         </h1>
         
@@ -90,7 +92,6 @@
                 <input type="text" id="inp-title" placeholder="Project Name">
             </div>
 
-            <!-- ASSETS -->
             <div style="border: 1px solid #004400; padding: 10px;">
                 <label>MEDIA_ASSETS:</label>
                 <div style="display:flex; gap:5px; margin-bottom:10px;">
@@ -101,7 +102,6 @@
                 <div id="asset-list" style="margin-top:10px; max-height:200px; overflow-y:auto;"></div>
             </div>
 
-            <!-- SAVED PROJECTS -->
             <div style="border: 1px solid #FFFF00; padding: 10px; border-style:dashed;">
                 <label style="color:#FFFF00">LOCAL_DATABASE:</label>
                 <div id="saved-list" style="max-height:150px; overflow-y:auto; margin-bottom:10px;"></div>
@@ -154,19 +154,15 @@
             </div>
 
             <button class="btn" onclick="startCompilation()">[ COMPILE & PREVIEW ]</button>
-            <a id="preview-link" class="btn" style="display:none; text-align:center; text-decoration:none; background:#005555; color:#0FF;" target="_blank">OPEN BROWSER</a>
+            <a id="preview-link" class="btn" style="display:none; text-align:center; text-decoration:none; background:#005555; color:#0FF;" target="_blank">OPEN PREVIEW</a>
             <button id="download-btn" class="download-btn" onclick="downloadResult()">💾 DOWNLOAD FINAL FILE</button>
             
             <label>SYSTEM_LOG:</label>
             <div id="ai-console"></div>
-        </div>
-    </div>
 
-    <script>
-        // --- TEMPLATES STORED AS VARIABLES (SAFE) ---
-        
-        // 1. BETA PREVIEW TEMPLATE
-        const TEMPLATE_BETA = `<!DOCTYPE html>
+            <!-- SCRIPTS & TEMPLATES -->
+            <script type="text/template" id="inp-template">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -190,10 +186,11 @@
         <div id="content">{{AI}}</div>
     </div>
 </body>
-</html>`;
+</html>
+            </script>
 
-        // 2. PRODUCTION TEMPLATE (SAFE STRINGS - ESCAPED SCRIPT TAGS)
-        const TEMPLATE_PROD = `<!DOCTYPE html>
+            <script type="text/template" id="prod-template">
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -202,8 +199,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../assests/css/homepage.css">
-    <link rel="icon" type="image/png" href="../../assests/images/favicon.png">
+    <link rel="stylesheet" href="../../assests/css/homepage.css?v=3.02">
+    <link rel="icon" type="image/png" href="../../assests/images/favicon.png?v=2">
     <style>img,video{max-width:100%;border-radius:8px;margin:20px 0;border:2px solid #333;display:block;margin-left:auto;margin-right:auto;}.media-container{text-align:center;margin-bottom:20px;}.media-caption{font-size:0.9em;color:#666;font-style:italic;margin-top:5px;}</style>
 </head>
 <body>
@@ -247,147 +244,112 @@
         </div>
     </div>
     <footer class="main-footer"><div class="container"><p id="copyright">© 2025 Minescouts Life. All rights reserved.</p></div></footer>
-    <script type="module" src="../../assests/js/auth.js"><\/script>
-    <script type="module" src="../../assests/js/homepage.js"><\/script>
-    <script src="../../assests/js/loader.js"><\/script>
-</body>
-</html>`;
+    
+    [[SCRIPT type="module" src="../../assests/js/auth.js?v=1.1"]][[CLOSE_SCRIPT]]
+    [[SCRIPT type="module" src="../../assests/js/homepage.js"]][[CLOSE_SCRIPT]]
+    [[SCRIPT src="../../assests/js/loader.js"]][[CLOSE_SCRIPT]]
 
-        // STATE VARS
+</body>
+</html>
+            </script>
+        </div>
+    </div>
+
+    <!-- LOGIC -->
+    <script>
         let assets = [];
         let currentMode = 'raw';
         let globalPreviewBlob = null;
         let globalDownloadBlob = null;
         let adminMode = false;
         
-        // --- DATABASE INIT ---
-        const DB_NAME="MinescoutDB", DB_VERSION=1, STORE_NAME="projects"; 
-        let db;
-        function initDB(){ 
-            const r=indexedDB.open(DB_NAME,DB_VERSION); 
-            r.onupgradeneeded=e=>{
-                db=e.target.result; 
-                if(!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME,{keyPath:"title"});
-            }; 
-            r.onsuccess=e=>{
-                db=e.target.result; 
-                log("DATABASE CONNECTED.", "#0F0"); 
-                loadProjects();
-            }; 
-        }
+        const DB_NAME="MinescoutDB", DB_VERSION=1, STORE_NAME="projects"; let db;
+        function initDB(){ const r=indexedDB.open(DB_NAME,DB_VERSION); r.onupgradeneeded=e=>{db=e.target.result; if(!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME,{keyPath:"title"})}; r.onsuccess=e=>{db=e.target.result; log("DATABASE CONNECTED.", "#0F0"); loadProjects()}; }
         document.getElementById('view-raw').value = "<!-- AI Content will appear here -->";
         initDB();
 
-        // --- ADMIN AUTH ---
         function checkAdminCode() {
             const code = document.getElementById('admin-code').value;
             const fields = document.getElementById('admin-fields');
             const status = document.getElementById('mode-status');
-            if (code === "TheMinescout") { 
-                fields.classList.add('admin-active'); 
-                status.innerText="ADMIN_PRODUCTION"; 
-                status.style.color="#FFD700"; 
-                adminMode=true; 
-                log("ADMIN ACCESS GRANTED.", "#FFD700"); 
-            } else { 
-                fields.classList.remove('admin-active'); 
-                status.innerText="STANDARD"; 
-                status.style.color="#0F0"; 
-                adminMode=false; 
-            }
+            if (code === "TheMinescout") { fields.classList.add('admin-active'); status.innerText="ADMIN_PRODUCTION"; status.style.color="#FFD700"; adminMode=true; log("ADMIN ACCESS GRANTED.", "#FFD700"); } 
+            else { fields.classList.remove('admin-active'); status.innerText="STANDARD"; status.style.color="#0F0"; adminMode=false; }
         }
 
-        // --- COMPILATION LOGIC (V20 - STABLE) ---
+        // --- COMPILATION LOGIC ---
         function startCompilation() {
             syncContent();
             const title = document.getElementById('inp-title').value || "Untitled";
             const bodyContent = document.getElementById('view-raw').value;
-            
-            // Choose Base Template
             let previewTemplate = "";
             let downloadTemplate = "";
             
             if (adminMode) {
+                const prodSource = document.getElementById('prod-template').innerHTML;
+                downloadTemplate = prodSource;
+                previewTemplate = prodSource; 
+
                 const cat = document.getElementById('prod-category').value;
                 const pid = title.replace(/[^a-z0-9]/gi, '-').toLowerCase();
                 const auth = document.getElementById('prod-author').value;
                 const headImg = document.getElementById('prod-img').value || "default.png";
-                
-                const catMap = { 
-                    "Tech Tips": "pages/tech-tips.html", 
-                    "Coding Projects": "pages/coding-projects.html", 
-                    "Updates": "pages/updates.html", 
-                    "Puppy Life": "pages/puppy-life.html", 
-                    "Minecraft Server": "pages/minecraft-server.html", 
-                    "Beta": "beta.html", 
-                    "General": "../index.html" 
-                };
+                const catMap = { "Tech Tips": "pages/tech-tips.html", "Coding Projects": "pages/coding-projects.html", "Updates": "pages/updates.html", "Puppy Life": "pages/puppy-life.html", "Minecraft Server": "pages/minecraft-server.html", "Beta": "beta.html", "General": "../index.html" };
                 const backUrl = `../../${catMap[cat] || 'index.html'}`;
 
-                // Set Download to Prod Template
-                downloadTemplate = TEMPLATE_PROD;
-                downloadTemplate = downloadTemplate.replace(/{{category}}/g, cat);
-                downloadTemplate = downloadTemplate.replace(/{{post_id}}/g, pid);
-                downloadTemplate = downloadTemplate.replace(/{{back_link}}/g, backUrl);
-                downloadTemplate = downloadTemplate.replace(/{{author}}/g, auth);
-                downloadTemplate = downloadTemplate.replace(/{{header_image}}/g, headImg);
-
-                // Set Preview to Prod Template (Visual Check)
-                previewTemplate = downloadTemplate;
-                
+                const vars = { category: cat, post_id: pid, back_link: backUrl, author: auth, header_image: headImg };
+                for (let key in vars) {
+                    const regex = new RegExp(`{{${key}}}`, 'g');
+                    downloadTemplate = downloadTemplate.replace(regex, vars[key]);
+                    previewTemplate = previewTemplate.replace(regex, vars[key]);
+                }
                 log("BUILDING: PRODUCTION READY CODE.", "#FFD700");
             } else {
-                downloadTemplate = TEMPLATE_BETA;
-                previewTemplate = TEMPLATE_BETA;
+                const stdSource = document.getElementById('inp-template').innerHTML;
+                downloadTemplate = stdSource;
+                previewTemplate = stdSource;
                 log("BUILDING: BETA STANDALONE CODE.", "#0F0");
             }
+            
+            const decode = (str) => {
+                const txt = document.createElement('textarea');
+                txt.innerHTML = str;
+                let val = txt.value;
+                return val.replace(/\[\[SCRIPT/g, '<script').replace(/\[\[CLOSE_SCRIPT\]\]/g, '</script>');
+            };
 
-            // Common Replacements
+            previewTemplate = decode(previewTemplate);
+            downloadTemplate = decode(downloadTemplate);
+
             const dateStr = new Date().toLocaleDateString();
             const baseTag = `<base href="${window.location.origin}/">`;
             
-            // Inject into Preview (Add base tag)
-            previewTemplate = previewTemplate.replace("<head>", `<head>${baseTag}`);
-            previewTemplate = previewTemplate.replace(/{{title}}/g, title)
-                                            .replace(/{{date}}/g, dateStr)
-                                            .replace(/{{AI}}/g, bodyContent);
+            [downloadTemplate, previewTemplate].forEach((tpl, i) => {
+                let res = tpl.replace(/{{title}}/g, title).replace(/{{date}}/g, dateStr).replace(/{{AI}}/g, bodyContent);
+                if (i === 0) downloadTemplate = res; 
+                else previewTemplate = res.replace("<head>", `<head>${baseTag}`); 
+            });
 
-            // Inject into Download
-            downloadTemplate = downloadTemplate.replace(/{{title}}/g, title)
-                                             .replace(/{{date}}/g, dateStr)
-                                             .replace(/{{AI}}/g, bodyContent);
-
-            // Asset Injection
             let used = 0;
             assets.forEach(asset => {
                 let mediaHtml = "";
                 const widthStyle = asset.width; 
-                
                 if (asset.base64) {
-                    if (asset.type === 'video') {
-                        mediaHtml = `<div class="media-container"><video src="${asset.base64}" style="width:${widthStyle}; max-height:600px;" controls loop muted playsinline></video><div class="media-caption">${asset.label}</div></div>`;
-                    } else {
-                        mediaHtml = `<div class="media-container"><img src="${asset.base64}" style="width:${widthStyle}; max-height:600px;" alt="${asset.label}"><div class="media-caption">${asset.label}</div></div>`;
-                    }
+                    if (asset.type === 'video') mediaHtml = `<div class="media-container"><video src="${asset.base64}" style="width:${widthStyle}; max-height:600px;" controls loop muted playsinline></video><div class="media-caption">${asset.label}</div></div>`;
+                    else mediaHtml = `<div class="media-container"><img src="${asset.base64}" style="width:${widthStyle}; max-height:600px;" alt="${asset.label}"><div class="media-caption">${asset.label}</div></div>`;
                     
-                    // Replace in Preview
                     if(previewTemplate.includes(asset.tag)) previewTemplate = previewTemplate.replace(asset.tag, mediaHtml);
-                    else {
-                        if (previewTemplate.includes('</div>\n                </article>')) previewTemplate = previewTemplate.replace("</div>\n                </article>", `${mediaHtml}</div>\n                </article>`);
-                        else previewTemplate = previewTemplate.replace("</body>", `${mediaHtml}</body>`);
-                    }
+                    else previewTemplate = previewTemplate.replace("</div>", `${mediaHtml}</div>`);
 
-                    // Replace in Download
                     if(downloadTemplate.includes(asset.tag)) downloadTemplate = downloadTemplate.replace(asset.tag, mediaHtml);
                     else {
-                        if (downloadTemplate.includes('</div>\n                </article>')) downloadTemplate = downloadTemplate.replace("</div>\n                </article>", `${mediaHtml}</div>\n                </article>`);
+                        if (downloadTemplate.includes('</article>')) downloadTemplate = downloadTemplate.replace("</article>", `${mediaHtml}</article>`);
+                        else if (downloadTemplate.includes('<div id="content">')) downloadTemplate = downloadTemplate.replace("</div>", `${mediaHtml}</div>`);
                         else downloadTemplate = downloadTemplate.replace("</body>", `${mediaHtml}</body>`);
                     }
                     used++;
                 }
             });
 
-            // Create Blobs
             const blobPrev = new Blob([previewTemplate], { type: 'text/html' });
             globalPreviewBlob = URL.createObjectURL(blobPrev);
 
@@ -401,7 +363,6 @@
             log(`COMPILED. ${used} Assets inserted.`, "#0F0");
         }
 
-        // --- STANDARD UTILS ---
         function downloadResult() {
             if(!globalDownloadBlob) return;
             const title = document.getElementById('inp-title').value || "project";
@@ -409,178 +370,21 @@
             log("FILE DOWNLOADED.", "#0F0");
         }
 
-        function switchTab(mode) { 
-            syncContent(); 
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
-            document.getElementById(`tab-${mode}`).classList.add('active'); 
-            document.getElementById('view-raw').style.display='none'; 
-            document.getElementById('view-visual').style.display='none'; 
-            document.getElementById('view-fancy').style.display='none'; 
-            if(mode==='raw') document.getElementById('view-raw').style.display='block'; 
-            if(mode==='visual') document.getElementById('view-visual').style.display='block'; 
-            if(mode==='fancy') {
-                document.getElementById('view-fancy').style.display='block'; 
-                renderFancy();
-            } 
-            currentMode=mode; 
-        }
-
-        function syncContent() { 
-            const r=document.getElementById('view-raw');
-            const v=document.getElementById('view-visual'); 
-            if(currentMode==='raw') v.innerHTML=r.value; 
-            else if(currentMode==='visual') r.value=v.innerHTML; 
-        }
-
-        function renderFancy() { 
-            let c=document.getElementById('view-raw').value; 
-            c=c.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/(&lt;\/?[a-z0-9]+)(.*?)(\/?&gt;)/gi,'<span class="tag-name">$1</span>$2<span class="tag-name">$3</span>'); 
-            document.getElementById('view-fancy').innerHTML=c; 
-        }
-
-        async function addAsset() { 
-            const fi=document.getElementById('media-file');
-            const li=document.getElementById('media-label');
-            const f=fi.files[0];
-            const l=li.value||"Asset"; 
-            if(!f){log("No file.","red");return} 
-            try{
-                log("ENCODING...","yellow"); 
-                const b64=await toBase64(f); 
-                const vid=f.type.startsWith('video'); 
-                const tag=`{{media_${assets.length+1}}}`; 
-                assets.push({tag,label:l,base64:b64,type:vid?'video':'img',width:'100%',stripped:false}); 
-                renderAssetList(); 
-                log(`ADDED: ${tag}`,"#0F0"); 
-                fi.value=""; li.value="";
-            } catch(e){ log("ERR ENCODING","red"); } 
-        }
-
-        function renderAssetList() { 
-            const l=document.getElementById('asset-list'); 
-            l.innerHTML=""; 
-            assets.forEach((a,i)=>{
-                const d=document.createElement('div'); 
-                d.className='asset-item'; 
-                d.innerHTML=`<div>${a.tag}</div><div class="asset-controls"><input type="text" class="size-inp" value="${a.width}" onchange="updateSize(${i},this.value)"><span style="color:red;cursor:pointer" onclick="removeAsset(${i})">[X]</span></div>`; 
-                l.appendChild(d);
-            }); 
-        }
-
-        function updateSize(i,v){assets[i].width=v;} 
-        function removeAsset(i){assets.splice(i,1);renderAssetList();}
-
-        const toBase64=f=>new Promise((r,j)=>{
-            const rd=new FileReader(); 
-            rd.readAsDataURL(f); 
-            rd.onload=()=>r(rd.result); 
-            rd.onerror=e=>j(e);
-        });
-
-        function saveProject() { 
-            const t=document.getElementById('inp-title').value; 
-            if(!t){log("Title needed.","red");return} 
-            syncContent(); 
-            const c=document.getElementById('view-raw').value; 
-            const tx=db.transaction(STORE_NAME,"readwrite"); 
-            tx.objectStore(STORE_NAME).put({title:t,content:c,date:new Date().toLocaleString(),assets}); 
-            tx.oncomplete=()=>log("SAVED.","#0F0"); 
-            loadProjects(); 
-        }
-
-        function loadProjects() { 
-            const l=document.getElementById('saved-list'); 
-            l.innerHTML=""; 
-            const tx=db.transaction(STORE_NAME,"readonly"); 
-            const s=tx.objectStore(STORE_NAME); 
-            s.openCursor().onsuccess=e=>{
-                const c=e.target.result; 
-                if(c){
-                    const d=c.value; 
-                    const sz=JSON.stringify(d).length; 
-                    const div=document.createElement('div'); 
-                    div.className='project-item'; 
-                    div.innerHTML=`<span onclick="loadOne('${d.title}')">${d.title}</span><span class="del-proj" onclick="deleteProj('${d.title}')">X</span>`; 
-                    l.appendChild(div); 
-                    c.continue();
-                } 
-            }; 
-        }
-
-        function loadOne(t) { 
-            db.transaction(STORE_NAME,"readonly").objectStore(STORE_NAME).get(t).onsuccess=e=>{
-                const d=e.target.result; 
-                document.getElementById('inp-title').value=d.title; 
-                document.getElementById('view-raw').value=d.content; 
-                assets=d.assets||[]; 
-                renderAssetList(); 
-                switchTab('raw'); 
-                log("LOADED.","#0F0");
-            }; 
-        }
-
-        function deleteProj(t) { 
-            if(confirm("Delete?")){ 
-                db.transaction(STORE_NAME,"readwrite").objectStore(STORE_NAME).delete(t).oncomplete=()=>{
-                    log("DELETED.","orange"); 
-                    loadProjects();
-                }; 
-            } 
-        }
-
-        async function generateWithAI() { 
-            const p=document.getElementById('ai-prompt'); 
-            const t=document.getElementById('inp-title').value; 
-            const b=document.getElementById('ai-btn'); 
-            syncContent(); 
-            const c=document.getElementById('view-raw').value; 
-            if(!t){log("Title needed","red");return} 
-            b.classList.add('ai-loading'); 
-            b.innerText="..."; 
-            log("AI WRITING...","cyan"); 
-            let ac=""; 
-            assets.forEach(a=>{ac+=`- ${a.label} -> ${a.tag}\n`;}); 
-            const pr=`Write/Edit HTML body for "${t}". User: ${p.value}. Context: ${ac}. Current: ${c}. Return ONLY HTML body.`; 
-            try{
-                const r=await puter.ai.chat(pr); 
-                document.getElementById('view-raw').value=r.message?.content.replace(/```html/g,"").replace(/```/g,"")||r; 
-                syncContent(); 
-                log("DONE.","#0F0"); 
-                p.value="";
-            } catch(e){ log("AI ERR","red"); } 
-            finally{ b.classList.remove('ai-loading'); b.innerText="✨ AI_WRITE"; } 
-        }
-
-        function log(m,c) { 
-            const d=document.getElementById('ai-console'); 
-            const l=document.createElement('div'); 
-            l.className='log-line'; 
-            l.style.color=c||"#0F0"; 
-            l.innerText="> "+m; 
-            d.appendChild(l); 
-            d.scrollTop=d.scrollHeight; 
-        }
-
-        window.handlePageCommand = function(c) { 
-            if(c==='return'||c==='back'){ window.location.href='../../projects.html'; return true; } 
-            return null; 
-        };
-
-        const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d'); 
-        function r(){c.width=window.innerWidth;c.height=window.innerHeight;} 
-        r(); window.onresize=r; 
-        const s='AI01',cl=c.width/16,d=[]; for(let i=0;i<cl;i++)d[i]=1; 
-        setInterval(()=>{
-            ctx.fillStyle='rgba(0,0,0,0.05)'; 
-            ctx.fillRect(0,0,c.width,c.height); 
-            ctx.fillStyle='#0F0'; 
-            ctx.font='16px mono'; 
-            for(let i=0;i<d.length;i++){
-                ctx.fillText(s[Math.floor(Math.random()*s.length)],i*16,d[i]*16);
-                if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;
-                d[i]++;
-            }
-        },33);
+        function switchTab(mode) { syncContent(); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(`tab-${mode}`).classList.add('active'); document.getElementById('view-raw').style.display='none'; document.getElementById('view-visual').style.display='none'; document.getElementById('view-fancy').style.display='none'; if(mode==='raw')document.getElementById('view-raw').style.display='block'; if(mode==='visual')document.getElementById('view-visual').style.display='block'; if(mode==='fancy'){document.getElementById('view-fancy').style.display='block'; renderFancy();} currentMode=mode; }
+        function syncContent() { const r=document.getElementById('view-raw'),v=document.getElementById('view-visual'); if(currentMode==='raw')v.innerHTML=r.value; else if(currentMode==='visual')r.value=v.innerHTML; }
+        function renderFancy() { let c=document.getElementById('view-raw').value; c=c.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/(&lt;\/?[a-z0-9]+)(.*?)(\/?&gt;)/gi,'<span class="tag-name">$1</span>$2<span class="tag-name">$3</span>'); document.getElementById('view-fancy').innerHTML=c; }
+        async function addAsset() { const fi=document.getElementById('media-file'), li=document.getElementById('media-label'), f=fi.files[0], l=li.value||"Asset"; if(!f){log("No file.","red");return} try{log("ENCODING...","yellow"); const b64=await toBase64(f); const vid=f.type.startsWith('video'); const tag=`{{media_${assets.length+1}}}`; assets.push({tag,label:l,base64:b64,type:vid?'video':'img',width:'100%',stripped:false}); renderAssetList(); log(`ADDED: ${tag}`,"#0F0"); fi.value=""; li.value="";}catch(e){log("ERR ENCODING","red")} }
+        function renderAssetList() { const l=document.getElementById('asset-list'); l.innerHTML=""; assets.forEach((a,i)=>{const d=document.createElement('div'); d.className='asset-item'; d.innerHTML=`<div>${a.tag}</div><div class="asset-controls"><input type="text" class="size-inp" value="${a.width}" onchange="updateSize(${i},this.value)"><span style="color:red;cursor:pointer" onclick="removeAsset(${i})">[X]</span></div>`; l.appendChild(d)}); }
+        function updateSize(i,v){assets[i].width=v} function removeAsset(i){assets.splice(i,1);renderAssetList()}
+        const toBase64=f=>new Promise((r,j)=>{const rd=new FileReader(); rd.readAsDataURL(f); rd.onload=()=>r(rd.result); rd.onerror=e=>j(e)});
+        function saveProject() { const t=document.getElementById('inp-title').value; if(!t){log("Title needed.","red");return} syncContent(); const c=document.getElementById('view-raw').value; const tx=db.transaction(STORE_NAME,"readwrite"); tx.objectStore(STORE_NAME).put({title:t,content:c,date:new Date().toLocaleString(),assets}); tx.oncomplete=()=>log("SAVED.","#0F0"); loadProjects(); }
+        function loadProjects() { const l=document.getElementById('saved-list'); l.innerHTML=""; const tx=db.transaction(STORE_NAME,"readonly"); const s=tx.objectStore(STORE_NAME); s.openCursor().onsuccess=e=>{const c=e.target.result; if(c){const d=c.value; const sz=JSON.stringify(d).length; const div=document.createElement('div'); div.className='project-item'; div.innerHTML=`<span onclick="loadOne('${d.title}')">${d.title}</span><span class="del-proj" onclick="deleteProj('${d.title}')">X</span>`; l.appendChild(div); c.continue()} } }
+        function loadOne(t) { db.transaction(STORE_NAME,"readonly").objectStore(STORE_NAME).get(t).onsuccess=e=>{const d=e.target.result; document.getElementById('inp-title').value=d.title; document.getElementById('view-raw').value=d.content; assets=d.assets||[]; renderAssetList(); switchTab('raw'); log("LOADED.","#0F0")} }
+        function deleteProj(t) { if(confirm("Delete?")){ db.transaction(STORE_NAME,"readwrite").objectStore(STORE_NAME).delete(t).oncomplete=()=>{log("DELETED.","orange"); loadProjects()} } }
+        async function generateWithAI() { const p=document.getElementById('ai-prompt'), t=document.getElementById('inp-title').value, b=document.getElementById('ai-btn'); syncContent(); const c=document.getElementById('view-raw').value; if(!t){log("Title needed","red");return} b.classList.add('ai-loading'); b.innerText="..."; log("AI WRITING...","cyan"); let ac=""; assets.forEach(a=>{ac+=`- ${a.label} -> ${a.tag}\n`}); const pr=`Write/Edit HTML body for "${t}". User: ${p.value}. Context: ${ac}. Current: ${c}. Return ONLY HTML body.`; try{const r=await puter.ai.chat(pr); document.getElementById('view-raw').value=r.message?.content.replace(/```html/g,"").replace(/```/g,"")||r; syncContent(); log("DONE.","#0F0"); p.value=""}catch(e){log("AI ERR","red")}finally{b.classList.remove('ai-loading');b.innerText="✨ AI_WRITE"} }
+        function log(m,c) { const d=document.getElementById('ai-console'); const l=document.createElement('div'); l.className='log-line'; l.style.color=c||"#0F0"; l.innerText="> "+m; d.appendChild(l); d.scrollTop=d.scrollHeight; }
+        window.handlePageCommand = function(c) { if(c==='return'||c==='back'){window.location.href='../../projects.html';return true} return null; };
+        const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d'); function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r; const s='AI01',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1; setInterval(()=>{ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0F0';ctx.font='16px mono';for(let i=0;i<d.length;i++){ctx.fillText(s[Math.floor(Math.random()*s.length)],i*16,d[i]*16);if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;d[i]++}},33);
     </script>
 </body>
 </html>

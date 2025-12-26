@@ -29,9 +29,9 @@ const FILE_SYSTEM = {
     projects: [
         // UPDATED ENTRY HERE
         { 
-            cmd: "dwn_vigenere", 
-            title: "Vigenère Toolkit.zip", 
-            path: "content/projects/vigenere-tool.zip", 
+            cmd: "run_vigenere", 
+            title: "Vigenère Toolkit.html", 
+            path: "content/projects/vigenere-tool.html", 
             desc: "// Offline HTML Utility" 
         },
         
