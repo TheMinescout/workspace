@@ -3,61 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOOL // AI_WRITER_ASSISTANT</title>
+    <title>TOOL // AI_WRITER_SUITE</title>
     <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png">
     
     <script src="../../assets/js/firebase-config.js?v=3.2"></script>
     <script src="../../assets/js/terminal-core.js?v=3.2"></script>
+    <script src="https://js.puter.com/v2/"></script>
 
     <style>
-        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; margin: 0; padding: 20px; overflow-y: auto; }
+        /* COMPACT LAYOUT CSS */
+        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; margin: 0; padding: 10px; overflow-y: auto; }
         canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; pointer-events: none; }
         
-        .container { max-width: 1000px; margin: 0 auto; border: 2px solid #0F0; background: rgba(0, 20, 0, 0.95); padding: 20px; box-shadow: 0 0 20px #0F0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        /* Main Grid: Thinner side columns (240px) */
+        .container { 
+            max-width: 100%; margin: 0 auto; 
+            border: 1px solid #0F0; background: rgba(0, 20, 0, 0.95); 
+            padding: 15px; box-shadow: 0 0 15px #0F0; 
+            display: grid; grid-template-columns: 240px 1fr 240px; gap: 15px; 
+            height: calc(100vh - 20px); /* Fit to screen height */
+        }
         
-        h1 { grid-column: span 2; border-bottom: 1px dashed #0F0; padding-bottom: 10px; margin-top: 0; cursor: pointer; }
+        h1 { grid-column: span 3; border-bottom: 1px dashed #0F0; padding-bottom: 5px; margin: 0 0 10px 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; height: 40px; }
+        h1 span:first-child { font-size: 1.2rem; }
         
-        .input-sect { display: flex; flex-direction: column; gap: 15px; }
-        .log-sect { border-left: 1px solid #004400; padding-left: 20px; display: flex; flex-direction: column; }
+        /* Column Layouts */
+        .col-config, .col-logs { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+        .col-editor { 
+            border-left: 1px solid #004400; border-right: 1px solid #004400; 
+            padding: 0 15px; display: flex; flex-direction: column; gap: 8px; 
+            overflow: hidden; /* Prevents spillover */
+        }
 
-        label { font-weight: bold; color: #88ff88; display: block; margin-bottom: 5px; }
+        label { font-weight: bold; color: #88ff88; display: block; margin-bottom: 3px; font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; }
         
+        /* Compact Inputs */
         input, textarea, select { 
             width: 100%; background: #001100; border: 1px solid #004400; color: #0F0; 
-            font-family: inherit; padding: 10px; outline: none; box-sizing: border-box;
+            font-family: inherit; padding: 6px; outline: none; box-sizing: border-box; font-size: 0.85rem;
         }
         input:focus, textarea:focus { border-color: #0F0; box-shadow: 0 0 5px #0F0; }
         
-        /* FILE INPUT STYLE */
-        input[type="file"] { border: 1px dashed #004400; cursor: pointer; }
+        /* Compact Tabs */
+        .editor-tabs { display: flex; gap: 2px; border-bottom: 1px solid #004400; }
+        .tab-btn { 
+            background: #001100; border: 1px solid #004400; color: #008800; 
+            padding: 4px 10px; cursor: pointer; border-bottom: none; 
+            font-size: 0.8rem; flex-grow: 1; text-align: center;
+        }
+        .tab-btn.active { background: #003300; color: #0F0; border-color: #0F0; font-weight: bold; }
+
+        /* Editor Area */
+        #editor-container { flex-grow: 1; position: relative; border: 1px solid #004400; background: #000; overflow: hidden; }
+        #view-raw, #view-visual, #view-fancy { 
+            width: 100%; height: 100%; border: none; padding: 10px; box-sizing: border-box; resize: none; 
+        }
+        #view-visual { background: #fff; color: #000; font-family: sans-serif; overflow-y: auto; }
+        #view-visual img { max-width: 100%; border: 1px solid #ccc; }
+        #view-fancy { background: #1e1e1e; color: #d4d4d4; font-family: 'Consolas', monospace; white-space: pre-wrap; overflow-y: auto; }
         
-        button {
-            background: #003300; color: #0F0; border: 1px solid #0F0; padding: 15px; 
-            cursor: pointer; font-weight: bold; text-transform: uppercase; margin-top: 10px; transition: 0.2s;
-        }
-        button:hover { background: #0F0; color: #000; }
+        .tag-name { color: #569cd6; } .attr-name { color: #9cdcfe; } .attr-value { color: #ce9178; } 
+
+        /* Assets List */
+        .asset-item { border: 1px dashed #004400; padding: 4px; margin-bottom: 4px; font-size: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .asset-controls { display: flex; gap: 4px; }
+        .size-inp { width: 50px; padding: 2px; height: 18px; font-size: 9px; }
+
+        /* Saved Projects */
+        .project-item { background: #001100; border: 1px solid #004400; padding: 5px; margin-bottom: 3px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+        .project-item:hover { border-color: #FFFF00; color: #FFFF00; }
+        .del-proj { color: red; font-weight: bold; padding: 0 5px; }
+        #storage-meter { font-size: 9px; color: #555; text-align: right; margin-top: 2px; }
+
+        /* Buttons */
+        .btn { background: #003300; color: #0F0; border: 1px solid #0F0; padding: 8px; cursor: pointer; font-weight: bold; text-transform: uppercase; width: 100%; transition: 0.2s; font-size: 0.8rem; }
+        .btn:hover { background: #0F0; color: #000; }
+        .btn-ai { border-color: #0FF; color: #0FF; background: #002222; }
+        .btn-ai:hover { background: #0FF; color: #000; }
+        .btn-save { border-color: #FFFF00; color: #FFFF00; background: #222200; }
+        .btn-save:hover { background: #FFFF00; color: #000; }
+        .download-btn { display: none; background: #005500; color: #fff; border: 1px solid #fff; margin-top: 5px; text-align: center; padding: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; width: 100%; font-size: 0.9rem; }
+        .download-btn:hover { background: #fff; color: #000; }
         
-        /* LOG CONSOLE */
-        #ai-console {
-            flex-grow: 1; background: #000; border: 1px solid #004400; 
-            padding: 10px; font-size: 12px; overflow-y: auto; height: 400px;
-            white-space: pre-wrap; font-family: 'Courier New', monospace;
+        .ai-loading { animation: pulse 1s infinite; opacity: 0.7; cursor: wait; }
+        #ai-console { flex-grow: 1; border: 1px solid #004400; padding: 5px; font-size: 10px; overflow-y: auto; }
+        .open-btn { position: fixed; top: 10px; left: 10px; border: 2px solid #0F0; padding: 5px; cursor: pointer; z-index: 100; background: #000; font-weight: bold; font-size: 0.8rem; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        
+        /* Mobile Breakpoint */
+        @media (max-width: 900px) { 
+            .container { grid-template-columns: 1fr; height: auto; } 
+            h1 { grid-column: span 1; flex-direction: column; align-items: flex-start; } 
+            .col-editor { border: none; height: 500px; padding: 0; } 
+            #editor-container { min-height: 300px; }
         }
-        .log-line { margin-bottom: 5px; animation: fadeIn 0.2s; }
-        .log-info { color: #0FF; }
-        .log-warn { color: #FF0; }
-        .log-success { color: #0F0; font-weight: bold; }
-
-        .blob-btn {
-            display: none; background: #005555; color: #0FF; border-color: #0FF; margin-top: 10px; text-align: center; padding: 15px; text-decoration: none; font-weight: bold;
-        }
-        .blob-btn:hover { background: #0FF; color: #000; }
-
-        .open-btn { position: fixed; top: 10px; left: 10px; border: 2px solid #0F0; padding: 8px; cursor: pointer; z-index: 100; background: #000; font-weight: bold; }
-        .open-btn:hover { background: #0F0; color: #000; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } h1 { grid-column: span 1; } .log-sect { border-left: none; border-top: 1px solid #004400; padding-left: 0; padding-top: 20px; } }
     </style>
 </head>
 <body>
@@ -65,161 +105,170 @@
     <div class="open-btn" onclick="window.toggleCmd()">[ OPEN TERMINAL ]</div>
 
     <div class="container">
-        <h1 onclick="window.toggleCmd()">// AI_WRITER_ASSISTANT (DOM_BUILDER)</h1>
+        <h1>
+            <span>// AI_WRITER_SUITE (v9.2)</span>
+            <span style="font-size:10px; color:#555;">STORAGE: INDEXED_DB</span>
+        </h1>
         
-        <!-- LEFT: INPUTS -->
-        <div class="input-sect">
+        <!-- LEFT: CONFIG -->
+        <div class="col-config">
             <div>
-                <label>PROJECT_TITLE ({{title}}):</label>
-                <input type="text" id="inp-title" placeholder="My Awesome Project">
-            </div>
-            
-            <div>
-                <label>CORE_INFORMATION ({{info}}):</label>
-                <textarea id="inp-info" rows="4" placeholder="Paste your article text, descriptions, or data here..."></textarea>
+                <label>PROJECT_TITLE:</label>
+                <input type="text" id="inp-title" placeholder="Project Name">
             </div>
 
-            <div>
-                <label>ASSET_IMAGE ({{img}}):</label>
-                <input type="file" id="inp-file" accept="image/*">
-                <div style="font-size:10px; color:#555; margin-top:2px;">*Converts to Base64 for standalone portability.</div>
+            <!-- ASSETS -->
+            <div style="border: 1px solid #004400; padding: 8px;">
+                <label>MEDIA_ASSETS:</label>
+                <div style="display:flex; gap:5px; margin-bottom:5px;">
+                    <input type="file" id="media-file" accept="image/*,video/*" style="width:50%">
+                    <input type="text" id="media-label" placeholder="Label" style="width:50%">
+                </div>
+                <button class="btn" style="padding:4px; font-size:10px;" onclick="addAsset()">[ + ADD ASSET ]</button>
+                <div id="asset-list" style="margin-top:5px; max-height:150px; overflow-y:auto;"></div>
             </div>
 
-            <div>
-                <label>HTML_TEMPLATE_CODE:</label>
-                <textarea id="inp-template" rows="10" spellcheck="false"><!-- DEFAULT TEMPLATE -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{title}}</title>
-    <style>
-        body { font-family: sans-serif; background: #111; color: #eee; padding: 40px; text-align: center; }
-        .card { border: 1px solid #333; padding: 20px; max-width: 600px; margin: 0 auto; background: #222; }
-        img { max-width: 100%; border-radius: 8px; margin-bottom: 20px; border: 2px solid #555; }
-        h1 { color: #00ffcc; }
-        p { line-height: 1.6; text-align: left; }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <h1>{{title}}</h1>
-        <img src="{{img}}" alt="Project Image">
-        <p>{{info}}</p>
-    </div>
-</body>
-</html></textarea>
+            <!-- SAVED PROJECTS -->
+            <div style="border: 1px solid #FFFF00; padding: 8px; border-style:dashed;">
+                <label style="color:#FFFF00">LOCAL_DATABASE:</label>
+                <div id="saved-list" style="max-height:100px; overflow-y:auto; margin-bottom:5px;"></div>
+                <div id="storage-meter">Scanning...</div>
+                <button class="btn btn-save" style="padding:4px; font-size:10px;" onclick="saveProject()">[ SAVE CURRENT STATE ]</button>
             </div>
-
-            <button onclick="startGeneration()">[ INITIALIZE GENERATION ]</button>
         </div>
 
-        <!-- RIGHT: CONSOLE -->
-        <div class="log-sect">
-            <label>AI_PROCESSING_LOG:</label>
-            <div id="ai-console">
-                <div class="log-line">> SYSTEM READY. WAITING FOR INPUTS...</div>
+        <!-- MIDDLE: EDITOR -->
+        <div class="col-editor">
+            <div class="editor-tabs">
+                <div class="tab-btn active" onclick="switchTab('raw')" id="tab-raw">RAW HTML</div>
+                <div class="tab-btn" onclick="switchTab('visual')" id="tab-visual">VISUAL</div>
+                <div class="tab-btn" onclick="switchTab('fancy')" id="tab-fancy">PREVIEW</div>
             </div>
-            <a id="preview-link" class="blob-btn" target="_blank">[ OPEN PREVIEW (BLOB) ]</a>
+
+            <div style="display:flex; gap:5px;">
+                <input type="text" id="ai-prompt" placeholder="AI Instructions: 'Rewrite intro', 'Fix tone'...">
+                <button id="ai-btn" class="btn btn-ai" style="width:auto; padding:6px 15px;" onclick="generateWithAI()">✨ AI</button>
+            </div>
+
+            <div id="editor-container">
+                <textarea id="view-raw" spellcheck="false"></textarea>
+                <div id="view-visual" contenteditable="true"></div>
+                <div id="view-fancy"></div>
+            </div>
+        </div>
+
+        <!-- RIGHT: COMPILE -->
+        <div class="col-logs">
+            <button class="btn" onclick="startCompilation()">[ COMPILE & PREVIEW ]</button>
+            <a id="preview-link" class="btn" style="display:none; text-align:center; text-decoration:none; background:#005555; color:#0FF;" target="_blank">OPEN BROWSER</a>
+            <button id="download-btn" class="download-btn" onclick="downloadResult()">💾 DOWNLOAD HTML</button>
+            
+            <label>SYSTEM_LOG:</label>
+            <div id="ai-console"></div>
+
+            <!-- TEMPLATE -->
+            <textarea id="inp-template" style="display:none;"><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{title}}</title>
+<!-- BETA STYLES -->
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+    body { overflow-y: auto; padding: 20px; }
+    .page-container { max-width: 900px; margin: 0 auto; border: 1px solid #0F0; background: rgba(0, 10, 0, 0.9); padding: 40px; }
+    h1 { border-bottom: 2px solid #0F0; padding-bottom: 10px; color: #0F0; }
+    h2 { color: #88ff88; margin-top: 30px; border-left: 3px solid #0F0; padding-left: 10px; }
+    p { line-height: 1.6; color: #ccffcc; margin-bottom: 15px; }
+    img, video { max-width: 100%; height: auto; max-height: 600px; object-fit: contain; border: 1px solid #0F0; margin: 15px 0; display: block; margin-left: auto; margin-right: auto; }
+    .media-caption { text-align: center; font-size: 0.8em; color: #005500; margin-top: 5px; font-style: italic; }
+</style>
+</head>
+<body>
+    <canvas id="matrixCanvas" style="position:fixed; top:0; left:0; z-index:-1; opacity:0.1;"></canvas>
+    <div class="page-container">
+        <h1>{{title}}</h1>
+        <p style="color:#005500;">GENERATED: {{date}} | AUTHOR: AI_ASSISTANT</p>
+        <hr style="border-color:#003300; margin-bottom:30px;">
+        <div id="content">{{AI}}</div>
+    </div>
+    <script src="assets/js/terminal-core.js"></script>
+</body>
+</html></textarea>
         </div>
     </div>
 
     <script>
-        const consoleDiv = document.getElementById('ai-console');
-        const previewBtn = document.getElementById('preview-link');
+        let assets = [];
+        let currentMode = 'raw';
+        let globalBlobUrl = null;
         
-        // 1. LOGGER FUNCTION
-        function log(msg, type='') {
-            const div = document.createElement('div');
-            div.className = 'log-line ' + type;
-            div.innerText = `> ${msg}`;
-            consoleDiv.appendChild(div);
-            consoleDiv.scrollTop = consoleDiv.scrollHeight;
-        }
+        // DB Init
+        const DB_NAME="MinescoutDB", DB_VERSION=1, STORE_NAME="projects"; let db;
+        function initDB(){ const r=indexedDB.open(DB_NAME,DB_VERSION); r.onupgradeneeded=e=>{db=e.target.result; if(!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME,{keyPath:"title"})}; r.onsuccess=e=>{db=e.target.result; log("DB CONNECTED.", "#0F0"); loadProjects()}; }
+        document.getElementById('view-raw').value = "<!-- AI Content -->";
+        initDB();
 
-        // 2. MAIN PROCESS
-        async function startGeneration() {
-            previewBtn.style.display = 'none';
-            consoleDiv.innerHTML = ''; // Clear logs
-            
-            const title = document.getElementById('inp-title').value;
-            const info = document.getElementById('inp-info').value;
+        // --- COMPILATION ---
+        function startCompilation() {
+            syncContent();
+            const title = document.getElementById('inp-title').value || "Untitled";
+            const bodyContent = document.getElementById('view-raw').value;
             let template = document.getElementById('inp-template').value;
-            const fileInput = document.getElementById('inp-file');
-
-            if(!title || !info) { log("ERROR: MISSING TEXT DATA.", "log-warn"); return; }
-
-            log("INITIALIZING AI CORE...", "log-info");
-            await delay(500);
             
-            // IMAGE PROCESSING
-            let imgData = "https://placehold.co/600x400/000/FFF?text=NO+IMAGE"; // Fallback
-            if (fileInput.files && fileInput.files[0]) {
-                log(`DETECTED ASSET: ${fileInput.files[0].name}`, "log-info");
-                log("CONVERTING TO BASE64...", "log-warn");
-                try {
-                    imgData = await toBase64(fileInput.files[0]);
-                    log("ASSET ENCODED SUCCESSFULLY.", "log-success");
-                } catch (e) {
-                    log("ERROR ENCODING IMAGE.", "log-warn");
-                }
-            } else {
-                log("NO IMAGE UPLOADED. USING PLACEHOLDER.", "log-warn");
-            }
+            const cleanTitle = title.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+            const baseTag = `<base href="${window.location.origin}/">`;
+            template = template.replace("<head>", `<head>${baseTag}`);
 
-            await delay(800);
-            log("PARSING TEMPLATE STRUCTURE...", "log-info");
-            
-            // SYNTHESIS (Replacing Variables)
-            await delay(400);
-            log(`INJECTING TITLE: "${title.substring(0,15)}..."`);
             template = template.replace(/{{title}}/g, title);
-            
-            await delay(300);
-            log("INJECTING CORE INFORMATION...");
-            // Convert newlines to <br> for HTML safety
-            const safeInfo = info.replace(/\n/g, "<br>");
-            template = template.replace(/{{info}}/g, safeInfo);
-            
-            await delay(300);
-            log("EMBEDDING BINARY IMAGE DATA...");
-            template = template.replace(/{{img}}/g, imgData);
+            template = template.replace(/{{clean_title}}/g, cleanTitle);
+            template = template.replace(/{{date}}/g, new Date().toLocaleDateString());
+            template = template.replace(/{{AI}}/g, bodyContent);
 
-            await delay(600);
-            log("OPTIMIZING DOM TREE...", "log-info");
-            
-            // BLOB CREATION
+            let used = 0;
+            assets.forEach(asset => {
+                let mediaHtml = "";
+                const widthStyle = asset.width; 
+                if (asset.base64) {
+                    if (asset.type === 'video') mediaHtml = `<div class="media-container"><video src="${asset.base64}" style="width:${widthStyle}; max-height:600px;" controls loop muted playsinline></video><div class="media-caption">${asset.label}</div></div>`;
+                    else mediaHtml = `<div class="media-container"><img src="${asset.base64}" style="width:${widthStyle}; max-height:600px;" alt="${asset.label}"><div class="media-caption">${asset.label}</div></div>`;
+                    
+                    if(template.includes(asset.tag)) { template = template.replace(asset.tag, mediaHtml); used++; }
+                    else { log(`Appending ${asset.tag}`, "orange"); template = template.replace("</div>\n    </div>", `${mediaHtml}</div>\n    </div>`); }
+                }
+            });
+
             const blob = new Blob([template], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
+            globalBlobUrl = URL.createObjectURL(blob);
             
-            log("COMPILATION COMPLETE.", "log-success");
-            log(`GENERATED BLOB: ${blob.size} bytes`, "log-success");
-
-            previewBtn.href = url;
-            previewBtn.style.display = 'block';
+            document.getElementById('preview-link').href = globalBlobUrl;
+            document.getElementById('preview-link').style.display = 'block';
+            document.getElementById('download-btn').style.display = 'block';
+            log(`COMPILED (${used} Assets).`, "#0F0");
         }
 
-        // HELPERS
-        const delay = ms => new Promise(res => setTimeout(res, ms));
+        function downloadResult() {
+            if(!globalBlobUrl) return;
+            const title = document.getElementById('inp-title').value || "project";
+            const a = document.createElement('a'); a.href = globalBlobUrl; a.download = title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + ".html"; a.click();
+        }
 
-        const toBase64 = file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-
-        // PAGE COMMANDS
-        window.handlePageCommand = function(cmd, args) {
-            if (cmd === 'return' || cmd === 'back') { window.location.href = '../../projects.html'; return true; }
-            if (cmd === 'gen' || cmd === 'run') { startGeneration(); return true; }
-            return null;
-        };
-
-        // MATRIX BACKGROUND
-        const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d');
-        function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r;
-        const s='AI01',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1;
-        setInterval(()=>{ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0F0';ctx.font='16px mono';for(let i=0;i<d.length;i++){ctx.fillText(s[Math.floor(Math.random()*s.length)],i*16,d[i]*16);if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;d[i]++}},33);
+        // --- UTILS ---
+        function switchTab(mode) { syncContent(); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(`tab-${mode}`).classList.add('active'); document.getElementById('view-raw').style.display='none'; document.getElementById('view-visual').style.display='none'; document.getElementById('view-fancy').style.display='none'; if(mode==='raw')document.getElementById('view-raw').style.display='block'; if(mode==='visual')document.getElementById('view-visual').style.display='block'; if(mode==='fancy'){document.getElementById('view-fancy').style.display='block'; renderFancy();} currentMode=mode; }
+        function syncContent() { const r=document.getElementById('view-raw'),v=document.getElementById('view-visual'); if(currentMode==='raw')v.innerHTML=r.value; else if(currentMode==='visual')r.value=v.innerHTML; }
+        function renderFancy() { let c=document.getElementById('view-raw').value; c=c.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/(&lt;\/?[a-z0-9]+)(.*?)(\/?&gt;)/gi,'<span class="tag-name">$1</span>$2<span class="tag-name">$3</span>'); document.getElementById('view-fancy').innerHTML=c; }
+        async function addAsset() { const fi=document.getElementById('media-file'), li=document.getElementById('media-label'), f=fi.files[0], l=li.value||"Asset"; if(!f){log("No file.","red");return} try{log("ENCODING...","yellow"); const b64=await toBase64(f); const vid=f.type.startsWith('video'); const tag=`{{media_${assets.length+1}}}`; assets.push({tag,label:l,base64:b64,type:vid?'video':'img',width:'100%',stripped:false}); renderAssetList(); log(`ADDED: ${tag}`,"#0F0"); fi.value=""; li.value="";}catch(e){log("ERR ENCODING","red")} }
+        function renderAssetList() { const l=document.getElementById('asset-list'); l.innerHTML=""; assets.forEach((a,i)=>{const d=document.createElement('div'); d.className='asset-item'; d.innerHTML=`<div>${a.tag}</div><div class="asset-controls"><input type="text" class="size-inp" value="${a.width}" onchange="updateSize(${i},this.value)"><span style="color:red;cursor:pointer" onclick="removeAsset(${i})">[X]</span></div>`; l.appendChild(d)}); }
+        function updateSize(i,v){assets[i].width=v} function removeAsset(i){assets.splice(i,1);renderAssetList()}
+        const toBase64=f=>new Promise((r,j)=>{const rd=new FileReader(); rd.readAsDataURL(f); rd.onload=()=>r(rd.result); rd.onerror=e=>j(e)});
+        function saveProject() { const t=document.getElementById('inp-title').value; if(!t){log("Title needed.","red");return} syncContent(); const c=document.getElementById('view-raw').value; const tx=db.transaction(STORE_NAME,"readwrite"); tx.objectStore(STORE_NAME).put({title:t,content:c,date:new Date().toLocaleString(),assets}); tx.oncomplete=()=>log("SAVED.","#0F0"); loadProjects(); }
+        function loadProjects() { const l=document.getElementById('saved-list'); l.innerHTML=""; const tx=db.transaction(STORE_NAME,"readonly"); const s=tx.objectStore(STORE_NAME); s.openCursor().onsuccess=e=>{const c=e.target.result; if(c){const d=c.value; const sz=JSON.stringify(d).length; const div=document.createElement('div'); div.className='project-item'; div.innerHTML=`<span onclick="loadOne('${d.title}')">${d.title}</span><span class="del-proj" onclick="deleteProj('${d.title}')">X</span>`; l.appendChild(div); c.continue()} } }
+        function loadOne(t) { db.transaction(STORE_NAME,"readonly").objectStore(STORE_NAME).get(t).onsuccess=e=>{const d=e.target.result; document.getElementById('inp-title').value=d.title; document.getElementById('view-raw').value=d.content; assets=d.assets||[]; renderAssetList(); switchTab('raw'); log("LOADED.","#0F0")} }
+        function deleteProj(t) { if(confirm("Delete?")){ db.transaction(STORE_NAME,"readwrite").objectStore(STORE_NAME).delete(t).oncomplete=()=>{log("DELETED.","orange"); loadProjects()} } }
+        async function generateWithAI() { const p=document.getElementById('ai-prompt'), t=document.getElementById('inp-title').value, b=document.getElementById('ai-btn'); syncContent(); const c=document.getElementById('view-raw').value; if(!t){log("Title needed","red");return} b.classList.add('ai-loading'); b.innerText="..."; log("AI WRITING...","cyan"); let ac=""; assets.forEach(a=>{ac+=`- ${a.label} -> ${a.tag}\n`}); const pr=`Write/Edit HTML body for "${t}". User: ${p.value}. Context: ${ac}. Current: ${c}. Return ONLY HTML body.`; try{const r=await puter.ai.chat(pr); document.getElementById('view-raw').value=r.message?.content.replace(/```html/g,"").replace(/```/g,"")||r; syncContent(); log("DONE.","#0F0"); p.value=""}catch(e){log("AI ERR","red")}finally{b.classList.remove('ai-loading');b.innerText="✨ AI"} }
+        function log(m,c) { const d=document.getElementById('ai-console'); const l=document.createElement('div'); l.className='log-line'; l.style.color=c||"#0F0"; l.innerText="> "+m; d.appendChild(l); d.scrollTop=d.scrollHeight; }
+        window.handlePageCommand = function(c) { if(c==='return'||c==='back'){window.location.href='../../projects.html';return true} return null; };
+        const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d'); function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r; const s='AI01',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1; setInterval(()=>{ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0F0';ctx.font='16px mono';for(let i=0;i<d.length;i++){ctx.fillText(s[Math.floor(Math.random()*s.length)],i*16,d[i]*16);if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;d[i]++}},33);
     </script>
 </body>
 </html>
