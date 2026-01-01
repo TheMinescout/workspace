@@ -11,51 +11,54 @@
 <hr>
 
 ## ⚠️ Warning: Experimental Zone
-Welcome to the **Minescouts Beta** documentation. This branch (`beta.minescout.net`) features a radically different UI based on a "Hacker/Terminal" aesthetic. Navigation and interaction paradigms here are experimental.
+Welcome to the **Minescouts Beta** documentation. This branch (`beta.minescout.net`) simulates a persistent "Web Operating System" with a Hacker/Terminal aesthetic.
 
-**Current Version:** `v2.8-beta (Terminal Core)`
+**Current Version:** `v5.0-beta (Terminal OS & AI Suite)`
 
 ## 🚧 Active Beta Experiments
 
-### 1. The Terminal UI (CLI)
-We are testing a command-line interface for web navigation.
-*   **Status:** Live Testing
-*   **Usage:** Press `/` or click the bottom-left prompt to open the command window.
-*   **Key Commands:** `atls` (Articles), `prds` (Projects), `email` (Comms), `help` (Manual).
-*   **Mobile:** Includes a dedicated action bar and touch-optimized input.
+### 1. The Terminal OS (Core v5.0)
+A fully functional Command Line Interface that persists state across pages.
+*   **Navigation:** Use `/` to toggle the terminal overlay.
+*   **New Commands:**
+    *   `alias [name]=[cmd]`: Create custom shortcuts.
+    *   `snake`: Play a terminal-based mini-game with physics integration.
+    *   `stats`: View real-time system health in ASCII art.
+    *   `main`: Triggers a "Reverse Matrix" transition to return to the live site.
+*   **Security:** Implements a Clearance Level system (Lvl 0 - 10).
 
-### 2. Cognisearch (AI News v5)
-The latest iteration of our AI News Synthesis engine.
-*   **Status:** Stable Release
-*   **Location:** Access via the `open_cog` command or the [Articles Page](pages.html).
-*   **Download:** [cognisearch-v5.zip](content/projects/cognisearch-v5.zip)
+### 2. AI Writer Suite (v41.0)
+An advanced, browser-based IDE for generating HTML content using Artificial Intelligence.
+*   **Tech Stack:** Puter.js (AI), IndexedDB (Local Storage), Firebase (Community).
+*   **Features:**
+    *   **Smart Asset Injection:** Upload images/videos, and the AI automatically places them contextually within the article using Base64 encoding.
+    *   **Dual Export:**
+        *   **Standard:** Downloads a standalone HTML file.
+        *   **Admin:** Injects content into the official `life.minescout.net` production template with sidebar/auth scripts.
+    *   **Community Library:** Share created articles to a global feed or load templates from other users.
 
-### 3. Secure Uplink (Messaging)
-A custom-built email and feature request client that bypasses standard `mailto` links.
-*   **Tech Stack:** Firebase Realtime Database + EmailJS.
-*   **Features:** Real-time admin notifications and an internal "Inbox" UI for the administrator.
-*   **Location:** Access via `reqs` (Feature Requests) or `email` (Direct Email).
+### 3. Utility Tools
+Standalone web-tools built for the "Projects" directory.
+*   **Vigenère Cipher:** A cryptography tool featuring encryption, decryption, and a dictionary-based brute force attack.
+*   **Portfolio Simulator:** A neon-themed financial projection engine using Chart.js to model compound interest and volatility.
 
-### 4. Project Archives (Legacy Storage)
-A repository for deprecated builds and older articles.
-*   **Status:** Read-Only
-*   **Location:** Found at the bottom of the [Pages](pages.html) and [Projects](projects.html) directories.
-*   **Note:** Legacy downloads may be unstable.
+### 4. Secure Uplink (Messaging)
+*   **Admin Inbox:** A hidden GUI (`admin-messages.html`) for viewing contact form submissions and feature requests.
+*   **Alerts:** The main terminal will flash **RED** ("CHECK_THE_CORNERS") if unread high-priority messages exist.
 
 ## 🐛 How to Report Bugs
 If you find a glitch (that isn't part of the aesthetic) or a broken link, please report it via the Terminal.
 
 **Feature Request / Bug Report:**
 1.  Open the Command Window (Press `/`).
-2.  Type `reqs` and press Enter.
+2.  Type `reqs` to open the secure uplink.
 3.  Fill out the form. Select **"HIGH"** priority for breaking bugs.
-4.  Alternatively, send a direct encrypted message using the `email` command.
 
 ## 🔒 Admin Beta Access
-If you are logged in as the Administrator, the Terminal grants Level 5 Clearance:
-*   **System Status:** The home page text will turn **RED** if new messages await.
-*   **Diagnostics:** Type `err` to see a summary of missed updates or admin alerts.
-*   **Encrypted Feed:** Type `vm` to access the hidden Admin Inbox (`admin-messages.html`) to read, archive, and delete user messages.
+**Clearance Level 10** is reserved for the Administrator (`theminescout@minescout.net`).
+*   **Terminal:** Grants access to `vm` (View Messages) and `ls -a` (Hidden Files).
+*   **AI Writer:** Entering the Admin Override Code unlocks production-ready export templates and meta-tag customization.
+*   **Analytics:** Grants read-access to the realtime page view database.
 
 ---
 <div align="center">
