@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOOL // PORTFOLIO_PROJECTION</title>
+    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png">
+    
+    <!-- EXTERNAL LIBS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../../assets/js/firebase-config.js?v=3.2"></script>
+    <script src="../../assets/js/terminal-core.js?v=4.4"></script>
+
+    <style>
+        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; margin: 0; padding: 20px; overflow-y: auto; }
+        canvas#matrixCanvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; pointer-events: none; }
+        
+        .container { 
+            max-width: 1200px; margin: 0 auto; 
+            border: 2px solid #0F0; background: rgba(0, 20, 0, 0.95); 
+            padding: 20px; box-shadow: 0 0 20px #0F0; 
+            display: grid; grid-template-columns: 350px 1fr; gap: 20px;
+        }
+        
+        /* Title is clickable for CMD */
+        h1 { grid-column: span 2; border-bottom: 1px dashed #0F0; padding-bottom: 10px; margin-top: 0; cursor: pointer; }
+        
+        /* INPUT COLUMN */
+        .col-config { display: flex; flex-direction: column; gap: 15px; border-right: 1px solid #004400; padding-right: 20px; }
+        
+        label { font-weight: bold; color: #88ff88; display: block; margin-bottom: 5px; font-size: 0.8rem; letter-spacing: 1px; }
+        
+        input { 
+            width: 100%; background: #001100; border: 1px solid #004400; color: #0F0; 
+            font-family: inherit; padding: 8px; outline: none; box-sizing: border-box; font-size: 1rem;
+        }
+        input:focus { border-color: #0F0; box-shadow: 0 0 5px #0F0; }
+
+        /* PHASE MANAGER */
+        .phase-box { border: 1px dashed #004400; padding: 10px; background: #000500; max-height: 300px; overflow-y: auto; }
+        .phase-item { 
+            display: grid; grid-template-columns: 1fr 1fr 30px; gap: 5px; margin-bottom: 5px; 
+            border-bottom: 1px dotted #003300; padding-bottom: 5px;
+        }
+        .del-btn { color: red; cursor: pointer; font-weight: bold; text-align: center; border: 1px solid red; }
+        .del-btn:hover { background: red; color: white; }
+
+        /* BUTTONS */
+        .btn { 
+            background: #003300; color: #0F0; border: 1px solid #0F0; padding: 12px; 
+            cursor: pointer; font-weight: bold; text-transform: uppercase; width: 100%; transition: 0.2s; 
+        }
+        .btn:hover { background: #0F0; color: #000; box-shadow: 0 0 10px #0F0; }
+        .btn-add { font-size: 10px; padding: 5px; margin-top: 5px; border-style: dashed; }
+
+        /* CHART AREA */
+        .col-chart { position: relative; height: 600px; padding: 10px; }
+
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } h1 { grid-column: span 1; } .col-config { border-right: none; border-bottom: 1px solid #004400; padding-bottom: 20px; padding-right: 0; } }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    <!-- Removed Floating Button -->
+
+    <div class="container">
+        <h1 onclick="window.toggleCmd()">// FIN_TECH: PORTFOLIO_SIMULATOR</h1>
+        
+        <!-- LEFT: CONFIGURATION -->
+        <div class="col-config">
+            <div>
+                <label>INITIAL_CAPITAL ($):</label>
+                <input type="number" id="inp-initial" value="5000">
+            </div>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div>
+                    <label>TOTAL_YEARS:</label>
+                    <input type="number" id="inp-years" value="10">
+                </div>
+                <div>
+                    <label>BASE_CAGR (%):</label>
+                    <input type="number" id="inp-cagr" value="10">
+                </div>
+            </div>
+
+            <div>
+                <label>VOLATILITY_RANGE (±%):</label>
+                <input type="number" id="inp-range" value="5">
+            </div>
+
+            <!-- PHASES -->
+            <div>
+                <label>CONTRIBUTION_PHASES:</label>
+                <div class="phase-box" id="phase-list">
+                    <!-- Phases injected here -->
+                </div>
+                <button class="btn btn-add" onclick="addPhase()">[ + ADD PHASE ]</button>
+            </div>
+
+            <button class="btn" onclick="generateChart()">[ RUN PROJECTION ]</button>
+            
+            <div id="stats-output" style="margin-top:20px; font-size:12px; border-top:1px solid #004400; padding-top:10px;">
+                > WAITING FOR DATA...
+            </div>
+        </div>
+
+        <!-- RIGHT: CHART -->
+        <div class="col-chart">
+            <canvas id="portfolioChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let phases = [
+            { monthly: 500, years: 5 },
+            { monthly: 1000, years: 5 }
+        ];
+        let chartInstance = null;
+
+        // --- 1. INIT ---
+        function renderPhases() {
+            const container = document.getElementById('phase-list');
+            container.innerHTML = "";
+            phases.forEach((p, i) => {
+                container.innerHTML += `
+                    <div class="phase-item">
+                        <div><label style="font-size:9px">MONTHLY ($)</label><input type="number" value="${p.monthly}" onchange="updatePhase(${i}, 'monthly', this.value)"></div>
+                        <div><label style="font-size:9px">DURATION (YRS)</label><input type="number" value="${p.years}" onchange="updatePhase(${i}, 'years', this.value)"></div>
+                        <div style="display:flex; align-items:end;"><button class="del-btn" onclick="removePhase(${i})">X</button></div>
+                    </div>
+                `;
+            });
+        }
+
+        function addPhase() {
+            phases.push({ monthly: 0, years: 1 });
+            renderPhases();
+        }
+
+        function removePhase(i) {
+            phases.splice(i, 1);
+            renderPhases();
+        }
+
+        function updatePhase(i, key, val) {
+            phases[i][key] = parseFloat(val);
+        }
+
+        // --- 2. CALCULATION LOGIC ---
+        function generateChart() {
+            const initial = parseFloat(document.getElementById('inp-initial').value);
+            const totalYears = parseInt(document.getElementById('inp-years').value);
+            const cagr = parseFloat(document.getElementById('inp-cagr').value) / 100;
+            const range = parseFloat(document.getElementById('inp-range').value) / 100;
+
+            const months = totalYears * 12;
+            const labels = [];
+            
+            // Arrays for data
+            const dataBase = [initial];
+            const dataHigh = [initial];
+            const dataLow = [initial];
+            const dataContrib = [initial];
+
+            // Build full contribution array based on phases
+            let monthlyContribs = [];
+            phases.forEach(p => {
+                for(let m=0; m < p.years * 12; m++) monthlyContribs.push(p.monthly);
+            });
+
+            // Fill rest if phases are shorter than total years
+            while(monthlyContribs.length < months) monthlyContribs.push(0);
+
+            // Monthly Rates
+            const rateBase = Math.pow(1 + cagr, 1/12) - 1;
+            const rateHigh = Math.pow(1 + (cagr + range), 1/12) - 1;
+            const rateLow = Math.pow(1 + (cagr - range), 1/12) - 1;
+
+            // SIMULATE
+            for (let i = 0; i < months; i++) {
+                const contrib = monthlyContribs[i] || 0;
+                
+                // Compounding
+                const nextBase = (dataBase[i] * (1 + rateBase)) + contrib;
+                const nextHigh = (dataHigh[i] * (1 + rateHigh)) + contrib;
+                const nextLow = (dataLow[i] * (1 + rateLow)) + contrib;
+                const nextContrib = dataContrib[i] + contrib;
+
+                dataBase.push(nextBase);
+                dataHigh.push(nextHigh);
+                dataLow.push(nextLow);
+                dataContrib.push(nextContrib);
+                
+                // Labels (Years)
+                if (i % 12 === 0) labels.push(`Y${i/12}`);
+                else labels.push('');
+            }
+            labels.push(`Y${totalYears}`);
+
+            renderChart(labels, dataBase, dataHigh, dataLow, dataContrib);
+            
+            // Update Stats
+            const finalVal = dataBase[dataBase.length-1];
+            const profit = finalVal - dataContrib[dataContrib.length-1];
+            document.getElementById('stats-output').innerHTML = `
+                > PROJECTION COMPLETE.<br>
+                > FINAL VALUE: <span style="color:#0F0; font-weight:bold">$${finalVal.toLocaleString(undefined, {maximumFractionDigits:0})}</span><br>
+                > TOTAL INVESTED: $${dataContrib[dataContrib.length-1].toLocaleString()}<br>
+                > EST. PROFIT: <span style="color:#0FF">$${profit.toLocaleString(undefined, {maximumFractionDigits:0})}</span>
+            `;
+        }
+
+        // --- 3. CHART RENDERING (NEON STYLE) ---
+        function renderChart(labels, base, high, low, contrib) {
+            const ctx = document.getElementById('portfolioChart').getContext('2d');
+            
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Optimistic',
+                            data: high,
+                            borderColor: 'rgba(0, 255, 0, 0.3)',
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false
+                        },
+                        {
+                            label: 'Projected (Base)',
+                            data: base,
+                            borderColor: '#0F0',
+                            backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            fill: true
+                        },
+                        {
+                            label: 'Pessimistic',
+                            data: low,
+                            borderColor: 'rgba(0, 255, 0, 0.3)',
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false
+                        },
+                        {
+                            label: 'Cash Invested',
+                            data: contrib,
+                            borderColor: '#005500',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { labels: { color: '#0F0', font: { family: 'Courier New' } } },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 20, 0, 0.9)',
+                            titleColor: '#0F0',
+                            bodyColor: '#fff',
+                            borderColor: '#0F0',
+                            borderWidth: 1,
+                            titleFont: { family: 'Courier New' },
+                            bodyFont: { family: 'Courier New' },
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': $' + context.raw.toLocaleString(undefined, {maximumFractionDigits:0});
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            grid: { color: '#002200' },
+                            ticks: { color: '#0F0', font: { family: 'Courier New' }, maxTicksLimit: 10 }
+                        },
+                        y: { 
+                            grid: { color: '#002200' },
+                            ticks: { color: '#0F0', font: { family: 'Courier New' }, callback: function(value) { return '$' + value.toLocaleString(); } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Page Init
+        renderPhases();
+        
+        // Handle Back Command
+        window.handlePageCommand = function(cmd) {
+            if (cmd === 'return' || cmd === 'back') { window.location.href = '../../projects.html'; return true; }
+            return null;
+        };
+
+        // Matrix Rain
+        const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d');
+        function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r;
+        const s='$01%',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1;
+        setInterval(()=>{ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0F0';ctx.font='16px mono';for(let i=0;i<d.length;i++){ctx.fillText(s[Math.floor(Math.random()*s.length)],i*16,d[i]*16);if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;d[i]++}},33);
+    </script>
+</body>
+</html>

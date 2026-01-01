@@ -3,117 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>404 // SIGNAL LOST</title>
+    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
+    
+    <!-- FIREBASE SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <style>
-        /* A stunning and minimal 404 page inspired by your original CSS */
-        @keyframes subtle-fade-in {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
-            50% { transform: scale(1.02); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); }
-            100% { transform: scale(1); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            color: #fff;
+        /* CORE STYLES REPLICATED FOR CONSISTENCY */
+        :root { --green: #0F0; --red: #FF3333; --bg: #000; --glass: rgba(0, 10, 0, 0.95); --glow: 0 0 10px var(--green); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background-color: var(--bg); 
+            font-family: 'Courier New', monospace; 
+            color: var(--green); 
+            height: 100vh; 
+            overflow: hidden; 
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            text-align: center;
-            
-            /* Enhanced background image with a more striking gradient overlay */
-            background-color: #446944; 
-            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url('https://life.minescout.net/favicon.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            animation: subtle-fade-in 1s ease-in-out;
         }
 
-        .content {
-            padding: 20px;
+        canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.3; }
+        .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%); background-size: 100% 4px; pointer-events: none; z-index: 100; opacity: 0.6; }
+        
+        .error-container {
+            background: var(--glass);
+            border: 2px solid var(--red);
+            box-shadow: 0 0 20px var(--red);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            z-index: 200;
             max-width: 600px;
-            animation: subtle-fade-in 1s ease-in-out;
+            width: 90%;
         }
 
         h1 {
-            font-size: 4rem;
-            color: #5a8a5a; /* A vibrant green from your palette for impact */
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-            font-weight: 700;
+            font-size: 5rem;
+            margin: 0;
+            color: var(--red);
+            text-shadow: 2px 2px 0 #fff;
+            animation: glitch 1s infinite linear alternate-reverse;
         }
 
-        .status-code {
-            font-size: 1.5rem;
-            font-weight: 400;
-            color: #ccc;
-            letter-spacing: 2px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-            margin-bottom: 2rem;
-        }
+        h2 { font-size: 1.5rem; margin-top: 10px; color: #fff; }
+        
+        p { margin-top: 20px; line-height: 1.5; color: #ffaaaa; }
 
-        p {
-            font-size: 1.2rem;
-            color: #e0e0e0;
-            margin-bottom: 2rem;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-        }
-
-        .back-link {
+        .action-btn {
             display: inline-block;
-            background-color: #5a8a5a;
-            color: #ffffff;
-            padding: 14px 28px;
-            border-radius: 8px;
+            margin-top: 30px;
+            padding: 15px 30px;
+            border: 1px solid var(--green);
+            background: #003300;
+            color: var(--green);
             text-decoration: none;
             font-weight: bold;
-            font-size: 1rem;
-            transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            animation: pulse 2s infinite;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s;
         }
+        .action-btn:hover { background: var(--green); color: #000; box-shadow: 0 0 15px var(--green); }
 
-        .back-link:hover {
-            background-color: #446944;
-            text-decoration: none;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-            animation-play-state: paused;
+        .cmd-hint {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #555;
+            cursor: pointer;
         }
+        .cmd-hint:hover { color: #888; text-decoration: underline; }
 
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 3rem;
-            }
-            .status-code {
-                font-size: 1.2rem;
-            }
-            p {
-                font-size: 1rem;
-            }
-            .back-link {
-                padding: 12px 24px;
-            }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
         }
+        
+        .open-btn { position: fixed; top: 10px; left: 10px; border: 2px solid #0F0; padding: 8px; cursor: pointer; z-index: 300; background: #000; font-weight: bold; color: #0F0; }
     </style>
 </head>
 <body>
-    <div class="content">
-        <h1>Lost Your Way?</h1>
-        <div class="status-code">PAGE NOT FOUND</div>
-        <p>The path you followed seems to have vanished. The page you're looking for might have been moved or removed, but we can help you find your way back home.</p>
-        <a href="/" class="back-link">Go back to the homepage</a>
+    <canvas id="matrixCanvas"></canvas>
+    <div class="scanline"></div>
+    <div class="open-btn" onclick="window.toggleCmd()">[ OPEN TERMINAL ]</div>
+
+    <div class="error-container">
+        <h1>404</h1>
+        <h2>SIGNAL LOST</h2>
+        <p>
+            > ERROR: The requested directory path does not exist.<br>
+            > STATUS: Connection Terminated.<br>
+            > ADVICE: Return to the root node immediately.
+        </p>
+        
+        <a href="index.html" class="action-btn">Re-Establish Connection</a>
+        
+        <div class="cmd-hint" onclick="window.toggleCmd()">
+            [ OR PRESS '/' TO USE CMD ]
+        </div>
     </div>
+
+    <!-- SCRIPTS -->
+    <script src="assets/js/firebase-config.js?v=3.2"></script>
+    <script src="assets/js/terminal-core.js?v=4.4"></script>
+
+    <script>
+        // Matrix Rain (Red Variation for Error)
+        const c = document.getElementById('matrixCanvas');
+        const ctx = c.getContext('2d');
+        
+        function resize() {
+            c.width = window.innerWidth;
+            c.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+        
+        const chars = '01404ERROR';
+        const fontSize = 16;
+        let columns = c.width / fontSize;
+        let drops = [];
+        
+        for(let i = 0; i < columns; i++) drops[i] = 1;
+
+        setInterval(() => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, c.width, c.height);
+            
+            // Randomly switch between Red and Green for glitch effect
+            ctx.fillStyle = Math.random() > 0.9 ? '#0F0' : '#FF0000'; 
+            ctx.font = fontSize + 'px monospace';
+            
+            for(let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if(drops[i] * fontSize > c.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }, 33);
+        
+        // Handle "return" command locally just in case
+        window.handlePageCommand = function(cmd) {
+            if (cmd === 'return' || cmd === 'back' || cmd === 'home') { 
+                window.location.href = 'index.html'; 
+                return true; 
+            }
+            return null;
+        };
+    </script>
 </body>
 </html>

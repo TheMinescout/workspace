@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BETA // MineScout</title>
-    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png?v=1.01">
+    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
     
+    <!-- FIREBASE SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <style>
+        /* --- CORE STYLES --- */
         :root { --green: #0F0; --red: #FF3333; --gold: #FFD700; --bg: #000; --glass: rgba(0, 10, 0, 0.95); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: var(--bg); font-family: 'Courier New', monospace; color: var(--green); height: 100vh; overflow: hidden; }
@@ -19,12 +25,9 @@
         .terminal-text p { margin: 8px 0; opacity: 0.9; text-align: left; }
         .status-line { transition: color 0.3s; }
         .status-error { color: var(--red); font-weight: bold; animation: blink-fast 1s infinite; }
-        
-        /* NEW HINT STYLE */
-        .system-hint { color: #005500; font-size: 0.8rem; font-style: italic; margin-top: 5px; }
-        
         .blink-instruction { color: #000; background: var(--green); padding: 8px; font-weight: bold; animation: blink 1.5s infinite; cursor: pointer; text-align: center; border: 1px solid var(--green); margin-top: 15px; }
         .blink-instruction:hover { background: #fff; box-shadow: 0 0 15px var(--green); }
+        .system-hint { color: #005500; font-size: 0.8rem; font-style: italic; margin-top: 5px; }
         @keyframes blink { 50% { opacity: 0.5; } }
         @keyframes blink-fast { 50% { opacity: 0.2; } }
         .glitch { font-size: 2.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 20px; }
@@ -39,7 +42,7 @@
     <div class="terminal-container">
         <div id="main-box" class="content-box">
             <div class="logo-container">
-                <img src="assets/images/BETAFAVICON.png?v=1.01" alt="Beta Logo" class="beta-logo">
+                <img src="assets/images/BETAFAVICON.png" alt="Beta Logo" class="beta-logo">
             </div>
             
             <h1 class="glitch" data-text="BETA ACCESS">BETA ACCESS</h1>
@@ -47,12 +50,11 @@
             <div class="terminal-text">
                 <p id="user-display">> USER_ID: GUEST</p>
                 <p id="device-display">> DEVICE: DETECTING...</p>
-                <p id="sys-status" class="status-line">> STATUS: UNLOCKED</p>
+                <p id="sys-status" class="status-line">> STATUS: INITIALIZING...</p>
                 
-                <!-- NEW HINT LINE -->
                 <p class="system-hint">> SYSTEM_MSG: CMD 'help' AVAILABLE</p>
                 <p class="system-hint">> Use / to open CMD Panel</p>
-                
+
                 <br>
                 <div class="blink-instruction" onclick="window.toggleCmd()">
                     [ CLICK HERE OR PRESS '/' TO RUN ]
@@ -61,10 +63,14 @@
         </div>
     </div>
 
-    <!-- SCRIPTS -->
-    <script src="assets/js/firebase-config.js"></script>
-    <script src="assets/js/filesystem.js"></script>
-    <script src="assets/js/terminal-core.js"></script>
+    <!-- 1. LOAD CONFIG -->
+    <script src="assets/js/firebase-config.js?v=2.6"></script>
+    
+    <!-- 2. LOAD DATA -->
+    <script src="assets/js/filesystem.js?v=2.6"></script>
+    
+    <!-- 3. LOAD CORE TERMINAL -->
+    <script src="assets/js/terminal-core.js?v=4.6"></script>
 
     <script>
         console.log("Index Logic Loaded");
@@ -148,7 +154,17 @@
             localStorage.setItem('minescout_last_visit', new Date().toISOString());
         }
 
+        // --- PAGE SPECIFIC COMMANDS ---
         window.handlePageCommand = function(cmd, args) {
+            
+            // NEW: ACKNOWLEDGE COMMAND
+            if (cmd === 'ack' || cmd === 'dismiss' || cmd === 'clear_err') {
+                document.getElementById('sys-status').innerText = "> STATUS: UNLOCKED";
+                document.getElementById('sys-status').className = "status-line";
+                document.getElementById('main-box').classList.remove('error-state');
+                return "SYSTEM ALERT ACKNOWLEDGED.";
+            }
+
             if (cmd === 'err') {
                 let msg = "";
                 if (isAdmin && window.adminMsgCount > 0) msg += `> CRITICAL: ${window.adminMsgCount} NEW ENCRYPTED SIGNALS.\n> TYPE 'VM' TO DECRYPT.\n\n`;
@@ -156,6 +172,7 @@
                 if(msg === "") msg = "SYSTEM NORMAL. No logs found.";
                 return msg;
             }
+            
             if (cmd === 'vm') {
                 if(isAdmin) window.location.href = 'admin-messages.html';
                 else return "ACCESS DENIED. ADMIN PRIVILEGES REQUIRED.";

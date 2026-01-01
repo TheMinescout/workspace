@@ -1,70 +1,51 @@
+/* 
+    FILESYSTEM v4.0
+    - Added 'secrets' array for hidden files
+    - Added content properties for text reading
+*/
+
 const FILE_SYSTEM = {
-    // --- ACTIVE ARTICLES ---
+    // PUBLIC ARTICLES
     articles: [
         { 
-            cmd: "open_crypto", 
-            title: "TOOL: Vigenère Cipher", 
+            cmd: "open_crypto", title: "TOOL: Vigenère Cipher", 
             path: "content/articles/vigenere-release.html", 
-            desc: "// New Offline Utility", // Updated Description
-            date: "2025-12-05"
+            desc: "// Offline Utility", date: "2025-12-05"
         },
         { 
-            cmd: "open_cog", 
-            title: "RELEASE: Cognisearch (v5)", 
+            cmd: "open_cog", title: "RELEASE: Cognisearch (v5)", 
             path: "content/articles/cognisearch.html", 
-            desc: "// Rebrand & Optimization Update",
-            date: "2025-11-30"
-        },
-         { 
-        cmd: "read_ai_tool", 
-        title: "TOOL: AI Writer Assistant", 
-        path: "content/articles/ai-writer-release.html", 
-        desc: "// New Web-Based Generator",
-        date: "2025-12-25"
-    },
-        // ... (Keep other articles) ...
-    ],
-
-    // --- ACTIVE PROJECTS ---
-    projects: [
-        // UPDATED ENTRY HERE
-        { 
-            cmd: "run_vigenere", 
-            title: "Vigenère Toolkit.html", 
-            path: "content/projects/vigenere-tool.html", 
-            desc: "// Offline HTML Utility" 
-        },
-        
-        { 
-            cmd: "dwn_ai", 
-            title: "AI News Synthesis V4.zip", 
-            path: "content/projects/ai-news-synthesis.zip", 
-            desc: "// Size: 45MB | React/Node Source" 
-        },
-        { 
-        cmd: "run_writer", 
-        title: "AI Writer Assistant (Web)", 
-        path: "content/projects/ai-writer.html", 
-        desc: "// Live HTML/Blob Generator" 
-    },
-    ],
-
-    // ... (Keep archives) ...
-    archived_articles: [
-        { 
-            cmd: "open_news_v1", 
-            title: "LEGACY: AI News V1", 
-            path: "content/archive/articles/news-v1.html", 
-            desc: "// [DEPRECATED] Original concept" 
+            desc: "// Optimization Update", date: "2025-11-30"
         }
     ],
 
-    archived_projects: [
+    // PUBLIC PROJECTS
+    projects: [
         { 
-            cmd: "dwn_ai_v1", 
-            title: "AI News V1 (Alpha).zip", 
-            path: "content/archive/projects/ai-news-v1.zip", 
-            desc: "// UNSTABLE BUILD" 
+            cmd: "run_writer", title: "AI Writer Suite", 
+            path: "content/projects/ai-writer.html", 
+            desc: "// HTML Generator" 
+        },
+        { 
+            cmd: "dwn_ai", title: "AI News Synthesis.zip", 
+            path: "content/projects/ai-news-synthesis.zip", 
+            desc: "// Source Code" 
+        }
+    ],
+
+    // HIDDEN FILES (Requires 'ls -a' to see)
+    secrets: [
+        {
+            name: "sys_log.txt",
+            content: "ERR: UNSTABLE SECTOR DETECTED.\nUser 'TheMinescout' attempted override.\nHint: The admin password for Level 1 access is hidden in the Tech Tips footer."
+        },
+        {
+            name: "project_chimera.enc",
+            content: "ENCRYPTED DATA.\nTo decrypt, you need Level 2 Clearance.\nTry running: sudo [password]"
+        },
+        {
+            name: ".config",
+            content: "PHYSICS_ENGINE: ACTIVE\nMATRIX_CORE: ONLINE\nDEBUG_MODE: FALSE"
         }
     ]
 };

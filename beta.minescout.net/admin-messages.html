@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>ADMIN // INBOX</title>
-    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png?v=1.01">
+    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
 
-    <!-- REMOVED MANUAL FIREBASE TAGS (Handled by config) -->
-    
     <style>
         body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; height: 100vh; overflow: hidden; margin: 0; display: flex; flex-direction: column; }
         
@@ -18,7 +16,7 @@
         #main-interface {
             position: relative; z-index: 10; 
             height: 100%; display: none; flex-direction: column;
-            background: rgba(0, 0, 0, 0.5); /* Slight dim */
+            background: rgba(0, 0, 0, 0.5); 
         }
 
         .header { 
@@ -33,7 +31,7 @@
         .msg-bar { 
             display: flex; justify-content: space-between; padding: 12px; 
             border-bottom: 1px dashed #004400; cursor: pointer; 
-            background: rgba(0, 0, 0, 0.8); /* Readable background */
+            background: rgba(0, 0, 0, 0.8); 
         }
         .msg-bar:hover { background: rgba(0, 50, 0, 0.5); }
         .msg-bar.unread { color: #0F0; font-weight: bold; background: rgba(0, 50, 0, 0.3); }
@@ -51,7 +49,6 @@
 <body>
     <canvas id="matrixCanvas"></canvas>
     
-    <!-- Open CMD Trigger -->
     <div class="open-btn" onclick="window.toggleCmd()">[ CMD ]</div>
 
     <div id="lockout">ACCESS DENIED</div>
@@ -71,8 +68,8 @@
     </div>
 
     <!-- SCRIPTS -->
-    <script src="assets/js/firebase-config.js"></script>
-    <script src="assets/js/terminal-core.js"></script>
+    <script src="assets/js/firebase-config.js?v=2.8"></script>
+    <script src="assets/js/terminal-core.js?v=4.4"></script>
 
     <script>
         // WAIT FOR FIREBASE
@@ -98,7 +95,6 @@
                     currentMessages = [];
                     const data = snapshot.val();
                     if (data) Object.keys(data).forEach(key => currentMessages.push({ id: key, ...data[key] }));
-                    // Newest first
                     currentMessages.reverse(); 
                     renderList();
                 });
@@ -119,38 +115,51 @@
                 currentMessages.forEach(msg => {
                     const div = document.createElement('div');
                     div.className = msg.read ? 'msg-bar read' : 'msg-bar unread';
+                    
+                    // Click to fill CMD input
                     div.onclick = () => {
-                        // Pre-fill CMD logic via Core UI
                         const input = document.getElementById('global-cmd-input');
-                        input.value = `open ${msg.subject}`;
-                        window.toggleCmd();
+                        if(input) {
+                            input.value = `open ${msg.subject}`;
+                            window.toggleCmd(); // Open if closed
+                            input.focus();
+                        }
                     };
+                    
                     div.innerHTML = `<span>${msg.subject}</span><span>${msg.sender}</span>`;
                     inboxEl.appendChild(div);
                 });
             }
 
-            // PAGE SPECIFIC HANDLER
+            // --- FIXED PAGE HANDLER ---
             window.handlePageCommand = function(cmd, args) {
+                // Join args array back into string for searching: ["Snake", "Game"] -> "snake game"
+                const query = Array.isArray(args) ? args.join(' ').toLowerCase() : String(args).toLowerCase();
+
                 if (cmd === 'open' || cmd === 'read') {
-                    // Fuzzy search
-                    const target = currentMessages.find(m => m.subject.toLowerCase().includes(args));
+                    const target = currentMessages.find(m => m.subject.toLowerCase().includes(query));
                     if (target) {
                         openMessage(target);
-                        return true;
+                        return true; // Success, terminal closes automatically
                     }
                     return "Msg not found.";
                 }
+                
                 if (cmd === 'close' || cmd === 'back') {
-                    viewMode = 'LIST'; renderList();
+                    viewMode = 'LIST'; 
+                    renderList();
                     return "Returned to inbox.";
                 }
+                
                 if (cmd === 'delete' || cmd === 'del') {
-                    const target = currentMessages.find(m => m.subject.toLowerCase().includes(args));
+                    const target = currentMessages.find(m => m.subject.toLowerCase().includes(query));
                     if (target) {
-                        db.ref('messages/' + target.id).remove();
-                        if(viewMode === 'READ') { viewMode = 'LIST'; renderList(); }
-                        return "Message deleted.";
+                        if(confirm("Delete this message?")) {
+                            db.ref('messages/' + target.id).remove();
+                            if(viewMode === 'READ') { viewMode = 'LIST'; renderList(); }
+                            return "Message deleted.";
+                        }
+                        return "Delete cancelled.";
                     }
                     return "Msg not found.";
                 }
@@ -168,7 +177,6 @@
             }
         });
 
-        // Manual Trigger if already ready
         if(window.firebaseReady) document.dispatchEvent(new Event('firebase-ready'));
     </script>
 </body>
