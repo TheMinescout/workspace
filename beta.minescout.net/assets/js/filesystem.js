@@ -8,6 +8,13 @@ const FILE_SYSTEM = {
     // PUBLIC ARTICLES
     articles: [
         { 
+            cmd: "open_scan", 
+            title: "RELEASE: OpenScan-AI Pro", 
+            path: "content/articles/openscan-release.html", 
+            desc: "// Privacy-First Document Scanner",
+            date: "2026-01-16"
+        },
+        { 
             cmd: "open_crypto", title: "TOOL: Vigenère Cipher", 
             path: "content/articles/vigenere-release.html", 
             desc: "// Offline Utility", date: "2025-12-05"
@@ -21,6 +28,12 @@ const FILE_SYSTEM = {
 
     // PUBLIC PROJECTS
     projects: [
+        { 
+            cmd: "run_scan", 
+            title: "OpenScan-AI (Web App)", 
+            path: "content/projects/openscan-tool.html", 
+            desc: "// OpenCV/OCR Scanner Tool" 
+        },
         { 
             cmd: "run_writer", title: "AI Writer Suite", 
             path: "content/projects/ai-writer.html", 

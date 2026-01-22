@@ -4,42 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minescouts Life - Home</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="assests/css/homepage.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <!-- Updated CSS Link -->
+    <link rel="stylesheet" href="assests/css/homepage.css?v=4.2">
     <link rel="stylesheet" href="assests/css/AI-ASSISTANT.css">
-    <link rel="icon" type="image/png" href="assests/images/favicon.png">
+    <link rel="icon" type="image/png" href="assests/images/favicon.png?v=2">
 
     <style>
-        .dismiss-btn {
-            background-color: #ef4444; color: white; border: none; padding: 2px 8px;
-            font-size: 0.75rem; border-radius: 4px; cursor: pointer; margin-left: 15px; float: right;
-        }
-        .dismiss-btn:hover { background-color: #dc2626; }
         #user-display a { text-decoration: none; color: white; }
-        
-        /* Admin Notification Badge Styles */
-        .admin-button { position: relative; transition: border-color 0.3s, color 0.3s; }
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background-color: #ef4444; /* Red */
-            color: white;
-            border-radius: 50%;
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            animation: pulse-red 2s infinite;
-        }
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
     </style>
 </head>
 
@@ -51,7 +28,7 @@
                 <a href="login.html" id="login-link">Login</a>
             </div>
             <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <h1 class="site-title"><a href="index.html" style="color: white;">Minescouts Life</a></h1>
                 <p class="tagline">Life of a Smart Kid</p>
             </div>
             <div id="user-display" class="hidden">
@@ -67,27 +44,30 @@
             <!-- MAIN CONTENT -->
             <main class="main-content">
                 
-                <!-- Admin Panel (Logic handled by auth.js + inline script) -->
+                <!-- Admin Panel -->
                 <div id="admin-panel" class="admin-section hidden">
-                    <p id="user-info-admin" class="admin-info-text">
-                        Admin Access: You are signed in.
-                    </p>
-                    <!-- BUTTON WITH BADGE -->
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span class="material-symbols-rounded" style="font-size:24px; color:var(--md-primary);">verified_user</span>
+                        <span class="admin-info-text">Admin Access Active</span>
+                    </div>
                     <a href="admin/admin-posting.html" id="admin-link-btn" class="admin-button">
-                        Go to Admin Dashboard
+                        Dashboard
                         <span id="admin-badge" class="notification-badge hidden">0</span>
                     </a>
                 </div>
                 
+                <!-- View Controls -->
                 <div class="view-controls">
-                    <button id="grid-3" class="view-btn active" data-view="3" title="3 Columns"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></button>
-                    <button id="grid-2" class="view-btn" data-view="2" title="2 Columns"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg></button>
-                    <button id="grid-1" class="view-btn" data-view="1" title="1 Column"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+                    <button id="grid-3" class="view-btn active" data-view="3" title="Grid View"><span class="material-symbols-rounded">grid_view</span></button>
+                    <button id="grid-2" class="view-btn" data-view="2" title="Split View"><span class="material-symbols-rounded">view_day</span></button>
+                    <button id="grid-1" class="view-btn" data-view="1" title="List View"><span class="material-symbols-rounded">view_agenda</span></button>
                 </div>
 
                 <div id="announcements-container"></div>
                 <div id="all-posts-container" class="posts-grid view-3">
-                    <p class="text-center" id="loading-message">Loading real-time content from Firebase...</p>
+                    <p class="text-center" id="loading-message" style="margin-top:50px; color:#666;">
+                        Loading content...
+                    </p>
                 </div>
 
             </main>
@@ -100,14 +80,11 @@
         </div>
     </div>
 
-    <script src="https://cdn.commoninja.com/sdk/latest/commonninja.js" defer></script>
-    <div class="commonninja_component pid-4b7511cd-a6b3-4697-987d-985e648b84ec"></div>
-
     <footer class="main-footer">
         <div class="container">
             <p> Phone Num: +1 (425) 559 9127</p>
             <p> Email: <a href="mailto:theminescout@minescout.net">theminescout@minescouts.net</a></p>
-            <p id="copyright">© 2025 Minescouts Life. All rights reserved.</p>
+            <p id="copyright">© 2026 Minescouts Life. All rights reserved.</p>
         </div>
     </footer>
 
@@ -119,14 +96,16 @@
         </div>
     </div>
 
-    <!-- 1. Modular Scripts (Auth, Sidebar, UI) -->
+    <!-- 1. Modular Scripts -->
     <script type="module" src="assests/js/auth.js"></script>
     <script src="assests/js/loader.js"></script>
     <script type="module" src="assests/js/homepage.js"></script>
+    
+    <script async type='module' src='https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js'></script>
+    <zapier-interfaces-chatbot-embed is-popup='true' chatbot-id='cmkbdx5yn0044d6ute91mdffe'></zapier-interfaces-chatbot-embed>
 
-    <!-- 2. Homepage Specific Logic (Content Loading) -->
+    <!-- 2. Homepage Specific Logic -->
     <script type="module">
-        // Import database connection from secure config
         import { db, auth } from "./assests/js/firebase-config.js";
         import { ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -138,12 +117,9 @@
         
         let currentUserIsAdmin = false;
 
-        // --- AUTH & NOTIFICATION LOGIC ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUserIsAdmin = user.email === ADMIN_EMAIL;
-                
-                // If Admin, check for new Feature Requests
                 if (currentUserIsAdmin) {
                     const badge = document.getElementById('admin-badge');
                     const adminBtn = document.getElementById('admin-link-btn');
@@ -151,27 +127,14 @@
                     onValue(ref(db, 'feature_requests'), (snapshot) => {
                         const data = snapshot.val();
                         let unreadCount = 0;
-                        
-                        if (data) {
-                            // FIXED: Only count requests where status is 'new'
-                            Object.values(data).forEach(req => {
-                                if (req.status === 'new') {
-                                    unreadCount++;
-                                }
-                            });
-                        }
-
+                        if (data) Object.values(data).forEach(req => { if (req.status === 'new') unreadCount++; });
                         if (unreadCount > 0) {
                             badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
                             badge.classList.remove('hidden');
-                            // Turn border Red to grab attention
-                            adminBtn.style.border = "2px solid #ef4444";
-                            adminBtn.style.color = "#ef4444";
+                            adminBtn.style.backgroundColor = "var(--md-error)"; 
                         } else {
                             badge.classList.add('hidden');
-                            // Reset style
-                            adminBtn.style.border = "";
-                            adminBtn.style.color = "";
+                            adminBtn.style.backgroundColor = "var(--md-primary)"; 
                         }
                     });
                 }
@@ -179,7 +142,6 @@
             fetchAndDisplayContent();
         });
 
-        // --- CONTENT FETCHING ---
         function fetchAndDisplayContent() {
             const contentRef = ref(db, 'content');
             
@@ -191,7 +153,6 @@
                 if (loadingMessage) loadingMessage.style.display = 'none';
 
                 if (allContent) {
-                    // Sort content by timestamp (Newest first)
                     const sortedContent = Object.keys(allContent)
                         .map(key => ({ id: key, ...allContent[key] }))
                         .sort((a, b) => b.timestamp - a.timestamp);
@@ -199,12 +160,10 @@
                     const announcements = sortedContent.filter(item => item.type === 'announcement');
                     const posts = sortedContent.filter(item => item.type !== 'announcement');
 
-                    // Render Announcements
                     announcements.forEach(ann => {
                         announcementHtml += createAnnouncementElement(ann.id, ann);
                     });
 
-                    // Logic to group posts by Year
                     const currentYear = new Date().getFullYear();
                     const previousYear = currentYear - 1;
                     const thisYearPosts = posts.filter(post => new Date(post.timestamp).getFullYear() === currentYear);
@@ -212,32 +171,30 @@
                     
                     let currentMonthYear = '';
 
-                    // Render Current Year Posts
                     if (thisYearPosts.length > 0) {
                         thisYearPosts.forEach(post => {
                             const postDate = new Date(post.timestamp);
                             const monthYear = postDate.toLocaleString('default', { month: 'long', year: 'numeric' });
                             
-                            // Add Month Header if it changes
                             if (monthYear !== currentMonthYear) {
                                 currentMonthYear = monthYear;
                                 const monthNum = postDate.getMonth() + 1;
                                 const monthArchiveUrl = `archives/2025/archive-${monthNum}-${currentYear}.html`;
-                                postHtml += `<h2 class="month-header-grouping"><a href="${monthArchiveUrl}">${monthYear}</a></h2>`;
+                                // FIX: Use the specific class defined in CSS
+                                postHtml += `<h2 class="month-header-span"><a href="${monthArchiveUrl}">${monthYear}</a></h2>`;
                             }
                             postHtml += createPostElement(post.id, post);
                         });
                     } else {
-                        postHtml = '<p class="text-center">No posts found for this year yet.</p>';
+                        postHtml = '<p class="text-center" style="grid-column:1/-1;">No posts found for this year yet.</p>';
                     }
 
-                    // Render "Older Posts" Link
                     if (olderPostsExist) {
                         const archiveUrl = `archives/archive-${previousYear}.html`;
-                        postHtml += `<div class="month-header-grouping" style="text-align: center; margin-top: 40px; border-bottom: none;"><p>See previous posts here: <a href="${archiveUrl}" style="text-decoration: underline;">Archive for ${previousYear}</a></p></div>`;
+                        postHtml += `<div style="grid-column:1/-1; text-align:center; margin-top:40px;"><p style="font-size:1.1rem;">See previous posts here: <a href="${archiveUrl}" style="color:var(--md-primary); font-weight:bold; text-decoration:underline;">Archive for ${previousYear}</a></p></div>`;
                     }
                 } else {
-                    postHtml = '<p class="text-center">No content found yet.</p>';
+                    postHtml = '<p class="text-center" style="grid-column:1/-1;">No content found yet.</p>';
                 }
 
                 announcementsContainer.innerHTML = announcementHtml;
@@ -250,41 +207,52 @@
 
         function createPostElement(postId, post) {
             const date = new Date(post.timestamp).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            
+            const imgHtml = post.imageUrl 
+                ? `<div class="post-image-wrapper"><img src="${post.imageUrl}" alt="${post.title}" loading="lazy" /></div>` 
+                : `<div class="post-image-wrapper" style="background:#e2e8f0; display:flex; align-items:center; justify-content:center; color:#94a3b8;"><span class="material-symbols-rounded" style="font-size:48px;">article</span></div>`;
+
             return `
                 <article class="post-card" data-content-id="${postId}">
-                    ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}" onerror="this.onerror=null; this.src='https://placehold.co/400x300/e0e0e0/333333?text=Image+Unavailable';" />` : ''}
+                    ${imgHtml}
                     <div class="post-card-content">
-                        <h3><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3>
-                        <p class="post-meta">Posted on ${date} in ${post.category || 'General'}</p>
-                        <p>${post.summary || 'No summary provided.'}</p>
-                        <a href="${post.linkUrl || '#'}" class="read-more" target="_blank">${post.linkText || 'Read More'}</a>
+                        <span class="category-pill">${post.category || 'General'}</span>
+                        <h3 class="post-title"><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3>
+                        <div class="post-meta">${date}</div>
+                        <p class="post-excerpt">${post.summary || 'No summary provided.'}</p>
+                        
+                        <div style="margin-top:auto;">
+                           <a href="${post.linkUrl || '#'}" class="read-more" target="_blank" style="width:100%;">
+                                ${post.linkText || 'Read More'}
+                           </a>
+                        </div>
                     </div>
                 </article>
             `;
         }
 
         function createAnnouncementElement(contentId, announcement) {
-            // Check if current user is admin to show dismiss button
-            const user = auth.currentUser;
             let dismissButtonHtml = '';
-            
-            if (user && user.email === ADMIN_EMAIL) {
+            if (currentUserIsAdmin) {
                 dismissButtonHtml = `<button class="dismiss-btn" data-id="${contentId}">Dismiss</button>`;
             }
-            
             return `
                 <div class="notice-box" data-content-id="${contentId}">
+                    <span class="material-symbols-rounded" style="color:var(--md-warning); font-size:24px;">campaign</span>
+                    <div style="flex:1">
+                        <h4 style="margin:0 0 4px 0; color:#92400e; font-weight:700;">${announcement.title}</h4>
+                        <p style="margin:0; font-size:0.95rem; color:#b45309;">${announcement.text}</p>
+                        <p style="margin:6px 0 0 0; font-size:0.8rem; opacity:0.7;">— ${announcement.from}</p>
+                    </div>
                     ${dismissButtonHtml}
-                    <p><strong>${announcement.title}:</strong> ${announcement.text} Thanks, ${announcement.from}.</p>
                 </div>
             `;
         }
 
-        // Handle Dismiss Button Clicks (using event delegation)
         announcementsContainer.addEventListener('click', (event) => {
             if (event.target.classList.contains('dismiss-btn')) {
                 const contentId = event.target.getAttribute('data-id');
-                if (confirm('Are you sure you want to permanently delete this announcement?')) {
+                if (confirm('Permanently delete this announcement?')) {
                     remove(ref(db, `content/${contentId}`))
                         .catch(err => console.error('Failed to remove announcement:', err));
                 }

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOOL // OPENSCAN_AI</title>
+    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png">
+    
+    <script src="../../assets/js/firebase-config.js?v=3.2"></script>
+    <script src="../../assets/js/terminal-core.js?v=3.2"></script>
+
+    <style>
+        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; margin: 0; padding: 20px; overflow: hidden; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; pointer-events: none; }
+        
+        .container { 
+            max-width: 700px; width: 90%; 
+            border: 2px solid #0F0; background: rgba(0, 20, 0, 0.95); 
+            padding: 40px; box-shadow: 0 0 30px #0F0; text-align: center;
+        }
+        
+        h1 { border-bottom: 1px dashed #0F0; padding-bottom: 20px; margin-top: 0; font-size: 2rem; }
+        
+        .status-box {
+            border: 1px solid #004400; background: #001100;
+            padding: 20px; margin: 30px 0; text-align: left;
+            font-size: 14px; color: #88ff88;
+        }
+
+        .btn-launch {
+            background: #003300; color: #0F0; border: 2px solid #0F0;
+            padding: 20px 40px; font-size: 1.2rem; font-weight: bold;
+            cursor: pointer; text-transform: uppercase; transition: 0.2s;
+            text-decoration: none; display: inline-block;
+        }
+        .btn-launch:hover { background: #0F0; color: #000; box-shadow: 0 0 20px #0F0; }
+
+        .open-btn { position: fixed; top: 10px; left: 10px; border: 2px solid #0F0; padding: 8px; cursor: pointer; z-index: 100; background: #000; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    <div class="open-btn" onclick="window.toggleCmd()">[ OPEN TERMINAL ]</div>
+
+    <div class="container">
+        <h1>// TOOL: OPENSCAN-AI PRO</h1>
+        
+        <div class="status-box">
+            > LOADING MODULES... OK<br>
+            > CHECKING OPENCV.JS... READY<br>
+            > CHECKING TESSERACT OCR... READY<br>
+            > CAMERA PERMISSIONS... WAITING<br><br>
+            <span style="color:#fff">NOTE: This application runs as a Progressive Web App (PWA). It will open in a secure external environment to access your device camera.</span>
+        </div>
+
+        <a href="https://theminescout.github.io/Openscan-AI/" target="_blank" class="btn-launch">
+            [ INITIALIZE SYSTEM ]
+        </a>
+        
+        <div style="margin-top: 20px; font-size: 10px; color: #555;">
+            VERSION 1.0.0 | SECURE CONTEXT REQUIRED
+        </div>
+    </div>
+
+    <script>
+        // Matrix Rain
+        const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d');
+        function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r;
+        const s='SCAN01',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1;
+        setInterval(()=>{ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0F0';ctx.font='16px mono';for(let i=0;i<d.length;i++){ctx.fillText(s[Math.floor(Math.random()*s.length)],i*16,d[i]*16);if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;d[i]++}},33);
+        
+        window.handlePageCommand = function(cmd) {
+            if (cmd === 'return' || cmd === 'back') { window.location.href = '../../projects.html'; return true; }
+            return null;
+        };
+    </script>
+</body>
+</html>

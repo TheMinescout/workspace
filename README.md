@@ -59,5 +59,5 @@ Create assets/js/firebase-config.js and paste your API keys there. (This file is
 Email: theminescout@minescout.net
 Phone Support (AI): +1 (425) 559 9127
 <div align="center">
-<sub>© 2025 Minescouts Life. All Rights Reserved.</sub>
+<sub>© 2026 Minescouts Life. All Rights Reserved.</sub>
 </div>
