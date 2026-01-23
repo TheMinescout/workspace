@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order | The Chop Lab</title>
+    <title>Order Portal | The Chop Lab</title>
     <link rel="stylesheet" href="assets/css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="assets/images/Favicon.png">
 </head>
 <body>
 
+    <!-- Nav -->
     <nav class="navbar">
         <div class="container nav-flex">
             <a href="index.html" class="logo">The Chop Lab.</a>
@@ -17,24 +18,71 @@
         </div>
     </nav>
 
-    <div class="container form-page">
-        <h1>Configure Your Order</h1>
-        <p class="sub-text">Please fill out the details below to initiate your custom print.</p>
+    <!-- Main Content -->
+    <div class="container order-page-content">
         
-        <!-- PASTE YOUR GOOGLE FORM EMBED CODE BELOW THIS LINE -->
-        <div class="form-wrapper">
-            <!-- 
-               1. Go to your Google Form 
-               2. Click Send > "< >" (Embed HTML)
-               3. Copy the Height and Width code
-               4. Paste it right here.
-               5. Change width="640" to width="100%" in the code you paste!
-            -->
-            <p style="text-align:center; color:#999; padding: 50px;">
-                [ Paste Google Form Embed Code Here ]
-            </p>
+        <header class="order-header">
+            <h1>Start Your Order.</h1>
+            <p class="sub-text">Because we require high-resolution file uploads for custom chops, our order form is hosted on a secure Google server.</p>
+            
+            <!-- THE MAIN CTA BUTTON -->
+            <a href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank" class="btn-launch">
+                Launch Secure Order Form &nearr;
+            </a>
+        </header>
+
+        <!-- Reference Price List -->
+        <div class="price-list-wrapper">
+            <h2>Current Price List</h2>
+            <div class="minimal-table">
+                
+                <!-- Custom Work -->
+                <div class="table-group">
+                    <h3>Custom Engineering</h3>
+                    <div class="table-row">
+                        <span>Custom Chop (Simple)</span>
+                        <span class="dots"></span>
+                        <span class="price">$15.00</span>
+                    </div>
+                    <div class="table-row">
+                        <span>Custom Chop (Complex)</span>
+                        <span class="dots"></span>
+                        <span class="price">$20.00</span>
+                    </div>
+                </div>
+
+                <!-- Standard Tools -->
+                <div class="table-group">
+                    <h3>Standard Tools</h3>
+                    <div class="table-row">
+                        <span>Trimming Spinner</span>
+                        <span class="dots"></span>
+                        <span class="price">$15.00</span>
+                    </div>
+                    <div class="table-row">
+                        <span>Precision Rib Set</span>
+                        <span class="dots"></span>
+                        <span class="price">$15.00</span>
+                    </div>
+                    <div class="table-row">
+                        <span>Origin Square</span>
+                        <span class="dots"></span>
+                        <span class="price">$12.00</span>
+                    </div>
+                    <div class="table-row">
+                        <span>Texture Roller System</span>
+                        <span class="dots"></span>
+                        <span class="price">$22.00</span>
+                    </div>
+                    <div class="table-row">
+                        <span>Extra Roller Module</span>
+                        <span class="dots"></span>
+                        <span class="price">$8.00</span>
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <!-- END EMBED CODE -->
 
     </div>
 
