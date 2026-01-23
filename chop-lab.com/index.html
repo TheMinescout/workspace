@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Chop Lab | Custom Pottery Stamps</title>
-    <meta name="description" content="Precision 3D-printed stamps optimized for clay.">
+    <title>The Chop Lab | Engineered Pottery Tools</title>
+    <meta name="description" content="Precision 3D-printed tools for ceramic artists. CAD meets Clay.">
     
-    <!-- Link to your CSS -->
+    <!-- CSS -->
     <link rel="stylesheet" href="assets/css/index.css">
     
-    <!-- Google Fonts (Roboto for Engineering feel, Playfair for 'Art' feel) -->
+    <!-- Fonts: Roboto Mono (Engineering) & Inter (Clean Body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/images/Favicon.png">
@@ -21,117 +21,170 @@
 
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="container">
-            <div class="logo">The Chop Lab</div>
-            <a href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank" class="btn-nav">Order Now</a>
+        <div class="container nav-flex">
+            <div class="logo">
+                <img src="assets/images/Favicon.png" alt="TCL Logo">
+                <span>THE CHOP LAB</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#catalog">CATALOG</a></li>
+                <li><a href="#about">MISSION</a></li>
+                <li><a href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank" class="btn-nav">INITIATE ORDER</a></li>
+            </ul>
         </div>
     </nav>
 
-    <!-- 1. Hero Section -->
+    <!-- 1. Hero Section (CAD Vibe) -->
     <header class="hero">
         <div class="container hero-content">
-            <h1>Make Your Mark.</h1>
-            <p class="sub-headline">Precision 3D-printed stamps. Optimized for clay. Starting at $15.</p>
-            <!-- REPLACE THE HREF BELOW WITH YOUR GOOGLE FORM LINK -->
-            <a href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank" class="btn-primary">ORDER MY STAMP</a>
+            <p class="mono-label">:: SYSTEM READY ::</p>
+            <h1>PRECISION TOOLS<br>FOR POTTERS.</h1>
+            <p class="sub-headline">Engineered in The Chop Lab. Printed for durability. <br>Where CAD meets Clay.</p>
+            <a href="#catalog" class="btn-primary">ACCESS CATALOG_</a>
         </div>
+        <!-- Background decorative grid -->
+        <div class="cad-grid"></div>
     </header>
 
-    <!-- 2. Why It Works -->
-    <section class="features">
+    <!-- 2. The Catalog (Grid Layout) -->
+    <section id="catalog" class="catalog">
         <div class="container">
-            <h2 class="section-title">Why Our Chops Work</h2>
-            <div class="grid-3">
-                <div class="card">
-                    <h3>Custom Depth</h3>
-                    <p>We adjust the cut depth based on <em>your</em> clay body. Deep cuts for gritty clay, shallow for porcelain.</p>
+            <div class="section-header">
+                <h2>Product_Line // 01</h2>
+                <div class="line"></div>
+            </div>
+
+            <div class="product-grid">
+                
+                <!-- Product 1: Custom Chop (Simple) -->
+                <div class="product-card">
+                    <div class="card-image placeholder-img">IMG: Simple Chop</div>
+                    <div class="card-details">
+                        <div class="card-header">
+                            <h3>Custom Chop (Simple)</h3>
+                            <span class="price">$15.00</span>
+                        </div>
+                        <p class="desc">Your signature, immortalized. Standard logo conversion or initials.</p>
+                        <ul class="specs">
+                            <li>MATL: PLA Matte</li>
+                            <li>TYPE: Standard Stamp</li>
+                        </ul>
+                        <a href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank" class="btn-add">ADD TO ORDER [+]</a>
+                    </div>
                 </div>
-                <div class="card">
-                    <h3>Ergonomic Handles</h3>
-                    <p>Designed for the hand, not the machine. Choose from Round, Square, or Hex handles for perfect grip.</p>
+
+                <!-- Product 2: Custom Chop (Complex) -->
+                <div class="product-card">
+                    <div class="card-image placeholder-img">IMG: Complex Chop</div>
+                    <div class="card-details">
+                        <div class="card-header">
+                            <h3>Custom Chop (Complex)</h3>
+                            <span class="price">$20.00</span>
+                        </div>
+                        <p class="desc">High-fidelity detailing for intricate logos and complex artwork.</p>
+                        <ul class="specs">
+                            <li>MATL: High-Res PLA</li>
+                            <li>TYPE: Detail Stamp</li>
+                        </ul>
+                        <a href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank" class="btn-add">ADD TO ORDER [+]</a>
+                    </div>
                 </div>
-                <div class="card">
-                    <h3>No Sticking</h3>
-                    <p>Printed with PLA Matte filaments specifically tested for clean release from moist clay.</p>
+
+                <!-- Product 3: Trimming Spinner -->
+                <div class="product-card">
+                    <div class="card-image placeholder-img">IMG: Spinner</div>
+                    <div class="card-details">
+                        <div class="card-header">
+                            <h3>Trimming Spinner</h3>
+                            <span class="price">$15.00</span>
+                        </div>
+                        <p class="desc">Zero-friction ball bearing stabilization for precision trimming.</p>
+                        <ul class="specs">
+                            <li>BEARING: Steel 608</li>
+                            <li>GRIP: Textured</li>
+                        </ul>
+                        <a href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank" class="btn-add">ADD TO ORDER [+]</a>
+                    </div>
                 </div>
+
+                <!-- Product 4: Precision Rib Set -->
+                <div class="product-card">
+                    <div class="card-image placeholder-img">IMG: Rib Set</div>
+                    <div class="card-details">
+                        <div class="card-header">
+                            <h3>Precision Rib Set</h3>
+                            <span class="price">$15.00</span>
+                        </div>
+                        <p class="desc">"The Trinity": 3 rigid profiles for compression and shaping.</p>
+                        <ul class="specs">
+                            <li>QTY: 3 Ribs</li>
+                            <li>EDGE: Beveled</li>
+                        </ul>
+                        <a href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank" class="btn-add">ADD TO ORDER [+]</a>
+                    </div>
+                </div>
+
+                <!-- Product 5: The Origin Square -->
+                <div class="product-card">
+                    <div class="card-image placeholder-img">IMG: Origin Square</div>
+                    <div class="card-details">
+                        <div class="card-header">
+                            <h3>The Origin Square</h3>
+                            <span class="price">$12.00</span>
+                        </div>
+                        <p class="desc">Find the exact mathematical center of any vessel instantly.</p>
+                        <ul class="specs">
+                            <li>CALIBRATION: 10mm</li>
+                            <li>WIDTH: 120mm</li>
+                        </ul>
+                        <a href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank" class="btn-add">ADD TO ORDER [+]</a>
+                    </div>
+                </div>
+
+                <!-- Product 6: Texture Roller System -->
+                <div class="product-card">
+                    <div class="card-image placeholder-img">IMG: Roller System</div>
+                    <div class="card-details">
+                        <div class="card-header">
+                            <h3>Texture Roller System</h3>
+                            <span class="price">$22.00</span>
+                        </div>
+                        <p class="desc">Kinetic Driver handle + 1 interchangeable texture module.</p>
+                        <ul class="specs">
+                            <li>INCLUDES: Handle + 1 Drum</li>
+                            <li>SYSTEM: Modular</li>
+                        </ul>
+                        <a href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank" class="btn-add">ADD TO ORDER [+]</a>
+                    </div>
+                </div>
+
+                 <!-- Product 7: Extra Module -->
+                 <div class="product-card">
+                    <div class="card-image placeholder-img">IMG: Extra Module</div>
+                    <div class="card-details">
+                        <div class="card-header">
+                            <h3>Extra Roller Module</h3>
+                            <span class="price">$8.00 ea</span>
+                        </div>
+                        <p class="desc">Add-on textures. Choose: Mason, Torque, or Hex-Lattice.</p>
+                        <ul class="specs">
+                            <li>FIT: Universal Driver</li>
+                            <li>DEPTH: 3mm Cut</li>
+                        </ul>
+                        <a href="YOUR_GOOGLE_FORM_LINK_HERE" target="_blank" class="btn-add">ADD TO ORDER [+]</a>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
-    <!-- 3. Pricing Table -->
-    <section class="pricing">
+    <!-- 3. About / Mission -->
+    <section id="about" class="about">
         <div class="container">
-            <h2 class="section-title">Transparent Pricing</h2>
-            <div class="pricing-table">
-                <div class="price-row header-row">
-                    <div>Service</div>
-                    <div>Price</div>
-                    <div>Best For...</div>
-                </div>
-                <div class="price-row">
-                    <div class="service-name">Standard Stamp</div>
-                    <div class="price-tag">$15</div>
-                    <div>Initials, Makers Marks, simple text.</div>
-                </div>
-                <div class="price-row">
-                    <div class="service-name">Complex Logo</div>
-                    <div class="price-tag">$25</div>
-                    <div>Custom logos, intricate artwork (SVG/Image).</div>
-                </div>
-                <div class="price-row highlight">
-                    <div class="service-name">Rush Order</div>
-                    <div class="price-tag">+$10</div>
-                    <div>24-hour turnaround priority printing.</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 4. Gallery -->
-    <section class="gallery">
-        <div class="container">
-            <h2 class="section-title">From Render to Result</h2>
-            <div class="grid-3">
-                <!-- You need to add images to assets/images/ and name them appropriately -->
-                <div class="gallery-item">
-                    <div class="placeholder-img" style="background-color: #ddd;">Image: The Render</div>
-                    <p class="caption">The Engineering</p>
-                </div>
-                <div class="gallery-item">
-                    <div class="placeholder-img" style="background-color: #ccc;">Image: Clay Result</div>
-                    <p class="caption">The Result</p>
-                </div>
-                <div class="gallery-item">
-                    <div class="placeholder-img" style="background-color: #bbb;">Image: The Printer</div>
-                    <p class="caption">The Lab</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 5. How It Works -->
-    <section class="process">
-        <div class="container">
-            <h2 class="section-title">How It Works</h2>
-            <div class="steps">
-                <div class="step">
-                    <span class="step-number">1</span>
-                    <h3>Upload</h3>
-                    <p>Fill out the form and send us your image or choose your letters.</p>
-                </div>
-                <div class="step">
-                    <span class="step-number">2</span>
-                    <h3>Review</h3>
-                    <p>We send you a 3D mock-up to approve before we print.</p>
-                </div>
-                <div class="step">
-                    <span class="step-number">3</span>
-                    <h3>Print</h3>
-                    <p>We print and ship your custom chop within 48 hours.</p>
-                </div>
-            </div>
-            <div class="center-btn">
-                <a href="https://forms.gle/FFS1Qtbsjj2oRXgW6" target="_blank" class="btn-primary">Start My Order</a>
+            <div class="about-content">
+                <h2>// CAD x CLAY</h2>
+                <p>We don't just print; we engineer solutions for the ceramic process. Every tool in The Chop Lab is designed, tested, and refined to withstand the studio environment while delivering mathematical precision.</p>
             </div>
         </div>
     </section>
@@ -139,14 +192,13 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p>The Chop Lab &copy; <span id="year"></span></p>
+            <p class="mono-label">EST. 2024 // THE CHOP LAB</p>
             <p><a href="mailto:orders@chop-lab.com">orders@chop-lab.com</a></p>
-            <!-- Optional Status Link -->
-            <!-- <p><a href="#">Track Order Status</a></p> -->
+            <p class="copyright">&copy; <span id="year"></span></p>
         </div>
     </footer>
 
-    <!-- Link to your JS -->
+    <!-- JS -->
     <script src="assets/js/index.js"></script>
 </body>
 </html>
