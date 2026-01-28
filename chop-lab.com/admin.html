@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCL Admin Console</title>
+    
+    <!-- Link to Main CSS -->
+    <link rel="stylesheet" href="assets/css/index.css">
+    
+    <!-- Admin-Specific Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/images/Favicon.png">
+    
+    <style>
+        /* --- ADMIN SPECIFIC STYLES --- */
+        body { background: #f4f4f4; }
+        
+        .admin-container { 
+            max-width: 1200px; 
+            margin: 50px auto; 
+            padding: 20px; 
+        }
+        
+        .admin-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+        }
+        
+        /* Table Styles */
+        .table-wrapper {
+            overflow-x: auto; /* Scroll on mobile */
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        
+        th, td { 
+            padding: 15px; 
+            text-align: left; 
+            border-bottom: 1px solid #eee; 
+            font-size: 0.85rem; 
+            font-family: 'Roboto Mono', monospace; 
+        }
+        
+        th { 
+            background: #2C3E50; 
+            color: white; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        
+        tr:hover { background: #f9f9f9; }
+        
+        .status-pill { 
+            padding: 4px 8px; 
+            background: #eee; 
+            border-radius: 4px; 
+            font-size: 0.75rem; 
+            font-weight: bold;
+            color: #555;
+        }
+        
+        /* Login Screen Styles */
+        #login-screen { 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: #1a1a1a; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 999; 
+        }
+        
+        .login-box { 
+            background: white; 
+            padding: 40px; 
+            text-align: center; 
+            border-top: 5px solid #D26244; 
+            width: 320px; 
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .login-input {
+            margin-bottom: 15px; 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ccc;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .admin-container { padding: 10px; margin: 20px auto; }
+            th, td { padding: 10px 5px; font-size: 0.75rem; }
+            /* Hide Email column on small screens to save space */
+            th:nth-child(4), td:nth-child(4) { display: none; } 
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. LOGIN GATE (Password Protection) -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2 style="font-family:'Playfair Display', serif; margin-bottom:10px;">TCL ADMIN</h2>
+            <p style="margin-bottom:20px; color:#666; font-size:0.9rem;">Authorized Personnel Only</p>
+            
+            <input type="password" id="adminPass" class="login-input" placeholder="Enter Access Code">
+            
+            <button onclick="checkPass()" class="btn-launch" style="width:100%; margin-top:0;">Unlock Database</button>
+            <p id="errorMsg" style="color:red; display:none; margin-top:15px; font-size:0.8rem; font-weight:bold;">ACCESS DENIED</p>
+        </div>
+    </div>
+
+    <!-- 2. DASHBOARD (Hidden until logged in) -->
+    <div class="admin-container hidden" id="dashboard">
+        
+        <div class="admin-header">
+            <h1 style="font-family:'Playfair Display', serif;">Order Database</h1>
+            <div>
+                <button onclick="fetchData()" class="btn-minimal" style="margin-right:20px; font-size:0.8rem;">Refresh Data</button>
+                <a href="index.html" class="btn-minimal" style="font-size:0.8rem;">Exit to Site &rarr;</a>
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            <table id="orderTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Product</th>
+                        <th>Details</th>
+                        <th>Handle</th>
+                        <th>File</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data loads here via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- CONFIGURATION ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw5tCVxokG6oCMT3tQDI7Zi4YfGseP9Nch-RJZ8s3prTxeR6_4c3-uM3txtnSPMUj6MXw/exec"; 
+        
+        // NO PASSWORD HERE! IT IS NOW HIDDEN ON THE SERVER.
+
+        async function checkPass() {
+            const input = document.getElementById('adminPass').value;
+            const btn = document.querySelector('button');
+            const errorMsg = document.getElementById('errorMsg');
+            
+            // Show loading state
+            btn.innerText = "Verifying...";
+            btn.disabled = true;
+            errorMsg.style.display = 'none';
+
+            // Send the password to Google to verify
+            try {
+                const response = await fetch(SCRIPT_URL + "?password=" + encodeURIComponent(input));
+                const data = await response.json();
+
+                // If Google says Access Denied
+                if (data.error === "ACCESS_DENIED") {
+                    errorMsg.style.display = 'block';
+                    errorMsg.innerText = "INCORRECT PASSWORD";
+                    btn.innerText = "Unlock Database";
+                    btn.disabled = false;
+                    return;
+                }
+
+                // If Password Correct, data is returned immediately
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard').classList.remove('hidden');
+                
+                renderTable(data);
+
+            } catch (error) {
+                console.error(error);
+                errorMsg.style.display = 'block';
+                errorMsg.innerText = "Connection Failed.";
+                btn.innerText = "Unlock Database";
+                btn.disabled = false;
+            }
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = ''; 
+
+            if (data.length === 0) {
+                 tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No orders found.</td></tr>';
+                 return;
+            }
+
+            data.reverse().forEach(row => {
+                let dateStr = row[0];
+                try {
+                    const dateObj = new Date(row[0]);
+                    dateStr = dateObj.toLocaleDateString() + " " + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                } catch(e) {}
+                
+                const link = row[7] && row[7] !== "No File" ? `<a href="${row[7]}" target="_blank" style="color:#D26244; font-weight:bold;">VIEW</a>` : "-";
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="white-space:nowrap;">${dateStr}</td>
+                    <td><strong>${row[1]}</strong></td>
+                    <td>${row[2]}</td>
+                    <td>${row[3]}</td>
+                    <td><span class="status-pill">${row[4]}</span></td>
+                    <td style="font-size:0.75rem; color:#555;">${row[5]}</td>
+                    <td>${row[6]}</td>
+                    <td>${link}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Allow "Enter" key
+        document.getElementById('adminPass').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") checkPass();
+        });
+    </script>
+</body>
+</html>

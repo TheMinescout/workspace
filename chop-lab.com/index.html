@@ -6,7 +6,7 @@
     <title>The Chop Lab</title>
     <link rel="stylesheet" href="assets/css/index.css">
     
-    <!-- Fonts: Playfair (Art) & Lato (Minimal Sans) -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -15,18 +15,19 @@
 </head>
 <body>
 
-    <!-- Navigation (Minimal) -->
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="container nav-flex">
-            <div class="logo">
-                <!-- If you want the text only, remove the img tag -->
-                The Chop Lab.
+            <div class="logo">The Chop Lab.</div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">Gallery</a>
+                <a href="chops.html" class="nav-link">Chop Info</a>
+                <a href="order.html" class="nav-link">Order Form</a>
             </div>
-            <a href="order.html" class="nav-link">Order Form</a>
         </div>
     </nav>
 
-    <!-- Hero Section (The "Empty" Look) -->
+    <!-- Hero -->
     <header class="hero">
         <div class="container hero-content">
             <h1>CAD meets Clay.</h1>
@@ -34,54 +35,49 @@
         </div>
     </header>
 
-    <!-- The Collection (Gallery Style) -->
+    <!-- The Collection -->
     <section class="gallery">
         <div class="container">
             <div class="product-grid">
                 
-                <!-- Product 1 -->
                 <div class="art-card">
-                    <div class="art-image placeholder-img">Image</div>
+                    <img src="assets/images/standard-chop.png" alt="Custom Chop Simple" class="art-image">
                     <div class="art-info">
-                        <h3>Standard Chop</h3>
+                        <h3>Custom Chop Simple</h3>
                         <p class="price">$15.00</p>
-                        <p class="desc">Simple logo conversion.</p>
+                        <p class="desc">Standard logo or initials.</p>
                     </div>
                 </div>
 
-                <!-- Product 2 -->
                 <div class="art-card">
-                    <div class="art-image placeholder-img">Image</div>
+                    <img src="assets/images/complex-chop.png" alt="Custom Chop Complex" class="art-image">
                     <div class="art-info">
-                        <h3>Complex Chop</h3>
-                        <p class="price">$25.00</p>
-                        <p class="desc">Intricate detailing.</p>
+                        <h3>Custom Chop Complex</h3>
+                        <p class="price">$20.00</p>
+                        <p class="desc">Intricate/High-detail logos.</p>
                     </div>
                 </div>
 
-                <!-- Product 3 -->
                 <div class="art-card">
-                    <div class="art-image placeholder-img">Image</div>
+                    <img src="assets/images/trimming-spinner.png" alt="Trimming Spinner" class="art-image">
                     <div class="art-info">
-                        <h3>The Spinner</h3>
+                        <h3>Trimming Spinner</h3>
                         <p class="price">$15.00</p>
                         <p class="desc">Ball-bearing stabilizer.</p>
                     </div>
                 </div>
 
-                <!-- Product 4 -->
                 <div class="art-card">
-                    <div class="art-image placeholder-img">Image</div>
+                    <img src="assets/images/rib-set.png" alt="Precision Rib Set" class="art-image">
                     <div class="art-info">
-                        <h3>Rib Trinity</h3>
+                        <h3>Precision Rib Set</h3>
                         <p class="price">$15.00</p>
                         <p class="desc">Set of 3 rigid profiles.</p>
                     </div>
                 </div>
 
-                <!-- Product 5 -->
                 <div class="art-card">
-                    <div class="art-image placeholder-img">Image</div>
+                    <img src="assets/images/origin-square.png" alt="Origin Square" class="art-image">
                     <div class="art-info">
                         <h3>Origin Square</h3>
                         <p class="price">$12.00</p>
@@ -89,28 +85,42 @@
                     </div>
                 </div>
 
-                <!-- Product 6 -->
                 <div class="art-card">
-                    <div class="art-image placeholder-img">Image</div>
+                    <img src="assets/images/texture-system.png" alt="Texture Roller System" class="art-image">
                     <div class="art-info">
-                        <h3>Texture System</h3>
+                        <h3>Texture Roller System</h3>
                         <p class="price">$22.00</p>
-                        <p class="desc">Kinetic Driver + Module.</p>
+                        <p class="desc">Kinetic Driver + 1 Module.</p>
+                    </div>
+                </div>
+
+                <div class="art-card">
+                    <img src="assets/images/extra-roller-module.png" alt="Extra Roller Module" class="art-image">
+                    <div class="art-info">
+                        <h3>Extra Roller Module</h3>
+                        <p class="price">$8.00</p>
+                        <p class="desc">Add-on texture module only.</p>
                     </div>
                 </div>
 
             </div>
             
-            <!-- Minimal CTA -->
             <div class="gallery-footer">
                 <a href="order.html" class="btn-minimal">Proceed to Order Form &rarr;</a>
             </div>
         </div>
     </section>
 
-    <!-- Simple Footer -->
+<!-- Footer -->
     <footer>
-        <p>&copy; The Chop Lab</p>
+        <div class="container">
+            <p>&copy; The Chop Lab</p>
+            
+            <!-- Subtle Admin Link -->
+            <div style="margin-top: 10px;">
+                <a href="admin.html" style="color: #eee; font-size: 0.7rem; text-decoration: none;">Admin Portal</a>
+            </div>
+        </div>
     </footer>
 
     <script src="assets/js/index.js"></script>
