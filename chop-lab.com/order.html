@@ -7,33 +7,34 @@
     <link rel="stylesheet" href="assets/css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="assets/images/Favicon.png">
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#D26244">
 </head>
 <body>
 
-    <!-- Nav -->
     <nav class="navbar">
         <div class="container nav-flex">
             <a href="index.html" class="logo">The Chop Lab.</a>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link">Gallery</a>
-                <a href="chops.html" class="nav-link">Chop Info</a>
-                <a href="order.html" class="nav-link active">Order Form</a>
-            </div>
+            <div class="menu-toggle">&#9776;</div>
         </div>
     </nav>
 
-    <!-- Main Content -->
+    <div class="overlay-menu">
+        <a href="index.html">Gallery</a>
+        <a href="portfolio.html">Portfolio & Process</a>
+        <a href="chops.html">Chop Info</a>
+        <a href="order.html" class="current">Order Form</a>
+        <a href="account.html">My Account</a>
+    </div>
+
     <div class="container order-page-content">
-        
         <header class="order-header">
             <h1>Configure Your Tool.</h1>
             <p class="sub-text">Select a product to begin customization.</p>
         </header>
 
-        <!-- THE NATIVE FORM -->
         <form id="tcl-order-form" class="order-form">
             
-            <!-- 1. Contact Info -->
             <div class="form-group">
                 <label for="customerName">Full Name</label>
                 <input type="text" id="customerName" name="customerName" required placeholder="Jane Doe">
@@ -46,7 +47,6 @@
 
             <div class="divider"></div>
 
-            <!-- 2. Product Selector -->
             <div class="form-group">
                 <label for="productSelect">Select Product</label>
                 <select id="productSelect" name="productSelect" required>
@@ -56,22 +56,21 @@
                     <option value="spinner">Trimming Spinner - $15</option>
                     <option value="ribs">Precision Rib Set - $15</option>
                     <option value="square">Origin Square - $12</option>
-                    <option value="roller-system">Texture Roller System - $22</option>
-                    <option value="roller-module">Extra Roller Module - $8</option>
+                    <option value="roller-4in">Texture Roller (4 inch) - $10</option>
+                    <option value="roller-10in">Texture Roller (10 inch) - $20</option>
+                    <option value="roller-reprint">Roller Reprint (Replacement) - $6</option>
                 </select>
             </div>
 
-            <!-- DYNAMIC SECTIONS -->
+            <!-- SECTIONS -->
 
-            <!-- A. Options for SIMPLE CHOP -->
+            <!-- SIMPLE CHOP -->
             <div id="opt-chop-simple" class="dynamic-section hidden">
                 <h3>Configuration: Simple Chop</h3>
-                
                 <div class="form-group">
                     <label>Letters / Text</label>
                     <input type="text" name="simpleText" placeholder="e.g. TCL">
                 </div>
-                
                 <div class="form-group">
                     <label>Font Preference</label>
                     <select name="simpleFont">
@@ -80,136 +79,128 @@
                         <option value="hand">Handwritten Style</option>
                     </select>
                 </div>
-
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Face Width (mm)</label>
-                        <input type="number" name="faceWidth" placeholder="e.g. 20mm">
-                    </div>
-                    <div class="form-group">
-                        <label>Face Height (mm)</label>
-                        <input type="number" name="faceHeight" placeholder="Same as width">
-                    </div>
+                    <div class="form-group"><label>Face Width (mm)</label><input type="number" name="faceWidth" placeholder="20" value="20"></div>
+                    <div class="form-group"><label>Face Height (mm)</label><input type="number" name="faceHeight" placeholder="Same as width"></div>
                 </div>
-
                 <div class="form-group">
                     <label>Handle Style</label>
-                    <img src="assets/images/handle-options.png" alt="Handle Options" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
+                    <img src="assets/images/handle-options.png" alt="Handles" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
                     <select name="handleShape">
-                        <!-- UPDATED NAMES HERE -->
                         <option value="standard-round">Standard Handle (Circular Base)</option>
                         <option value="standard-hex">Standard Handle (Hexagonal Base)</option>
                         <option value="square">Straight Square Shaft</option>
                         <option value="hex">Straight Hexagonal Shaft</option>
                     </select>
                 </div>
-                
+                <div class="form-group">
+                    <label>Handle Color</label>
+                    <select name="handleColor">
+                        <option value="#FFFFFF">Lab White</option>
+                        <option value="#D26244" selected>Terracotta Orange</option>
+                        <option value="#77B847">Grass Green</option>
+                        <option value="#4CA1AF">Drafting Blue</option>
+                    </select>
+                </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Handle Height</label>
-                        <input type="text" name="handleHeight" value="2 inches">
-                        <span class="note">Default: 2 inches. Change if needed.</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Handle Width</label>
-                        <input type="text" name="handleWidth" value="1 inch">
-                        <span class="note">Default: 1 inch. Change if needed.</span>
-                    </div>
+                    <div class="form-group"><label>Handle Height</label><input type="text" name="handleHeight" value="2 inches"></div>
+                    <div class="form-group"><label>Handle Width</label><input type="text" name="handleWidth" value="1 inch"></div>
                 </div>
             </div>
 
-            <!-- B. Options for COMPLEX CHOP -->
+            <!-- COMPLEX CHOP -->
             <div id="opt-chop-complex" class="dynamic-section hidden">
                 <h3>Configuration: Complex Chop</h3>
-                
                 <div class="form-group">
                     <label>Upload Logo File</label>
                     <input type="file" id="logoUpload" name="logoUpload" accept="image/*,.svg,.pdf">
-                    <span class="note">SVG, PNG, or PDF preferred. Black & White.</span>
+                    <span class="note">SVG, PNG, or PDF preferred.</span>
                 </div>
-
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Face Width (mm)</label>
-                        <input type="number" name="complexWidth" placeholder="e.g. 25mm">
-                    </div>
-                    <div class="form-group">
-                        <label>Face Height (mm)</label>
-                        <input type="number" name="complexHeight" placeholder="e.g. 25mm">
-                    </div>
+                    <div class="form-group"><label>Face Width (mm)</label><input type="number" name="complexWidth" placeholder="25" value="25"></div>
+                    <div class="form-group"><label>Face Height (mm)</label><input type="number" name="complexHeight" placeholder="25"></div>
                 </div>
-
                 <div class="form-group">
                     <label>Handle Style</label>
-                    <img src="assets/images/handle-options.png" alt="Handle Options" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
+                    <img src="assets/images/handle-options.png" alt="Handles" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
                     <select name="handleShapeComplex">
-                        <!-- UPDATED NAMES HERE -->
                         <option value="standard-round">Standard Handle (Circular Base)</option>
                         <option value="standard-hex">Standard Handle (Hexagonal Base)</option>
                         <option value="square">Straight Square Shaft</option>
                         <option value="hex">Straight Hexagonal Shaft</option>
                     </select>
                 </div>
-
+                <div class="form-group">
+                    <label>Handle Color</label>
+                    <select name="handleColorComplex">
+                        <option value="#FFFFFF">Lab White</option>
+                        <option value="#D26244" selected>Terracotta Orange</option>
+                        <option value="#77B847">Grass Green</option>
+                        <option value="#4CA1AF">Drafting Blue</option>
+                    </select>
+                </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Handle Height</label>
-                        <input type="text" name="complexHandleHeight" value="2 inches">
-                        <span class="note">Default: 2 inches. Change if needed.</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Handle Width</label>
-                        <input type="text" name="complexHandleWidth" value="1 inch">
-                        <span class="note">Default: 1 inch. Change if needed.</span>
-                    </div>
+                    <div class="form-group"><label>Handle Height</label><input type="text" name="complexHandleHeight" value="2 inches"></div>
+                    <div class="form-group"><label>Handle Width</label><input type="text" name="complexHandleWidth" value="1 inch"></div>
                 </div>
             </div>
 
-            <!-- C. Options for ROLLER SYSTEM -->
-            <div id="opt-roller" class="dynamic-section hidden">
-                <h3>Configuration: Texture System</h3>
+            <!-- ROLLER 4 INCH -->
+            <div id="opt-roller-4in" class="dynamic-section hidden">
+                <h3>Configuration: 4" Texture Roller</h3>
                 <div class="form-group">
                     <label>Select Texture</label>
-                    <select name="rollerTexture">
-                        <option value="mason">Mason (Brick Pattern)</option>
+                    <img src="assets/images/texture-roller-4in.png" alt="Rollers" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
+                    <select name="rollerTexture4in">
                         <option value="torque">Torque (Spiral)</option>
                         <option value="hex-lattice">Hex-Lattice</option>
+                        <option value="mason">Mason (Brick Pattern)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- ROLLER 10 INCH -->
+            <div id="opt-roller-10in" class="dynamic-section hidden">
+                <h3>Configuration: 10" Texture Roller</h3>
+                <div class="form-group">
+                    <label>Select Texture</label>
+                    <img src="assets/images/texture-roller-10in.png" alt="Rollers" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
+                    <select name="rollerTexture10in">
+                        <option value="torque">Torque (Spiral)</option>
+                        <option value="hex-lattice">Hex-Lattice</option>
+                        <option value="mason">Mason (Brick Pattern)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- REPRINT -->
+            <div id="opt-roller-reprint" class="dynamic-section hidden">
+                <h3>Configuration: Reprint Replacement</h3>
+                <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Discounted replacement rate. Proof of broken roller required.</p>
+                <div class="form-group">
+                    <label>Select Texture</label>
+                    <img src="assets/images/roller-options.png" alt="Rollers" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
+                    <select name="rollerTextureReprint">
+                        <option value="torque">Torque (Spiral)</option>
+                        <option value="hex-lattice">Hex-Lattice</option>
+                        <option value="mason">Mason (Brick Pattern)</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Includes</label>
-                    <input type="text" value="Kinetic Handle + 1 Roller" readonly style="background:#f4f4f4; color:#888;">
+                    <label style="color:#D26244;">Upload Broken Part Photo</label>
+                    <input type="file" id="reprintUpload" name="reprintUpload" accept="image/*">
                 </div>
             </div>
 
-            <!-- D. Options for EXTRA ROLLER -->
-            <div id="opt-roller-extra" class="dynamic-section hidden">
-                <h3>Configuration: Additional Module</h3>
-                <div class="form-group">
-                    <label>Select Texture</label>
-                    <select name="rollerTextureExtra">
-                        <option value="mason">Mason (Brick Pattern)</option>
-                        <option value="torque">Torque (Spiral)</option>
-                        <option value="hex-lattice">Hex-Lattice</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Note</label>
-                    <input type="text" value="Module Only (No Handle)" readonly style="background:#f4f4f4; color:#888;">
-                </div>
-            </div>
-
-            <!-- Submit Button -->
-            <button type="submit" class="btn-launch" style="width: 100%; border:none; cursor:pointer;">
-                Submit Order Request
-            </button>
-
+            <button type="submit" class="btn-launch" style="width: 100%; border:none; cursor:pointer;">Submit Order Request</button>
         </form>
-
     </div>
 
     <footer>
         <p>&copy; The Chop Lab</p>
+        <div style="margin-top: 10px;">
+            <a href="admin.html" style="color: #eee; font-size: 0.7rem; text-decoration: none;">Admin Portal</a>
+        </div>
     </footer>
 
     <!-- SUCCESS MODAL -->
@@ -217,12 +208,20 @@
         <div class="modal-box">
             <h2 style="color: #D26244;">Order Received.</h2>
             <p>Your configuration has been sent to The Chop Lab engineering team.</p>
-            <p>You will receive a confirmation email shortly.</p>
+            <p>Are team will reach out to you when we are done with the first version, and discuss payment then.</p>
             <button id="closeModalBtn" class="btn-launch" style="width:100%; margin-top:20px;">Return to Gallery</button>
         </div>
     </div>
 
-    <!-- JS Logic for the Form -->
+    <script src="assets/js/nav.js"></script>
     <script src="assets/js/order.js"></script>
 </body>
 </html>
+
+<footer>
+    <!-- Add the span with id="year" here -->
+    <p>&copy; <span id="year"></span> The Chop Lab</p>
+    <div style="margin-top: 10px;">
+        <a href="admin.html" style="color: #eee; font-size: 0.7rem; text-decoration: none;">Admin</a>
+    </div>
+</footer>

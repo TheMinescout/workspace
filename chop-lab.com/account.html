@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | The Chop Lab</title>
+    <link rel="stylesheet" href="assets/css/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/images/Favicon.png">
+    
+    <!-- 1. LOAD FIREBASE SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#D26244">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-flex">
+            <a href="index.html" class="logo">The Chop Lab.</a>
+            <div class="menu-toggle">&#9776;</div>
+        </div>
+    </nav>
+
+    <div class="overlay-menu">
+        <a href="index.html">Gallery</a>
+        <a href="portfolio.html">Portfolio & Process</a>
+        <a href="chops.html">Chop Info</a>
+        <a href="order.html">Order Form</a>
+        <a href="account.html" class="current">My Account</a>
+    </div>
+
+    <div class="container" style="margin-top: 50px; min-height: 60vh;">
+        
+        <!-- LOGIN FORM -->
+        <div id="auth-container" class="order-form" style="max-width: 400px; text-align: center;">
+            <h2 style="font-family:'Playfair Display'; margin-bottom: 20px;">Client Portal</h2>
+            <p style="color:#666; margin-bottom: 30px;">Login to view project status and final drafts.</p>
+            
+            <input type="email" id="loginEmail" placeholder="Email Address" style="margin-bottom: 15px;">
+            <input type="password" id="loginPass" placeholder="Password" style="margin-bottom: 20px;">
+            
+            <button onclick="handleLogin()" class="btn-launch">Log In</button>
+            <button onclick="handleSignup()" class="btn-minimal" style="margin-top: 20px; font-size: 0.9rem; border:none;">Create Account</button>
+            
+            <p id="authMsg" style="color: red; margin-top: 15px; font-size: 0.9rem;"></p>
+        </div>
+
+        <!-- USER DASHBOARD -->
+        <div id="dashboard-container" class="hidden">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 40px;">
+                <h1 style="font-family:'Playfair Display'; font-size: 2.5rem;">Project History</h1>
+                <button onclick="handleLogout()" class="btn-minimal" style="font-size:0.9rem;">Sign Out</button>
+            </div>
+
+            <p id="user-email-display" style="color:#888; margin-bottom: 20px;">Loading projects...</p>
+
+            <div style="overflow-x:auto; border:1px solid #eee; border-radius:4px;">
+                <table style="width:100%; border-collapse:collapse;">
+                    <thead style="background:#2C3E50; color:white; font-family:'Roboto Mono'; font-size:0.85rem;">
+                        <tr>
+                            <th style="padding:15px; text-align:left;">Date</th>
+                            <th style="padding:15px; text-align:left;">ID</th>
+                            <th style="padding:15px; text-align:left;">Project</th>
+                            <th style="padding:15px; text-align:left;">Status</th>
+                            <th style="padding:15px; text-align:left;">Final Render</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody" style="font-family:'Lato'; font-size:0.9rem;">
+                        <!-- Data inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; The Chop Lab</p>
+    </footer>
+
+    <!-- 2. LOAD SCRIPTS -->
+    <script src="assets/js/nav.js"></script>
+    
+    <!-- 3. LOAD YOUR CONFIG (GitIgnored File) -->
+    <script src="assets/js/firebase-config.js"></script>
+
+    <!-- 4. PAGE LOGIC -->
+    <script>
+        // --- GOOGLE SCRIPT URL ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxA0tHDzsc4baNHSURGJRMFVvRpXLZMAL0Hhkezq5xC641ehY5asGkTD1X4k6uauBJF9A/exec";
+
+        // Auth Listener (auth object comes from firebase-config.js)
+        if(typeof auth !== 'undefined') {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    document.getElementById('auth-container').classList.add('hidden');
+                    document.getElementById('dashboard-container').classList.remove('hidden');
+                    document.getElementById('user-email-display').innerText = "Logged in as: " + user.email;
+                    fetchHistory(user.email);
+                } else {
+                    document.getElementById('auth-container').classList.remove('hidden');
+                    document.getElementById('dashboard-container').classList.add('hidden');
+                }
+            });
+        } else {
+            console.error("Firebase Auth not initialized. Check firebase-config.js path.");
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            auth.signInWithEmailAndPassword(email, pass)
+                .catch((error) => { document.getElementById('authMsg').innerText = error.message; });
+        }
+
+        function handleSignup() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            auth.createUserWithEmailAndPassword(email, pass)
+                .then(() => { alert("Account created! You are now logged in."); })
+                .catch((error) => { document.getElementById('authMsg').innerText = error.message; });
+        }
+
+        function handleLogout() {
+            auth.signOut();
+        }
+
+        async function fetchHistory(email) {
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '<tr><td colspan="5" style="padding:20px; text-align:center;">Retrieving records from the lab...</td></tr>';
+
+            try {
+                const response = await fetch(SCRIPT_URL + "?email=" + encodeURIComponent(email));
+                const data = await response.json();
+
+                tbody.innerHTML = '';
+
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="padding:20px; text-align:center;">No project history found for this email.</td></tr>';
+                    return;
+                }
+
+                data.reverse().forEach(row => {
+                    const date = new Date(row[0]).toLocaleDateString();
+                    
+                    // Render Link (Col I -> Index 8)
+                    let renderLink = `<span style="color:#ccc;">Pending</span>`;
+                    if (row[8] && row[8].startsWith('http')) {
+                        renderLink = `<a href="${row[8]}" target="_blank" class="btn-minimal" style="font-size:0.8rem; border-bottom:1px solid #D26244;">VIEW DRAFT</a>`;
+                    }
+
+                    // Status (Col J -> Index 9)
+                    const status = row[9] || "Received";
+
+                    const tr = document.createElement('tr');
+                    tr.style.borderBottom = "1px solid #eee";
+                    tr.innerHTML = `
+                        <td style="padding:15px;">${date}</td>
+                        <td style="padding:15px; font-family:'Roboto Mono';">${row[1]}</td>
+                        <td style="padding:15px;">${row[4]}</td>
+                        <td style="padding:15px;"><span class="status-pill">${status}</span></td>
+                        <td style="padding:15px;">${renderLink}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="5" style="padding:20px; text-align:center; color:red;">Connection Error.</td></tr>';
+            }
+        }
+    </script>
+</body>
+</html>

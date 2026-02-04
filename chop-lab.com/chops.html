@@ -5,37 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chop Details | The Chop Lab</title>
     <link rel="stylesheet" href="assets/css/index.css">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
     <link rel="icon" type="image/png" href="assets/images/Favicon.png">
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#D26244">
 </head>
 <body>
 
-    <!-- Nav -->
     <nav class="navbar">
         <div class="container nav-flex">
             <a href="index.html" class="logo">The Chop Lab.</a>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link">Gallery</a>
-                <a href="chops.html" class="nav-link active">Chop Info</a>
-                <a href="order.html" class="nav-link">Order Form</a>
-            </div>
+            <div class="menu-toggle">&#9776;</div>
         </div>
     </nav>
 
-    <!-- Header -->
-    <div class="container info-header">
-        <h1>The Mark of a Maker.</h1>
-        <p class="sub-text">We engineer stamps that press deep, release clean, and last forever. Choose your configuration below.</p>
+    <div class="overlay-menu">
+        <a href="index.html">Gallery</a>
+        <a href="portfolio.html">Portfolio & Process</a>
+        <a href="chops.html" class="current">Chop Info</a>
+        <a href="order.html">Order Form</a>
+        <a href="account.html">My Account</a>
     </div>
 
-    <!-- Section 1: Simple vs Complex -->
     <div class="container">
-        
+        <header class="portfolio-intro">
+            <h1>The Mark of a Maker.</h1>
+            <p>We engineer stamps that press deep, release clean, and last forever.</p>
+        </header>
+
         <!-- Simple Chop -->
         <div class="split-section">
             <div class="split-image">
@@ -43,7 +40,7 @@
             </div>
             <div class="split-content">
                 <h2>01. Simple Chop</h2>
-                <p class="price">$15.00</p>
+                <span class="price">$15.00</span>
                 <p>Perfect for initials, simple names, or makers marks that rely on standard typography. We use a clean, deep-cut font optimized for clay release.</p>
                 <ul class="feature-list">
                     <li><strong>Input:</strong> Text / Letters only.</li>
@@ -53,7 +50,7 @@
             </div>
         </div>
 
-        <div class="divider-line"></div>
+        <div class="divider"></div>
 
         <!-- Complex Chop -->
         <div class="split-section reverse">
@@ -62,7 +59,7 @@
             </div>
             <div class="split-content">
                 <h2>02. Complex Chop</h2>
-                <p class="price">$20.00</p>
+                <span class="price">$20.00</span>
                 <p>For custom logos, illustrations, or specific branding. We manually convert your uploaded image into a 3D height map, adjusting wall thickness to ensure structural integrity.</p>
                 <ul class="feature-list">
                     <li><strong>Input:</strong> Image Upload (SVG, PNG, PDF).</li>
@@ -72,55 +69,33 @@
             </div>
         </div>
 
-    </div>
-
-    <!-- Section 2: Handle Anatomy -->
-    <div class="container handle-section">
-        <h2>The Handle System</h2>
-        <p class="sub-text">Ergonomics meet Engineering. Choose the grip that fits your studio workflow.</p>
-
-        <!-- The Render Image -->
-        <div class="handle-diagram">
-            <img src="assets/images/handle-options.png" alt="Handle Configurations">
-        </div>
-
-        <div class="handle-grid">
-            
-            <!-- 1. Straight Hex -->
-            <div class="handle-card">
-                <h3>Straight Hex</h3>
-                <p><strong>The Industrial.</strong> A textured, pencil-like grip for precise control and non-slip handling.</p>
+        <!-- Handles -->
+        <div class="handle-section">
+            <h2 class="section-title">The Handle System</h2>
+            <div class="handle-diagram">
+                <img src="assets/images/handle-options.png" alt="Handle Configurations">
             </div>
-
-            <!-- 2. Straight Square -->
-            <div class="handle-card">
-                <h3>Straight Square</h3>
-                <p><strong>The Engineer.</strong> Low profile and compact. Easy to align perfectly with the edges of your clay.</p>
+            <div class="handle-grid">
+                <div class="handle-card"><h3>Straight Hex</h3><p><strong>The Industrial.</strong> Textured grip for precise control.</p></div>
+                <div class="handle-card"><h3>Straight Square</h3><p><strong>The Engineer.</strong> Easy alignment with edges.</p></div>
+                <div class="handle-card"><h3>Standard / Hex</h3><p><strong>The Hybrid.</strong> Ergonomic grip, anti-roll base.</p></div>
+                <div class="handle-card"><h3>Standard / Round</h3><p><strong>The Classic.</strong> Maximum comfort for batching.</p></div>
             </div>
-
-            <!-- 3. Standard / Hex (Renamed from Bulb) -->
-            <div class="handle-card">
-                <h3>Standard / Hex</h3>
-                <p><strong>The Hybrid.</strong> The comfort of a standard ergonomic grip, but with a hexagonal base to prevent rolling.</p>
+            <div class="gallery-footer">
+                <a href="order.html" class="btn-minimal">Build Your Stamp &rarr;</a>
             </div>
-
-            <!-- 4. Standard / Round (Renamed from Bulb) -->
-            <div class="handle-card">
-                <h3>Standard / Round</h3>
-                <p><strong>The Classic.</strong> Maximum comfort for repetitive stamping. The circular base allows for free rotation.</p>
-            </div>
-
-        </div>
-
-        <div class="center-btn">
-            <a href="order.html" class="btn-minimal">Build Your Stamp &rarr;</a>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer>
-        <p>&copy; The Chop Lab</p>
-    </footer>
+    <!-- Add the span with id="year" here -->
+    <p>&copy; <span id="year"></span> The Chop Lab</p>
+    <div style="margin-top: 10px;">
+        <a href="admin.html" style="color: #eee; font-size: 0.7rem; text-decoration: none;">Admin</a>
+    </div>
+</footer>
 
+
+    <script src="assets/js/nav.js"></script>
 </body>
 </html>

@@ -1,15 +1,22 @@
-/* --- 1. Variables & Global Reset --- */
+/* =========================================
+   1. VARIABLES & RESET
+   ========================================= */
 :root {
     --bg: #ffffff;        
     --text: #2a2a2a;      
     --accent: #D26244;    /* Terracotta */
-    --grey: #f4f4f4;      
+    --light-grey: #f9f9f9;      
+    --border-color: #eee;
     
     --font-head: 'Playfair Display', serif; 
     --font-body: 'Lato', sans-serif;        
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
 
 body {
     background-color: var(--bg);
@@ -17,103 +24,598 @@ body {
     font-family: var(--font-body);
     font-weight: 300;
     line-height: 1.6;
+    overflow-x: hidden; /* Prevents side-scrolling on mobile */
 }
 
 a { text-decoration: none; color: inherit; transition: 0.3s; }
 img { max-width: 100%; display: block; }
+ul { list-style: none; }
 
-.container { max-width: 1000px; margin: 0 auto; padding: 0 40px; }
+.container { 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 0 40px; 
+}
 
-/* --- 2. Navigation --- */
-.navbar { padding: 40px 0; }
-.nav-flex { display: flex; justify-content: space-between; align-items: center; }
-.logo { font-family: var(--font-head); font-size: 1.5rem; font-weight: 600; letter-spacing: -0.5px; }
-.nav-links { display: flex; gap: 30px; }
-.nav-link { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid transparent; color: #888; }
-.nav-link:hover, .nav-link.active { color: var(--text); border-bottom: 1px solid var(--accent); }
+/* =========================================
+   2. NAVIGATION (Hamburger Style)
+   ========================================= */
+.navbar {
+    padding: 30px 0;
+    position: relative;
+    z-index: 100;
+}
 
-/* --- 3. Hero Section --- */
-.hero { height: 40vh; display: flex; align-items: center; justify-content: center; text-align: center; }
-.hero h1 { font-family: var(--font-head); font-size: 4rem; font-weight: 400; margin-bottom: 20px; color: var(--text); }
-.hero p { font-style: italic; color: #666; font-family: var(--font-head); font-size: 1.2rem; }
+.nav-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-/* --- 4. Gallery Grid (Index Page) --- */
-.gallery { padding-bottom: 100px; }
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 80px 40px; }
-.art-card { text-align: left; }
-.art-image { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; background-color: var(--grey); margin-bottom: 20px; display: block; transition: opacity 0.3s; }
-.art-image:hover { opacity: 0.8; }
-.art-info h3 { font-family: var(--font-head); font-weight: 400; font-size: 1.4rem; margin-bottom: 5px; }
-.price { color: var(--accent); font-weight: 400; margin-bottom: 5px; }
-.desc { font-size: 0.9rem; color: #888; }
+.logo {
+    font-family: var(--font-head);
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    z-index: 102;
+    position: relative;
+}
 
-/* --- 5. Buttons & Footer --- */
-.gallery-footer, .center-btn { margin-top: 80px; text-align: center; }
-.btn-minimal { font-family: var(--font-head); font-size: 1.2rem; border-bottom: 1px solid var(--text); padding-bottom: 5px; cursor: pointer; }
-.btn-minimal:hover { color: var(--accent); border-color: var(--accent); padding-right: 10px; }
-footer { text-align: center; padding: 50px 0; font-size: 0.8rem; color: #ccc; margin-top: 50px; }
+.menu-toggle {
+    cursor: pointer;
+    z-index: 102;
+    font-size: 1.8rem;
+    padding: 10px;
+    user-select: none;
+}
 
-/* --- 6. Order Form & Page Styles --- */
+/* Full Screen Overlay */
+.overlay-menu {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 101;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.overlay-menu.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.overlay-menu a {
+    font-family: var(--font-head);
+    font-size: 2.5rem;
+    margin: 15px 0;
+    color: #ccc;
+    transition: transform 0.3s, color 0.3s;
+}
+
+.overlay-menu a:hover, .overlay-menu a.current {
+    color: var(--accent);
+    transform: translateX(10px);
+}
+
+/* =========================================
+   3. HERO SECTION
+   ========================================= */
+.hero {
+    height: 50vh; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    text-align: center;
+}
+
+.hero h1 {
+    font-family: var(--font-head);
+    font-size: 4.5rem;
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    color: var(--text);
+}
+
+.hero p {
+    font-style: italic;
+    color: #888;
+    font-family: var(--font-head);
+    font-size: 1.3rem;
+}
+
+/* =========================================
+   4. PRODUCT GALLERY (Home Page)
+   ========================================= */
+.gallery { padding-bottom: 150px; }
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 80px 50px;
+}
+
+/* The Wrapper Link */
+.card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    height: 100%; 
+}
+
+.art-card {
+    text-align: center; 
+    transition: transform 0.5s ease;
+    height: 100%;
+}
+
+/* Hover Effect moves the card up */
+.card-link:hover .art-card {
+    transform: translateY(-10px);
+}
+
+.art-image {
+    width: 100%;
+    aspect-ratio: 1 / 1; 
+    object-fit: contain; 
+    margin-bottom: 25px;
+    /* Subtle radial gradient background */
+    background: radial-gradient(circle, #fcfcfc 0%, #ffffff 70%);
+}
+
+.art-info h3 {
+    font-family: var(--font-head);
+    font-weight: 400;
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+}
+
+.price {
+    color: #999;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.desc {
+    font-size: 0.9rem;
+    color: #555;
+    max-width: 90%;
+    margin: 0 auto; 
+}
+
+.gallery-footer { text-align: center; margin-top: 100px; }
+
+/* =========================================
+   5. PORTFOLIO & BIO PAGE
+   ========================================= */
+.portfolio-intro {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 80px auto;
+}
+
+.portfolio-section { margin-bottom: 120px; }
+
+.section-title {
+    font-family: var(--font-head);
+    font-size: 2.2rem;
+    margin-bottom: 40px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.bio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.bio-text h3 { font-family: var(--font-head); font-size: 1.5rem; margin-bottom: 15px; }
+.bio-text p { margin-bottom: 20px; font-size: 1.05rem; color: #555; }
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+}
+
+.tech-item h4 { font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 10px; color: var(--accent); }
+.tech-item p { font-size: 0.9rem; color: #666; }
+
+/* =========================================
+   6. CHOPS INFO PAGE
+   ========================================= */
+.info-header { text-align: center; margin-bottom: 60px; }
+.info-header h1 { font-family: var(--font-head); font-size: 3rem; margin-bottom: 10px; }
+
+.split-section {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    margin-bottom: 80px;
+}
+
+.split-section.reverse { flex-direction: row-reverse; }
+
+.split-image { flex: 1; }
+.split-image img { width: 100%; border-radius: 2px; }
+
+.split-content { flex: 1; }
+.split-content h2 { font-family: var(--font-head); font-size: 2rem; margin-bottom: 5px; }
+.split-content .price { color: var(--accent); font-weight: bold; font-size: 1.2rem; }
+
+.feature-list { margin-top: 20px; }
+.feature-list li {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    border-left: 2px solid var(--border-color);
+    padding-left: 15px;
+    color: #555;
+}
+
+.divider-line { height: 1px; background: var(--border-color); width: 100%; margin: 60px 0; }
+
+/* Handle System Grid */
+.handle-section { margin-top: 80px; text-align: center; }
+.handle-diagram img { max-width: 800px; width: 100%; margin: 40px auto; }
+
+.handle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+    text-align: left;
+}
+
+.handle-card {
+    background: var(--light-grey);
+    padding: 30px;
+    border: 1px solid var(--border-color);
+}
+
+.handle-card h3 {
+    font-family: var(--font-head);
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+/* =========================================
+   7. ORDER FORM STYLES
+   ========================================= */
 .order-page-content { max-width: 800px; padding-bottom: 100px; }
-.order-header, .info-header { text-align: center; margin-bottom: 60px; }
-.order-header h1, .info-header h1 { font-family: var(--font-head); font-size: 3rem; margin-bottom: 20px; }
-.sub-text { margin-bottom: 20px; color: #666; max-width: 600px; margin-left: auto; margin-right: auto; }
+.order-header { text-align: center; margin-bottom: 60px; }
+.order-header h1 { font-family: var(--font-head); font-size: 3rem; margin-bottom: 20px; }
+.sub-text { margin-bottom: 20px; color: #666; max-width: 600px; margin: 0 auto; text-align: center; }
 
-.order-form { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border: 1px solid #f0f0f0; box-shadow: 0 5px 20px rgba(0,0,0,0.02); }
+.order-form { 
+    max-width: 650px; 
+    margin: 0 auto; 
+    background: #fff; 
+    padding: 40px; 
+    border: 1px solid var(--border-color); 
+    box-shadow: 0 5px 25px rgba(0,0,0,0.03); 
+}
+
 .form-group { margin-bottom: 25px; text-align: left; }
 .form-row { display: flex; gap: 20px; }
 .form-row .form-group { flex: 1; }
 
-label { display: block; font-family: 'Lato', sans-serif; font-weight: 700; margin-bottom: 8px; font-size: 0.8rem; color: var(--text); text-transform: uppercase; letter-spacing: 1px; }
-input[type="text"], input[type="email"], input[type="number"], select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 0px; font-family: 'Lato', sans-serif; font-size: 1rem; background: #fafafa; transition: all 0.3s; }
-input:focus, select:focus { outline: none; border-color: var(--accent); background: #fff; }
-.divider { height: 1px; background: #eee; margin: 30px 0; }
-.note { display: block; font-size: 0.8rem; color: #999; margin-top: 5px; font-style: italic; }
+label {
+    display: block;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 
-.btn-launch { display: inline-block; background-color: var(--accent); color: #fff; padding: 15px 30px; font-family: var(--font-body); text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin-top: 20px; transition: all 0.3s; border: none; cursor: pointer; }
-.btn-launch:hover { background-color: #b54d32; }
+input[type="text"], input[type="email"], input[type="number"], select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+    font-family: 'Lato', sans-serif;
+    font-size: 1rem;
+    background: #fafafa;
+    transition: all 0.3s;
+}
 
-/* Dynamic Sections */
-.dynamic-section { background: #fdfdfd; padding: 20px; border-left: 3px solid var(--accent); margin-bottom: 30px; animation: fadeIn 0.5s ease; }
-.dynamic-section h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 20px; color: var(--text); }
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+}
 
-/* --- THE FIX: Add !important to ensure this wins over modal styles --- */
-.hidden { display: none !important; }
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 input[type="file"] { padding: 10px; background: #fff; border: 1px dashed #ccc; width: 100%; }
 
-/* --- 7. Chop Info Page --- */
-.split-section { display: flex; align-items: center; gap: 50px; margin-bottom: 60px; }
+.divider { height: 1px; background: var(--border-color); margin: 30px 0; }
+.note { display: block; font-size: 0.8rem; color: #999; margin-top: 5px; font-style: italic; }
+
+/* Dynamic Sections (Hidden Logic) */
+.dynamic-section {
+    background: #fdfdfd;
+    padding: 25px;
+    border-left: 3px solid var(--accent);
+    margin-bottom: 30px;
+    animation: fadeIn 0.5s ease;
+}
+
+.dynamic-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: var(--text);
+}
+
+/* Force hide elements */
+.hidden { display: none !important; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   8. BUTTONS
+   ========================================= */
+.btn-minimal {
+    font-family: var(--font-head);
+    font-size: 1.2rem;
+    border-bottom: 1px solid var(--text);
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+.btn-minimal:hover { color: var(--accent); border-color: var(--accent); padding-right: 10px; }
+
+.btn-launch { 
+    display: inline-block; 
+    background-color: var(--accent); 
+    color: #fff; 
+    padding: 15px 30px; 
+    font-family: var(--font-body); 
+    text-transform: uppercase; 
+    letter-spacing: 2px; 
+    font-size: 0.9rem; 
+    margin-top: 20px; 
+    transition: all 0.3s; 
+    border: none; 
+    cursor: pointer; 
+    width: 100%;
+}
+.btn-launch:hover { background-color: #b54d32; }
+
+/* =========================================
+   9. SUCCESS MODAL
+   ========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-box {
+    background: #fff;
+    padding: 50px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    border-top: 5px solid var(--accent);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    border-radius: 2px;
+    animation: slideUp 0.3s ease-out;
+}
+
+.modal-box h2 { font-family: var(--font-head); font-size: 2rem; margin-bottom: 15px; }
+.modal-box p { color: #666; margin-bottom: 10px; }
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* =========================================
+   10. FOOTER & MOBILE
+   ========================================= */
+footer {
+    text-align: center;
+    padding: 80px 0;
+    font-size: 0.8rem;
+    color: #ccc;
+    border-top: 1px solid #fafafa;
+    margin-top: 50px;
+}
+
+@media (max-width: 768px) {
+    .hero h1 { font-size: 3rem; }
+    .product-grid { gap: 60px 0; }
+    .bio-grid { grid-template-columns: 1fr; }
+    .split-section, .split-section.reverse { flex-direction: column; gap: 30px; }
+    .form-row { flex-direction: column; gap: 10px; }
+    .container { padding: 0 25px; }
+    .overlay-menu a { font-size: 2rem; }
+}
+/* =========================================
+   1. VARIABLES & RESET
+   ========================================= */
+:root {
+    --bg: #ffffff;        
+    --text: #2a2a2a;      
+    --accent: #D26244;    /* Terracotta */
+    --light-grey: #f9f9f9;      
+    --border-color: #eee;
+    
+    --font-head: 'Playfair Display', serif; 
+    --font-body: 'Lato', sans-serif;        
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden; 
+}
+
+a { text-decoration: none; color: inherit; transition: 0.3s; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+
+.container { 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 0 40px; 
+}
+
+/* =========================================
+   2. NAVIGATION (Hamburger Style)
+   ========================================= */
+.navbar { padding: 30px 0; position: relative; z-index: 100; }
+.nav-flex { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-family: var(--font-head); font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; z-index: 102; position: relative; }
+.menu-toggle { cursor: pointer; z-index: 102; font-size: 1.8rem; padding: 10px; user-select: none; }
+
+/* Overlay */
+.overlay-menu { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 101; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+.overlay-menu.active { opacity: 1; pointer-events: all; }
+.overlay-menu a { font-family: var(--font-head); font-size: 2.5rem; margin: 15px 0; color: #ccc; transition: transform 0.3s, color 0.3s; }
+.overlay-menu a:hover, .overlay-menu a.current { color: var(--accent); transform: translateX(10px); }
+
+/* =========================================
+   3. HERO SECTION
+   ========================================= */
+.hero { height: 50vh; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+.hero h1 { font-family: var(--font-head); font-size: 4.5rem; font-weight: 400; line-height: 1.1; margin-bottom: 20px; color: var(--text); }
+.hero p { font-style: italic; color: #888; font-family: var(--font-head); font-size: 1.3rem; }
+
+/* =========================================
+   4. PRODUCT GALLERY
+   ========================================= */
+.gallery { padding-bottom: 150px; }
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 80px 50px; }
+.card-link { display: block; text-decoration: none; color: inherit; height: 100%; }
+.art-card { text-align: center; transition: transform 0.5s ease; height: 100%; }
+.card-link:hover .art-card { transform: translateY(-10px); }
+.art-image { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; margin-bottom: 25px; background: radial-gradient(circle, #fcfcfc 0%, #ffffff 70%); }
+.art-info h3 { font-family: var(--font-head); font-weight: 400; font-size: 1.4rem; margin-bottom: 5px; }
+.price { color: #999; font-size: 0.9rem; letter-spacing: 1px; margin-bottom: 10px; display: block; }
+.desc { font-size: 0.9rem; color: #555; max-width: 90%; margin: 0 auto; }
+.gallery-footer { text-align: center; margin-top: 100px; }
+
+/* =========================================
+   5. PORTFOLIO & BIO PAGE
+   ========================================= */
+.portfolio-intro { text-align: center; max-width: 700px; margin: 0 auto 80px auto; }
+.portfolio-section { margin-bottom: 120px; }
+.section-title { font-family: var(--font-head); font-size: 2.2rem; margin-bottom: 40px; border-top: 1px solid var(--border-color); padding-top: 20px; }
+.bio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.bio-text h3 { font-family: var(--font-head); font-size: 1.5rem; margin-bottom: 15px; }
+.bio-text p { margin-bottom: 20px; font-size: 1.05rem; color: #555; }
+.tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
+.tech-item h4 { font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 10px; color: var(--accent); }
+.tech-item p { font-size: 0.9rem; color: #666; }
+
+/* =========================================
+   6. CHOPS INFO PAGE
+   ========================================= */
+.info-header { text-align: center; margin-bottom: 60px; }
+.info-header h1 { font-family: var(--font-head); font-size: 3rem; margin-bottom: 10px; }
+.split-section { display: flex; align-items: center; gap: 60px; margin-bottom: 80px; }
 .split-section.reverse { flex-direction: row-reverse; }
 .split-image { flex: 1; }
 .split-image img { width: 100%; border-radius: 2px; }
 .split-content { flex: 1; }
-.split-content h2 { font-family: var(--font-head); font-size: 2rem; margin-bottom: 10px; }
-.feature-list { margin-top: 20px; list-style: none; }
-.feature-list li { margin-bottom: 10px; font-size: 0.95rem; border-left: 2px solid #eee; padding-left: 15px; }
-.divider-line { height: 1px; background: #eee; width: 100%; margin: 60px 0; }
+.split-content h2 { font-family: var(--font-head); font-size: 2rem; margin-bottom: 5px; }
+.split-content .price { color: var(--accent); font-weight: bold; font-size: 1.2rem; }
+.feature-list { margin-top: 20px; }
+.feature-list li { margin-bottom: 10px; font-size: 0.95rem; border-left: 2px solid var(--border-color); padding-left: 15px; color: #555; }
+.divider-line { height: 1px; background: var(--border-color); width: 100%; margin: 60px 0; }
 .handle-section { margin-top: 80px; text-align: center; }
 .handle-diagram img { max-width: 800px; width: 100%; margin: 40px auto; }
-.handle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-top: 40px; text-align: left; }
-.handle-card { background: #fafafa; padding: 25px; border: 1px solid #eee; }
+.handle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; margin-top: 40px; text-align: left; }
+.handle-card { background: var(--light-grey); padding: 30px; border: 1px solid var(--border-color); }
 .handle-card h3 { font-family: var(--font-head); color: var(--accent); margin-bottom: 10px; font-size: 1.2rem; }
 
-/* --- 8. Modal Styles --- */
+/* =========================================
+   7. ORDER FORM STYLES
+   ========================================= */
+.order-page-content { max-width: 800px; padding-bottom: 100px; }
+.order-header { text-align: center; margin-bottom: 60px; }
+.order-header h1 { font-family: var(--font-head); font-size: 3rem; margin-bottom: 20px; }
+.sub-text { margin-bottom: 20px; color: #666; max-width: 600px; margin: 0 auto; text-align: center; }
+.order-form { max-width: 650px; margin: 0 auto; background: #fff; padding: 40px; border: 1px solid var(--border-color); box-shadow: 0 5px 25px rgba(0,0,0,0.03); }
+.form-group { margin-bottom: 25px; text-align: left; }
+.form-row { display: flex; gap: 20px; }
+.form-row .form-group { flex: 1; }
+label { display: block; font-family: 'Lato', sans-serif; font-weight: 700; margin-bottom: 8px; font-size: 0.8rem; color: var(--text); text-transform: uppercase; letter-spacing: 1px; }
+input[type="text"], input[type="email"], input[type="number"], select { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 0px; font-family: 'Lato', sans-serif; font-size: 1rem; background: #fafafa; transition: all 0.3s; }
+input:focus, select:focus { outline: none; border-color: var(--accent); background: #fff; }
+input[type="file"] { padding: 10px; background: #fff; border: 1px dashed #ccc; width: 100%; }
+.divider { height: 1px; background: var(--border-color); margin: 30px 0; }
+.note { display: block; font-size: 0.8rem; color: #999; margin-top: 5px; font-style: italic; }
+.dynamic-section { background: #fdfdfd; padding: 25px; border-left: 3px solid var(--accent); margin-bottom: 30px; animation: fadeIn 0.5s ease; }
+.dynamic-section h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 20px; color: var(--text); }
+.hidden { display: none !important; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* =========================================
+   8. BUTTONS & UI
+   ========================================= */
+.btn-minimal { font-family: var(--font-head); font-size: 1.2rem; border-bottom: 1px solid var(--text); padding-bottom: 5px; cursor: pointer; }
+.btn-minimal:hover { color: var(--accent); border-color: var(--accent); padding-right: 10px; }
+.btn-launch { display: inline-block; background-color: var(--accent); color: #fff; padding: 15px 30px; font-family: var(--font-body); text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin-top: 20px; transition: all 0.3s; border: none; cursor: pointer; width: 100%; }
+.btn-launch:hover { background-color: #b54d32; }
+
+/* =========================================
+   9. ACCOUNT & MODAL
+   ========================================= */
+/* Account Portal specific */
+#auth-container input { background: #fafafa; margin-bottom: 15px; }
+#historyTableBody tr:hover { background-color: #fcfcfc; }
+.status-pill { padding: 5px 10px; background: #f0f0f0; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #555; }
+
+/* Success Modal */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
-.modal-box { background: #fff; padding: 40px; max-width: 500px; width: 90%; text-align: center; border-top: 5px solid var(--accent); box-shadow: 0 20px 50px rgba(0,0,0,0.3); border-radius: 2px; animation: slideUp 0.3s ease-out; }
+.modal-box { background: #fff; padding: 50px; max-width: 500px; width: 90%; text-align: center; border-top: 5px solid var(--accent); box-shadow: 0 20px 50px rgba(0,0,0,0.3); border-radius: 2px; animation: slideUp 0.3s ease-out; }
 .modal-box h2 { font-family: var(--font-head); font-size: 2rem; margin-bottom: 15px; }
 .modal-box p { color: #666; margin-bottom: 10px; }
 @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-/* --- Mobile Tweaks --- */
+/* =========================================
+   10. FOOTER & MOBILE
+   ========================================= */
+footer { text-align: center; padding: 80px 0; font-size: 0.8rem; color: #ccc; border-top: 1px solid #fafafa; margin-top: 50px; }
+
 @media (max-width: 768px) {
-    .hero h1 { font-size: 2.5rem; }
-    .product-grid { gap: 50px 0; }
-    .navbar { padding: 20px 0; }
-    .container { padding: 0 20px; }
-    .split-section, .split-section.reverse { flex-direction: column; gap: 20px; }
-    .nav-links { gap: 15px; }
-    .nav-link { font-size: 0.8rem; }
+    .hero h1 { font-size: 3rem; }
+    .product-grid { gap: 60px 0; }
+    .bio-grid { grid-template-columns: 1fr; }
+    .split-section, .split-section.reverse { flex-direction: column; gap: 30px; }
     .form-row { flex-direction: column; gap: 10px; }
+    .container { padding: 0 25px; }
+    .overlay-menu a { font-size: 2rem; }
 }

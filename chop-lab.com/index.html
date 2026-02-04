@@ -5,103 +5,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Chop Lab</title>
     <link rel="stylesheet" href="assets/css/index.css">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
     <link rel="icon" type="image/png" href="assets/images/Favicon.png">
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#D26244">
 </head>
 <body>
 
-    <!-- Navigation -->
+    <!-- NAV -->
     <nav class="navbar">
         <div class="container nav-flex">
-            <div class="logo">The Chop Lab.</div>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link active">Gallery</a>
-                <a href="chops.html" class="nav-link">Chop Info</a>
-                <a href="order.html" class="nav-link">Order Form</a>
-            </div>
+            <a href="index.html" class="logo">The Chop Lab.</a>
+            <div class="menu-toggle">&#9776;</div>
         </div>
     </nav>
 
-    <!-- Hero -->
+    <!-- OVERLAY -->
+    <div class="overlay-menu">
+        <a href="index.html" class="current">Gallery</a>
+        <a href="portfolio.html">Portfolio & Process</a>
+        <a href="chops.html">Chop Info</a>
+        <a href="order.html">Order Form</a>
+        <a href="account.html">My Account</a>
+    </div>
+
+    <!-- HERO -->
     <header class="hero">
-        <div class="container hero-content">
+        <div class="container">
             <h1>CAD meets Clay.</h1>
             <p>Engineered tools. Artistic intent.</p>
         </div>
     </header>
 
-    <!-- The Collection -->
+    <!-- GALLERY -->
     <section class="gallery">
         <div class="container">
             <div class="product-grid">
                 
-                <div class="art-card">
-                    <img src="assets/images/standard-chop.png" alt="Custom Chop Simple" class="art-image">
-                    <div class="art-info">
-                        <h3>Custom Chop Simple</h3>
-                        <p class="price">$15.00</p>
-                        <p class="desc">Standard logo or initials.</p>
+                <!-- 1. Simple Chop -->
+                <a href="order.html?product=chop-simple" class="card-link">
+                    <div class="art-card">
+                        <img src="assets/images/standard-chop.png" alt="Simple Chop" class="art-image">
+                        <div class="art-info">
+                            <h3>Custom Chop Simple</h3>
+                            <span class="price">$15.00</span>
+                            <p class="desc">Standard logo or initials.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
 
-                <div class="art-card">
-                    <img src="assets/images/complex-chop.png" alt="Custom Chop Complex" class="art-image">
-                    <div class="art-info">
-                        <h3>Custom Chop Complex</h3>
-                        <p class="price">$20.00</p>
-                        <p class="desc">Intricate/High-detail logos.</p>
+                <!-- 2. Complex Chop -->
+                <a href="order.html?product=chop-complex" class="card-link">
+                    <div class="art-card">
+                        <img src="assets/images/complex-chop.png" alt="Complex Chop" class="art-image">
+                        <div class="art-info">
+                            <h3>Custom Chop Complex</h3>
+                            <span class="price">$20.00</span>
+                            <p class="desc">High-fidelity detail for complex art.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
 
-                <div class="art-card">
-                    <img src="assets/images/trimming-spinner.png" alt="Trimming Spinner" class="art-image">
-                    <div class="art-info">
-                        <h3>Trimming Spinner</h3>
-                        <p class="price">$15.00</p>
-                        <p class="desc">Ball-bearing stabilizer.</p>
+                <!-- 3. Spinner -->
+                <a href="order.html?product=spinner" class="card-link">
+                    <div class="art-card">
+                        <img src="assets/images/trimming-spinner.png" alt="Spinner" class="art-image">
+                        <div class="art-info">
+                            <h3>Trimming Spinner</h3>
+                            <span class="price">$15.00</span>
+                            <p class="desc">Zero-friction ball bearing stabilizer.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
 
-                <div class="art-card">
-                    <img src="assets/images/rib-set.png" alt="Precision Rib Set" class="art-image">
-                    <div class="art-info">
-                        <h3>Precision Rib Set</h3>
-                        <p class="price">$15.00</p>
-                        <p class="desc">Set of 3 rigid profiles.</p>
+                <!-- 4. Ribs -->
+                <a href="order.html?product=ribs" class="card-link">
+                    <div class="art-card">
+                        <img src="assets/images/rib-set.png" alt="Ribs" class="art-image">
+                        <div class="art-info">
+                            <h3>Precision Rib Set</h3>
+                            <span class="price">$15.00</span>
+                            <p class="desc">Three engineered profiles.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
 
-                <div class="art-card">
-                    <img src="assets/images/origin-square.png" alt="Origin Square" class="art-image">
-                    <div class="art-info">
-                        <h3>Origin Square</h3>
-                        <p class="price">$12.00</p>
-                        <p class="desc">Center finding tool.</p>
+                <!-- 5. Square -->
+                <a href="order.html?product=square" class="card-link">
+                    <div class="art-card">
+                        <img src="assets/images/origin-square.png" alt="Square" class="art-image">
+                        <div class="art-info">
+                            <h3>Origin Square</h3>
+                            <span class="price">$12.00</span>
+                            <p class="desc">Center finding tool.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
 
-                <div class="art-card">
-                    <img src="assets/images/texture-system.png" alt="Texture Roller System" class="art-image">
-                    <div class="art-info">
-                        <h3>Texture Roller System</h3>
-                        <p class="price">$22.00</p>
-                        <p class="desc">Kinetic Driver + 1 Module.</p>
+                <!-- 6. Roller 4in -->
+                <a href="order.html?product=roller-4in" class="card-link">
+                    <div class="art-card">
+                        <img src="assets/images/texture-roller-4in.png" alt="4in Roller" class="art-image">
+                        <div class="art-info">
+                            <h3>Texture Roller (4")</h3>
+                            <span class="price">$10.00</span>
+                            <p class="desc">Compact handheld texture module.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
 
-                <div class="art-card">
-                    <img src="assets/images/extra-roller-module.png" alt="Extra Roller Module" class="art-image">
-                    <div class="art-info">
-                        <h3>Extra Roller Module</h3>
-                        <p class="price">$8.00</p>
-                        <p class="desc">Add-on texture module only.</p>
+                <!-- 7. Roller 10in -->
+                <a href="order.html?product=roller-10in" class="card-link">
+                    <div class="art-card">
+                        <img src="assets/images/texture-roller-10in.png" alt="10in Roller" class="art-image">
+                        <div class="art-info">
+                            <h3>Texture Roller (10")</h3>
+                            <span class="price">$20.00</span>
+                            <p class="desc">Full-size rolling pin texture.</p>
+                        </div>
                     </div>
-                </div>
+                </a>
 
             </div>
             
@@ -111,18 +134,14 @@
         </div>
     </section>
 
-<!-- Footer -->
     <footer>
-        <div class="container">
-            <p>&copy; The Chop Lab</p>
-            
-            <!-- Subtle Admin Link -->
-            <div style="margin-top: 10px;">
-                <a href="admin.html" style="color: #eee; font-size: 0.7rem; text-decoration: none;">Admin Portal</a>
-            </div>
+        <p>&copy; The Chop Lab</p>
+        <div style="margin-top: 10px;">
+            <a href="admin.html" style="color: #eee; font-size: 0.7rem; text-decoration: none;">Admin</a>
         </div>
     </footer>
 
+    <script src="assets/js/nav.js"></script>
     <script src="assets/js/index.js"></script>
 </body>
 </html>
