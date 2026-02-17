@@ -5,38 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Minescouts Life</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background-color: #10B981; border-radius: 4px; }
         ::-webkit-scrollbar-track { background-color: #1F2937; }
-        
         .container-bg { background-color: #111827; }
         .hidden { display: none !important; }
-        
-        /* Tab Styles */
         .tab-btn { border-bottom: 2px solid transparent; color: #9CA3AF; }
         .tab-btn:hover { color: #E5E7EB; }
         .tab-btn.active { border-bottom: 2px solid #10B981; color: #10B981; }
-        
-        /* Request Card Priority Colors */
         .request-item { border-left: 4px solid #374151; transition: all 0.3s ease; }
         .request-item:hover { background-color: #1f2937; }
         .request-item.HIGH { border-left-color: #EF4444; }
         .request-item.MED { border-left-color: #F59E0B; }
         .request-item.LOW { border-left-color: #10B981; }
         .request-item.read { opacity: 0.5; background-color: #111827; border-left-color: #4B5563; }
-        
-        /* Form Elements */
         input, select, textarea { background-color: #1f2937; border-color: #374151; color: white; }
         input:focus, select:focus, textarea:focus { outline: none; border-color: #10B981; }
     </style>
 </head>
 <body class="container-bg min-h-screen text-gray-300 font-sans flex flex-col">
 
-    <!-- HEADER -->
     <header class="w-full bg-gray-800 p-4 shadow-md sticky top-0 z-50">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-4">
@@ -52,14 +43,18 @@
 
     <div class="max-w-4xl mx-auto w-full mt-8 px-4 mb-12">
         
-        <!-- TABS NAVIGATION -->
+        <!-- ENV TOGGLE -->
+        <div class="flex justify-end mb-4">
+            <select id="env-selector" class="bg-gray-800 text-xs p-2 rounded border border-gray-600">
+                <option value="live">🟢 Live (life.minescout.net)</option>
+                <option value="test">🟠 Test (GitHub Pages)</option>
+            </select>
+        </div>
+
+        <!-- TABS -->
         <div class="flex border-b border-gray-700 mb-6 overflow-x-auto">
-            <button class="tab-btn active px-6 py-3 font-semibold transition whitespace-nowrap" onclick="switchTab('create')">
-                Standard Post
-            </button>
-            <button class="tab-btn px-6 py-3 font-semibold transition whitespace-nowrap" onclick="switchTab('code-publisher')">
-                🚀 Code Publisher
-            </button>
+            <button class="tab-btn active px-6 py-3 font-semibold transition whitespace-nowrap" onclick="switchTab('create')">Standard Post</button>
+            <button class="tab-btn px-6 py-3 font-semibold transition whitespace-nowrap" onclick="switchTab('code-publisher')">🚀 Code Publisher</button>
             <button class="tab-btn px-6 py-3 font-semibold transition relative whitespace-nowrap" onclick="switchTab('inbox')">
                 Inbox
                 <span id="notification-badge" class="hidden absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
@@ -69,81 +64,39 @@
         <!-- TAB 1: STANDARD POST -->
         <div id="tab-create" class="tab-content">
             <div class="bg-gray-900 p-6 rounded-xl border border-gray-700 shadow-xl">
-                <h2 class="text-2xl font-bold text-white mb-6">Publish Link / Announcement</h2>
-                
+                <h2 class="text-2xl font-bold text-white mb-6">Publish Content</h2>
                 <form id="post-form" class="space-y-6">
-                    <!-- Content Type Toggle -->
-                    <div>
-                        <div class="flex gap-4 items-center bg-gray-800 p-1 rounded-lg border border-gray-700">
-                            <label class="flex-1 text-center p-2 cursor-pointer rounded transition hover:bg-gray-700 has-[:checked]:bg-green-600 has-[:checked]:text-white">
-                                <input type="radio" name="contentType" value="post" class="sr-only" checked onclick="toggleForm('post')">
-                                <span class="font-semibold">Link to File</span>
-                            </label>
-                            <label class="flex-1 text-center p-2 cursor-pointer rounded transition hover:bg-gray-700 has-[:checked]:bg-green-600 has-[:checked]:text-white">
-                                <input type="radio" name="contentType" value="announcement" class="sr-only" onclick="toggleForm('announcement')">
-                                <span class="font-semibold">Announcement</span>
-                            </label>
-                        </div>
+                    <div class="flex gap-4 items-center bg-gray-800 p-1 rounded-lg border border-gray-700">
+                        <label class="flex-1 text-center p-2 cursor-pointer rounded transition hover:bg-gray-700 has-[:checked]:bg-green-600 has-[:checked]:text-white">
+                            <input type="radio" name="contentType" value="post" class="sr-only" checked onclick="toggleForm('post')">
+                            <span class="font-semibold">Article Link</span>
+                        </label>
+                        <label class="flex-1 text-center p-2 cursor-pointer rounded transition hover:bg-gray-700 has-[:checked]:bg-green-600 has-[:checked]:text-white">
+                            <input type="radio" name="contentType" value="announcement" class="sr-only" onclick="toggleForm('announcement')">
+                            <span class="font-semibold">Announcement</span>
+                        </label>
                     </div>
 
-                    <!-- POST FIELDS -->
                     <div id="post-fields" class="space-y-5">
-                        <div>
-                            <label class="block text-sm text-gray-400 mb-1">Title</label>
-                            <input type="text" id="post-title" class="w-full p-3 rounded border" placeholder="Enter post title...">
-                        </div>
+                        <input type="text" id="post-title" class="w-full p-3 rounded border" placeholder="Post Title">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm text-gray-400 mb-1">Category</label>
-                                <select id="post-category" class="w-full p-3 rounded border">
-                                    <option value="" disabled selected>Select...</option>
-                                    <option value="Tech Tips">Tech Tips</option>
-                                    <option value="Updates">Updates</option>
-                                    <option value="Coding Projects">Coding Projects</option>
-                                    <option value="Puppy Life">Puppy Life</option>
-                                    <option value="Minecraft Server">Minecraft Server</option>
-                                    <option value="BETA">Beta Software</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm text-gray-400 mb-1">Link URL</label>
-                                <input type="text" id="post-link" class="w-full p-3 rounded border" placeholder="posts/tech/filename.html">
-                            </div>
+                            <select id="post-category" class="w-full p-3 rounded border">
+                                <option>Tech Tips</option><option>Updates</option><option>Coding Projects</option><option>Puppy Life</option><option>Minecraft Server</option><option>BETA</option>
+                            </select>
+                            <input type="text" id="post-link" class="w-full p-3 rounded border" placeholder="posts/tech/file.html">
                         </div>
-                        <div>
-                            <label class="block text-sm text-gray-400 mb-1">Image URL (Optional)</label>
-                            <input type="text" id="image-link" class="w-full p-3 rounded border" placeholder="../assests/images/...">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-400 mb-1">Summary</label>
-                            <textarea id="post-content" rows="4" class="w-full p-3 rounded border" placeholder="Short description for the card..."></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-400 mb-1">Custom Date (Optional)</label>
-                            <div class="flex gap-2">
-                                <input type="date" id="post-date" class="w-full p-2 rounded border">
-                                <input type="time" id="post-time" class="w-full p-2 rounded border">
-                            </div>
-                        </div>
+                        <input type="text" id="image-link" class="w-full p-3 rounded border" placeholder="../assests/images/...">
+                        <textarea id="post-content" rows="3" class="w-full p-3 rounded border" placeholder="Summary"></textarea>
                     </div>
 
-                    <!-- ANNOUNCEMENT FIELDS -->
                     <div id="announcement-fields" class="space-y-5 hidden">
-                        <div>
-                            <label class="block text-sm text-gray-400 mb-1">Announcement Title</label>
-                            <input type="text" id="announcement-title" class="w-full p-3 rounded border" placeholder="Bold header text...">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-400 mb-1">Message</label>
-                            <textarea id="announcement-text" rows="3" class="w-full p-3 rounded border" placeholder="The main text body..."></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-400 mb-1">Signed By</label>
-                            <input type="text" id="announcement-from" class="w-full p-3 rounded border" placeholder="e.g. Minescout Team">
-                        </div>
+                        <input type="text" id="announcement-title" class="w-full p-3 rounded border" placeholder="Announcement Title">
+                        <textarea id="announcement-text" rows="3" class="w-full p-3 rounded border" placeholder="Message"></textarea>
+                        <input type="text" id="announcement-from" class="w-full p-3 rounded border" placeholder="Signed By">
                     </div>
 
-                    <button type="submit" id="publish-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg transition duration-200">
+                    <!-- TYPE=BUTTON prevents reload -->
+                    <button type="button" id="btn-publish-standard" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg transition duration-200">
                         Publish to Feed
                     </button>
                 </form>
@@ -153,63 +106,30 @@
         <!-- TAB 2: CODE PUBLISHER -->
         <div id="tab-code-publisher" class="tab-content hidden">
             <div class="bg-gray-900 p-6 rounded-xl border border-gray-700 shadow-xl border-l-4 border-l-purple-500">
-                <h2 class="text-2xl font-bold text-white mb-2">🚀 Create New File & Publish</h2>
-                <p class="text-gray-400 mb-6 text-sm">Creates HTML file on GitHub + Adds link to Firebase.</p>
-
+                <h2 class="text-2xl font-bold text-white mb-2">🚀 Create & Publish File</h2>
+                
                 <form id="code-publish-form" class="space-y-5">
-                    
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm text-purple-400 mb-1 font-bold">GitHub Token (PAT)</label>
-                            <input type="password" id="gh-token" class="w-full p-2 rounded border border-purple-900 bg-gray-800" placeholder="ghp_..." required>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-purple-400 mb-1 font-bold">Repo Name</label>
-                            <input type="text" id="gh-repo" class="w-full p-2 rounded border border-purple-900 bg-gray-800" value="TheMinescout/workspace" required>
-                        </div>
+                        <input type="password" id="gh-token" class="w-full p-2 rounded border border-purple-900 bg-gray-800" placeholder="GitHub Token" required>
+                        <input type="text" id="gh-repo" class="w-full p-2 rounded border border-purple-900 bg-gray-800" value="TheMinescout/workspace" required>
                     </div>
-
                     <hr class="border-gray-700 my-4">
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm text-gray-400 mb-1">Article Title</label>
-                            <input type="text" id="cp-title" class="w-full p-3 rounded border" required>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-400 mb-1">Category</label>
-                            <select id="cp-category" class="w-full p-3 rounded border">
-                                <option>Tech Tips</option><option>Updates</option><option>Coding Projects</option><option>Puppy Life</option><option>Minecraft Server</option><option>BETA</option>
-                            </select>
-                        </div>
+                        <input type="text" id="cp-title" class="w-full p-3 rounded border" placeholder="Article Title" required>
+                        <select id="cp-category" class="w-full p-3 rounded border"><option>Tech Tips</option><option>Updates</option><option>Coding Projects</option><option>Puppy Life</option><option>BETA</option></select>
                     </div>
-
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-1">File Path</label>
-                        <input type="text" id="cp-path" class="w-full p-3 rounded border font-mono text-sm text-green-400" placeholder="posts/tech/my-new-post.html" required>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-1">HTML Code</label>
-                        <textarea id="cp-code" rows="10" class="w-full p-3 rounded border font-mono text-xs" placeholder="<!DOCTYPE html>..." required></textarea>
-                    </div>
-
+                    <input type="text" id="cp-path" class="w-full p-3 rounded border font-mono text-sm text-green-400" placeholder="posts/tech/new-post.html" required>
+                    <textarea id="cp-code" rows="10" class="w-full p-3 rounded border font-mono text-xs" placeholder="HTML Code..." required></textarea>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                         <div>
-                            <label class="block text-sm text-gray-400 mb-1">Image URL</label>
-                            <input type="text" id="cp-image" class="w-full p-3 rounded border" placeholder="../assests/images/...">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-400 mb-1">Short Summary</label>
-                            <input type="text" id="cp-summary" class="w-full p-3 rounded border" required>
-                        </div>
+                         <input type="text" id="cp-image" class="w-full p-3 rounded border" placeholder="../assests/images/...">
+                         <input type="text" id="cp-summary" class="w-full p-3 rounded border" placeholder="Short Summary" required>
                     </div>
 
-                    <button type="submit" id="btn-create-publish" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-lg transition duration-200">
+                    <!-- TYPE=BUTTON prevents reload -->
+                    <button type="button" id="btn-create-publish" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-lg transition duration-200">
                         Create File & Publish
                     </button>
                 </form>
-                
                 <div id="code-status" class="mt-4 text-center font-mono text-sm"></div>
             </div>
         </div>
@@ -218,9 +138,8 @@
         <div id="tab-inbox" class="tab-content hidden">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-white">Feature Requests</h2>
-                <button onclick="window.loadRequests()" class="text-sm text-green-400 hover:text-white">Refresh List ↻</button>
+                <button type="button" onclick="window.loadRequests()" class="text-sm text-green-400 hover:text-white">Refresh List ↻</button>
             </div>
-            
             <div id="requests-list" class="space-y-4">
                 <p class="text-center text-gray-500 py-10">Loading requests...</p>
             </div>
@@ -230,7 +149,7 @@
     
     <div id="status-message" class="fixed bottom-5 right-5 px-6 py-3 rounded-lg shadow-lg hidden font-bold z-50"></div>
 
-    <!-- UI SCRIPT (STANDARD) - Handles Tabs & Toggles Instantly -->
+    <!-- UI LOGIC (Non-Module) -->
     <script>
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -238,7 +157,6 @@
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
         }
-
         function toggleForm(type) {
              if (type === 'post') {
                 document.getElementById('post-fields').classList.remove('hidden');
@@ -250,22 +168,24 @@
         }
     </script>
 
-    <!-- LOGIC SCRIPT (MODULE) - Handles Firebase & GitHub -->
+    <!-- BACKEND LOGIC (Module) -->
     <script type="module">
+        // Relative import is crucial for GitHub Pages subfolder support
         import { db, auth } from "../assests/js/firebase-config.js";
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { ref, push, serverTimestamp, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
         let userId = null;
 
-        // --- AUTH LOGIC ---
+        // AUTH
         onAuthStateChanged(auth, user => {
             if(user) {
                 userId = user.uid;
                 document.getElementById('user-email-display').textContent = user.email;
                 document.getElementById('user-display').classList.remove('hidden');
-                window.loadRequests(); // Load inbox
+                window.loadRequests();
             } else {
+                // If on github pages, handle path
                 window.location.href = "../login.html";
             }
         });
@@ -274,16 +194,110 @@
             signOut(auth).then(() => window.location.href = "../index.html");
         });
 
-        // --- INBOX LOGIC (Exposed to window) ---
-        window.deleteRequest = (id) => {
-            if(confirm("Permanently delete this request?")) remove(ref(db, `feature_requests/${id}`));
-        };
+        // 1. STANDARD POST PUBLISH
+        document.getElementById('btn-publish-standard').addEventListener('click', async () => {
+            const btn = document.getElementById('btn-publish-standard');
+            btn.disabled = true; btn.innerText = "Publishing...";
+            
+            try {
+                const type = document.querySelector('input[name="contentType"]:checked').value;
+                const env = document.getElementById('env-selector').value; // Check Environment
 
-        window.toggleStatus = (id, currentStatus) => {
-            const newStatus = currentStatus === 'new' ? 'read' : 'new';
-            update(ref(db, `feature_requests/${id}`), { status: newStatus });
-        };
+                if (type === 'post') {
+                    const title = document.getElementById('post-title').value;
+                    const link = document.getElementById('post-link').value;
+                    // Auto-fix link if in Test Mode
+                    // if (env === 'test' && !link.startsWith('http')) { ... logic if needed ... }
 
+                    await push(ref(db, 'content'), {
+                        type: 'post',
+                        title: title,
+                        category: document.getElementById('post-category').value,
+                        summary: document.getElementById('post-content').value,
+                        linkUrl: link,
+                        imageUrl: document.getElementById('image-link').value,
+                        timestamp: serverTimestamp(),
+                        authorId: userId
+                    });
+                } else {
+                    await push(ref(db, 'content'), {
+                        type: 'announcement',
+                        title: document.getElementById('announcement-title').value,
+                        text: document.getElementById('announcement-text').value,
+                        from: document.getElementById('announcement-from').value,
+                        timestamp: serverTimestamp(),
+                        authorId: userId
+                    });
+                }
+                showMessage("Published Successfully!", false);
+                document.getElementById('post-form').reset();
+            } catch (err) {
+                showMessage(err.message, true);
+            } finally {
+                btn.disabled = false; btn.innerText = "Publish to Feed";
+            }
+        });
+
+        // 2. CODE PUBLISHER
+        document.getElementById('btn-create-publish').addEventListener('click', async () => {
+            const btn = document.getElementById('btn-create-publish');
+            const status = document.getElementById('code-status');
+            btn.disabled = true; btn.innerText = "Processing...";
+            status.innerText = "Connecting to GitHub...";
+            status.className = "mt-4 text-center font-mono text-sm text-yellow-400";
+
+            try {
+                const token = document.getElementById('gh-token').value;
+                const repo = document.getElementById('gh-repo').value;
+                const path = document.getElementById('cp-path').value;
+                const content = document.getElementById('cp-code').value;
+
+                // Create File on GitHub
+                const base64Content = btoa(unescape(encodeURIComponent(content))); 
+                const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+                
+                const response = await fetch(url, {
+                    method: "PUT",
+                    headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: `New Post: ${path}`, content: base64Content })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(`GitHub Error: ${errData.message}`);
+                }
+
+                status.innerText = "File Created! Updating Firebase...";
+
+                // Push to Firebase
+                await push(ref(db, 'content'), {
+                    type: 'post',
+                    title: document.getElementById('cp-title').value,
+                    category: document.getElementById('cp-category').value,
+                    summary: document.getElementById('cp-summary').value,
+                    linkUrl: path,
+                    imageUrl: document.getElementById('cp-image').value,
+                    timestamp: serverTimestamp(),
+                    authorId: userId
+                });
+
+                status.innerText = "Success! Page Live.";
+                status.className = "mt-4 text-center font-mono text-sm text-green-400";
+                showMessage("Published!", false);
+
+            } catch (err) {
+                status.innerText = "Error: " + err.message;
+                status.className = "mt-4 text-center font-mono text-sm text-red-500";
+                console.error(err);
+            } finally {
+                btn.disabled = false; btn.innerText = "Create File & Publish";
+            }
+        });
+
+        // 3. INBOX FUNCTIONS
+        window.deleteRequest = (id) => { if(confirm("Delete?")) remove(ref(db, `feature_requests/${id}`)); };
+        window.toggleStatus = (id, current) => { update(ref(db, `feature_requests/${id}`), { status: current === 'new' ? 'read' : 'new' }); };
+        
         window.loadRequests = function() {
             const list = document.getElementById('requests-list');
             const badge = document.getElementById('notification-badge');
@@ -291,195 +305,28 @@
             onValue(ref(db, 'feature_requests'), (snapshot) => {
                 list.innerHTML = '';
                 const data = snapshot.val();
+                if(!data) { list.innerHTML = '<p class="text-center text-gray-500">No requests.</p>'; badge.classList.add('hidden'); return; }
                 
-                if(!data) {
-                    list.innerHTML = '<div class="text-center text-gray-500 py-10 bg-gray-900 rounded-lg">No pending requests.</div>';
-                    badge.classList.add('hidden');
-                    return;
-                }
-
-                let unreadCount = 0;
-                const keys = Object.keys(data).reverse();
-
-                keys.forEach(key => {
+                let unread = 0;
+                Object.keys(data).reverse().forEach(key => {
                     const req = data[key];
-                    const isRead = req.status === 'read';
-                    if(!isRead) unreadCount++;
-                    
-                    const date = req.timestamp ? new Date(req.timestamp).toLocaleDateString() : 'Unknown Date';
+                    if(req.status === 'new') unread++;
                     const div = document.createElement('div');
-                    div.className = `request-item ${req.priority} ${isRead ? 'read' : ''} bg-gray-900 p-4 rounded-lg shadow-md flex justify-between items-start`;
-                    
-                    div.innerHTML = `
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="text-xs font-bold px-2 py-0.5 rounded bg-gray-800 border border-gray-600 text-gray-300">${req.priority}</span>
-                                <h3 class="font-bold text-white text-lg">${escapeHtml(req.subject)} ${!isRead ? '<span class="ml-2 inline-block w-2 h-2 bg-green-500 rounded-full"></span>' : ''}</h3>
-                            </div>
-                            <p class="text-xs text-gray-500 mb-2">From: ${escapeHtml(req.sender)} • ${date}</p>
-                            <p class="text-gray-300 whitespace-pre-wrap text-sm">${escapeHtml(req.description)}</p>
-                        </div>
-                        <div class="ml-4 flex flex-col gap-2">
-                             <button class="text-xs px-3 py-1 rounded border border-gray-600 hover:bg-gray-700 transition text-gray-300" onclick="window.toggleStatus('${key}', '${req.status}')">${isRead ? 'Mark Unread' : 'Mark Read'}</button>
-                             <button class="text-xs bg-red-900/50 text-red-200 px-3 py-1 rounded hover:bg-red-900 transition border border-red-800" onclick="window.deleteRequest('${key}')">Delete</button>
-                        </div>
-                    `;
+                    div.className = `request-item ${req.priority} ${req.status === 'read' ? 'read' : ''} bg-gray-900 p-4 rounded shadow mb-2 flex justify-between`;
+                    div.innerHTML = `<div><h3 class="font-bold text-white">${req.subject}</h3><p class="text-sm text-gray-400">${req.sender} - ${req.description}</p></div>
+                    <div class="flex gap-2"><button class="text-xs border px-2 rounded" onclick="window.toggleStatus('${key}', '${req.status}')">${req.status === 'read' ? 'Mark Unread' : 'Mark Read'}</button><button class="text-xs bg-red-900 px-2 rounded" onclick="window.deleteRequest('${key}')">Del</button></div>`;
                     list.appendChild(div);
                 });
-
-                if(unreadCount > 0) {
-                    badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-                    badge.classList.remove('hidden');
-                } else {
-                    badge.classList.add('hidden');
-                }
+                if(unread > 0) { badge.innerText = unread; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
             });
         };
 
-        // --- GITHUB PUBLISHER LOGIC ---
-        const codeForm = document.getElementById('code-publish-form');
-        const codeStatus = document.getElementById('code-status');
-
-        codeForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btn-create-publish');
-            btn.disabled = true;
-            btn.textContent = "Processing...";
-            codeStatus.textContent = "Connecting to GitHub...";
-            codeStatus.className = "mt-4 text-center font-mono text-sm text-yellow-400";
-
-            // 1. Inputs
-            const token = document.getElementById('gh-token').value;
-            const repo = document.getElementById('gh-repo').value;
-            const path = document.getElementById('cp-path').value;
-            const content = document.getElementById('cp-code').value;
-            
-            const title = document.getElementById('cp-title').value;
-            const category = document.getElementById('cp-category').value;
-            const summary = document.getElementById('cp-summary').value;
-            const image = document.getElementById('cp-image').value;
-
-            try {
-                // 2. Upload to GitHub
-                const base64Content = btoa(unescape(encodeURIComponent(content))); 
-                const url = `https://api.github.com/repos/${repo}/contents/${path}`;
-                
-                const response = await fetch(url, {
-                    method: "PUT",
-                    headers: {
-                        "Authorization": `token ${token}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        message: `New Post: ${title}`,
-                        content: base64Content
-                    })
-                });
-
-                if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(`GitHub: ${errData.message}`);
-                }
-
-                codeStatus.textContent = "File Created! Updating Firebase...";
-                
-                // 3. Update Firebase
-                await push(ref(db, 'content'), {
-                    type: 'post', title, category, summary, linkUrl: path, imageUrl: image,
-                    timestamp: serverTimestamp(), authorId: userId
-                });
-
-                codeStatus.textContent = "Success! Page Live.";
-                codeStatus.className = "mt-4 text-center font-mono text-sm text-green-400";
-                
-                // Reset Fields
-                document.getElementById('cp-title').value = '';
-                document.getElementById('cp-summary').value = '';
-                document.getElementById('cp-code').value = '';
-
-            } catch (error) {
-                console.error(error);
-                codeStatus.textContent = "FAILED: " + error.message;
-                codeStatus.className = "mt-4 text-center font-mono text-sm text-red-500";
-            } finally {
-                btn.disabled = false;
-                btn.textContent = "Create File & Publish";
-            }
-        });
-
-        // --- STANDARD PUBLISH LOGIC ---
-        const postForm = document.getElementById('post-form');
-        const publishBtn = document.getElementById('publish-btn');
-        const statusMessage = document.getElementById('status-message');
-
-        postForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const type = document.querySelector('input[name="contentType"]:checked').value;
-            
-            publishBtn.disabled = true;
-            publishBtn.textContent = "Publishing...";
-            publishBtn.classList.add('opacity-50');
-
-            try {
-                if (type === 'post') {
-                    const title = document.getElementById('post-title').value.trim();
-                    const category = document.getElementById('post-category').value;
-                    const summary = document.getElementById('post-content').value.trim();
-                    const linkUrl = document.getElementById('post-link').value.trim();
-                    const imageUrl = document.getElementById('image-link').value.trim();
-                    
-                    const dateInput = document.getElementById('post-date').value;
-                    const timeInput = document.getElementById('post-time').value;
-                    let timestamp = serverTimestamp();
-                    
-                    if (dateInput) {
-                        const timeStr = timeInput || '12:00:00';
-                        timestamp = new Date(`${dateInput}T${timeStr}`).getTime();
-                    }
-
-                    if(!title || !linkUrl) throw new Error("Title and Link are required");
-
-                    await push(ref(db, 'content'), {
-                        type: 'post', title, category, summary, linkUrl, imageUrl,
-                        timestamp: timestamp, authorId: userId
-                    });
-
-                } else {
-                    const title = document.getElementById('announcement-title').value.trim();
-                    const text = document.getElementById('announcement-text').value.trim();
-                    const from = document.getElementById('announcement-from').value.trim();
-
-                    if(!title || !text) throw new Error("Title and Message are required");
-
-                    await push(ref(db, 'content'), {
-                        type: 'announcement', title, text, from,
-                        timestamp: serverTimestamp(), authorId: userId
-                    });
-                }
-
-                showMessage("Published Successfully!", false);
-                postForm.reset();
-
-            } catch (error) {
-                showMessage(error.message, true);
-            } finally {
-                publishBtn.disabled = false;
-                publishBtn.textContent = "Publish Now";
-                publishBtn.classList.remove('opacity-50');
-            }
-        });
-
         function showMessage(msg, isError) {
-            statusMessage.textContent = msg;
-            statusMessage.classList.remove('hidden', 'bg-green-600', 'bg-red-600');
-            statusMessage.classList.add(isError ? 'bg-red-600' : 'bg-green-600', 'text-white');
-            statusMessage.classList.remove('hidden');
-            setTimeout(() => statusMessage.classList.add('hidden'), 4000);
-        }
-
-        function escapeHtml(text) {
-            if(!text) return "";
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const el = document.getElementById('status-message');
+            el.innerText = msg;
+            el.className = `fixed bottom-5 right-5 px-6 py-3 rounded-lg shadow-lg font-bold z-50 ${isError ? 'bg-red-600' : 'bg-green-600'} text-white`;
+            el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 4000);
         }
     </script>
 </body>
