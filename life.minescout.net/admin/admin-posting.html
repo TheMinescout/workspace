@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Minescouts Life</title>
     
-    <!-- Tailwind CSS for Admin UI -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background-color: #10B981; border-radius: 4px; }
         ::-webkit-scrollbar-track { background-color: #1F2937; }
@@ -67,7 +66,7 @@
             </button>
         </div>
 
-        <!-- TAB 1: STANDARD POST (Link existing files) -->
+        <!-- TAB 1: STANDARD POST -->
         <div id="tab-create" class="tab-content">
             <div class="bg-gray-900 p-6 rounded-xl border border-gray-700 shadow-xl">
                 <h2 class="text-2xl font-bold text-white mb-6">Publish Link / Announcement</h2>
@@ -77,11 +76,11 @@
                     <div>
                         <div class="flex gap-4 items-center bg-gray-800 p-1 rounded-lg border border-gray-700">
                             <label class="flex-1 text-center p-2 cursor-pointer rounded transition hover:bg-gray-700 has-[:checked]:bg-green-600 has-[:checked]:text-white">
-                                <input type="radio" name="contentType" value="post" class="sr-only" checked onchange="toggleForm('post')">
+                                <input type="radio" name="contentType" value="post" class="sr-only" checked onclick="toggleForm('post')">
                                 <span class="font-semibold">Link to File</span>
                             </label>
                             <label class="flex-1 text-center p-2 cursor-pointer rounded transition hover:bg-gray-700 has-[:checked]:bg-green-600 has-[:checked]:text-white">
-                                <input type="radio" name="contentType" value="announcement" class="sr-only" onchange="toggleForm('announcement')">
+                                <input type="radio" name="contentType" value="announcement" class="sr-only" onclick="toggleForm('announcement')">
                                 <span class="font-semibold">Announcement</span>
                             </label>
                         </div>
@@ -151,29 +150,27 @@
             </div>
         </div>
 
-        <!-- TAB 2: CODE PUBLISHER (NEW) -->
+        <!-- TAB 2: CODE PUBLISHER -->
         <div id="tab-code-publisher" class="tab-content hidden">
             <div class="bg-gray-900 p-6 rounded-xl border border-gray-700 shadow-xl border-l-4 border-l-purple-500">
                 <h2 class="text-2xl font-bold text-white mb-2">🚀 Create New File & Publish</h2>
-                <p class="text-gray-400 mb-6 text-sm">This creates a new HTML file in your GitHub repo AND adds it to the Firebase feed.</p>
+                <p class="text-gray-400 mb-6 text-sm">Creates HTML file on GitHub + Adds link to Firebase.</p>
 
                 <form id="code-publish-form" class="space-y-5">
                     
-                    <!-- GitHub Config (Save this in password manager!) -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm text-purple-400 mb-1 font-bold">GitHub Token (PAT)</label>
-                            <input type="password" id="gh-token" class="w-full p-2 rounded border border-purple-900 bg-gray-800 focus:border-purple-500" placeholder="ghp_..." required>
+                            <input type="password" id="gh-token" class="w-full p-2 rounded border border-purple-900 bg-gray-800" placeholder="ghp_..." required>
                         </div>
                         <div>
                             <label class="block text-sm text-purple-400 mb-1 font-bold">Repo Name</label>
-                            <input type="text" id="gh-repo" class="w-full p-2 rounded border border-purple-900 bg-gray-800 focus:border-purple-500" value="TheMinescout/workspace" required>
+                            <input type="text" id="gh-repo" class="w-full p-2 rounded border border-purple-900 bg-gray-800" value="TheMinescout/workspace" required>
                         </div>
                     </div>
 
                     <hr class="border-gray-700 my-4">
 
-                    <!-- Metadata -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm text-gray-400 mb-1">Article Title</label>
@@ -187,24 +184,20 @@
                         </div>
                     </div>
 
-                    <!-- File Path -->
                     <div>
-                        <label class="block text-sm text-gray-400 mb-1">File Path (where to save)</label>
+                        <label class="block text-sm text-gray-400 mb-1">File Path</label>
                         <input type="text" id="cp-path" class="w-full p-3 rounded border font-mono text-sm text-green-400" placeholder="posts/tech/my-new-post.html" required>
-                        <p class="text-xs text-gray-500 mt-1">Example: <code>posts/updates/new-update.html</code></p>
                     </div>
 
-                    <!-- HTML Content -->
                     <div>
                         <label class="block text-sm text-gray-400 mb-1">HTML Code</label>
                         <textarea id="cp-code" rows="10" class="w-full p-3 rounded border font-mono text-xs" placeholder="<!DOCTYPE html>..." required></textarea>
                     </div>
 
-                    <!-- Summary & Image -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                          <div>
                             <label class="block text-sm text-gray-400 mb-1">Image URL</label>
-                            <input type="text" id="cp-image" class="w-full p-3 rounded border" placeholder="../../assests/images/...">
+                            <input type="text" id="cp-image" class="w-full p-3 rounded border" placeholder="../assests/images/...">
                         </div>
                         <div>
                             <label class="block text-sm text-gray-400 mb-1">Short Summary</label>
@@ -213,7 +206,7 @@
                     </div>
 
                     <button type="submit" id="btn-create-publish" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-lg transition duration-200">
-                        Create File & Publish to Feed
+                        Create File & Publish
                     </button>
                 </form>
                 
@@ -221,11 +214,11 @@
             </div>
         </div>
 
-        <!-- TAB 3: INBOX (REQUESTS) -->
+        <!-- TAB 3: INBOX -->
         <div id="tab-inbox" class="tab-content hidden">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-white">Feature Requests</h2>
-                <button onclick="loadRequests()" class="text-sm text-green-400 hover:text-white">Refresh List ↻</button>
+                <button onclick="window.loadRequests()" class="text-sm text-green-400 hover:text-white">Refresh List ↻</button>
             </div>
             
             <div id="requests-list" class="space-y-4">
@@ -235,10 +228,29 @@
 
     </div>
     
-    <!-- Toast Message -->
     <div id="status-message" class="fixed bottom-5 right-5 px-6 py-3 rounded-lg shadow-lg hidden font-bold z-50"></div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- UI SCRIPT (STANDARD) - Handles Tabs & Toggles Instantly -->
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function toggleForm(type) {
+             if (type === 'post') {
+                document.getElementById('post-fields').classList.remove('hidden');
+                document.getElementById('announcement-fields').classList.add('hidden');
+            } else {
+                document.getElementById('post-fields').classList.add('hidden');
+                document.getElementById('announcement-fields').classList.remove('hidden');
+            }
+        }
+    </script>
+
+    <!-- LOGIC SCRIPT (MODULE) - Handles Firebase & GitHub -->
     <script type="module">
         import { db, auth } from "../assests/js/firebase-config.js";
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -252,7 +264,7 @@
                 userId = user.uid;
                 document.getElementById('user-email-display').textContent = user.email;
                 document.getElementById('user-display').classList.remove('hidden');
-                loadRequests(); // Pre-load inbox data
+                window.loadRequests(); // Load inbox
             } else {
                 window.location.href = "../login.html";
             }
@@ -262,25 +274,7 @@
             signOut(auth).then(() => window.location.href = "../index.html");
         });
 
-        // --- UI TABS & TOGGLES ---
-        window.switchTab = (tabName) => {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        };
-
-        window.toggleForm = (type) => {
-             if (type === 'post') {
-                document.getElementById('post-fields').classList.remove('hidden');
-                document.getElementById('announcement-fields').classList.add('hidden');
-            } else {
-                document.getElementById('post-fields').classList.add('hidden');
-                document.getElementById('announcement-fields').classList.remove('hidden');
-            }
-        };
-
-        // --- INBOX LOGIC ---
+        // --- INBOX LOGIC (Exposed to window) ---
         window.deleteRequest = (id) => {
             if(confirm("Permanently delete this request?")) remove(ref(db, `feature_requests/${id}`));
         };
@@ -290,7 +284,7 @@
             update(ref(db, `feature_requests/${id}`), { status: newStatus });
         };
 
-        function loadRequests() {
+        window.loadRequests = function() {
             const list = document.getElementById('requests-list');
             const badge = document.getElementById('notification-badge');
             
@@ -326,8 +320,8 @@
                             <p class="text-gray-300 whitespace-pre-wrap text-sm">${escapeHtml(req.description)}</p>
                         </div>
                         <div class="ml-4 flex flex-col gap-2">
-                             <button class="text-xs px-3 py-1 rounded border border-gray-600 hover:bg-gray-700 transition text-gray-300" onclick="toggleStatus('${key}', '${req.status}')">${isRead ? 'Mark Unread' : 'Mark Read'}</button>
-                             <button class="text-xs bg-red-900/50 text-red-200 px-3 py-1 rounded hover:bg-red-900 transition border border-red-800" onclick="deleteRequest('${key}')">Delete</button>
+                             <button class="text-xs px-3 py-1 rounded border border-gray-600 hover:bg-gray-700 transition text-gray-300" onclick="window.toggleStatus('${key}', '${req.status}')">${isRead ? 'Mark Unread' : 'Mark Read'}</button>
+                             <button class="text-xs bg-red-900/50 text-red-200 px-3 py-1 rounded hover:bg-red-900 transition border border-red-800" onclick="window.deleteRequest('${key}')">Delete</button>
                         </div>
                     `;
                     list.appendChild(div);
@@ -340,7 +334,7 @@
                     badge.classList.add('hidden');
                 }
             });
-        }
+        };
 
         // --- GITHUB PUBLISHER LOGIC ---
         const codeForm = document.getElementById('code-publish-form');
@@ -350,17 +344,16 @@
             e.preventDefault();
             const btn = document.getElementById('btn-create-publish');
             btn.disabled = true;
-            btn.textContent = "Creating File on GitHub...";
-            codeStatus.textContent = "Connecting to GitHub API...";
+            btn.textContent = "Processing...";
+            codeStatus.textContent = "Connecting to GitHub...";
             codeStatus.className = "mt-4 text-center font-mono text-sm text-yellow-400";
 
-            // 1. Gather Data
+            // 1. Inputs
             const token = document.getElementById('gh-token').value;
             const repo = document.getElementById('gh-repo').value;
             const path = document.getElementById('cp-path').value;
             const content = document.getElementById('cp-code').value;
             
-            // Metadata for Firebase
             const title = document.getElementById('cp-title').value;
             const category = document.getElementById('cp-category').value;
             const summary = document.getElementById('cp-summary').value;
@@ -368,7 +361,7 @@
 
             try {
                 // 2. Upload to GitHub
-                const base64Content = btoa(unescape(encodeURIComponent(content))); // Handle Unicode
+                const base64Content = btoa(unescape(encodeURIComponent(content))); 
                 const url = `https://api.github.com/repos/${repo}/contents/${path}`;
                 
                 const response = await fetch(url, {
@@ -385,28 +378,21 @@
 
                 if (!response.ok) {
                     const errData = await response.json();
-                    throw new Error(`GitHub Error: ${errData.message}`);
+                    throw new Error(`GitHub: ${errData.message}`);
                 }
 
-                codeStatus.textContent = "File Created! Updating Firebase Feed...";
+                codeStatus.textContent = "File Created! Updating Firebase...";
                 
-                // 3. Update Firebase Feed
+                // 3. Update Firebase
                 await push(ref(db, 'content'), {
-                    type: 'post',
-                    title: title,
-                    category: category,
-                    summary: summary,
-                    linkUrl: path, // Assumes relative path like "posts/tech/..."
-                    imageUrl: image,
-                    timestamp: serverTimestamp(),
-                    authorId: userId
+                    type: 'post', title, category, summary, linkUrl: path, imageUrl: image,
+                    timestamp: serverTimestamp(), authorId: userId
                 });
 
                 codeStatus.textContent = "Success! Page Live.";
                 codeStatus.className = "mt-4 text-center font-mono text-sm text-green-400";
-                showMessage("Published to GitHub & Firebase!", false);
                 
-                // Reset form partially (keep token)
+                // Reset Fields
                 document.getElementById('cp-title').value = '';
                 document.getElementById('cp-summary').value = '';
                 document.getElementById('cp-code').value = '';
@@ -415,10 +401,9 @@
                 console.error(error);
                 codeStatus.textContent = "FAILED: " + error.message;
                 codeStatus.className = "mt-4 text-center font-mono text-sm text-red-500";
-                showMessage("Error: " + error.message, true);
             } finally {
                 btn.disabled = false;
-                btn.textContent = "Create File & Publish to Feed";
+                btn.textContent = "Create File & Publish";
             }
         });
 
@@ -474,8 +459,6 @@
 
                 showMessage("Published Successfully!", false);
                 postForm.reset();
-                document.querySelector('input[value="post"]').checked = true;
-                toggleForm('post');
 
             } catch (error) {
                 showMessage(error.message, true);
@@ -489,12 +472,7 @@
         function showMessage(msg, isError) {
             statusMessage.textContent = msg;
             statusMessage.classList.remove('hidden', 'bg-green-600', 'bg-red-600');
-            
-            if(isError) {
-                statusMessage.classList.add('bg-red-600', 'text-white');
-            } else {
-                statusMessage.classList.add('bg-green-600', 'text-white');
-            }
+            statusMessage.classList.add(isError ? 'bg-red-600' : 'bg-green-600', 'text-white');
             statusMessage.classList.remove('hidden');
             setTimeout(() => statusMessage.classList.add('hidden'), 4000);
         }
