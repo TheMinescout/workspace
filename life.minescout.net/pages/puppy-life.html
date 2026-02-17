@@ -15,7 +15,6 @@
     <link rel="icon" type="image/png" href="../assests/images/favicon.png">
 
     <style>
-        /* Modern Card Styling */
         .puppy-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -25,7 +24,7 @@
 
         .puppy-card {
             position: relative;
-            height: 250px;
+            height: 350px;
             border-radius: 12px;
             overflow: hidden;
             display: flex;
@@ -41,30 +40,57 @@
         }
 
         .card-overlay {
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
             width: 100%;
-            padding: 20px;
+            padding: 25px;
             color: white;
+            z-index: 2;
         }
 
-        .card-overlay h3 { margin: 0; font-size: 1.5rem; }
-        .card-overlay p { margin: 5px 0 0; opacity: 0.9; font-size: 0.9rem; }
+        .card-overlay h3 { margin: 0; font-size: 1.8rem; }
+        .card-overlay p { margin: 5px 0 0; opacity: 0.9; font-weight: bold; color: #DD8566; }
 
-        /* Specific Backgrounds - Linking to the images we used in the articles */
+        .feeling-tag {
+            display: inline-block;
+            background: rgba(221, 133, 102, 0.2);
+            border: 1px solid #DD8566;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+            color: #ffb094;
+        }
+
+        .stats-container {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 10px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-label { opacity: 0.7; font-weight: normal; }
+        .photo-timestamp { font-size: 0.7rem; opacity: 0.5; font-style: italic; margin-top: 5px; }
+
         .monty-bg { 
-            background: url('../assests/images/puppy-life/Monty-Life-Homepage.png') center/cover; 
+            background: url('../../assests/images/puppy-life/Monty-Life-Homepage.png') center/cover; 
             background-color: #222;
         }
         .nigel-bg { 
-            background: url('../assests/images/puppy-life/Nigel-Life-Hompage.png') center/cover; 
+            background: url('../../assests/images/puppy-life/Nigel-Life-Homepage.png') center/cover; 
             background-color: #d2b48c;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 650px) {
             .puppy-grid { grid-template-columns: 1fr; }
         }
-
-        #user-display a { text-decoration: none; color: white; }
     </style>
 </head>
 
@@ -72,9 +98,7 @@
 
     <header class="main-header">
         <div class="container site-title-container">
-            <div id="auth-container">
-                <a href="../login.html" id="login-link">Login</a>
-            </div>
+            <div id="auth-container"><a href="../login.html" id="login-link">Login</a></div>
             <div class="site-title-wrapper">
                 <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
                 <p class="tagline">Puppy Life</p>
@@ -93,34 +117,41 @@
                 <div class="post-main">
                     <article class="post-full">
                         <h1>Welcome to Puppy Life!</h1>
-                        <p class="post-meta">Dedicated to the adventures of Monty and Nigel.</p>
+                        <p class="post-meta">Official records of the Carleton Pack</p>
 
                         <div class="post-content">
-                            <p>This section of the site is dedicated to the lives of our wonderful dogs. Choose a puppy below to explore their history, see their latest pictures, and read their documentary updates!</p>
+                            <p>Choose a profile below to view their full documentary history and stats. Ages are automatically updated.</p>
                         </div>
 
                         <div class="puppy-grid">
                             <a href="../posts/puppy/monty.html" class="puppy-card monty-bg">
                                 <div class="card-overlay">
+                                    <div class="feeling-tag">Monthly Feeling: Stoic & Healthy</div>
                                     <h3>Monty</h3>
-                                    <p>The Resilient Veteran »</p>
+                                    <p>The Resilient Veteran</p>
+                                    <div class="stats-container">
+                                        <div class="stat-row"><span class="stat-label">Birthday:</span> <span>Nov 11, 2019</span></div>
+                                        <div class="stat-row"><span class="stat-label">Current Age:</span> <span id="monty-age">Calculating...</span></div>
+                                        <div class="stat-row"><span class="stat-label">Diet:</span> <span>Medical (Vegan)</span></div>
+                                        <div class="photo-timestamp">Captured: Mid-2025</div>
+                                    </div>
                                 </div>
                             </a>
 
                             <a href="../posts/puppy/nigel.html" class="puppy-card nigel-bg">
                                 <div class="card-overlay">
+                                    <div class="feeling-tag">Monthly Feeling: Hyper-Active</div>
                                     <h3>Nigel</h3>
-                                    <p>The Agent of Chaos »</p>
+                                    <p>The Agent of Chaos</p>
+                                    <div class="stats-container">
+                                        <div class="stat-row"><span class="stat-label">Birthday:</span> <span>Dec 21, 2023</span></div>
+                                        <div class="stat-row"><span class="stat-label">Current Age:</span> <span id="nigel-age">Calculating...</span></div>
+                                        <div class="stat-row"><span class="stat-label">Hobby:</span> <span>Yard Wrestling</span></div>
+                                        <div class="photo-timestamp">Captured: Mid-2025</div>
+                                    </div>
                                 </div>
                             </a>
                         </div>
-                        
-                        <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;">
-
-                        <h2 style="text-align: center; color: #555;">Recent Moments</h2>
-                        <script src="https://elfsightcdn.com/platform.js" async></script>
-                        <div class="elfsight-app-38f1d3cf-1351-4d60-a267-3a1bb50966f1" data-elfsight-app-lazy></div>
-
                     </article>
                 </div>
             </main>
@@ -134,10 +165,25 @@
 
     <footer class="main-footer">
         <div class="container">
-            <p>Email: <a href="mailto:theminescout@minescout.net";">theminescout@minescouts.net</a></p>
             <p id="copyright">© 2026 Minescouts Life. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        function calculateAge(birthDate) {
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const m = today.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            return age + " Years";
+        }
+
+        document.getElementById('monty-age').innerText = calculateAge('2019-11-11');
+        document.getElementById('nigel-age').innerText = calculateAge('2023-12-21');
+    </script>
 
     <script type="module" src="../assests/js/auth.js"></script>
     <script type="module" src="../assests/js/homepage.js"></script>
@@ -145,4 +191,3 @@
 
 </body>
 </html>
-
