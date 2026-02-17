@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -6,146 +6,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BSA Eagle Scout Updates - Minescouts Life</title>
 
-    <!-- Link to Google Fonts for the 'Inter' font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- The path goes up one directory to find the CSS file -->
     <link rel="stylesheet" href="../../assests/css/homepage.css">
     <link rel="icon" type="image/png" href="../../assests/images/favicon.png">
-
+    
+    <style>
+        /* Maintaining consistency with the AI One-Shot Battle styling for reviews/notes */
+        .lesson-box { 
+            background-color: #f9f9f9; 
+            border-left: 4px solid #ce1126; /* BSA Red */
+            padding: 15px; 
+            margin-top: 15px; 
+            color: #333; 
+            line-height: 1.6; 
+            font-style: italic;
+        }
+        .status-badge {
+            display: inline-block;
+            background-color: #5a8a5a;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Header Section -->
     <header class="main-header">
         <div class="container site-title-container">
             <div id="auth-container">
-                <a href="/login.html" id="login-link">Login</a>
+                <a href="../../login.html" id="login-link">Login</a>
             </div>
             <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Minescouts
-                        Life</a></h1>
+                <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
                 <p class="tagline">Eagle Rank</p>
             </div>
             <div id="user-display" class="hidden">
-                <span id="user-email-display"></span>
-                <button id="sign-out-btn">Sign Out</button>
+                <a href="../../account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
             </div>
         </div>
     </header>
 
-    <!-- This is the corrected full-width wrapper -->
     <div class="main-content-area">
-        <!-- This container inside constrains the content width and enables flexbox -->
         <div class="container">
 
-            <!-- Main content area for a single post -->
             <main class="post-main" data-post-id="eagle-scout-progress-updates">
 
                 <a href="../Footer/updates.html" class="back-link">« Back to Updates</a>
 
                 <article class="post-full">
-                    <h1>Minescouts Eagle Progress</h1>
-                    <p class="post-meta">Originally posted on April 11, 2025 by The Minescout Scouter, Updated 8/23/2025
-                    </p>
+                    <h1>Minescouts Eagle Progress: The Home Stretch</h1>
+                    <p class="post-meta">Originally posted on April 11, 2025 by The Minescout Scouter | <strong>Updated February 17, 2026</strong></p>
 
-                    <img src="../Images/Updates/Rank Updates.png" alt="BSA Rank Updates" class="post-image-full">
+                    <img src="../Images/Updates/Rank Updates.png" alt="BSA Eagle Scout Progress" class="post-image-full">
 
                     <div class="post-content">
-                        <p>Welcome to The Minescout Scouter. Here I post my updates on my eagle scout rank, the highest
-                            rank of BSA scouting available. Below is a progress bar on what I have completed for this
-                            rank.</p>
-                        <p>---</p>
-                        <!-- Container for the static progress component -->
-                        <!-- Main container for the progress bar component -->
+                        <p>The journey to Eagle Scout is nearly complete. After years of camping, merit badges, and service, I am officially in the final stage. Below is the updated progress toward the highest rank in BSA Scouting.</p>
+                        
+                        <hr>
+                        
                         <div class="progress-container">
-                            <!-- Overview name -->
-                            <div class="progress-bar-name">Rank Progress</div>
-
-                            <!-- Wrapper for the bar and label -->
+                            <div class="progress-bar-name">Total Eagle Rank Progress</div>
                             <div class="progress-bar-wrapper">
-                                <!-- The progress fill -->
-                                <div id="progressBarFill" class="progress-bar-fill" style="width: 50%;"></div>
-                                <!-- The percentage label -->
-                                <span id="progressBarPercent" class="progress-bar-percent">67%</span>
+                                <div id="progressBarFill" class="progress-bar-fill" style="width: 96%;"></div>
+                                <span id="progressBarPercent" class="progress-bar-percent">96%</span>
                             </div>
-
-
                         </div>
 
-                        <p>---</p>
+                        <hr>
 
-                        <h2>Eagle Project</h2>
-                        <p>One of the largest and most time consuming requirements of earning this rank is leading a
-                            project.</p>
-                        <h3>What is Done?</h3>
-                        <p>I have figured out the project, which is creating a little free library. I have also gone out
-                            and met with an official from the city, and got the location and idea approved for this
-                            project. More Recently, I have constructed the Little Free Libray and emailed the city to
-                            plan for installation</p>
-                        <h3>What I'm Doing</h3>
-                        <p>I have recently gotten all of my signatures for the Eagle Project Proposal, and have
-                            constructed the kit with hopes to install the project by Sep. 2025.</p>
+                        <h2>Eagle Project: Little Free Library</h2>
+                        <div class="status-badge">Completed & Installed</div>
+                        <p>The Little Free Library was successfully installed as planned in September 2025. It stands as a permanent fixture in the community, providing free books for all neighbors.</p>
+                        
+                        <h3>The Numbers & Logistics</h3>
+                        <p>The project totaled <strong>69 hours</strong> of service between planning, construction, and the final installation. While the physical work was rewarding, it wasn't without its hurdles. We faced a budget challenge when a wrong kit was ordered that couldn't be returned, putting us slightly over budget—a real-world lesson in logistics and double-checking orders!</p>
 
-                        <h2>Letters of Recomendation</h2>
-                        <p>These are letters to 4 people that show that you follow the scout law and oath in your
-                            everyday life.</p>
-                        <h3>What is Done?</h3>
-                        <p>I have sent out emails to 5 teachers, and all of them have accepted. So far 4 of them have
-                            sent in the final, and I have the 5th.</p>
+                        <div class="lesson-box">
+                            <strong>The Leadership Lesson:</strong><br>
+                            "The hardest part of this project wasn't the construction or the paperwork; it was learning to step back. As a leader, I had to resist the urge to do everything myself and trust my team to help. Letting go of total control allowed the project to move faster and gave others a chance to contribute."
+                        </div>
 
-                        <h2>Merit Badges</h2>
-                        <p>Merit badges are work that you do (kind of like school work) where you have to complete
-                            different requirements to recive them</p>
-                        <h3>What I have Left</h3>
-                        <p>I have completed majority of my merit badges. All I have left are Cooking, Camping, and
-                            Sustainability.</p>
+                        <h2>Merit Badges & Paperwork</h2>
+                        <p>I have officially <strong>completed all merit badges</strong> required for the Eagle rank, including the final three: Cooking, Camping, and Sustainability. My 21+ badges are signed off and recorded.</p>
+                        
+                        <p>All five Letters of Recommendation from my teachers have been received and accepted by the council. The formal Eagle Scout Rank Application has been submitted and verified.</p>
+
+                        <div class="official-version-box">
+                            <h2>🗓️ The Final Step: Board of Review</h2>
+                            <p>Everything has led to this. My Eagle Board of Review (BOR) is officially on the calendar for <strong>March 11, 2026</strong>. This is the final interview where I will represent my journey and my project to the district committee.</p>
+                        </div>
 
                         <h2>The End</h2>
-                        <p>Thanks for following,<br>The Minescout Scouters.</p>
+                        <p>Thanks for following this journey from the very first rank to the threshold of Eagle.<br>
+                        <strong>The Minescout Scouters.</strong></p>
                     </div>
                 </article>
-
                 
             </main>
 
-            <!-- The sidebar is a direct child of the container, alongside <main> -->
-           <aside id="sidebar">
-    <!-- This empty div is where the sidebar will appear -->
-    <div id="sidebar-container"></div> 
-</aside>
-
-<!-- Add this script at the bottom of your body, near your other scripts -->
+            <aside id="sidebar">
+                <div id="sidebar-container"></div> 
+            </aside>
 
         </div>
+    </div>
 
-    </div> <!-- /.main-content-area -->
-
-    <!-- Footer -->
     <footer class="main-footer">
         <div class="container">
             <p id="copyright">© 2026 Minescouts Life. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- ======================= FIREBASE SETUP (REQUIRED FOR COMMENTS) ======================= -->
-    <!-- TODO: Fill in your own API Key from your Firebase Project Settings! -->
-
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-
-
-    <!-- The path goes up one directory to find the JS file -->
-    <script src="../../assests/js/homepage.js" defer></script>
-    <!-- Adjust the path ../ if you are inside a folder -->
-<script type="module" src="/assests/js/auth.js"></script>
-        <script src="assests/js/loader.js"></script>
+    <script type="module" src="../../assests/js/auth.js"></script>
+    <script type="module" src="../../assests/js/homepage.js"></script>
+    <script src="../../assests/js/loader.js"></script>
 </body>
-
 </html>
+
+<p hidden>At 96% completion, the Eagle Scout journey reaches the finish line! With the project installed and 69 service hours logged, only the Board of Review on March 11 stands between the scout and the highest rank.</p>
