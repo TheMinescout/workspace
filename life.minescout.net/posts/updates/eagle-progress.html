@@ -14,26 +14,106 @@
     <link rel="icon" type="image/png" href="../../assests/images/favicon.png">
     
     <style>
-        /* Maintaining consistency with the AI One-Shot Battle styling for reviews/notes */
+        /* --- Progress Bar CSS --- */
+        .progress-container {
+            margin: 30px 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .progress-bar-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 30px;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5a8a5a, #76b076);
+            transition: width 1.5s ease-in-out;
+            border-radius: 15px 0 0 15px;
+            position: relative;
+        }
+
+        /* Animated stripes for the "home stretch" */
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background-image: linear-gradient(
+                -45deg, 
+                rgba(255, 255, 255, .2) 25%, 
+                transparent 25%, 
+                transparent 50%, 
+                rgba(255, 255, 255, .2) 50%, 
+                rgba(255, 255, 255, .2) 75%, 
+                transparent 75%
+            );
+            background-size: 50px 50px;
+            animation: move-stripes 2s linear infinite;
+        }
+
+        @keyframes move-stripes {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .progress-bar-percent {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #333;
+            z-index: 2;
+        }
+
+        /* --- Article Specific Components --- */
         .lesson-box { 
-            background-color: #f9f9f9; 
+            background-color: #fef9f9; 
             border-left: 4px solid #ce1126; /* BSA Red */
-            padding: 15px; 
-            margin-top: 15px; 
+            padding: 20px; 
+            margin: 25px 0; 
             color: #333; 
             line-height: 1.6; 
-            font-style: italic;
+            border-radius: 0 8px 8px 0;
         }
+        
         .status-badge {
             display: inline-block;
             background-color: #5a8a5a;
             color: white;
-            padding: 2px 10px;
+            padding: 4px 12px;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .official-version-box { 
+            background-color: #fff; 
+            border: 2px solid #5a8a5a; 
+            border-radius: 8px; 
+            padding: 25px; 
+            margin: 40px 0; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .official-version-box h2 { 
+            color: #5a8a5a; 
+            margin-top: 0; 
         }
     </style>
 </head>
@@ -72,10 +152,8 @@
                     <div class="post-content">
                         <p>The journey to Eagle Scout is nearly complete. After years of camping, merit badges, and service, I am officially in the final stage. Below is the updated progress toward the highest rank in BSA Scouting.</p>
                         
-                        <hr>
-                        
                         <div class="progress-container">
-                            <div class="progress-bar-name">Total Eagle Rank Progress</div>
+                            <div class="progress-bar-name">Rank Progress</div>
                             <div class="progress-bar-wrapper">
                                 <div id="progressBarFill" class="progress-bar-fill" style="width: 96%;"></div>
                                 <span id="progressBarPercent" class="progress-bar-percent">96%</span>
@@ -89,25 +167,23 @@
                         <p>The Little Free Library was successfully installed as planned in September 2025. It stands as a permanent fixture in the community, providing free books for all neighbors.</p>
                         
                         <h3>The Numbers & Logistics</h3>
-                        <p>The project totaled <strong>69 hours</strong> of service between planning, construction, and the final installation. While the physical work was rewarding, it wasn't without its hurdles. We faced a budget challenge when a wrong kit was ordered that couldn't be returned, putting us slightly over budget—a real-world lesson in logistics and double-checking orders!</p>
+                        <p>The project totaled <strong>69 hours</strong> of service. While the physical work was rewarding, we faced a real-world hurdle when a wrong kit was ordered that couldn't be returned, putting the project slightly over budget—a valuable lesson in logistics.</p>
 
                         <div class="lesson-box">
                             <strong>The Leadership Lesson:</strong><br>
-                            "The hardest part of this project wasn't the construction or the paperwork; it was learning to step back. As a leader, I had to resist the urge to do everything myself and trust my team to help. Letting go of total control allowed the project to move faster and gave others a chance to contribute."
+                            "The hardest part of this project wasn't the construction; it was learning to step back. As a leader, I had to resist the urge to do everything myself and trust my team to help. Letting go of total control allowed the project to move faster and gave others a chance to contribute."
                         </div>
 
                         <h2>Merit Badges & Paperwork</h2>
-                        <p>I have officially <strong>completed all merit badges</strong> required for the Eagle rank, including the final three: Cooking, Camping, and Sustainability. My 21+ badges are signed off and recorded.</p>
-                        
-                        <p>All five Letters of Recommendation from my teachers have been received and accepted by the council. The formal Eagle Scout Rank Application has been submitted and verified.</p>
+                        <p>I have officially <strong>completed all merit badges</strong> required for the Eagle rank. All five Letters of Recommendation from my teachers have been received and accepted by the council. The formal Eagle Scout Rank Application has been submitted and verified.</p>
 
                         <div class="official-version-box">
-                            <h2>🗓️ The Final Step: Board of Review</h2>
-                            <p>Everything has led to this. My Eagle Board of Review (BOR) is officially on the calendar for <strong>March 11, 2026</strong>. This is the final interview where I will represent my journey and my project to the district committee.</p>
+                            <h2>🗓️ Final Step: Board of Review</h2>
+                            <p>Everything has led to this. My Eagle Board of Review (BOR) is officially scheduled for <strong>March 11, 2026</strong>. This is the final interview where I represent my journey and my project to the district committee.</p>
                         </div>
 
                         <h2>The End</h2>
-                        <p>Thanks for following this journey from the very first rank to the threshold of Eagle.<br>
+                        <p>Thanks for following this journey.<br>
                         <strong>The Minescout Scouters.</strong></p>
                     </div>
                 </article>
