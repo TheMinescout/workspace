@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
     
-    // --- 1. PATH CALCULATION ---
+    // 1. Determine Path Depth
     const path = window.location.pathname;
-    const filename = path.split('/').pop() || "index.html"; // Default to index if root
+    const filename = path.split('/').pop() || "index.html";
     
     let relativePrefix = "./"; 
     if (path.includes("/pages/") || path.includes("/admin/")) {
@@ -11,11 +11,11 @@ document.addEventListener("DOMContentLoaded", function() {
         relativePrefix = "../../";
     }
 
-    // --- 2. SIDEBAR INJECTION ---
+    // 2. Load Sidebar
     const sidebarContainer = document.getElementById('sidebar-container');
     if (sidebarContainer) {
         fetch(relativePrefix + "assests/includes/sidebar.html")
-            .then(res => { if(!res.ok) throw new Error("Sidebar missing"); return res.text(); })
+            .then(res => res.text())
             .then(data => {
                 // Fix links
                 const fixedData = data.replace(/href="\//g, `href="${relativePrefix}`);
@@ -30,48 +30,25 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 });
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error("Sidebar Load Error:", err));
     }
 
-    // --- 3. COMMENTS INJECTION ---
-    // The Manual List of pages that should NOT have comments
+    // 3. Load Comments (If allowed)
     const noCommentsList = [
-        "index.html",
-        "login.html",
-        "account.html",
-        "404.html",
-        "admin-posting.html",
-        "archive.html", // The main archive list
-        "archive-2025.html",// Yearly archives
-        "tech-tips.html" ,
-        "feature-request.html",
-        "coding-projects.html",
-        "updates.html",
-        "beta.html",
-        "",
-        "",
-
-        // Add any other pages here
+        "index.html", "login.html", "account.html", "404.html", 
+        "admin-posting.html", "archive.html", "stats.html", "feature-request.html"
     ];
 
-    // Only load comments if the current file is NOT in the list
     if (!noCommentsList.includes(filename)) {
-        
-        // We inject comments into the <main> tag
         const mainElement = document.querySelector('main');
-        
-        if (mainElement) {
+        // Only inject if main exists and we haven't already injected (check for class)
+        if (mainElement && !document.querySelector('.comments-section')) {
             fetch(relativePrefix + "assests/includes/comments.html")
-                .then(res => { if(!res.ok) throw new Error("Comments file missing"); return res.text(); })
+                .then(res => res.text())
                 .then(data => {
-                    // Append comments to the bottom of Main
                     mainElement.insertAdjacentHTML('beforeend', data);
-                    
-                    // IMPORTANT: Tell homepage.js that comments are ready
-                    const event = new Event('minescout-comments-ready');
-                    document.dispatchEvent(event);
                 })
-                .catch(err => console.log("Comments skipped or error:", err.message));
+                .catch(err => console.log("Comments Load Error:", err));
         }
     }
 });
