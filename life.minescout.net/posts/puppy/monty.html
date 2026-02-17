@@ -1,104 +1,130 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nigel's Life - Minescouts Life</title>
+    
+    <title>Monty's Life - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 
-        <!-- Link to Google Fonts for the 'Inter' font -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-
-        <!-- The path goes up two directories to reach root, then into assests -->
-        <link rel="stylesheet" href="../../assests/css/homepage.css">
-        <link rel="icon" type="image/png" href="../../assests/images/favicon.png">
-
-    </head>
-
+    <link rel="stylesheet" href="../../assests/css/homepage.css">
+    <link rel="icon" type="image/png" href="../../assests/images/favicon.png">
+    
+    <style>
+        .comparison-section { margin-bottom: 40px; }
+        .ai-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .ai-card h3 { margin-top: 0; color: #5a8a5a; }
+        .review-text { background-color: #f9f9f9; border-left: 4px solid #5a8a5a; padding: 15px; margin-top: 15px; color: #333; line-height: 1.6; }
+        .post-image-full { width: 100%; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .rating-box { font-weight: bold; color: #DD8566; margin-bottom: 5px; }
+        .ai-note { font-style: italic; color: #888; font-size: 0.8rem; margin-top: 40px; text-align: center; }
+    </style>
+</head>
 <body>
 
-    <!-- Header Section -->
     <header class="main-header">
         <div class="container site-title-container">
-            <div id="auth-container">
-                <a href="/login.html" id="login-link">Login</a>
-            </div>
+            <div id="auth-container"><a href="../../login.html" id="login-link">Login</a></div>
             <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Puppy
-                        Life</a></h1>
-                <p class="tagline">Nigel</p>
+                <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Puppy Life</p>
             </div>
             <div id="user-display" class="hidden">
-                <span id="user-email-display"></span>
-                <button id="sign-out-btn">Sign Out</button>
+                <a href="../../account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
             </div>
         </div>
     </header>
 
-    <!-- This is the corrected full-width wrapper -->
     <div class="main-content-area">
-        <!-- This container inside constrains the content width and enables flexbox -->
         <div class="container">
-
-            <!-- Main content area for a single post -->
+            
             <main class="post-main" data-post-id="montys-life">
-
+                
                 <a href="../Footer/puppy-life.html" class="back-link">« Back to Puppy Life</a>
 
                 <article class="post-full">
-                    <h1>Monty's Life</h1>
-                    <p class="post-meta">Constantly Updated by Carleton Siblings</p>
+                    <h1>The Resilience of Monty: A Documentary Journey</h1>
+                    <p class="post-meta">Posted on 2/17/26 by Carleton Siblings</p>
 
-                    <img src="../Images/Puppy-life/Monty-Life-Hompage.png" alt="A picture of Monty the dog"
-                        class="post-image-full">
-
+                    <img src="../../assests/images/puppy-life/Monty-Life-Homepage.png" alt="Monty the dog sitting comfortably" class="post-image-full">
+                    
                     <div class="post-content">
-                        <p>This is my life. Woof</p>
-                    </div>
-                </article>
+                        <p>In the quiet corners of the Carleton home, a survivor reigns supreme. Monty, a dog who has faced the trials of a "rough patch" in 2022, has emerged not just as a pet, but as a legend of domestic resilience. This is the story of his recovery, his specialized lifestyle, and the chaotic companion that helped him find his spark again.</p>
+                        
+                        <h2>The 2022 Pivot</h2>
+                        <p>Every documentary has a turning point. For Monty, it was 2022. While the details of the slump are his own, the effects were visible to all. It was a year of transition, requiring a new approach to his health and his happiness. This era marked the beginning of his strict medical diet—no meat, no dairy—transforming him into the healthy, disciplined figure he is today.</p>
 
-               
+                        <h2>The Nigel Intervention</h2>
+                        <p>The turning point in Monty’s documentary arc was the arrival of Nigel. The two have established a high-energy ritual that keeps the neighbors talking: the "Yard Wars." This daily display of grappling and chasing in the backyard is the primary source of Monty's cardio, ensuring the senior dog stays agile.</p>
+
+                        <hr>
+
+                        <h2>Puppy Review: The Monty Files</h2>
+
+                        <div class="ai-card">
+                            <h3>The Specialized Diet</h3>
+                            <div class="rating-box">Rating: 10/10 (The Ultimate Good Boy)</div>
+                            <div class="review-text">
+                                <strong>Observations:</strong> Despite the lack of meat and dairy, Monty treats his medical food like a Michelin-star meal. His dedication to his health is statistically significant.
+                            </div>
+                        </div>
+
+                        <div class="ai-card">
+                            <h3>The Command Center: The Couch</h3>
+                            <div class="rating-box">Rating: Infinite Comfort</div>
+                            <div class="review-text">
+                                <strong>Observations:</strong> If Monty is not in the yard, he is on the couch. It is his primary base of operations, his sanctuary, and his favorite place to judge the household's activities.
+                            </div>
+                        </div>
+
+                        <div class="ai-card">
+                            <h3>The Arch-Nemesis: Waking Up</h3>
+                            <div class="rating-box">Rating: -5/10 (Would Not Recommend)</div>
+                            <div class="review-text">
+                                <strong>Observations:</strong> While the yard fights are exhilarating, the transition from sleep to consciousness remains Monty's greatest struggle. The act of waking up is officially the villain of his story.
+                            </div>
+                        </div>
+
+                        <div class="ai-card">
+                            <h3>Overall Quality of Life</h3>
+                            <div class="rating-box">Current Rating: 11/10</div>
+                            <div class="review-text">
+                                <strong>Verdict:</strong> Since the 2022 slump, Monty has broken the scale. With a couch to call his own, a medical diet he loves, and a brother to fight in the grass, Monty is living his best life.
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <p class="ai-note">Note: This article was written with the assistance of AI, based on interviews with the Carleton Siblings.</p>
+                </article>
+                
             </main>
 
-            <!-- The sidebar is a direct child of the container, alongside <main> -->
             <aside id="sidebar">
-    <!-- This empty div is where the sidebar will appear -->
-    <div id="sidebar-container"></div> 
-</aside>
+                <div id="sidebar-container"></div>
+            </aside>
 
-        </div> <!-- /.container -->
-    </div> <!-- /.main-content-area -->
-
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="container">
-            <p id="copyright">© 2026 Minescouts Life. All rights reserved.</p>
         </div>
-    </footer>
+    </div>
 
-    <!-- ======================= FIREBASE SETUP ======================= -->
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
+    </footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-
-    <!-- The path goes up two directories to reach root, then into assests -->
-        <!-- The path goes up one directory to find the JS file -->
-<!-- BOTTOM OF EVERY HTML PAGE -->
-
-    <!-- DYNAMIC LOADERS -->
-    <!-- 1. Auth (Login/User logic) -->
     <script type="module" src="../../assests/js/auth.js"></script>
-
-    <!-- 2. Homepage Logic (Votes/Comments/Grid) -->
     <script type="module" src="../../assests/js/homepage.js"></script>
-
-    <!-- 3. Sidebar Loader -->
     <script src="../../assests/js/loader.js"></script>
 
 </body>
 </html>
+
+<p hidden>A 2022 rough patch couldn't stop him: see how Monty hit an 11/10 quality of life with a new diet, a new brother, and his favorite couch.</p>
