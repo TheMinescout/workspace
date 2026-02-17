@@ -6,43 +6,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Puppy Life!! - Minescouts Life</title>
 
-    <!-- Link to Google Fonts for the 'Inter' font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- CSS Links (Updated paths) -->
     <link rel="stylesheet" href="../assests/css/homepage.css">
     <link rel="stylesheet" href="../assests/css/features.css">
     <link rel="icon" type="image/png" href="../assests/images/favicon.png">
 
     <style>
-        .dismiss-btn {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            padding: 2px 8px;
-            font-size: 0.75rem;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 15px;
-            float: right;
+        /* Modern Card Styling */
+        .puppy-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
         }
 
-        .dismiss-btn:hover {
-            background-color: #dc2626;
-        }
-
-        #user-display a {
+        .puppy-card {
+            position: relative;
+            height: 250px;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
             text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .puppy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .card-overlay {
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            width: 100%;
+            padding: 20px;
             color: white;
         }
+
+        .card-overlay h3 { margin: 0; font-size: 1.5rem; }
+        .card-overlay p { margin: 5px 0 0; opacity: 0.9; font-size: 0.9rem; }
+
+        /* Specific Backgrounds - Linking to the images we used in the articles */
+        .monty-bg { 
+            background: url('../assests/images/puppy-life/Monty-Life-Homepage.png') center/cover; 
+            background-color: #222;
+        }
+        .nigel-bg { 
+            background: url('../assests/images/puppy-life/Nigel-Life-Homepage.png') center/cover; 
+            background-color: #d2b48c;
+        }
+
+        @media (max-width: 600px) {
+            .puppy-grid { grid-template-columns: 1fr; }
+        }
+
+        #user-display a { text-decoration: none; color: white; }
     </style>
 </head>
 
 <body>
 
-    <!-- Header Section -->
     <header class="main-header">
         <div class="container site-title-container">
             <div id="auth-container">
@@ -59,40 +86,38 @@
         </div>
     </header>
 
-    <!-- Main Content Wrapper -->
     <div class="main-content-area">
         <div class="container">
 
-            <!-- Main Content -->
             <main class="main-content">
                 <div class="post-main">
                     <article class="post-full">
                         <h1>Welcome to Puppy Life!</h1>
-                        <p class="post-meta">Meet our dogs, Monty and Nigel.</p>
-
-                        <!-- Image path updated to assests/images -->
-                        <img src="../assests/images/Puppy-life/Puppy-Homepage.jpg" alt="Two puppies playing" class="post-image-full" onerror="this.style.display='none'">
+                        <p class="post-meta">Dedicated to the adventures of Monty and Nigel.</p>
 
                         <div class="post-content">
-                            <p>This section of the site is dedicated to the lives of our wonderful dogs. Choose a puppy below to see all of their posts, pictures, and updates!</p>
+                            <p>This section of the site is dedicated to the lives of our wonderful dogs. Choose a puppy below to explore their history, see their latest pictures, and read their documentary updates!</p>
                         </div>
 
-                        <!-- Links updated to posts/puppy/ folder -->
-                        <a href="../posts/puppy/monty.html" class="info-box-link">
-                            <div class="info-box info-box-solid" style="background-color: black;">
-                                <h3 class="info-title">Monty</h3>
-                                <p class="info-subtitle">Click here to see Monty's page</p>
-                            </div>
-                        </a>
+                        <div class="puppy-grid">
+                            <a href="../posts/puppy/monty.html" class="puppy-card monty-bg">
+                                <div class="card-overlay">
+                                    <h3>Monty</h3>
+                                    <p>The Resilient Veteran »</p>
+                                </div>
+                            </a>
 
-                        <a href="../posts/puppy/nigel.html" class="info-box-link">
-                            <div class="info-box info-box-solid" style="background-color: tan;">
-                                <h3 class="info-title">Nigel</h3>
-                                <p class="info-subtitle">Click here to see Nigel's page</p>
-                            </div>
-                        </a>
+                            <a href="../posts/puppy/nigel.html" class="puppy-card nigel-bg">
+                                <div class="card-overlay">
+                                    <h3>Nigel</h3>
+                                    <p>The Agent of Chaos »</p>
+                                </div>
+                            </a>
+                        </div>
                         
-                        <!-- Elfsight Widget -->
+                        <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;">
+
+                        <h2 style="text-align: center; color: #555;">Recent Moments</h2>
                         <script src="https://elfsightcdn.com/platform.js" async></script>
                         <div class="elfsight-app-38f1d3cf-1351-4d60-a267-3a1bb50966f1" data-elfsight-app-lazy></div>
 
@@ -100,7 +125,6 @@
                 </div>
             </main>
 
-            <!-- Modular Sidebar -->
             <aside id="sidebar">
                 <div id="sidebar-container"></div> 
             </aside>
@@ -108,23 +132,15 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="main-footer">
         <div class="container">
-            <p>Phone Num: +1 (425) 559 9127</p>
-            <p>Email: <a href="mailto:theminescout@minescout.net">theminescout@minescouts.net</a></p>
+            <p>Email: <a href="mailto:theminescout@minescout.net" style="color: #DD8566;">theminescout@minescouts.net</a></p>
             <p id="copyright">© 2026 Minescouts Life. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Modular Scripts -->
-    <!-- 1. Auth (Login/Signout) -->
     <script type="module" src="../assests/js/auth.js"></script>
-    
-    <!-- 2. Homepage Logic (Grid/UI) -->
     <script type="module" src="../assests/js/homepage.js"></script>
-    
-    <!-- 3. Sidebar Loader -->
     <script src="../assests/js/loader.js"></script>
 
 </body>
