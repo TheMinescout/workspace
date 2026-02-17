@@ -1,30 +1,29 @@
-<section class="comments-section" style="margin-top: 60px; border-top: 1px solid var(--md-outline); padding-top: 40px;">
-    <h2 style="font-size: 1.5rem; margin-bottom: 25px; color: var(--md-on-surface); font-weight: 700;">Discussion</h2>
+<section class="comments-section" style="margin-top: 60px; border-top: 1px solid #e2e8f0; padding-top: 40px;">
+    <h2 style="font-size: 1.5rem; margin-bottom: 25px; color: #1f2937; font-weight: 700;">Discussion</h2>
 
-    <!-- Comment Form Card -->
-    <div class="comment-form-container" style="background: var(--md-surface-card); padding: 25px; border-radius: var(--radius-card); border: 1px solid var(--md-outline); margin-bottom: 40px; box-shadow: var(--shadow-sm);">
+    <div class="comment-form-container" style="background: #ffffff; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
         <h3 style="margin-top: 0; font-size: 1.1rem; margin-bottom: 20px; font-weight: 600;">Leave a Comment</h3>
         
         <form>
             <div class="form-group" style="margin-bottom: 15px;">
-                <label for="name" style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.85rem; color: var(--md-text-secondary); text-transform: uppercase;">Name</label>
+                <label for="name" style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.85rem; color: #475569; text-transform: uppercase;">Name</label>
                 <input type="text" id="name" name="name" required placeholder="Your Name" 
-                       style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--md-outline); background: var(--md-surface); color: var(--md-on-surface); outline: none; transition: border 0.2s;">
+                       style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; color: #1a1c1e; outline: none;">
             </div>
             
             <div class="form-group" style="margin-bottom: 20px;">
-                <label for="comment" style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.85rem; color: var(--md-text-secondary); text-transform: uppercase;">Comment</label>
+                <label for="comment" style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.85rem; color: #475569; text-transform: uppercase;">Comment</label>
                 <textarea id="comment" name="comment" rows="4" required placeholder="Share your thoughts..." 
-                          style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--md-outline); background: var(--md-surface); color: var(--md-on-surface); outline: none; font-family: inherit; resize: vertical; transition: border 0.2s;"></textarea>
+                          style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; color: #1a1c1e; outline: none; resize: vertical;"></textarea>
             </div>
             
-            <button type="submit" class="submit-button">Post Comment</button>
+            <button type="submit" class="submit-button" style="display: inline-flex; align-items: center; justify-content: center; background-color: #5d8c58; color: white; padding: 10px 24px; border-radius: 50px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s;">
+                Post Comment
+            </button>
         </form>
     </div>
 
-    <!-- Comments List -->
     <div class="comments-list" style="display: flex; flex-direction: column; gap: 20px;">
-        <!-- Javascript will inject comments here -->
-        <p style="color: var(--md-text-secondary); text-align: center; font-style: italic;">Loading comments...</p>
+        <!-- Comments injected here -->
     </div>
 </section>
