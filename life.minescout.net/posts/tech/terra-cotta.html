@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>AI One-Shot Battle: Terra Cotta Suite - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../assests/css/homepage.css">
+    <link rel="stylesheet" href="../../assests/css/AI-ASSISTANT.css">
+    <link rel="icon" type="image/png" href="../../assests/images/favicon.png">
+    
+    <style>
+        .comparison-section { margin-bottom: 40px; }
+        .ai-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .ai-card h3 { margin-top: 0; color: #5a8a5a; }
+        .ai-link { display: inline-block; margin-top: 10px; font-weight: bold; color: #4285F4; text-decoration: none; }
+        .review-text { background-color: #f9f9f9; border-left: 4px solid #5a8a5a; padding: 15px; margin-top: 15px; color: #333; line-height: 1.6; }
+        .prompt-box { background-color: #f4f4f4; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 0.9rem; border: 1px solid #ccc; margin-bottom: 30px; white-space: pre-wrap; line-height: 1.5; color: #444; }
+        .github-btn { display: inline-block; background-color: #DD8566; color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 20px; transition: 0.2s; }
+        .github-btn:hover { background-color: #c07055; transform: translateY(-2px); }
+        .official-version-box { background-color: #fff; border: 2px solid #DD8566; border-radius: 8px; padding: 20px; margin: 40px 0; }
+        .official-version-box h2 { color: #DD8566; margin-top: 0; }
+        .post-image-full { width: 100%; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container"><a href="../../login.html" id="login-link">Login</a></div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Tech Tips</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <a href="../../account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            
+            <main class="post-main" data-post-id="ai-one-shot-battle">
+                
+                <a href="../../pages/tech-tips.html" class="back-link">« Back to Tech Tips</a>
+
+                <article class="post-full">
+                    <h1>The AI One-Shot Battle: Creating the Terra Cotta Game Suite</h1>
+                    <p class="post-meta">Posted on 2/13/26 by TheMinescouter</p>
+
+                    <img src="../../assests/images/tech/terra-cotta-title.png" alt="Terra Cotta Game Suite - AI Battle" class="post-image-full">
+                    
+                    <div class="post-content">
+                        <p>I challenged the world's top AI models to a "One-Shot" coding battle. The rules were simple but brutal: create a complete, single-file HTML5 game suite with five specific arcade games (Tic-Tac-Toe, Snake, Minesweeper, Dino Run, Pac-Man) and a multiplayer backend using PeerJS. They got <strong>one prompt</strong> and <strong>one try</strong>. No human bug fixes allowed.</p>
+                        
+                        <p>The results were surprising. Here is the breakdown of the prompt they faced and how each model performed under the pressure.</p>
+
+                        <h2>The Prompt</h2>
+                        <div class="prompt-box">"Code a complete, single-file HTML5 game application called 'Terra Cotta Game Suite' that requires no external assets... Implement the following five games within the suite: Tic-Tac-Toe Suite (Normal, 3D, Ultimate)... Snake... Minesweeper... Dino Run... Pac-Man Lite... Ensure all game logic is modular and that the 3D Tic-Tac-Toe board includes a visual stack animation when a player wins."</div>
+
+                        <hr>
+
+                        <h2>The Contenders</h2>
+
+                        <div class="ai-card">
+                            <h3>Google Gemini</h3>
+                            <p><strong>Model:</strong> Gemini 3 Pro</p>
+                            <a href="https://theminescout.github.io/terra-cotta-game-suite/gemini.html" class="ai-link" target="_blank">Play Gemini's Output »</a>
+                            
+                            <div class="review-text">
+                                <strong>Minescout's Review:</strong><br>
+                                Gemini delivered a great first draft. It clearly understood the architecture required for a single-file game hub. However, there were a couple of glaring issues with how it handled the win logic and the requested CSS animations. It also left behind a few small, annoying bugs that kept it from being a perfect run.
+                            </div>
+                        </div>
+
+                        <div class="ai-card">
+                            <h3>ChatGPT</h3>
+                            <p><strong>Model:</strong> o3-mini</p>
+                            <a href="https://theminescout.github.io/terra-cotta-game-suite/gpt.html" class="ai-link" target="_blank">Play ChatGPT's Output »</a>
+                            
+                            <div class="review-text">
+                                <strong>Minescout's Review:</strong><br>
+                                ChatGPT successfully crammed all the requested games into the file, but the quality varied wildly. Snake played great, but Tic-Tac-Toe was absolutely awful. Its version of "Pac-Man" was basically just moving a generic sphere around a screen. Dino Run was fun, but it forgot to include a "lose" condition, making you immortal. The biggest failure? The PeerJS multiplayer was completely broken and not really an option.
+                            </div>
+                        </div>
+
+                        <div class="ai-card">
+                            <h3>Claude</h3>
+                            <p><strong>Model:</strong> Claude 3.7 Sonnet</p>
+                            <a href="https://theminescout.github.io/terra-cotta-game-suite/claude.html" class="ai-link" target="_blank">Play Claude's Output »</a>
+                            
+                            <div class="review-text">
+                                <strong>Minescout's Review:</strong><br>
+                                Claude's output was visually stunning. It absolutely nailed the "Terra Cotta" Material Design aesthetic I asked for. Almost all of the arcade games worked flawlessly right out of the gate. Its only real downfalls were a broken win animation and a completely busted 3D Tic-Tac-Toe mode. 
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <h2>The Verdict</h2>
+                        <p><strong>The overall winner is Claude.</strong></p>
+                        <p>Despite dropping the ball on the 3D Tic-Tac-Toe logic, Claude's incredible grasp of the design system, UI scaling, and the fact that the majority of the arcade games were highly playable on the first attempt gave it the clear edge over Gemini and ChatGPT.</p>
+
+                        <div class="official-version-box">
+                            <h2>🎮 Play the Official "Perfected" Version</h2>
+                            <p>While the raw AI outputs above are fun experiments, I didn't stop there. I took the best parts of the code, fixed all the bugs, and added massive upgrades—including unbeatable AI opponents, pathfinding bots that can play the games for you, and three brand new games (Pong, Breakout, and 2048).</p>
+                            <p>You can play the final, polished <strong>Terra Cotta Game Suite</strong> right now, or view the source code on GitHub!</p>
+                            
+                            <div style="text-align: center;">
+                                <a href="https://theminescout.github.io/terra-cotta-game-suite/index.html" class="github-btn" target="_blank">Play the Official Game Suite</a>
+                                <br><br>
+                                <a href="https://github.com/TheMinescout/terra-cotta-game-suite/blob/main/README.md" style="color: #666; text-decoration: underline; font-size: 0.9rem;" target="_blank">View the GitHub Repository</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </article>
+                
+            </main>
+
+            <aside id="sidebar">
+                <div id="sidebar-container"></div>
+            </aside>
+
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <script type="module" src="../../assests/js/auth.js"></script>
+    <script type="module" src="../../assests/js/homepage.js"></script>
+    <script src="../../assests/js/loader.js"></script>
+
+</body>
+</html>
