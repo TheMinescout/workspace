@@ -1,106 +1,124 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Nigel's Life - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 
-        <!-- Link to Google Fonts for the 'Inter' font -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-
-        <!-- The path goes up two directories to reach root, then into assests -->
-        <link rel="stylesheet" href="../../assests/css/homepage.css">
-        <link rel="icon" type="image/png" href="../../assests/images/favicon.png">
-
-    </head>
-
+    <link rel="stylesheet" href="../../assests/css/homepage.css">
+    <link rel="icon" type="image/png" href="../../assests/images/favicon.png">
+    
+    <style>
+        .ai-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .ai-card h3 { margin-top: 0; color: #5a8a5a; }
+        .review-text { background-color: #f9f9f9; border-left: 4px solid #5a8a5a; padding: 15px; margin-top: 15px; color: #333; line-height: 1.6; }
+        .post-image-full { width: 100%; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .rating-box { font-weight: bold; color: #DD8566; margin-bottom: 5px; }
+        .ai-note { font-style: italic; color: #888; font-size: 0.8rem; margin-top: 40px; text-align: center; }
+    </style>
+</head>
 <body>
 
-    <!-- Header Section -->
     <header class="main-header">
         <div class="container site-title-container">
-            <div id="auth-container">
-                <a href="/login.html" id="login-link">Login</a>
-            </div>
+            <div id="auth-container"><a href="../../login.html" id="login-link">Login</a></div>
             <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Puppy
-                        Life</a></h1>
-                <p class="tagline">Nigel</p>
+                <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Puppy Life</p>
             </div>
             <div id="user-display" class="hidden">
-                <span id="user-email-display"></span>
-                <button id="sign-out-btn">Sign Out</button>
+                <a href="../../account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
             </div>
         </div>
     </header>
 
-    <!-- This is the corrected full-width wrapper -->
     <div class="main-content-area">
-        <!-- This container inside constrains the content width and enables flexbox -->
         <div class="container">
-
-            <!-- Main content area for a single post -->
+            
             <main class="post-main" data-post-id="nigels-life">
-
+                
                 <a href="../../pages/puppy-life.html" class="back-link">« Back to Puppy Life</a>
 
                 <article class="post-full">
-                    <h1>Nigel's Life</h1>
-                    <p class="post-meta">Constantly Updated by Carleton Siblings</p>
+                    <h1>Nigel: The Agent of Chaos</h1>
+                    <p class="post-meta">Posted on 2/17/26 by Carleton Siblings</p>
 
-                    <img src="../Images/Puppy-life/Nigel-Life-Hompage.png" alt="A picture of Nigel the dog"
-                        class="post-image-full">
-
+                    <img src="../../assests/images/puppy-life/Nigel-Life-Homepage.png" alt="Nigel the dog in action" class="post-image-full">
+                    
                     <div class="post-content">
-                        <p>This is my life. Woof</p>
-                    </div>
-                </article>
+                        <p>If Monty is the stoic veteran of the Carleton household, Nigel is the high-energy recruit who disrupted everything. Entering the scene in 2022, Nigel didn't just walk into the house—he launched what experts call a "hostile takeover" attempt. However, the incumbent power, Monty, held his ground, leading to a decade-defining power struggle that eventually settled into a playful brotherhood.</p>
+                        
+                        <h2>The Perpetual Puppy</h2>
+                        <p>Even though it has been three years since his arrival, Nigel has defied the laws of canine aging. He maintains a "perpetual puppy" energy level that keeps the household on its toes. Recently, Nigel has expanded his horizons beyond the living room, enrolling in training and social play groups to channel his boundless enthusiasm into more "productive" chaos.</p>
 
+                        <h2>Shared Solidarity</h2>
+                        <p>In a show of pack solidarity, Nigel follows the same dietary restrictions as Monty. Whether out of necessity or simply wanting to match his big brother, Nigel is fueled by the same specialized medical food, proving that you don't need meat or dairy to maintain a 24/7 zoomie schedule.</p>
+
+                        <hr>
+
+                        <h2>Puppy Review: The Nigel Files</h2>
+
+                        <div class="ai-card">
+                            <h3>The Territory: The Yard</h3>
+                            <div class="rating-box">Rating: 10/10 (Spacious)</div>
+                            <div class="review-text">
+                                <strong>Nigel's Review:</strong><br>
+                                "The outdoor arena is magnificent. High-speed running lanes, plenty of acoustics for barking at nothing, and soft grass for tactical rolls. It is the perfect place to ambush Monty."
+                            </div>
+                        </div>
+
+                        <div class="ai-card">
+                            <h3>The Hobby: Annoying Monty</h3>
+                            <div class="rating-box">Rating: 7/10</div>
+                            <div class="review-text">
+                                <strong>Observations:</strong><br>
+                                Nigel finds great satisfaction in pestering his elder, though he has learned to respect the 'couch boundary' (mostly). It is a consistent 7/10 on the fun scale, only losing points when Monty actually barks back.
+                            </div>
+                        </div>
+
+                        <div class="ai-card">
+                            <h3>The Training Evolution</h3>
+                            <div class="rating-box">Status: Work in Progress</div>
+                            <div class="review-text">
+                                <strong>Documentary Note:</strong><br>
+                                Nigel’s recent entry into play groups suggests a new chapter. He is learning that other dogs exist besides Monty, though none provide quite the same level of wrestling competition as the original pack leader.
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <p class="ai-note">Note: This article was written with the assistance of AI, based on interviews with the Carleton Siblings.</p>
+                </article>
                 
             </main>
 
-            <!-- The sidebar is a direct child of the container, alongside <main> -->
             <aside id="sidebar">
-    <!-- This empty div is where the sidebar will appear -->
-    <div id="sidebar-container"></div> 
-</aside>
+                <div id="sidebar-container"></div>
+            </aside>
 
-        </div> <!-- /.container -->
-    </div> <!-- /.main-content-area -->
-
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="container">
-            <p id="copyright">© 2026 Minescouts Life. All rights reserved.</p>
         </div>
-    </footer>
+    </div>
 
-    <!-- ======================= FIREBASE SETUP ======================= -->
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
+    </footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-
-
-    <!-- The path goes up two directories to reach root, then into assests -->
-        <!-- The path goes up one directory to find the JS file -->
-<!-- BOTTOM OF EVERY HTML PAGE -->
-
-    <!-- DYNAMIC LOADERS -->
-    <!-- 1. Auth (Login/User logic) -->
     <script type="module" src="../../assests/js/auth.js"></script>
-
-    <!-- 2. Homepage Logic (Votes/Comments/Grid) -->
     <script type="module" src="../../assests/js/homepage.js"></script>
-
-    <!-- 3. Sidebar Loader -->
     <script src="../../assests/js/loader.js"></script>
 
 </body>
-
 </html>
+
+<p hidden>Nigel attempted a hostile takeover in 2022, but settled for being Monty's high-energy shadow with a shared medical diet and a love for yard barks.</p>
