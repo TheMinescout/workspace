@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenScan-AI Battle: Gemini vs GPT-5 - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../assests/css/homepage.css">
+    <link rel="stylesheet" href="../../assests/css/AI-ASSISTANT.css">
+    <link rel="icon" type="image/png" href="../../assests/images/favicon.png">
+    
+    <style>
+        .comparison-section { margin-bottom: 40px; }
+        .ai-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .ai-card h3 { margin-top: 0; color: #5a8a5a; }
+        .ai-link { display: inline-block; margin-top: 10px; font-weight: bold; color: #4285F4; text-decoration: none; }
+        .review-text { background-color: #f9f9f9; border-left: 4px solid #5a8a5a; padding: 15px; margin-top: 15px; color: #333; line-height: 1.6; }
+        .prompt-box { background-color: #f4f4f4; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 0.9rem; border: 1px solid #ccc; margin-bottom: 30px; white-space: pre-wrap; line-height: 1.5; color: #444; }
+        .github-btn { display: inline-block; background-color: #DD8566; color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 20px; transition: 0.2s; }
+        .github-btn:hover { background-color: #c07055; transform: translateY(-2px); }
+        .official-version-box { background-color: #fff; border: 2px solid #DD8566; border-radius: 8px; padding: 20px; margin: 40px 0; }
+        .official-version-box h2 { color: #DD8566; margin-top: 0; }
+        .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; }
+        .status-offline { background: #fee2e2; color: #dc2626; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container"><a href="../../login.html" id="login-link">Login</a></div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Tech Tips</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <a href="../../account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            <main class="post-main" data-post-id="openscan-ai-battle">
+                <a href="../../pages/tech-tips.html" class="back-link">« Back to Tech Tips</a>
+
+                <article class="post-full">
+                    <h1>OpenScan-AI: The One-Shot Scanner Battle</h1>
+                    <p class="post-meta">Posted on 2/18/26 by TheMinescouter</p>
+
+                    <div class="post-content">
+                        <p>Can AI build a fully functional web-based document scanner with just one prompt? I put <strong>Gemini 3.0 Thinking</strong>, <strong>GPT-5</strong>, and <strong>Claude 4.6</strong> to the test to find out. The goal: OpenScan-AI.</p>
+
+                        <h2>The Prompt</h2>
+                        <div class="prompt-box">"Code a complete, single-file HTML5 web application called 'OpenScan-AI'... sleek, dark-themed 'Glassmorphism' UI... live camera viewfinder... integrate Tesseract.js for OCR... 'Download as PDF'..."</div>
+
+                        <hr>
+
+                        <div class="ai-card">
+                            <h3>Google Gemini</h3>
+                            <p><strong>Model:</strong> Gemini 3.0 Thinking</p>
+                            <a href="https://theminescout.github.io/openscan-ai/gemini.html" class="ai-link" target="_blank">View Gemini's App »</a>
+                            <div class="review-text">
+                                <strong>Minescout's Review:</strong><br>
+                                The "Thinking" process definitely paid off in the code structure. It was the most stable of the bunch, but it had a major oversight: it provided no way to save the scans or edit them once captured. It's a great "viewer," but not quite a "scanner" yet.
+                            </div>
+                        </div>
+
+                        <div class="ai-card">
+                            <h3>ChatGPT</h3>
+                            <p><strong>Model:</strong> GPT-5</p>
+                            <a href="https://theminescout.github.io/openscan-ai/gpt.html" class="ai-link" target="_blank">View ChatGPT's App »</a>
+                            <div class="review-text">
+                                <strong>Minescout's Review:</strong><br>
+                                GPT-5 went all-in on the "next-gen" vibes. It included features I didn't even ask for, and the Glassmorphism UI was genuinely beautiful. However, it was all flash and no substance—the OCR (text recognition) was completely non-functional.
+                            </div>
+                        </div>
+
+                        <div class="ai-card">
+                            <span class="status-badge status-offline">MODEL OFFLINE</span>
+                            <h3>Claude</h3>
+                            <p><strong>Model:</strong> Claude 4.6 Extended</p>
+                            <p><em>Testing paused. Claude is currently experiencing downtime. Results will be posted as soon as the model is back online.</em></p>
+                        </div>
+
+                        <hr>
+
+                        <div class="official-version-box">
+                            <h2>🔍 Explore OpenScan-AI</h2>
+                            <p>Check out the raw outputs and the "Perfected" version where I bridge the gap between Gemini's logic and GPT's design!</p>
+                            <div style="text-align: center;">
+                                <a href="https://theminescout.github.io/openscan-ai/" class="github-btn" target="_blank">View GitHub Repository</a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
+    </footer>
+</body>
+</html>
+<p hidden>A head-to-head "One-Shot" battle between Gemini 3.0 and GPT-5 to create OpenScan-AI, a web-based document scanner. See who nailed the UI and who failed the logic.</p>
