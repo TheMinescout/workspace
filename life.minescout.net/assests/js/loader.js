@@ -36,7 +36,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // 3. Load Comments (If allowed)
     const noCommentsList = [
         "index.html", "login.html", "account.html", "404.html", 
-        "admin-posting.html", "archive.html", "stats.html", "feature-request.html"
+        "admin-posting.html", "archive.html", "stats.html", "feature-request.html", "tech-tips.html", "coding-projects.html",
+        "updates.html", "beta.html", "app-install.html", ""
     ];
 
     if (!noCommentsList.includes(filename)) {

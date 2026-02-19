@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BSA Eagle Scout Updates - Minescouts Life</title>
+    <title id="page-title">BSA Eagle Scout Updates - Minescouts Life</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,107 +14,36 @@
     <link rel="icon" type="image/png" href="../../assests/images/favicon.png">
     
     <style>
+        /* --- Dynamic Switching Logic --- */
+        .date-dependent { display: none; }
+        .show-content { display: block !important; }
+
         /* --- Progress Bar CSS --- */
-        .progress-container {
-            margin: 30px 0;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .progress-bar-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .progress-bar-wrapper {
-            width: 100%;
-            height: 30px;
-            background-color: #e0e0e0;
-            border-radius: 15px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #5a8a5a, #76b076);
-            transition: width 1.5s ease-in-out;
-            border-radius: 15px 0 0 15px;
-            position: relative;
-        }
+        .progress-container { margin: 30px 0; font-family: 'Inter', sans-serif; }
+        .progress-bar-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 10px; color: #333; }
+        .progress-bar-wrapper { width: 100%; height: 30px; background-color: #e0e0e0; border-radius: 15px; position: relative; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #5a8a5a, #76b076); transition: width 1.5s ease-in-out; border-radius: 15px 0 0 15px; position: relative; }
 
         /* Animated stripes for the "home stretch" */
         .progress-bar-fill::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background-image: linear-gradient(
-                -45deg, 
-                rgba(255, 255, 255, .2) 25%, 
-                transparent 25%, 
-                transparent 50%, 
-                rgba(255, 255, 255, .2) 50%, 
-                rgba(255, 255, 255, .2) 75%, 
-                transparent 75%
-            );
-            background-size: 50px 50px;
-            animation: move-stripes 2s linear infinite;
+            content: ''; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+            background-image: linear-gradient(-45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%);
+            background-size: 50px 50px; animation: move-stripes 2s linear infinite;
         }
 
-        @keyframes move-stripes {
-            0% { background-position: 0 0; }
-            100% { background-position: 50px 50px; }
-        }
+        @keyframes move-stripes { 0% { background-position: 0 0; } 100% { background-position: 50px 50px; } }
 
-        .progress-bar-percent {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #333;
-            z-index: 2;
-        }
+        .progress-bar-percent { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 0.85rem; font-weight: 700; color: #333; z-index: 2; }
+
+        /* --- Success Styles (Gold Theme) --- */
+        .gold-bar { background: linear-gradient(90deg, #ffd700, #ffec8b, #ffd700) !important; border: 1px solid #d4af37; }
+        .eagle-badge-header { text-align: center; background: #fff8e1; padding: 30px; border-radius: 12px; border: 2px dashed #ffd700; margin-bottom: 30px; }
 
         /* --- Article Specific Components --- */
-        .lesson-box { 
-            background-color: #fef9f9; 
-            border-left: 4px solid #ce1126; /* BSA Red */
-            padding: 20px; 
-            margin: 25px 0; 
-            color: #333; 
-            line-height: 1.6; 
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .status-badge {
-            display: inline-block;
-            background-color: #5a8a5a;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-        }
-
-        .official-version-box { 
-            background-color: #fff; 
-            border: 2px solid #5a8a5a; 
-            border-radius: 8px; 
-            padding: 25px; 
-            margin: 40px 0; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        
-        .official-version-box h2 { 
-            color: #5a8a5a; 
-            margin-top: 0; 
-        }
+        .lesson-box { background-color: #fef9f9; border-left: 4px solid #ce1126; padding: 20px; margin: 25px 0; color: #333; line-height: 1.6; border-radius: 0 8px 8px 0; }
+        .status-badge { display: inline-block; background-color: #5a8a5a; color: white; padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; }
+        .official-version-box { background-color: #fff; border: 2px solid #5a8a5a; border-radius: 8px; padding: 25px; margin: 40px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .official-version-box h2 { color: #5a8a5a; margin-top: 0; }
     </style>
 </head>
 
@@ -122,12 +51,10 @@
 
     <header class="main-header">
         <div class="container site-title-container">
-            <div id="auth-container">
-                <a href="../../login.html" id="login-link">Login</a>
-            </div>
+            <div id="auth-container"><a href="../../login.html" id="login-link">Login</a></div>
             <div class="site-title-wrapper">
                 <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
-                <p class="tagline">Eagle Rank</p>
+                <p id="dynamic-tagline" class="tagline">Eagle Rank</p>
             </div>
             <div id="user-display" class="hidden">
                 <a href="../../account.html"><span id="user-email-display"></span></a>
@@ -140,54 +67,75 @@
         <div class="container">
 
             <main class="post-main" data-post-id="eagle-scout-progress-updates">
-
                 <a href="../Footer/updates.html" class="back-link">« Back to Updates</a>
 
                 <article class="post-full">
-                    <h1>Minescouts Eagle Progress: The Home Stretch</h1>
-                    <p class="post-meta">Originally posted on April 11, 2025 by The Minescout Scouter | <strong>Updated February 17, 2026</strong></p>
+                    
+                    <div id="pre-eagle" class="date-dependent">
+                        <h1>Minescouts Eagle Progress: The Home Stretch</h1>
+                        <p class="post-meta">Originally posted on April 11, 2025 | <strong>Updated February 17, 2026</strong></p>
 
-                    <img src="../../assests/images/updates/Rank Updates.png" alt="BSA Eagle Scout Progress" class="post-image-full">
+                        <img src="../../assests/images/updates/Rank Updates.png" alt="BSA Eagle Scout Progress" class="post-image-full">
 
-                    <div class="post-content">
-                        <p>The journey to Eagle Scout is nearly complete. After years of camping, merit badges, and service, I am officially in the final stage. Below is the updated progress toward the highest rank in BSA Scouting.</p>
-                        
-                        <div class="progress-container">
-                            <div class="progress-bar-name">Rank Progress</div>
-                            <div class="progress-bar-wrapper">
-                                <div id="progressBarFill" class="progress-bar-fill" style="width: 96%;"></div>
-                                <span id="progressBarPercent" class="progress-bar-percent">96%</span>
+                        <div class="post-content">
+                            <p>The journey to Eagle Scout is nearly complete. After years of camping, merit badges, and service, I am officially in the final stage.</p>
+                            
+                            <div class="progress-container">
+                                <div class="progress-bar-name">Rank Progress</div>
+                                <div class="progress-bar-wrapper">
+                                    <div class="progress-bar-fill" style="width: 96%;"></div>
+                                    <span class="progress-bar-percent">96%</span>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <h2>Eagle Project: Little Free Library</h2>
+                            <div class="status-badge">Completed & Installed</div>
+                            <p>The Little Free Library was successfully installed in September 2025. It stands as a permanent fixture in the community.</p>
+                            
+                            <div class="lesson-box">
+                                <strong>The Leadership Lesson:</strong><br>
+                                "The hardest part was learning to step back. As a leader, I had to trust my team to help. Letting go of control allowed the project to move faster."
+                            </div>
+
+                            <div class="official-version-box">
+                                <h2>🗓️ Final Step: Board of Review</h2>
+                                <p>My Eagle Board of Review (BOR) is officially scheduled for <strong>March 11, 2026</strong>.</p>
                             </div>
                         </div>
-
-                        <hr>
-
-                        <h2>Eagle Project: Little Free Library</h2>
-                        <div class="status-badge">Completed & Installed</div>
-                        <p>The Little Free Library was successfully installed as planned in September 2025. It stands as a permanent fixture in the community, providing free books for all neighbors.</p>
-                        
-                        <h3>The Numbers & Logistics</h3>
-                        <p>The project totaled <strong>69 hours</strong> of service. While the physical work was rewarding, we faced a real-world hurdle when a wrong kit was ordered that couldn't be returned, putting the project slightly over budget—a valuable lesson in logistics.</p>
-
-                        <div class="lesson-box">
-                            <strong>The Leadership Lesson:</strong><br>
-                            "The hardest part of this project wasn't the construction; it was learning to step back. As a leader, I had to resist the urge to do everything myself and trust my team to help. Letting go of total control allowed the project to move faster and gave others a chance to contribute."
-                        </div>
-
-                        <h2>Merit Badges & Paperwork</h2>
-                        <p>I have officially <strong>completed all merit badges</strong> required for the Eagle rank. All five Letters of Recommendation from my teachers have been received and accepted by the council. The formal Eagle Scout Rank Application has been submitted and verified.</p>
-
-                        <div class="official-version-box">
-                            <h2>🗓️ Final Step: Board of Review</h2>
-                            <p>Everything has led to this. My Eagle Board of Review (BOR) is officially scheduled for <strong>March 11, 2026</strong>. This is the final interview where I represent my journey and my project to the district committee.</p>
-                        </div>
-
-                        <h2>The End</h2>
-                        <p>Thanks for following this journey.<br>
-                        <strong>The Minescout Scouters.</strong></p>
                     </div>
+
+                    <div id="post-eagle" class="date-dependent">
+                        <div class="eagle-badge-header">
+                            <span style="font-size: 3rem;">🦅</span>
+                            <h1>Rank Achieved: Eagle Scout</h1>
+                            <p class="post-meta">Official Date: March 11, 2026</p>
+                        </div>
+
+                        <div class="post-content">
+                            <div class="progress-container">
+                                <div class="progress-bar-name">Final Rank Status</div>
+                                <div class="progress-bar-wrapper gold-bar">
+                                    <div class="progress-bar-fill gold-bar" style="width: 100%;"></div>
+                                    <span class="progress-bar-percent">100% COMPLETE</span>
+                                </div>
+                            </div>
+
+                            <p>On March 11, 2026, I officially completed my Eagle Board of Review. This marks the end of a long journey and the beginning of a lifelong commitment to Scouting values.</p>
+
+                            <div class="official-version-box">
+                                <h2>Success!</h2>
+                                <p>Walking into the Board of Review was the culmination of 69 project hours and 21+ merit badges. I am honored to officially be an Eagle Scout.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>The End</h2>
+                    <p>Thanks for following this journey.<br>
+                    <strong>The Minescout Scouters.</strong></p>
+
                 </article>
-                
             </main>
 
             <aside id="sidebar">
@@ -210,10 +158,30 @@
 
     <script type="module" src="../../assests/js/auth.js"></script>
     <script type="module" src="../../assests/js/homepage.js"></script>
-    <script src="../../assests/js/loader.js"></script>
+    <script src="../../assests/js/loader.js?v=1"></script>
+
+    <script>
+        // Automatic Switch Logic
+        function updateEagleStatus() {
+            const targetDate = new Date('2026-03-11T00:00:00');
+            const now = new Date();
+            
+            const preSection = document.getElementById('pre-eagle');
+            const postSection = document.getElementById('post-eagle');
+            const tagline = document.getElementById('dynamic-tagline');
+            const pageTitle = document.getElementById('page-title');
+
+            if (now >= targetDate) {
+                postSection.classList.add('show-content');
+                tagline.innerText = "Eagle Scout Achieved";
+                pageTitle.innerText = "Eagle Scout Rank Achieved - Minescouts Life";
+            } else {
+                preSection.classList.add('show-content');
+            }
+        }
+        window.onload = updateEagleStatus;
+    </script>
 </body>
 </html>
 
 <p hidden>At 96% completion, the Eagle Scout journey reaches the finish line! With the project installed and 69 service hours logged, only the Board of Review on March 11 stands between the scout and the highest rank.</p>
-
-
