@@ -3,34 +3,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- CONFIGURATION ---
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxA0tHDzsc4baNHSURGJRMFVvRpXLZMAL0Hhkezq5xC641ehY5asGkTD1X4k6uauBJF9A/exec"; 
 
-    // DOM Elements
+    // Elements
     const productSelect = document.getElementById('productSelect');
     const form = document.getElementById('tcl-order-form');
     const submitBtn = form.querySelector('button[type="submit"]');
-    
     const modal = document.getElementById('successModal');
     const closeBtn = document.getElementById('closeModalBtn');
 
-    // Dynamic Sections
+    // Dynamic Sections (Only the 4 that exist)
     const simpleSection = document.getElementById('opt-chop-simple');
     const complexSection = document.getElementById('opt-chop-complex');
     const roller4Section = document.getElementById('opt-roller-4in');
     const roller10Section = document.getElementById('opt-roller-10in');
-    const reprintSection = document.getElementById('opt-roller-reprint');
 
-    // --- NEW: URL PARAMETER LOGIC ---
-    // This reads the "?product=xyz" from the link you clicked
+    // URL Logic
     const urlParams = new URLSearchParams(window.location.search);
     const preSelectedProduct = urlParams.get('product');
 
     if (preSelectedProduct && productSelect) {
-        // Set the dropdown value
         productSelect.value = preSelectedProduct;
-        // Trigger the section display update manually
         updateSections(preSelectedProduct);
     }
 
-    // Setup Close Button
+    // Close Button
     if(closeBtn) {
         closeBtn.addEventListener('click', function() {
             window.location.href = "index.html"; 
@@ -42,20 +37,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if(complexSection) complexSection.classList.add('hidden');
         if(roller4Section) roller4Section.classList.add('hidden');
         if(roller10Section) roller10Section.classList.add('hidden');
-        if(reprintSection) reprintSection.classList.add('hidden');
         
+        // Disable required fields in hidden sections to allow submission
         document.querySelectorAll('.dynamic-section input').forEach(input => input.required = false);
     }
 
-    // Helper function to handle visibility
     function updateSections(value) {
         hideAllSections();
-
         if (value === 'chop-simple' && simpleSection) simpleSection.classList.remove('hidden');
         else if (value === 'chop-complex' && complexSection) complexSection.classList.remove('hidden');
         else if (value === 'roller-4in' && roller4Section) roller4Section.classList.remove('hidden');
         else if (value === 'roller-10in' && roller10Section) roller10Section.classList.remove('hidden');
-        else if (value === 'roller-reprint' && reprintSection) reprintSection.classList.remove('hidden');
+        // 'spinner' has no section, so it just stays hidden (correct)
     }
 
     if (productSelect) {
@@ -64,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- FORM SUBMISSION ---
+    // Submit Logic
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -76,16 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
-            // Handle Files (Logo OR Reprint Photo)
+            // Handle File (Only for Complex Chop)
             const logoInput = document.getElementById('logoUpload');
-            const reprintInput = document.getElementById('reprintUpload');
             let fileToUpload = null;
 
             if (data.productSelect === 'chop-complex' && logoInput && logoInput.files.length > 0) {
                 fileToUpload = logoInput.files[0];
-            }
-            else if (data.productSelect === 'roller-reprint' && reprintInput && reprintInput.files.length > 0) {
-                fileToUpload = reprintInput.files[0];
             }
 
             if (fileToUpload) {

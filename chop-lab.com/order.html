@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="assets/css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="assets/images/Favicon.png">
-    <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#D26244">
 </head>
 <body>
 
@@ -49,28 +47,23 @@
 
             <div class="form-group">
                 <label for="productSelect">Select Product</label>
+                <!-- EXACT VALUES MATCHING JS -->
                 <select id="productSelect" name="productSelect" required>
                     <option value="" disabled selected>-- Choose an Item --</option>
                     <option value="chop-simple">Custom Chop Simple - $15</option>
                     <option value="chop-complex">Custom Chop Complex - $20</option>
                     <option value="spinner">Trimming Spinner - $15</option>
-                    <option value="ribs">Precision Rib Set - $15</option>
-                    <option value="square">Origin Square - $12</option>
                     <option value="roller-4in">Texture Roller (4 inch) - $10</option>
                     <option value="roller-10in">Texture Roller (10 inch) - $20</option>
-                    <option value="roller-reprint">Roller Reprint (Replacement) - $6</option>
                 </select>
             </div>
 
             <!-- SECTIONS -->
 
-            <!-- SIMPLE CHOP -->
+            <!-- 1. SIMPLE CHOP -->
             <div id="opt-chop-simple" class="dynamic-section hidden">
                 <h3>Configuration: Simple Chop</h3>
-                <div class="form-group">
-                    <label>Letters / Text</label>
-                    <input type="text" name="simpleText" placeholder="e.g. TCL">
-                </div>
+                <div class="form-group"><label>Letters / Text</label><input type="text" name="simpleText" placeholder="e.g. TCL"></div>
                 <div class="form-group">
                     <label>Font Preference</label>
                     <select name="simpleFont">
@@ -108,7 +101,7 @@
                 </div>
             </div>
 
-            <!-- COMPLEX CHOP -->
+            <!-- 2. COMPLEX CHOP -->
             <div id="opt-chop-complex" class="dynamic-section hidden">
                 <h3>Configuration: Complex Chop</h3>
                 <div class="form-group">
@@ -145,12 +138,12 @@
                 </div>
             </div>
 
-            <!-- ROLLER 4 INCH -->
+            <!-- 3. ROLLER 4 INCH -->
             <div id="opt-roller-4in" class="dynamic-section hidden">
                 <h3>Configuration: 4" Texture Roller</h3>
                 <div class="form-group">
                     <label>Select Texture</label>
-                    <img src="assets/images/texture-roller-4in.png" alt="Rollers" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
+                    <img src="assets/images/roller-options.png" alt="Rollers" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
                     <select name="rollerTexture4in">
                         <option value="torque">Torque (Spiral)</option>
                         <option value="hex-lattice">Hex-Lattice</option>
@@ -159,12 +152,12 @@
                 </div>
             </div>
 
-            <!-- ROLLER 10 INCH -->
+            <!-- 4. ROLLER 10 INCH -->
             <div id="opt-roller-10in" class="dynamic-section hidden">
                 <h3>Configuration: 10" Texture Roller</h3>
                 <div class="form-group">
                     <label>Select Texture</label>
-                    <img src="assets/images/texture-roller-10in.png" alt="Rollers" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
+                    <img src="assets/images/roller-options.png" alt="Rollers" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
                     <select name="rollerTexture10in">
                         <option value="torque">Torque (Spiral)</option>
                         <option value="hex-lattice">Hex-Lattice</option>
@@ -173,26 +166,23 @@
                 </div>
             </div>
 
-            <!-- REPRINT -->
-            <div id="opt-roller-reprint" class="dynamic-section hidden">
-                <h3>Configuration: Reprint Replacement</h3>
-                <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Discounted replacement rate. Proof of broken roller required.</p>
-                <div class="form-group">
-                    <label>Select Texture</label>
-                    <img src="assets/images/roller-options.png" alt="Rollers" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
-                    <select name="rollerTextureReprint">
-                        <option value="torque">Torque (Spiral)</option>
-                        <option value="hex-lattice">Hex-Lattice</option>
-                        <option value="mason">Mason (Brick Pattern)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label style="color:#D26244;">Upload Broken Part Photo</label>
-                    <input type="file" id="reprintUpload" name="reprintUpload" accept="image/*">
-                </div>
+            <!-- COMMENTS (GLOBAL) -->
+            <div class="form-group">
+                <label>Special Instructions / Comments</label>
+                <textarea name="comments" placeholder="E.g. Rush order, specific sizing notes, questions..."></textarea>
             </div>
 
-            <button type="submit" class="btn-launch" style="width: 100%; border:none; cursor:pointer;">Submit Order Request</button>
+            <!-- Terms -->
+            <div class="form-group" style="background: #f9f9f9; padding: 15px; border-left: 3px solid #D26244; margin-top: 30px;">
+                <h4 style="margin:0 0 10px 0; font-family:'Playfair Display', serif;">The Process</h4>
+                <ul style="font-size: 0.85rem; color: #555; padding-left: 20px; margin: 0;">
+                    <li style="margin-bottom: 5px;">This form starts the engineering process. <strong>No payment is required today.</strong></li>
+                    <li style="margin-bottom: 5px;">I will email you a digital draft for approval before printing.</li>
+                    <li>Payment is collected after the final design is agreed upon.</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="btn-launch" style="width: 100%; border:none; cursor:pointer;">Submit Project Request</button>
         </form>
     </div>
 
@@ -206,9 +196,10 @@
     <!-- SUCCESS MODAL -->
     <div id="successModal" class="modal-overlay hidden">
         <div class="modal-box">
-            <h2 style="color: #D26244;">Order Received.</h2>
-            <p>Your configuration has been sent to The Chop Lab engineering team.</p>
-            <p>Are team will reach out to you when we are done with the first version, and discuss payment then.</p>
+            <h2 style="color: #D26244;">Request Sent.</h2>
+            <p>Your details are now in the engineering queue.</p>
+            <p>Check your email for a confirmation and Order ID.</p>
+            <p style="font-size: 0.9rem; color: #888; margin-top: 10px;">I will reach out shortly with your first draft.</p>
             <button id="closeModalBtn" class="btn-launch" style="width:100%; margin-top:20px;">Return to Gallery</button>
         </div>
     </div>
@@ -217,11 +208,3 @@
     <script src="assets/js/order.js"></script>
 </body>
 </html>
-
-<footer>
-    <!-- Add the span with id="year" here -->
-    <p>&copy; <span id="year"></span> The Chop Lab</p>
-    <div style="margin-top: 10px;">
-        <a href="admin.html" style="color: #eee; font-size: 0.7rem; text-decoration: none;">Admin</a>
-    </div>
-</footer>
