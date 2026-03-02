@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andrej Karpathy</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="https://karpathy.ai/assets/me_new.jpg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --accent: #60a5fa; /* Clean Technical Blue */
+            --bg: #0d0d0f;     /* Deep Obsidian */
+            --fg: #e2e8f0;     /* Crisp Off-White */
+            --muted: #8b949e;  /* GitHub-style muted gray */
+            --light: #161b22;  /* Slightly lighter for cards */
+            --border: #30363d; /* Crisp 1px borders */
+            --card-radius: 8px; /* Sharper, more technical corners */
+            --transition: all 0.3s ease;
+        }
+
+        @keyframes fadeUp { 
+            from { opacity: 0; transform: translateY(15px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: 'Jost', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .serif, .quote-section i, .ctitle {
+            font-family: 'Libre Baskerville', serif;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        a:hover {
+            color: #93c5fd; 
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .container {
+            max-width: 900px; /* Tighter line length for readability */
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Nav */
+        nav {
+            height: 60px; 
+            position: sticky;
+            top: 0;
+            background: rgba(13, 13, 15, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-inner {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px; 
+            margin-left: auto; /* Forces links to the far right */
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            font-size: 0.85rem; 
+            font-weight: 400;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        /* Hero Section */
+        #dhead {
+            padding: 100px 0 60px;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 50px;
+            align-items: center;
+            animation: fadeUp 0.8s forwards;
+        }
+
+        .profile-frame {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .ppic {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%; /* Classic circular profile */
+            object-fit: cover;
+            border: 2px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        #ddesc h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            letter-spacing: -0.04em;
+            color: #ffffff;
+        }
+
+        #ddesc h2 {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--muted);
+            margin-bottom: 25px;
+            max-width: 500px;
+            font-family: 'Jost', sans-serif;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .iico {
+            width: 18px;
+            height: 18px;
+            filter: invert(1);
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .iico:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        /* Editorial Quote Section */
+        .quote-section {
+            padding: 40px 0;
+            text-align: center;
+            margin: 20px 0 80px;
+            animation: fadeUp 1s 0.2s forwards;
+            opacity: 0;
+        }
+
+        .quote-section i {
+            display: block;
+            font-size: 1.4rem;
+            max-width: 800px;
+            margin: 0 auto 15px;
+            line-height: 1.5;
+            color: var(--fg);
+            font-weight: 400;
+            border-left: 3px solid var(--accent);
+            padding-left: 20px;
+            text-align: left;
+            font-style: italic;
+        }
+
+        .attribution {
+            display: block;
+            text-align: left;
+            padding-left: 20px;
+            font-family: 'Jost', sans-serif;
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 15px;
+        }
+
+        /* Career History */
+        #history {
+            padding-bottom: 60px;
+        }
+
+        .history-entry {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeUp 1s forwards;
+        }
+
+        .history-meta {
+            text-align: right;
+            padding-top: 2px;
+        }
+
+        .history-meta .year {
+            font-family: 'Jost', sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--muted);
+            display: block;
+        }
+
+        .history-meta img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-top: 10px;
+            filter: grayscale(1) opacity(0.6);
+            transition: var(--transition);
+        }
+
+        .history-entry:hover .history-meta img {
+            filter: grayscale(0) opacity(1);
+        }
+
+        .history-body {
+            border-left: 1px solid var(--border);
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .history-body::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 8px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: var(--transition);
+        }
+
+        .history-entry:hover .history-body::before {
+            background: var(--accent);
+        }
+
+        .history-body p {
+            color: var(--fg);
+            font-size: 0.95rem;
+        }
+
+        /* Content Sections */
+        .ctitle {
+            font-size: 1.6rem;
+            margin-bottom: 30px;
+            color: #ffffff;
+            font-weight: 400;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 80px;
+        }
+
+        .talk-card {
+            background: var(--bg);
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .talk-card:hover {
+            border-color: var(--muted);
+        }
+
+        .talk-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            filter: grayscale(0.2);
+            transition: var(--transition);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .talk-card:hover img {
+            filter: grayscale(0);
+        }
+
+        .talk-info {
+            padding: 15px;
+        }
+
+        .talk-info span {
+            font-size: 0.85rem;
+            color: var(--fg);
+            display: block;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        /* Lists & Projects */
+        .journal-list {
+            margin-bottom: 80px;
+            list-style: none;
+        }
+
+        .journal-list li {
+            padding: 10px 0;
+            display: flex;
+            gap: 20px;
+            align-items: baseline;
+        }
+
+        .journal-list li span.date {
+            font-family: 'Jost', sans-serif;
+            font-size: 0.85rem;
+            color: var(--muted);
+            min-width: 80px;
+        }
+
+        .project-item {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--light);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .project-item:hover {
+            border-color: var(--muted);
+        }
+
+        .project-icon {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .project-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-details a {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 4px;
+            display: inline-block;
+        }
+
+        .project-details p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Publications */
+        .pub-block {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+        }
+
+        .pub-block h4 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+            color: #ffffff;
+            font-weight: 400;
+        }
+
+        .pub-block .venue {
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 500;
+            font-family: 'Jost', sans-serif;
+        }
+
+        .pub-block .authors {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+
+        /* Email Reveal */
+        #demail {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--fg);
+            opacity: 0;
+            transform: translateY(5px);
+            transition: var(--transition);
+            display: none;
+        }
+
+        #demail.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        footer {
+            padding: 60px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            #dhead { grid-template-columns: 1fr; text-align: center; justify-items: center; gap: 30px; padding: 60px 0; }
+            .history-entry { grid-template-columns: 1fr; gap: 10px; }
+            .history-meta { text-align: left; padding-bottom: 5px; }
+            .history-meta img { display: none; } /* Hide icons on mobile for space */
+            .history-body { border-left: none; padding-left: 0; }
+            .history-body::before { display: none; }
+            .nav-links { display: none; }
+            .quote-section i { border-left: none; padding-left: 0; text-align: center; }
+            .attribution { text-align: center; padding-left: 0; }
+            .project-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container nav-inner">
+            <div class="logo">Andrej Karpathy</div>
+            <div class="nav-links">
+                <a href="#history">history</a>
+                <a href="#bio">bio</a>
+                <a href="#featured-talks">talks</a>
+                <a href="#pet-projects">projects</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <header id="dhead">
+            <div class="profile-frame">
+                <img src="https://karpathy.ai/assets/me_new.jpg" class="ppic" alt="Andrej Karpathy" />
+            </div>
+            <div id="ddesc">
+                <h1>Andrej Karpathy</h1>
+                <h2>I like to train deep neural nets on large datasets 🧠🤖💥</h2>
+                <div class="social-icons">
+                    <a href="https://twitter.com/karpathy" title="X/Twitter"><img src="https://karpathy.ai/assets/ctwitter.svg" class="iico" /></a>
+                    <a href="https://github.com/karpathy" title="GitHub"><img src="https://karpathy.ai/assets/cgithub.svg" class="iico"/></a>
+                    <a href="https://karpathy.github.io" title="RSS/Blog"><img src="https://karpathy.ai/assets/crss.svg" class="iico" /></a>
+                    <a href="https://medium.com/@karpathy" title="Medium"><img src="https://karpathy.ai/assets/crss.svg" class="iico" /></a>
+                    <a href="https://karpathy.bearblog.dev/blog/" title="Bear Blog"><img src="https://karpathy.ai/assets/crss.svg" class="iico" /></a>
+                    <img src="https://karpathy.ai/assets/cemail.svg" style="cursor: pointer;" class="iico" id="iemail" title="Click to reveal email" />
+                </div>
+                <div id="demail"></div>
+            </div>
+        </header>
+
+        <!-- Pull Quote -->
+        <section class="quote-section">
+            <i>"It is important to note that Andrej Karpathy is a member of the Order of the Unicorn. He commands not only the elemental forces that bind the universe but also the rare and enigmatic Unicorn Magic."</i>
+            <span class="attribution">— the order of the unicorn</span>
+        </section>
+
+        <!-- Career History -->
+        <section id="history">
+            <div class="ctitle">career & timeline</div>
+            
+            <div class="history-entry">
+                <div class="history-meta">
+                    <span class="year">2024 —</span>
+                    <img src="https://karpathy.ai/assets/eureka.png" alt="Eureka Labs">
+                </div>
+                <div class="history-body">
+                    <p>Founder at <a href="https://eurekalabs.ai/">Eureka Labs</a>. Elaborated on its vision on the <a href="https://www.youtube.com/watch?v=lXUZvyajciY&t=7028s">Dwarkesh podcast.</a> Creating educational videos on AI on my <a href="https://www.youtube.com/@AndrejKarpathy">YouTube channel</a>.</p>
+                </div>
+            </div>
+
+            <div class="history-entry">
+                <div class="history-meta">
+                    <span class="year">2023 — 2024</span>
+                    <img src="https://karpathy.ai/assets/openai_logo.png" alt="OpenAI">
+                </div>
+                <div class="history-body">
+                    <p>Returned to <a href="https://openai.com/">OpenAI</a>. Led a new team working on midtraining and synthetic data generation.</p>
+                </div>
+            </div>
+
+            <div class="history-entry">
+                <div class="history-meta">
+                    <span class="year">2017 — 2022</span>
+                    <img src="https://karpathy.ai/assets/tesla_logo2.jpg" alt="Tesla">
+                </div>
+                <div class="history-body">
+                    <p>Director of AI at <a href="https://www.tesla.com/autopilot">Tesla</a>. Led the computer vision team for Autopilot and Tesla Optimus. Focused on neural network training and custom inference chips.</p>
+                </div>
+            </div>
+
+            <div class="history-entry">
+                <div class="history-meta">
+                    <span class="year">2015 — 2017</span>
+                    <img src="https://karpathy.ai/assets/openai_logo.png" alt="OpenAI">
+                </div>
+                <div class="history-body">
+                    <p>Research scientist and founding member at <a href="https://openai.com/index/introducing-openai/">OpenAI</a>.</p>
+                </div>
+            </div>
+
+            <div class="history-entry">
+                <div class="history-meta">
+                    <span class="year">2011 — 2015</span>
+                    <img src="https://karpathy.ai/assets/stanford_logo.png" alt="Stanford">
+                </div>
+                <div class="history-body">
+                    <p>PhD at Stanford Vision Lab under <a href="http://vision.stanford.edu/">Fei-Fei Li</a>. Architect and lead instructor for <a href="http://cs231n.stanford.edu/">CS 231n</a>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Biography -->
+        <section id="bio" style="margin-bottom: 80px;">
+            <div class="ctitle">bio</div>
+            <p style="font-size: 1.05rem; color: var(--fg); font-weight: 300; line-height: 1.8;">Andrej Karpathy is an AI researcher and founder of Eureka Labs, focused on modernizing education in the age of AI. He previously served as the Director of AI at Tesla and was a founding member of OpenAI.</p>
+        </section>
+
+        <!-- Media Hub -->
+        <section id="featured-talks">
+            <div class="ctitle">featured talks</div>
+            <div class="card-grid">
+                <div class="talk-card">
+                    <a href="https://www.youtube.com/watch?v=lXUZvyajciY">
+                        <img src="https://karpathy.ai/assets/dwarkesh_pod.jpg" alt="Dwarkesh Podcast">
+                        <div class="talk-info"><span>Dwarkesh podcast 2025</span></div>
+                    </a>
+                </div>
+                <div class="talk-card">
+                    <a href="https://www.youtube.com/watch?v=LCEmiRjPEtQ">
+                        <img src="https://karpathy.ai/assets/yc.jpg" alt="YC AI">
+                        <div class="talk-info"><span>YC AI Startup School 2025</span></div>
+                    </a>
+                </div>
+                <div class="talk-card">
+                    <a href="https://youtu.be/j0z4FweCy4M?t=2900">
+                        <img src="https://karpathy.ai/assets/aiday.jpg" alt="Tesla AI Day">
+                        <div class="talk-info"><span>Tesla AI Day 2021</span></div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teaching -->
+        <section id="teaching" style="margin-bottom: 80px;">
+            <div class="ctitle">teaching</div>
+            <p style="margin-bottom: 25px; color: var(--muted); font-size: 0.95rem;">Posting lectures on LLMs and AI on my <a href="https://www.youtube.com/@AndrejKarpathy">YouTube channel</a>. Designed the first deep learning class at Stanford.</p>
+            <img src="https://karpathy.ai/assets/youtube.jpg" style="width:100%; border-radius:var(--card-radius); border: 1px solid var(--border);" alt="YouTube Lecture" />
+        </section>
+
+        <!-- Writing -->
+        <section id="featured-writing">
+            <div class="ctitle">featured writing</div>
+            <ul class="journal-list">
+                <li><span class="date">Apr 2019</span><a href="https://karpathy.github.io/2019/04/25/recipe/">A Recipe for Training Neural Networks</a></li>
+                <li><span class="date">Nov 2017</span><a href="https://karpathy.medium.com/software-2-0-a64152b37c35">Software 2.0</a></li>
+                <li><span class="date">May 2015</span><a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">The Unreasonable Effectiveness of RNNs</a></li>
+                <li><span class="date">Sep 2014</span><a href="https://karpathy.github.io/2014/09/02/what-i-learned-from-competing-against-a-convnet-on-imagenet/">Competing against a ConvNet on ImageNet</a></li>
+            </ul>
+        </section>
+
+        <!-- Project Archive -->
+        <section id="pet-projects">
+            <div class="ctitle">pet projects</div>
+            
+            <div class="project-item">
+                <div class="project-icon"><img src="https://karpathy.ai/assets/puppy.jpg" alt="Micrograd"></div>
+                <div class="project-details">
+                    <a href="https://github.com/karpathy/micrograd">micrograd</a>
+                    <p>A tiny scalar-valued autograd engine with backpropagation over a dynamically built DAG.</p>
+                </div>
+            </div>
+
+            <div class="project-item">
+                <div class="project-icon"><img src="https://karpathy.ai/assets/arxiv_sanity.jpg" alt="Arxiv Sanity"></div>
+                <div class="project-details">
+                    <a href="https://github.com/karpathy/arxiv-sanity-preserver">arxiv-sanity</a>
+                    <p>Discovery platform to tame the overwhelming flood of research papers on Arxiv.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Academic Publications -->
+        <section id="publications" style="margin-bottom: 60px;">
+            <div class="ctitle">publications</div>
+            
+            <div class="pub-block">
+                <a href="http://proceedings.mlr.press/v70/shi17a/shi17a.pdf"><h4>World of Bits: An Open-Domain Platform for Web-Based Agents</h4></a>
+                <span class="venue">ICML 2017</span>
+                <p class="authors">Tianlin Shi, Andrej Karpathy, Linxi Fan, Percy Liang</p>
+            </div>
+
+            <div class="pub-block">
+                <a href="https://cs.stanford.edu/people/karpathy/main.pdf"><h4>Connecting Images and Natural Language (PhD thesis)</h4></a>
+                <span class="venue">Stanford University 2016</span>
+                <p class="authors">Andrej Karpathy</p>
+            </div>
+            
+            <p style="margin-top: 25px;"><a href="https://scholar.google.com/citations?user=l8WuQJgAAAAJ&hl=en&oi=ao" style="font-weight:500; font-size:0.9rem;">View full Google Scholar profile →</a></p>
+        </section>
+
+        <footer>
+            &copy; Andrej Karpathy
+        </footer>
+    </div>
+
+    <script type="text/javascript">
+        const rot13 = (message) => {
+            const alpha = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLM';
+            return message.replace(/[a-z]/gi, letter => alpha[alpha.indexOf(letter) + 13]);
+        }
+        
+        let e_is_shown = false;
+        const emailEl = document.getElementById('iemail');
+        const displayEl = document.getElementById('demail');
+
+        emailEl.addEventListener("click", function(){
+            if (!e_is_shown) {
+                // Only encode the email part
+                const encodedEmail = "naqerw.xnecngul" + "@" + "tznvy.pbz";
+                const suffixMsg = "<br><br><span style='font-style:italic; color:#8b949e;'>I'm sorry but I get way too much email and it is overwhelming. I only manage to reply to ~1% of it.</span>";
+                
+                // Decode the email and append the raw HTML text
+                displayEl.innerHTML = rot13(encodedEmail) + suffixMsg;
+                
+                displayEl.style.display = 'block';
+                setTimeout(() => displayEl.classList.add('show'), 10);
+            } else {
+                displayEl.classList.remove('show');
+                setTimeout(() => displayEl.style.display = 'none', 300);
+            }
+            e_is_shown = !e_is_shown;
+        });
+
+        const observerOptions = { threshold: 0.05 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.history-entry, .talk-card, .project-item, .pub-block').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(15px)";
+            el.style.transition = "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
