@@ -59,27 +59,25 @@
     }
 
     // ── Injection ────────────────────────────────────────────────────
-    
-    // Create elements
     const overlay = document.createElement('div');
     overlay.className = 'nav-overlay';
     overlay.id = 'nav-overlay';
-
-    const hamBtn = document.createElement('button');
-    hamBtn.className = 'hamburger';
-    hamBtn.id = 'hamburger';
-    hamBtn.innerHTML = '<span></span><span></span><span></span>';
 
     const aside = document.createElement('aside');
     aside.className = 'sidebar';
     aside.id = 'sidebar';
     aside.innerHTML = `
-      <div class="sidebar-logo-wrap">
-        <img src="/assets/favicon.png" alt="TC" class="sidebar-logo" />
-        <div>
-          <div class="sidebar-name">Thomas Carleton</div>
-          <div class="sidebar-tagline">minescout.net</div>
+      <div class="sidebar-header">
+        <div class="sidebar-logo-wrap">
+          <img src="/assets/favicon.png" alt="TC" class="sidebar-logo" />
+          <div>
+            <div class="sidebar-name">Thomas Carleton</div>
+            <div class="sidebar-tagline">minescout.net</div>
+          </div>
         </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
       </div>
       <nav class="sidebar-nav">${buildLinks(primaryLinks)}</nav>
       <div class="sidebar-spacer"></div>
@@ -87,9 +85,10 @@
       <div class="sidebar-bottom" id="copyright"></div>
     `;
 
+    const hamBtn = aside.querySelector('#hamburger');
+
     // Add to DOM
     document.body.appendChild(overlay);
-    document.body.appendChild(hamBtn);
     document.body.appendChild(aside);
 
     // Copyright
@@ -100,30 +99,32 @@
     // ── Logic ────────────────────────────────────────────────────────
     function openNav() {
       aside.classList.add('open');
-      hamBtn.classList.add('open');
+      if (hamBtn) hamBtn.classList.add('open');
       overlay.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
 
     function closeNav() {
       aside.classList.remove('open');
-      hamBtn.classList.remove('open');
+      if (hamBtn) hamBtn.classList.remove('open');
       overlay.classList.remove('active');
       document.body.style.overflow = '';
     }
 
-    hamBtn.onclick = (e) => {
-      e.stopPropagation();
-      aside.classList.contains('open') ? closeNav() : openNav();
-    };
+    if (hamBtn) {
+      hamBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        aside.classList.contains('open') ? closeNav() : openNav();
+      });
+    }
 
     overlay.onclick = closeNav;
 
     aside.querySelectorAll('a').forEach(a => {
-      a.onclick = () => { if (window.innerWidth <= 768) closeNav(); };
+      a.addEventListener('click', () => { if (window.innerWidth <= 768) closeNav(); });
     });
 
-    window.onresize = () => { if (window.innerWidth > 768) closeNav(); };
+    window.addEventListener('resize', () => { if (window.innerWidth > 768) closeNav(); });
   }
 
   // Ensure it runs only when the body exists

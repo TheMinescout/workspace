@@ -78,6 +78,13 @@ body {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
 .sidebar-logo-wrap {
   display: flex;
   align-items: center;
@@ -137,12 +144,17 @@ body {
 /* 4. MOBILE HAMBURGER & OVERLAY */
 .hamburger {
   display: none;
-  flex-direction: column; justify-content: center;
-  gap: 5px; width: 44px; height: 44px;
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 6px; cursor: pointer; padding: 10px;
-  position: fixed; top: 1rem; left: 1rem; z-index: 1100;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 8px;
 }
 
 .hamburger span {
@@ -289,10 +301,42 @@ body {
 }
 
 @media (max-width: 768px) {
-  .sidebar { transform: translateX(-101%); width: 280px; }
-  .sidebar.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
-  .hamburger { display: flex; }
-  .main { margin-left: 0; padding: 5.5rem 1.25rem 2rem; }
+  .sidebar {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 1.25rem;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+
+  .sidebar-logo-wrap {
+    margin-bottom: 0;
+  }
+
+  .hamburger {
+    display: inline-flex;
+  }
+
+  .sidebar-nav,
+  .sidebar-secondary {
+    display: none;
+    margin-top: 0.75rem;
+  }
+
+  .sidebar.open .sidebar-nav,
+  .sidebar.open .sidebar-secondary {
+    display: flex;
+  }
+
+  .main {
+    margin-left: 0;
+    padding: 4.25rem 1.25rem 2rem;
+  }
 }
 
 /* 12. PRINT ENGINE (High-End LaTeX Look) */
