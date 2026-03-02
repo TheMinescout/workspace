@@ -73,14 +73,16 @@ body {
 h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; }
 a { text-decoration: none; color: inherit; transition: all 0.2s; }
 
-/* --- 3. HEADER (M3 Glassmorphism) --- */
-.main-header, .top-app-bar {
-    background: rgba(253, 253, 252, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--md-outline-variant);
-    padding: 0.8rem 0;
-    position: sticky; top: 0; z-index: 1000;
+/* --- 3. HEADER (Green Hero Bar) --- */
+.main-header,
+.top-app-bar {
+    background: radial-gradient(circle at 0 0, #6fa56b 0, #3e6f41 40%, #28462e 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 0.85rem 0 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    color: #ffffff;
 }
 
 .header-content,
@@ -94,53 +96,78 @@ a { text-decoration: none; color: inherit; transition: all 0.2s; }
 }
 
 .site-title-container {
+    position: relative;
+    justify-content: center;
+    align-items: center;
     gap: 16px;
 }
 
 .site-title-wrapper {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 .site-title {
-    font-size: 1.5rem;
-    color: var(--md-primary);
-    letter-spacing: -0.5px;
+    font-size: 1.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+.site-title a {
+    color: inherit;
 }
 
 .tagline {
     font-size: 0.75rem;
-    color: rgba(0, 0, 0, 0.55);
-    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.82);
+    font-weight: 600;
 }
 
-#auth-container a,
-#login-link {
-    font-size: 0.8rem;
-    color: var(--md-primary);
-    padding: 6px 12px;
-    border-radius: var(--radius-full);
-    border: 1px solid var(--md-outline-variant);
-    background: var(--md-surface-card);
-}
-
-#auth-container a:hover,
-#login-link:hover {
-    background: var(--md-primary);
-    color: var(--md-on-primary);
-    border-color: var(--md-primary);
-}
-
+/* Auth / account controls on right side of header */
+#auth-container,
 #user-display {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
     gap: 8px;
     font-size: 0.8rem;
 }
 
+#user-display a {
+    color: #ffffff;
+    opacity: 0.9;
+}
+
+#user-display a span {
+    font-weight: 600;
+}
+
+#auth-container a,
+#login-link,
 #signOut-btn {
-    border: none;
-    background: var(--md-surface-container);
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+#auth-container a:hover,
+#login-link:hover,
+#signOut-btn:hover {
+    background: #ffffff;
+    color: #335438;
+    border-color: #ffffff;
 }
 
 /* Auth / M3 Buttons */
