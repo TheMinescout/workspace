@@ -89,7 +89,6 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 2.5rem;
 }
 
 .sidebar-logo {
@@ -143,7 +142,7 @@ body {
 
 /* 4. MOBILE HAMBURGER & OVERLAY */
 .hamburger {
-  display: none;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
