@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Thomas Carleton</title>
+  <link rel="icon" type="image/png" href="../../assets/favicon.png" />
+  <link rel="stylesheet" href="../../styles/main.css?v=8.1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    .not-found-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: calc(100vh - 4rem);
+      max-width: 520px;
+    }
+
+    .not-found-number {
+      font-family: var(--serif);
+      font-size: clamp(6rem, 18vw, 12rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--light);
+      margin-bottom: -1rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.1s forwards;
+      user-select: none;
+    }
+
+    .not-found-number em {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .not-found-title {
+      font-family: var(--serif);
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.2s forwards;
+    }
+
+    .not-found-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.3s forwards;
+    }
+
+    .not-found-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.4s forwards;
+    }
+
+    .not-found-link {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .not-found-link:hover {
+      color: var(--fg);
+      border-color: var(--fg);
+      background: var(--light);
+    }
+
+    .not-found-link.primary {
+      background: var(--fg);
+      color: var(--bg);
+      border-color: var(--fg);
+    }
+
+    .not-found-link.primary:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+  </style>
+</head>
+<body>
+  <script src="/scripts/sidebar.js"></script>
+  <script src="/scripts/main.js"></script>
+</body>
+</html>

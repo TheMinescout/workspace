@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Work — Minescout AI</title>
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/styles/main.css?v=8.1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    .clients-wrap { max-width: 640px; }
+    .clients-intro { font-size: 0.88rem; color: var(--muted); line-height: 1.8; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
+
+    /* Status bar */
+    .status-bar { background: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 1rem 1.25rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.85rem; opacity: 0; animation: fadeUp 0.5s ease 0.25s forwards; }
+    .status-dot-live { width: 8px; height: 8px; background: #4caf82; border-radius: 50%; flex-shrink: 0; animation: pulse 2s ease infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(1.3)} }
+    .status-text { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+    .status-text strong { color: var(--fg); }
+
+    /* Client cards */
+    .client-card {
+      border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+      margin-bottom: 1.25rem; opacity: 0; animation: fadeUp 0.5s ease forwards;
+      animation-delay: var(--d, 0.3s);
+    }
+
+    .client-card-header { padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; border-bottom: 1px solid var(--border); }
+    .client-name { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; color: var(--fg); margin-bottom: 0.25rem; }
+    .client-type { font-size: 0.68rem; color: var(--muted); }
+    .client-status { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.22rem 0.55rem; border-radius: 3px; white-space: nowrap; flex-shrink: 0; }
+    .status-charter { background: var(--light); color: var(--muted); border: 1px solid var(--border); }
+    .status-prospect { background: #fff8e8; color: #c9922a; border: 1px solid #f5e0a0; }
+    .status-live { background: #f0faf4; color: #4caf82; border: 1px solid #c3e8d0; }
+
+    .client-card-body { padding: 1.25rem 1.5rem; }
+    .client-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .client-detail-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.25rem; }
+    .client-detail-val { font-size: 0.78rem; color: var(--fg); }
+    .client-note { font-size: 0.75rem; color: var(--muted); line-height: 1.7; border-top: 1px solid var(--border); padding-top: 1rem; }
+
+    /* Demo card */
+    .demo-card { border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.5s ease 0.55s forwards; }
+    .demo-card-title { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; color: var(--fg); margin-bottom: 0.5rem; }
+    .demo-card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.75; margin-bottom: 1.25rem; }
+    .demo-card-cta { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+
+    /* CTA bottom */
+    .clients-cta { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.5s ease 0.6s forwards; }
+
+    @media (max-width: 580px) {
+      .client-detail-grid { grid-template-columns: 1fr; }
+      .client-card-header { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+
+
+  <main class="main main--page">
+    <div class="page-content clients-wrap">
+      <p class="page-label">Minescout AI</p>
+      <h1 class="page-title">Client Work</h1>
+      <p class="clients-intro">Minescout AI launched in early 2026. I'm currently onboarding my first Charter Partners — local Sammamish businesses who get the full stack free in exchange for a signed testimonial and 12 months of feedback. Case studies will be published here as they go live.</p>
+
+      <!-- Status -->
+      <div class="status-bar">
+        <div class="status-dot-live"></div>
+        <div class="status-text"><strong>Currently accepting Charter Partner applications.</strong> 3 spots remaining for the inaugural cohort. Setup is free — see <a href="/ai/pricing" style="color:var(--fg);border-bottom:1px solid var(--border);">pricing</a> for details.</div>
+      </div>
+
+      <!-- Demo / internal project -->
+      <div class="client-card" style="--d:0.32s;">
+        <div class="client-card-header">
+          <div>
+            <div class="client-name">Smith &amp; Cole Law — Live Demo</div>
+            <div class="client-type">Mock law firm &mdash; internal demo project</div>
+          </div>
+          <span class="client-status status-live">Live</span>
+        </div>
+        <div class="client-card-body">
+          <div class="client-detail-grid">
+            <div>
+              <div class="client-detail-label">Plan</div>
+              <div class="client-detail-val">Full AI Upgrade (demo)</div>
+            </div>
+            <div>
+              <div class="client-detail-label">Industry</div>
+              <div class="client-detail-val">Legal services</div>
+            </div>
+            <div>
+              <div class="client-detail-label">Features</div>
+              <div class="client-detail-val">Chat widget, feedback loop, Google Sheets Training Bridge</div>
+            </div>
+            <div>
+              <div class="client-detail-label">Launched</div>
+              <div class="client-detail-val">February 2026</div>
+            </div>
+          </div>
+          <p class="client-note">This is a working demo I built to show local businesses exactly what they'd be getting. The AI answers as the firm, the feedback thumbs up/down system logs to a real Google Sheet, and the "Want this?" CTA at the end links to my contact page. Try it at <a href="/ai/demo" style="color:var(--fg);border-bottom:1px solid var(--border);">minescout.net/ai/demo</a>.</p>
+        </div>
+      </div>
+
+      <!-- Charter slot 1 -->
+      <div class="client-card" style="--d:0.4s;">
+        <div class="client-card-header">
+          <div>
+          <div class="client-name">Charter Partner &mdash; Spot #1</div>
+<div class="client-type">Sammamish Botanical Garden &mdash; Local Non-Profit</div>
+</div>
+<span class="client-status status-prospect">Active</span>
+</div>
+
+<div class="client-card-body">
+    <div class="client-detail-grid">
+        <div>
+            <div class="client-detail-label">Plan</div>
+            <div class="client-detail-val">Charter Partner (free)</div>
+        </div>
+        <div>
+            <div class="client-detail-label">Setup cost</div>
+            <div class="client-detail-val">$0 (valued at $500)</div>
+        </div>
+        <div>
+            <div class="client-detail-label">Commitment</div>
+            <div class="client-detail-val">Signed testimonial + 12mo feedback</div>
+        </div>
+        <div>
+            <div class="client-detail-label">Status</div>
+            <div class="client-detail-val">Claimed by Sammamish Botanical Garden</div>
+        </div>
+    </div>
+    <p class="client-note">Spot #1 is now closed. This partner will be utilizing automated FAQ handling to help community members learn about local plant life and garden events.</p>
+</div>
+
+      </div>
+
+      <!-- Charter slot 2 & 3 combined -->
+      <div class="client-card" style="--d:0.48s;">
+        <div class="client-card-header">
+          <div>
+            <div class="client-name">Charter Partner &mdash; Spots #2 &amp; #3</div>
+            <div class="client-type">Sammamish area businesses &mdash; category open</div>
+          </div>
+          <span class="client-status status-prospect">2 spots open</span>
+        </div>
+        <div class="client-card-body">
+          <p class="client-note" style="border-top:none;padding-top:0;">Two additional Charter spots are available in the inaugural cohort. Same terms as Spot #1 — full AI Upgrade at no cost in exchange for a signed testimonial and 12 months of active feedback. Case studies from all three partners will be published here. <a href="/contact" style="color:var(--fg);border-bottom:1px solid var(--border);">Reach out to apply &rarr;</a></p>
+        </div>
+      </div>
+
+      <!-- Try the demo -->
+      <div class="demo-card">
+        <div class="demo-card-title">&#128172; See it working — try the live demo</div>
+        <div class="demo-card-desc">NOT REAL: The Smith &amp; Cole demo is a fully functional AI chat widget on a mock law firm site. Ask it about hours, services, consultations — it answers as the business. The feedback buttons and Google Sheets logging all work live.</div>
+        <div class="demo-card-cta">
+          <a href="/demo" class="btn-primary">Try the demo</a>
+          <a href="/ai/process" class="btn-ghost">How it works &rarr;</a>
+        </div>
+      </div>
+
+      <div class="clients-cta">
+        <a href="/contact" class="btn-primary">Apply for a Charter spot</a>
+        <a href="/ai/pricing" class="btn-ghost">View pricing &rarr;</a>
+      </div>
+    </div>
+  </main>
+  <script src="/scripts/sidebar.js"></script>
+  <script src="/scripts/main.js"></script>
+  <script>
+    document.getElementById('copyright').textContent = '\u00A9 ' + new Date().getFullYear() + ' Minescout AI';
+  </script>
+</body>
+</html>

@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin — Minescout AI</title>
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #1a1916;
+      --accent: #ff4d1c;
+      --muted: #66625a;
+      --light: #f9f8f6;
+      --border: #e8e4dd;
+      --green: #4caf82;
+      --yellow: #f5a623;
+      --serif: 'Playfair Display', serif;
+      --sans: 'Jost', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--sans); background: #1a1916; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    /* ── Loading ── */
+    #loading-screen {
+      position: fixed; inset: 0; background: var(--fg);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 1rem; z-index: 9999; transition: opacity 0.3s;
+    }
+    .ls-logo { font-family: var(--serif); font-size: 1.4rem; color: #fff; }
+    .ls-sub  { font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+    .ls-bar  { width: 100px; height: 2px; background: rgba(255,255,255,0.12); border-radius: 2px; overflow: hidden; }
+    .ls-fill { height: 100%; background: var(--accent); animation: lsani 1s ease infinite; }
+    @keyframes lsani { 0%{width:0;margin-left:0}50%{width:80%;margin-left:0}100%{width:0;margin-left:100%} }
+
+    /* ── Login overlay ── */
+    #login-screen {
+      display: none; position: fixed; inset: 0; background: var(--fg);
+      align-items: center; justify-content: center; z-index: 9998;
+    }
+    .login-box { background: #242320; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 2.5rem; width: 360px; }
+    .login-box-title { font-family: var(--serif); font-size: 1.3rem; color: #fff; margin-bottom: 0.3rem; }
+    .login-box-sub   { font-size: 0.7rem; color: rgba(255,255,255,0.35); margin-bottom: 2rem; }
+    .lf { margin-bottom: 1rem; }
+    .lf label { display: block; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 0.4rem; }
+    .lf input { width: 100%; font-family: var(--sans); font-size: 0.88rem; color: #fff; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 0.7rem 0.9rem; outline: none; transition: border-color 0.15s; }
+    .lf input:focus { border-color: rgba(255,255,255,0.35); }
+    .login-btn { width: 100%; font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg); background: #fff; border: none; border-radius: 4px; padding: 0.85rem; cursor: pointer; margin-top: 0.5rem; transition: background 0.15s; }
+    .login-btn:hover { background: var(--accent); color: #fff; }
+    .login-err { font-size: 0.72rem; color: var(--accent); background: rgba(255,77,28,0.1); border: 1px solid rgba(255,77,28,0.25); border-radius: 4px; padding: 0.6rem 0.8rem; margin-top: 0.85rem; display: none; }
+
+    /* ── Main shell ── */
+    #admin { display: none; min-height: 100vh; }
+
+    .topbar {
+      background: #111110; height: 54px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06); position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-logo { font-family: var(--serif); font-size: 0.95rem; color: #fff; }
+    .topbar-badge { font-size: 0.55rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; background: var(--accent); color: #fff; padding: 0.18rem 0.5rem; border-radius: 2px; margin-left: 0.6rem; vertical-align: middle; }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; }
+    .topbar-user { font-size: 0.68rem; color: rgba(255,255,255,0.35); }
+    .signout-btn { font-family: var(--sans); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.4); background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 3px; padding: 0.28rem 0.65rem; cursor: pointer; transition: all 0.15s; }
+    .signout-btn:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+
+    /* ── Layout ── */
+    .shell { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 54px); }
+
+    .sidenav { background: #111110; border-right: 1px solid rgba(255,255,255,0.06); padding: 1.5rem 0; }
+    .sidenav-section { font-size: 0.55rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.25); padding: 0 1.25rem; margin-bottom: 0.5rem; margin-top: 1.25rem; }
+    .sidenav-section:first-child { margin-top: 0; }
+    .sidenav a { display: flex; align-items: center; gap: 0.6rem; font-size: 0.78rem; color: rgba(255,255,255,0.45); padding: 0.55rem 1.25rem; text-decoration: none; transition: all 0.15s; border-left: 2px solid transparent; }
+    .sidenav a:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.04); }
+    .sidenav a.active { color: #fff; border-left-color: var(--accent); background: rgba(255,255,255,0.05); }
+    .sidenav-icon { font-size: 0.85rem; width: 18px; text-align: center; }
+
+    .main-area { background: #f0ede8; }
+    .main-content { max-width: 900px; padding: 2rem; }
+
+    /* ── Panels ── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── Shared UI ── */
+    .panel-title { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; color: var(--fg); margin-bottom: 0.3rem; }
+    .panel-desc  { font-size: 0.78rem; color: var(--muted); line-height: 1.6; margin-bottom: 2rem; }
+
+    .card { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 1.25rem; }
+    .card-header { padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .card-label  { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .card-body   { padding: 1.25rem; }
+
+    .field { margin-bottom: 1rem; }
+    .field:last-child { margin-bottom: 0; }
+    .field label { display: block; font-size: 0.63rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+    .field input, .field textarea, .field select {
+      width: 100%; font-family: var(--sans); font-size: 0.85rem; color: var(--fg);
+      background: var(--light); border: 1px solid var(--border); border-radius: 4px;
+      padding: 0.65rem 0.85rem; outline: none; transition: border-color 0.15s; resize: vertical;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--fg); background: var(--bg); }
+    .field textarea { min-height: 75px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .btn { font-family: var(--sans); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; border: none; border-radius: 4px; padding: 0.6rem 1.1rem; cursor: pointer; transition: all 0.15s; }
+    .btn-primary  { background: var(--fg); color: #fff; }
+    .btn-primary:hover  { background: var(--accent); }
+    .btn-ghost    { background: var(--light); color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover    { border-color: var(--fg); color: var(--fg); }
+    .btn-danger   { background: #fff4f1; color: var(--accent); border: 1px solid #ffd5c8; }
+    .btn-danger:hover   { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-green    { background: #f0faf4; color: var(--green); border: 1px solid #c3e8d0; }
+    .btn-green:hover    { background: var(--green); color: #fff; border-color: var(--green); }
+    .btn-sm { padding: 0.32rem 0.65rem; font-size: 0.6rem; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .tag { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; padding: 0.18rem 0.5rem; border-radius: 3px; }
+    .tag-active  { background: #f0faf4; color: var(--green); border: 1px solid #c3e8d0; }
+    .tag-pending { background: #fff8e8; color: #c9922a; border: 1px solid #f5e0a0; }
+    .tag-applied { background: #f0faf4; color: var(--green); border: 1px solid #c3e8d0; }
+    .tag-admin   { background: rgba(255,77,28,0.08); color: var(--accent); border: 1px solid rgba(255,77,28,0.2); }
+
+    .empty-state { padding: 2.5rem; text-align: center; color: var(--muted); font-size: 0.78rem; }
+
+    /* ── Dashboard stats ── */
+    .dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+    .dash-stat { padding: 1.25rem; text-align: center; border-right: 1px solid var(--border); background: var(--bg); }
+    .dash-stat:last-child { border-right: none; }
+    .dash-val   { font-family: var(--serif); font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; color: var(--fg); display: block; }
+    .dash-val.g { color: var(--green); }
+    .dash-val.a { color: var(--accent); }
+    .dash-label { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+
+    /* ── Client list ── */
+    .client-row { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); transition: background 0.12s; }
+    .client-row:last-child { border-bottom: none; }
+    .client-row:hover { background: var(--light); }
+    .client-name { font-size: 0.88rem; font-weight: 500; color: var(--fg); margin-bottom: 0.2rem; }
+    .client-meta { font-size: 0.68rem; color: var(--muted); }
+    .client-actions { display: flex; gap: 0.4rem; align-items: center; }
+
+    /* ── Corrections list ── */
+    .corr-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: flex-start; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+    .corr-row:last-child { border-bottom: none; }
+    .corr-q    { font-size: 0.78rem; font-weight: 500; color: var(--fg); margin-bottom: 0.25rem; }
+    .corr-text { font-size: 0.72rem; color: var(--muted); line-height: 1.55; }
+    .corr-col-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; }
+
+    /* ── Modals ── */
+    .modal-bg {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+      align-items: center; justify-content: center; z-index: 500; padding: 2rem;
+    }
+    .modal-bg.open { display: flex; }
+    .modal { background: var(--bg); border-radius: 8px; width: 100%; max-width: 520px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 24px 48px rgba(0,0,0,0.15); }
+    .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .modal-title  { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; color: var(--fg); }
+    .modal-close  { font-size: 1.2rem; color: var(--muted); cursor: pointer; background: none; border: none; line-height: 1; }
+    .modal-body   { padding: 1.5rem; }
+    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 0.6rem; background: var(--light); }
+
+    /* ── Seed progress ── */
+    .seed-progress { font-size: 0.75rem; color: var(--muted); margin-top: 1rem; line-height: 1.75; display: none; }
+    .seed-step { display: flex; align-items: center; gap: 0.5rem; }
+    .seed-step-icon { font-size: 0.75rem; width: 16px; }
+
+    /* ── Toast ── */
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(8px); background: var(--fg); color: #fff; font-size: 0.75rem; font-weight: 500; padding: 0.7rem 1.25rem; border-radius: 50px; opacity: 0; transition: all 0.25s; pointer-events: none; white-space: nowrap; z-index: 9999; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.ok  { background: var(--green); }
+    .toast.err { background: var(--accent); }
+
+    @media (max-width: 700px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidenav { display: flex; overflow-x: auto; padding: 0; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); }
+      .sidenav-section { display: none; }
+      .sidenav a { border-left: none; border-bottom: 2px solid transparent; white-space: nowrap; padding: 0.85rem 1rem; }
+      .sidenav a.active { border-left: none; border-bottom-color: var(--accent); }
+      .field-row { grid-template-columns: 1fr; }
+      .dash-grid { grid-template-columns: 1fr; }
+      .corr-row  { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading-screen">
+  <div class="ls-logo">Minescout AI</div>
+  <div class="ls-sub">Admin</div>
+  <div class="ls-bar"><div class="ls-fill"></div></div>
+</div>
+
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-box-title">Admin Sign In</div>
+    <div class="login-box-sub">minescout.net/ai/admin</div>
+    <div class="lf"><label>Email</label><input type="email" id="l-email" placeholder="tmcarleton11@gmail.com" /></div>
+    <div class="lf"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" /></div>
+    <button class="login-btn" id="l-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-err" id="l-err"></div>
+  </div>
+</div>
+
+<!-- Admin shell -->
+<div id="admin">
+  <div class="topbar">
+    <div>
+      <span class="topbar-logo">Minescout AI</span>
+      <span class="topbar-badge">Admin</span>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-user" id="admin-user-label"></span>
+      <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="shell">
+    <!-- Sidenav -->
+    <nav class="sidenav">
+      <div class="sidenav-section">Main</div>
+      <a href="#" class="active" onclick="showPanel('dashboard',this)">
+        <span class="sidenav-icon">&#128202;</span>Dashboard
+      </a>
+      <a href="#" onclick="showPanel('clients',this)">
+        <span class="sidenav-icon">&#128101;</span>Clients
+      </a>
+      <a href="#" onclick="showPanel('corrections',this)">
+        <span class="sidenav-icon">&#9997;&#65039;</span>Corrections
+      </a>
+      <div class="sidenav-section">Tools</div>
+      <a href="#" onclick="showPanel('new-client',this)">
+        <span class="sidenav-icon">&#10133;</span>New Client
+      </a>
+      <a href="/ai/clients/portal" target="_blank">
+        <span class="sidenav-icon">&#128279;</span>Client Portal ↗
+      </a>
+      <a href="/ai/" target="_blank">
+        <span class="sidenav-icon">&#127760;</span>Public Site ↗
+      </a>
+    </nav>
+
+    <!-- Main area -->
+    <div class="main-area">
+      <div class="main-content">
+
+        <!-- ── DASHBOARD ── -->
+        <div class="panel active" id="panel-dashboard">
+          <div class="panel-title">Dashboard</div>
+          <p class="panel-desc">Overview of all active clients and the platform.</p>
+
+          <div class="dash-grid">
+            <div class="dash-stat">
+              <span class="dash-val g" id="d-clients">—</span>
+              <span class="dash-label">Active clients</span>
+            </div>
+            <div class="dash-stat">
+              <span class="dash-val" id="d-convos">—</span>
+              <span class="dash-label">Total conversations</span>
+            </div>
+            <div class="dash-stat">
+              <span class="dash-val a" id="d-pending">—</span>
+              <span class="dash-label">Pending corrections</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-label">Client roster</span>
+              <button class="btn btn-primary btn-sm" onclick="showPanel('new-client', document.querySelector('.sidenav a:nth-child(5)'))">+ New client</button>
+            </div>
+            <div id="dash-client-list">
+              <div class="empty-state">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CLIENTS ── -->
+        <div class="panel" id="panel-clients">
+          <div class="panel-title">Clients</div>
+          <p class="panel-desc">All registered client accounts. Click a client to view or edit their data.</p>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-label">All clients</span>
+              <button class="btn btn-primary btn-sm" onclick="showPanel('new-client', document.querySelector('.sidenav a:nth-child(5)'))">+ New client</button>
+            </div>
+            <div id="clients-list">
+              <div class="empty-state">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CORRECTIONS ── -->
+        <div class="panel" id="panel-corrections">
+          <div class="panel-title">Corrections</div>
+          <p class="panel-desc">Corrections submitted by clients across all accounts. Mark as applied once you've updated the AI.</p>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-label">Pending corrections</span>
+              <span id="pending-count-label" style="font-size:0.65rem;color:var(--muted);"></span>
+            </div>
+            <div id="corrections-list">
+              <div class="empty-state">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── NEW CLIENT ── -->
+        <div class="panel" id="panel-new-client">
+          <div class="panel-title">New Client</div>
+          <p class="panel-desc">Create a Firebase account and seed their Firestore data in one flow. They can log in immediately after.</p>
+
+          <div class="card">
+            <div class="card-header"><span class="card-label">Account</span></div>
+            <div class="card-body">
+              <div class="field-row">
+                <div class="field">
+                  <label>Client email</label>
+                  <input type="email" id="nc-email" placeholder="client@theirbusiness.com" />
+                </div>
+                <div class="field">
+                  <label>Temporary password</label>
+                  <input type="text" id="nc-pass" placeholder="Min 6 characters" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span class="card-label">Business info</span></div>
+            <div class="card-body">
+              <div class="field-row">
+                <div class="field">
+                  <label>Business name</label>
+                  <input type="text" id="nc-name" placeholder="e.g. Overlake Fly Fishing Club" />
+                </div>
+                <div class="field">
+                  <label>Phone</label>
+                  <input type="text" id="nc-phone" placeholder="e.g. (425) 555-0100" />
+                </div>
+              </div>
+              <div class="field">
+                <label>Address</label>
+                <input type="text" id="nc-address" placeholder="e.g. 123 Main St, Sammamish WA 98075" />
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Website</label>
+                  <input type="text" id="nc-website" placeholder="https://..." />
+                </div>
+                <div class="field">
+                  <label>Plan</label>
+                  <select id="nc-plan">
+                    <option value="Charter Partner">Charter Partner (Free)</option>
+                    <option value="Full AI Upgrade">Full AI Upgrade ($250 + $50/mo)</option>
+                    <option value="Digital Remodel">Digital Remodel ($250)</option>
+                    <option value="Managed Intelligence">Managed Intelligence ($250 + $50/mo)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label>Hours</label>
+                <input type="text" id="nc-hours" placeholder="e.g. Mon–Fri 9am–5pm. Closed weekends." />
+              </div>
+              <div class="field">
+                <label>About / description (2–3 sentences)</label>
+                <textarea id="nc-description" placeholder="What does this business do?"></textarea>
+              </div>
+              <div class="field">
+                <label>Services (one per line)</label>
+                <textarea id="nc-services" placeholder="Service 1&#10;Service 2&#10;Service 3"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span class="card-label">Seed FAQs (optional)</span></div>
+            <div class="card-body">
+              <div id="nc-faqs">
+                <!-- FAQ rows added dynamically -->
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="addNcFaqRow()" style="margin-top:0.75rem;">+ Add FAQ</button>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:0.75rem;align-items:center;margin-bottom:1rem;">
+            <button class="btn btn-primary" id="nc-submit-btn" onclick="createClient()">Create client account</button>
+            <span style="font-size:0.68rem;color:var(--muted);">Creates Firebase account + seeds Firestore</span>
+          </div>
+
+          <div class="seed-progress" id="seed-progress"></div>
+        </div>
+
+      </div><!-- /main-content -->
+    </div><!-- /main-area -->
+  </div><!-- /shell -->
+</div><!-- /admin -->
+
+<!-- Client detail modal -->
+<div class="modal-bg" id="client-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="cm-title">Client</div>
+      <button class="modal-close" onclick="closeModal('client-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+        <div>
+          <div style="font-size:0.6rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem;">UID</div>
+          <div style="font-size:0.72rem;color:var(--fg);word-break:break-all;" id="cm-uid"></div>
+        </div>
+        <div>
+          <div style="font-size:0.6rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem;">Email</div>
+          <div style="font-size:0.72rem;color:var(--fg);" id="cm-email"></div>
+        </div>
+        <div>
+          <div style="font-size:0.6rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem;">Plan</div>
+          <div style="font-size:0.72rem;color:var(--fg);" id="cm-plan"></div>
+        </div>
+        <div>
+          <div style="font-size:0.6rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem;">Conversations</div>
+          <div style="font-size:0.72rem;color:var(--fg);" id="cm-convos"></div>
+        </div>
+      </div>
+      <div style="font-size:0.6rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">FAQs loaded</div>
+      <div id="cm-faqs" style="font-size:0.75rem;color:var(--muted);line-height:1.7;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="cm-delete-btn">Delete client</button>
+      <a id="cm-impersonate-btn" href="#" target="_blank" class="btn btn-primary btn-sm">View portal ↗</a>
+    </div>
+  </div>
+</div>
+
+<!-- Delete confirm modal -->
+<div class="modal-bg" id="delete-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Delete client?</div>
+      <button class="modal-close" onclick="closeModal('delete-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:0.82rem;color:var(--muted);line-height:1.7;">
+        This will delete all Firestore data for <strong id="del-client-name" style="color:var(--fg);"></strong>.
+        The Firebase Auth account must be deleted separately from the Firebase Console.
+        <br><br>This cannot be undone.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('delete-modal')">Cancel</button>
+      <button class="btn btn-danger btn-sm" id="del-confirm-btn">Yes, delete Firestore data</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp }
+    from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+           signOut, createUserWithEmailAndPassword }
+    from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+  import { getFirestore, doc, getDoc, setDoc, addDoc, getDocs,
+           collection, query, orderBy, where, deleteDoc,
+           serverTimestamp, limit, updateDoc, writeBatch }
+    from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+  // ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────
+  const firebaseConfig = {
+      apiKey: "AIzaSyAmZbRI37rbHWGaOSVomMdcG-IvHMf6S3Y",
+      authDomain: "minescout-5533a.firebaseapp.com",
+      projectId: "minescout-5533a",
+      storageBucket: "minescout-5533a.firebasestorage.app",
+      messagingSenderId: "639262143843",
+      appId: "1:639262143843:web:4fe407d3b15a4c885a8f56",
+    };
+  // ─────────────────────────────────────────────────────────
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  let currentAdmin = null;
+  let allClients   = []; // cached client list
+  let pendingDeleteId = null;
+  let bypassAuthCheck = false; // prevents redirect loop when creating client accounts
+
+  // ── Auth gate + admin check ───────────────────────────────
+  onAuthStateChanged(auth, async user => {
+    // If we're in the middle of creating a client account, ignore auth changes
+    if (bypassAuthCheck) return;
+
+    if (!user) {
+      hideLoading();
+      showLoginScreen();
+      return;
+    }
+
+    // Check admin flag in Firestore
+    let adminDoc;
+    try {
+      adminDoc = await getDoc(doc(db, 'admins', user.uid));
+    } catch (e) {
+      // Rules blocked the read — definitely not admin
+      hideLoading();
+      await signOut(auth);
+      showLoginScreen();
+      showErr('Access denied. This page is admin-only.');
+      return;
+    }
+
+    if (!adminDoc.exists()) {
+      // Not an admin — send to client portal instead
+      hideLoading();
+      await signOut(auth);
+      window.location.href = '/ai/clients/login';
+      return;
+    }
+
+    currentAdmin = user;
+    document.getElementById('admin-user-label').textContent = user.email;
+    hideLoading();
+    showAdmin();
+    await loadAll();
+  });
+
+  // ── Login ─────────────────────────────────────────────────
+  window.doLogin = async function() {
+    const email = document.getElementById('l-email').value.trim();
+    const pass  = document.getElementById('l-pass').value;
+    const btn   = document.getElementById('l-btn');
+    const err   = document.getElementById('l-err');
+    if (!email || !pass) { showErr('Enter email and password.'); return; }
+    btn.disabled = true; btn.textContent = 'Signing in...'; err.style.display = 'none';
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch (e) {
+      btn.disabled = false; btn.textContent = 'Sign In';
+      showErr(friendlyErr(e.code));
+    }
+  };
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') window.doLogin?.(); });
+
+  window.doSignOut = async function() {
+    await signOut(auth);
+    window.location.reload();
+  };
+
+  // ── Load everything ───────────────────────────────────────
+  async function loadAll() {
+    await loadClients(); 
+    await loadAllCorrections();
+  }
+
+  async function loadClients() {
+    try {
+      const snap = await getDocs(collection(db, 'clients'));
+      allClients = [];
+      for (const d of snap.docs) {
+        const bizSnap   = await getDoc(doc(db, 'clients', d.id, 'data', 'businessInfo'));
+        const statsSnap = await getDoc(doc(db, 'clients', d.id, 'data', 'stats'));
+        const faqSnap   = await getDocs(collection(db, 'clients', d.id, 'faqs'));
+        const biz       = bizSnap.exists()   ? bizSnap.data()   : {};
+        const stats     = statsSnap.exists() ? statsSnap.data() : {};
+        allClients.push({
+          uid:    d.id,
+          email:  biz.email  || '',
+          name:   biz.name   || 'Unnamed client',
+          plan:   biz.plan   || 'Unknown',
+          total:  stats.total || 0,
+          faqCount: faqSnap.size,
+          biz,
+        });
+      }
+      renderClientList();
+      updateDashStats();
+    } catch (err) {
+      console.error('loadClients error:', err);
+    }
+  }
+
+  async function loadAllCorrections() {
+    try {
+      let all = [];
+      for (const client of allClients) {
+        const corrSnap = await getDocs(
+          query(collection(db, 'clients', client.uid, 'corrections'),
+                where('status', '==', 'pending'), limit(50))
+        );
+        corrSnap.forEach(d => all.push({ id: d.id, clientId: client.uid, clientName: client.name, ...d.data() }));
+      }
+      renderCorrections(all);
+      document.getElementById('d-pending').textContent = all.length;
+      document.getElementById('pending-count-label').textContent = all.length + ' pending';
+    } catch (err) { console.error(err); }
+  }
+
+  // ── Render helpers ────────────────────────────────────────
+  function renderClientList() {
+    const dashList    = document.getElementById('dash-client-list');
+    const clientsList = document.getElementById('clients-list');
+
+    if (allClients.length === 0) {
+      dashList.innerHTML = clientsList.innerHTML = '<div class="empty-state">No clients yet. Create one with the New Client tab.</div>';
+      return;
+    }
+
+    const html = allClients.map(c => `
+      <div class="client-row">
+        <div>
+          <div class="client-name">${esc(c.name)}</div>
+          <div class="client-meta">${esc(c.email || c.uid)} &nbsp;&middot;&nbsp; ${esc(c.plan)} &nbsp;&middot;&nbsp; ${c.faqCount} FAQs &nbsp;&middot;&nbsp; ${c.total} conversations</div>
+        </div>
+        <div class="client-actions">
+          <span class="tag tag-active">Active</span>
+          <button class="btn btn-ghost btn-sm" onclick="openClientModal('${c.uid}')">View</button>
+          <button class="btn btn-danger btn-sm" onclick="confirmDelete('${c.uid}','${esc(c.name)}')">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    dashList.innerHTML = clientsList.innerHTML = html;
+  }
+
+  function updateDashStats() {
+    document.getElementById('d-clients').textContent = allClients.length;
+    const totalConvos = allClients.reduce((s, c) => s + (c.total || 0), 0);
+    document.getElementById('d-convos').textContent = totalConvos;
+  }
+
+  function renderCorrections(corrections) {
+    const list = document.getElementById('corrections-list');
+    if (corrections.length === 0) {
+      list.innerHTML = '<div class="empty-state">No pending corrections. Great job!</div>';
+      return;
+    }
+    list.innerHTML = corrections.map(c => `
+      <div class="corr-row" id="corr-row-${c.id}">
+        <div>
+          <div class="corr-col-label">Client</div>
+          <div class="corr-text">${esc(c.clientName)}</div>
+          <div class="corr-q" style="margin-top:0.5rem;">${esc(c.question || '—')}</div>
+        </div>
+        <div>
+          <div class="corr-col-label">Correct answer</div>
+          <div class="corr-text">${esc(c.correction || '—')}</div>
+          ${c.wrongAnswer ? `<div class="corr-col-label" style="margin-top:0.5rem;">AI said (wrong)</div><div class="corr-text" style="text-decoration:line-through;opacity:0.6;">${esc(c.wrongAnswer)}</div>` : ''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <button class="btn btn-green btn-sm" onclick="markApplied('${c.clientId}','${c.id}')">Mark applied</button>
+          <span class="tag tag-pending" style="text-align:center;">Pending</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ── Client modal ──────────────────────────────────────────
+  window.openClientModal = async function(uid) {
+    const c = allClients.find(x => x.uid === uid);
+    if (!c) return;
+    document.getElementById('cm-title').textContent = c.name;
+    document.getElementById('cm-uid').textContent   = uid;
+    document.getElementById('cm-email').textContent = c.email || '(no email stored)';
+    document.getElementById('cm-plan').textContent  = c.plan;
+    document.getElementById('cm-convos').textContent = c.total;
+
+    // Load FAQs
+    const faqSnap = await getDocs(collection(db, 'clients', uid, 'faqs'));
+    const faqs = [];
+    faqSnap.forEach(d => faqs.push(d.data()));
+    document.getElementById('cm-faqs').innerHTML = faqs.length
+      ? faqs.map(f => `<div style="margin-bottom:0.5rem;"><strong style="color:var(--fg);">Q:</strong> ${esc(f.question)}<br><strong style="color:var(--fg);">A:</strong> ${esc(f.answer)}</div>`).join('')
+      : '<span style="color:var(--muted);">No FAQs yet.</span>';
+
+    // Wire up delete + impersonate
+    document.getElementById('cm-delete-btn').onclick = () => {
+      closeModal('client-modal');
+      confirmDelete(uid, c.name);
+    };
+    document.getElementById('cm-impersonate-btn').href = '/ai/clients/portal?preview=' + uid;
+
+    openModal('client-modal');
+  };
+
+  // ── Delete client ─────────────────────────────────────────
+  window.confirmDelete = function(uid, name) {
+    pendingDeleteId = uid;
+    document.getElementById('del-client-name').textContent = name;
+    openModal('delete-modal');
+    document.getElementById('del-confirm-btn').onclick = () => deleteClient(uid);
+  };
+
+  async function deleteClient(uid) {
+    try {
+      // Delete subcollections
+      const subcols = ['faqs', 'corrections', 'conversations'];
+      for (const col of subcols) {
+        const snap = await getDocs(collection(db, 'clients', uid, col));
+        const batch = writeBatch(db);
+        snap.forEach(d => batch.delete(d.ref));
+        await batch.commit();
+      }
+      // Delete data docs
+      for (const docName of ['businessInfo', 'stats']) {
+        await deleteDoc(doc(db, 'clients', uid, 'data', docName)).catch(() => {});
+      }
+      // Delete client root doc
+      await deleteDoc(doc(db, 'clients', uid)).catch(() => {});
+
+      closeModal('delete-modal');
+      closeModal('client-modal');
+      showToast('Client data deleted.', 'ok');
+      allClients = allClients.filter(c => c.uid !== uid);
+      renderClientList();
+      updateDashStats();
+    } catch (err) {
+      console.error(err);
+      showToast('Error deleting client.', 'err');
+    }
+  }
+
+  // ── Mark correction applied ───────────────────────────────
+  window.markApplied = async function(clientId, corrId) {
+    try {
+      await updateDoc(doc(db, 'clients', clientId, 'corrections', corrId), { status: 'applied' });
+      document.getElementById('corr-row-' + corrId)?.remove();
+      showToast('Marked as applied ✓', 'ok');
+      // Update counter
+      const pendingRows = document.querySelectorAll('#corrections-list .corr-row').length;
+      document.getElementById('d-pending').textContent = pendingRows;
+      document.getElementById('pending-count-label').textContent = pendingRows + ' pending';
+      if (pendingRows === 0) {
+        document.getElementById('corrections-list').innerHTML = '<div class="empty-state">No pending corrections. Great job!</div>';
+      }
+    } catch (err) {
+      showToast('Error updating correction.', 'err');
+    }
+  };
+
+  // ── Create new client ─────────────────────────────────────
+  let ncFaqCount = 0;
+
+  window.addNcFaqRow = function() {
+    const id = ncFaqCount++;
+    const row = document.createElement('div');
+    row.id = 'nc-faq-' + id;
+    row.style.cssText = 'border:1px solid var(--border);border-radius:4px;padding:0.85rem;margin-bottom:0.75rem;background:var(--light);';
+    row.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+        <span style="font-size:0.6rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);">FAQ #${id+1}</span>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('nc-faq-${id}').remove()">Remove</button>
+      </div>
+      <div class="field"><label>Question</label><input type="text" id="nc-faq-q-${id}" placeholder="e.g. What are your hours?" /></div>
+      <div class="field"><label>Answer</label><textarea id="nc-faq-a-${id}" placeholder="e.g. We are open Mon–Fri 9am–5pm."></textarea></div>
+    `;
+    document.getElementById('nc-faqs').appendChild(row);
+  };
+
+  window.createClient = async function() {
+    const email  = document.getElementById('nc-email').value.trim();
+    const pass   = document.getElementById('nc-pass').value.trim();
+    const name   = document.getElementById('nc-name').value.trim();
+    const phone  = document.getElementById('nc-phone').value.trim();
+    const addr   = document.getElementById('nc-address').value.trim();
+    const site   = document.getElementById('nc-website').value.trim();
+    const plan   = document.getElementById('nc-plan').value;
+    const hours  = document.getElementById('nc-hours').value.trim();
+    const desc   = document.getElementById('nc-description').value.trim();
+    const svc    = document.getElementById('nc-services').value.trim();
+
+    if (!email || !pass || !name) {
+      showToast('Email, password, and business name are required.', 'err'); return;
+    }
+    if (pass.length < 6) {
+      showToast('Password must be at least 6 characters.', 'err'); return;
+    }
+
+    const btn      = document.getElementById('nc-submit-btn');
+    const progress = document.getElementById('seed-progress');
+    btn.disabled   = true;
+    btn.textContent = 'Creating...';
+    progress.style.display = 'block';
+    progress.innerHTML = '';
+
+    const step = (icon, text) => {
+      progress.innerHTML += `<div class="seed-step"><span class="seed-step-icon">${icon}</span>${text}</div>`;
+    };
+
+    try {
+      // 1. Create Firebase Auth user via REST API
+      // Using REST instead of createUserWithEmailAndPassword to avoid
+      // signing out the admin — that SDK method signs you in as the new user.
+      step('⏳', 'Creating Firebase account...');
+      const apiKey  = firebaseConfig.apiKey;
+      const signUpRes = await fetch(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password: pass, returnSecureToken: false })
+        }
+      );
+      const signUpData = await signUpRes.json();
+      if (signUpData.error) {
+        throw new Error(signUpData.error.message);
+      }
+      const uid = signUpData.localId;
+      step('✅', `Account created (UID: ${uid.slice(0,8)}...)`);
+      // Admin session is untouched — REST API doesn't affect current auth state
+
+      // 2. Seed business info
+      step('⏳', 'Writing business info to Firestore...');
+      await setDoc(doc(db, 'clients', uid, 'data', 'businessInfo'), {
+        name, phone, address: addr, website: site, plan,
+        hours, description: desc, services: svc,
+        email, createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+      });
+      step('✅', 'Business info saved.');
+
+      // 3. Seed stats
+      await setDoc(doc(db, 'clients', uid, 'data', 'stats'), {
+        total: 0, thumbsUp: 0, thumbsDown: 0
+      });
+
+      // 4. Seed FAQs
+      const faqContainer = document.getElementById('nc-faqs');
+      const faqRows = faqContainer.querySelectorAll('[id^="nc-faq-"]');
+      let faqCount = 0;
+      for (const row of faqRows) {
+        const id = row.id.replace('nc-faq-', '');
+        const q  = document.getElementById('nc-faq-q-' + id)?.value.trim();
+        const a  = document.getElementById('nc-faq-a-' + id)?.value.trim();
+        if (q && a) {
+          await addDoc(collection(db, 'clients', uid, 'faqs'), {
+            question: q, answer: a, createdAt: serverTimestamp()
+          });
+          faqCount++;
+        }
+      }
+      if (faqCount > 0) step('✅', `${faqCount} FAQ(s) seeded.`);
+
+      // 5. Create root client doc
+      await setDoc(doc(db, 'clients', uid), { createdAt: serverTimestamp() });
+
+      step('🎉', `Done! Send ${email} their temp password: ${pass}`);
+      showToast('Client created successfully ✓', 'ok');
+
+      // Reset form
+      ['nc-email','nc-pass','nc-name','nc-phone','nc-address','nc-website','nc-hours','nc-description','nc-services']
+        .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+      document.getElementById('nc-faqs').innerHTML = '';
+      ncFaqCount = 0;
+
+      // Reload client list
+      await loadClients();
+
+    } catch (err) {
+      step('❌', 'Error: ' + err.message);
+      showToast('Error: ' + err.message, 'err');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Create client account';
+    }
+  };
+
+  // ── UI helpers ────────────────────────────────────────────
+  function hideLoading() {
+    const ls = document.getElementById('loading-screen');
+    ls.style.opacity = '0';
+    setTimeout(() => ls.style.display = 'none', 300);
+  }
+
+  function showLoginScreen() {
+    const ls = document.getElementById('login-screen');
+    ls.style.display = 'flex';
+  }
+
+  function showAdmin() {
+    document.getElementById('admin').style.display = 'block';
+  }
+
+  function openModal(id)  { document.getElementById(id).classList.add('open'); }
+  window.closeModal = id => document.getElementById(id).classList.remove('open');
+
+  function showErr(msg) {
+    const el = document.getElementById('l-err');
+    el.textContent = msg; el.style.display = 'block';
+  }
+
+  function friendlyErr(code) {
+    const m = {
+      'auth/user-not-found':    'No account found with that email.',
+      'auth/wrong-password':    'Incorrect password.',
+      'auth/invalid-email':     'Invalid email address.',
+      'auth/too-many-requests': 'Too many attempts. Wait a few minutes.',
+      'auth/invalid-credential':'Email or password is incorrect.',
+    };
+    return m[code] || 'Sign-in failed. Try again.';
+  }
+
+  let toastT;
+  window.showToast = function(msg, type='') {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.className = 'toast show ' + type;
+    clearTimeout(toastT);
+    toastT = setTimeout(() => el.className = 'toast', 3200);
+  };
+
+  function esc(str) {
+    return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+
+<script>
+  // Panel switching (non-module global)
+  function showPanel(id, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sidenav a').forEach(a => a.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    if (el) el.classList.add('active');
+    return false;
+  }
+</script>
+
+</body>
+</html>

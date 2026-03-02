@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Client Portal — Minescout AI</title>
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #1a1916;
+      --accent: #ff4d1c;
+      --muted: #66625a;
+      --light: #f9f8f6;
+      --border: #e8e4dd;
+      --serif: 'Playfair Display', serif;
+      --sans: 'Jost', sans-serif;
+      --green: #4caf82;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--sans); background: #f0ede8; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    /* ── Loading screen ── */
+    #loading-screen {
+      position: fixed; inset: 0; background: var(--fg);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 1rem; z-index: 9999;
+      transition: opacity 0.3s ease;
+    }
+    #loading-screen .logo { font-family: var(--serif); font-size: 1.5rem; color: #fff; }
+    #loading-screen .sub { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+    .loading-bar { width: 120px; height: 2px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
+    .loading-bar-fill { height: 100%; background: var(--accent); animation: loadbar 1.2s ease infinite; }
+    @keyframes loadbar { 0%{width:0;margin-left:0} 50%{width:80%;margin-left:0} 100%{width:0;margin-left:100%} }
+
+    /* ── Portal shell ── */
+    #portal { display: none; min-height: 100vh; }
+
+    /* Top bar */
+    .topbar {
+      background: var(--fg); height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 1rem; }
+    .topbar-logo { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: #fff; }
+    .topbar-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); }
+    .topbar-client { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; }
+    .save-status { font-size: 0.65rem; color: rgba(255,255,255,0.4); letter-spacing: 0.04em; }
+    .save-status.saved { color: var(--green); }
+    .save-status.saving { color: rgba(255,255,255,0.5); }
+    .signout-btn { font-family: var(--sans); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.5); background: none; border: 1px solid rgba(255,255,255,0.15); border-radius: 3px; padding: 0.3rem 0.7rem; cursor: pointer; transition: all 0.15s; }
+    .signout-btn:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+
+    /* Tabs */
+    .tabs {
+      background: var(--bg); border-bottom: 1px solid var(--border);
+      display: flex; padding: 0 2rem; gap: 0; overflow-x: auto;
+    }
+    .tab-btn {
+      font-family: var(--sans); font-size: 0.72rem; font-weight: 500;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--muted); background: none; border: none;
+      border-bottom: 2px solid transparent; padding: 1rem 1.25rem;
+      cursor: pointer; white-space: nowrap; transition: all 0.15s;
+      margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: var(--fg); }
+    .tab-btn.active { color: var(--fg); border-bottom-color: var(--accent); }
+
+    /* Content area */
+    .portal-content { max-width: 780px; margin: 0 auto; padding: 2rem; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Shared UI ── */
+    .section-title {
+      font-family: var(--serif); font-size: 1.2rem; font-weight: 700;
+      color: var(--fg); margin-bottom: 0.35rem;
+    }
+    .section-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.75rem; }
+
+    .card { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 1.25rem; }
+    .card-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .card-label { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .card-body { padding: 1.25rem; }
+
+    .field { margin-bottom: 1rem; }
+    .field:last-child { margin-bottom: 0; }
+    .field label { display: block; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+    .field input, .field textarea, .field select {
+      width: 100%; font-family: var(--sans); font-size: 0.85rem; color: var(--fg);
+      background: var(--light); border: 1px solid var(--border); border-radius: 4px;
+      padding: 0.65rem 0.85rem; outline: none; transition: border-color 0.15s; resize: vertical;
+    }
+    .field input:focus, .field textarea:focus { border-color: var(--fg); background: var(--bg); }
+    .field textarea { min-height: 80px; }
+
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .btn { font-family: var(--sans); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border: none; border-radius: 4px; padding: 0.6rem 1.1rem; cursor: pointer; transition: all 0.15s; }
+    .btn-primary { background: var(--fg); color: #fff; }
+    .btn-primary:hover { background: var(--accent); }
+    .btn-secondary { background: var(--light); color: var(--muted); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--fg); color: var(--fg); background: var(--bg); }
+    .btn-danger { background: #fff4f1; color: var(--accent); border: 1px solid #ffd5c8; }
+    .btn-danger:hover { background: var(--accent); color: #fff; }
+    .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.62rem; }
+
+    /* ── Overview tab ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+    .stat-box { padding: 1.25rem 1rem; text-align: center; border-right: 1px solid var(--border); }
+    .stat-box:last-child { border-right: none; }
+    .stat-val { font-family: var(--serif); font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em; color: var(--fg); display: block; margin-bottom: 0.25rem; }
+    .stat-val.green { color: var(--green); }
+    .stat-val.accent { color: var(--accent); }
+    .stat-label { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+
+    .recent-list { display: flex; flex-direction: column; }
+    .recent-item { padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: flex-start; }
+    .recent-item:last-child { border-bottom: none; }
+    .recent-q { font-size: 0.8rem; color: var(--fg); margin-bottom: 0.2rem; }
+    .recent-a { font-size: 0.72rem; color: var(--muted); line-height: 1.5; }
+    .recent-meta { font-size: 0.6rem; color: var(--muted); white-space: nowrap; text-align: right; }
+    .rating-badge { display: inline-block; font-size: 0.75rem; margin-top: 0.25rem; }
+
+    .empty-state { padding: 3rem 1.25rem; text-align: center; color: var(--muted); font-size: 0.78rem; }
+
+    /* ── FAQ tab ── */
+    .faq-item { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 0.75rem; }
+    .faq-item-header { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; padding: 0.85rem 1.1rem; background: var(--light); border-bottom: 1px solid var(--border); }
+    .faq-item-q { font-size: 0.82rem; font-weight: 500; color: var(--fg); }
+    .faq-item-body { padding: 0.85rem 1.1rem; background: var(--bg); }
+    .faq-item-a { font-size: 0.8rem; color: var(--muted); line-height: 1.65; }
+
+    .faq-add-form { background: var(--bg); border: 1px dashed var(--border); border-radius: 6px; padding: 1.25rem; margin-top: 0.75rem; }
+    .faq-add-title { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+
+    /* ── Corrections tab ── */
+    .correction-item {
+      border: 1px solid var(--border); border-radius: 6px;
+      overflow: hidden; margin-bottom: 0.75rem;
+    }
+    .correction-item.pending { border-left: 3px solid #f5a623; }
+    .correction-item.applied { border-left: 3px solid var(--green); }
+    .correction-header { padding: 0.85rem 1.1rem; background: var(--light); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .correction-q { font-size: 0.82rem; font-weight: 500; color: var(--fg); }
+    .status-tag { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.18rem 0.5rem; border-radius: 3px; }
+    .tag-pending { background: #fff8e8; color: #c9922a; border: 1px solid #f5e0a0; }
+    .tag-applied { background: #f0faf4; color: var(--green); border: 1px solid #c3e8d0; }
+    .correction-body { padding: 0.85rem 1.1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .correction-col-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
+    .correction-col-text { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(8px);
+      background: var(--fg); color: #fff; font-size: 0.75rem; font-weight: 500;
+      padding: 0.7rem 1.25rem; border-radius: 50px; opacity: 0;
+      transition: all 0.25s ease; pointer-events: none; white-space: nowrap; z-index: 9999;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--green); }
+    .toast.error { background: var(--accent); }
+
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .stat-box:nth-child(2) { border-right: none; }
+      .stat-box:nth-child(3) { border-top: 1px solid var(--border); }
+      .field-row { grid-template-columns: 1fr; }
+      .correction-body { grid-template-columns: 1fr; }
+      .portal-content { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading screen -->
+  <div id="loading-screen">
+    <div class="logo">Minescout AI</div>
+    <div class="sub">Client Portal</div>
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  </div>
+
+  <!-- Portal (shown after auth) -->
+  <div id="portal">
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo">Minescout AI</div>
+        <div class="topbar-divider"></div>
+        <div class="topbar-client" id="topbar-client">Loading...</div>
+      </div>
+      <div class="topbar-right">
+        <span class="save-status" id="save-status"></span>
+        <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('overview', this)">&#128202; Overview</button>
+      <button class="tab-btn" onclick="switchTab('business', this)">&#127970; Business Info</button>
+      <button class="tab-btn" onclick="switchTab('faq', this)">&#128220; FAQ Editor</button>
+      <button class="tab-btn" onclick="switchTab('corrections', this)">&#9997;&#65039; Corrections</button>
+    </div>
+
+    <div class="portal-content">
+
+      <!-- ── OVERVIEW TAB ── -->
+      <div class="tab-panel active" id="tab-overview">
+        <div class="section-title">Overview</div>
+        <p class="section-desc">How your AI assistant is performing this month.</p>
+
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-box">
+            <span class="stat-val" id="stat-total">&#8212;</span>
+            <span class="stat-label">Total conversations</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val green" id="stat-thumbsup">&#8212;</span>
+            <span class="stat-label">Thumbs up</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val accent" id="stat-thumbsdown">&#8212;</span>
+            <span class="stat-label">Thumbs down</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" id="stat-pending">&#8212;</span>
+            <span class="stat-label">Pending corrections</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-label">Recent conversations</span>
+            <span style="font-size:0.65rem;color:var(--muted);">Last 10</span>
+          </div>
+          <div class="recent-list" id="recent-list">
+            <div class="empty-state">No conversations yet. Once your AI widget goes live, questions will appear here.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BUSINESS INFO TAB ── -->
+      <div class="tab-panel" id="tab-business">
+        <div class="section-title">Business Info</div>
+        <p class="section-desc">This is what your AI knows about your business. Changes save automatically and are applied to the AI within 48 hours.</p>
+
+        <div class="card">
+          <div class="card-header"><span class="card-label">Basic details</span></div>
+          <div class="card-body">
+            <div class="field-row">
+              <div class="field">
+                <label>Business name</label>
+                <input type="text" id="biz-name" placeholder="e.g. Smith & Cole Law" />
+              </div>
+              <div class="field">
+                <label>Phone number</label>
+                <input type="text" id="biz-phone" placeholder="e.g. (425) 555-0100" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Address</label>
+              <input type="text" id="biz-address" placeholder="e.g. 123 Main St, Sammamish WA 98075" />
+            </div>
+            <div class="field">
+              <label>Website</label>
+              <input type="text" id="biz-website" placeholder="e.g. https://yoursite.com" />
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-label">Hours of operation</span></div>
+          <div class="card-body">
+            <div class="field">
+              <label>Hours (as you'd tell a customer)</label>
+              <textarea id="biz-hours" placeholder="e.g. Monday–Friday 9am–5pm. Closed weekends and major holidays."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-label">Services &amp; description</span></div>
+          <div class="card-body">
+            <div class="field">
+              <label>What you do (2–3 sentences)</label>
+              <textarea id="biz-description" placeholder="e.g. We handle real estate, estate planning, and business law for individuals and businesses across King County."></textarea>
+            </div>
+            <div class="field">
+              <label>Services list (one per line)</label>
+              <textarea id="biz-services" rows="5" placeholder="Real Estate Law&#10;Estate Planning&#10;Business Law&#10;Free 30-min consultations"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:0.75rem;align-items:center;">
+          <button class="btn btn-primary" onclick="saveBusinessInfo()">Save changes</button>
+          <span style="font-size:0.68rem;color:var(--muted);">Applied to your AI within 48 hours</span>
+        </div>
+      </div>
+
+      <!-- ── FAQ TAB ── -->
+      <div class="tab-panel" id="tab-faq">
+        <div class="section-title">FAQ Editor</div>
+        <p class="section-desc">Add, edit, or remove questions and answers. These are fed directly to your AI as its knowledge base. Changes are applied within 48 hours.</p>
+
+        <div id="faq-list">
+          <div class="empty-state" id="faq-empty">No FAQs yet. Add your first one below.</div>
+        </div>
+
+        <!-- Add new FAQ form -->
+        <div class="faq-add-form">
+          <div class="faq-add-title">Add a new FAQ</div>
+          <div class="field">
+            <label>Question</label>
+            <input type="text" id="new-faq-q" placeholder="e.g. Do you offer free consultations?" />
+          </div>
+          <div class="field">
+            <label>Answer</label>
+            <textarea id="new-faq-a" placeholder="e.g. Yes, we offer a free 30-minute consultation for new clients. Call us at (425) 555-0100 to schedule."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="addFaq()">Add FAQ</button>
+        </div>
+      </div>
+
+      <!-- ── CORRECTIONS TAB ── -->
+      <div class="tab-panel" id="tab-corrections">
+        <div class="section-title">Corrections</div>
+        <p class="section-desc">These are corrections submitted through the chat widget feedback buttons. Pending corrections will be applied by Thomas in the next maintenance cycle (within 48 hours).</p>
+
+        <div id="corrections-list">
+          <div class="empty-state" id="corrections-empty">No corrections yet. When a customer gives a thumbs down and submits a correction in the chat widget, it will appear here.</div>
+        </div>
+
+        <!-- Add manual correction -->
+        <div class="card" style="margin-top:1.5rem;">
+          <div class="card-header"><span class="card-label">Submit a manual correction</span></div>
+          <div class="card-body">
+            <div class="field">
+              <label>Question the AI got wrong</label>
+              <input type="text" id="corr-q" placeholder="e.g. What are your weekend hours?" />
+            </div>
+            <div class="field">
+              <label>What the AI said (wrong answer)</label>
+              <textarea id="corr-wrong" placeholder="e.g. We are open on Saturdays 10am–2pm."></textarea>
+            </div>
+            <div class="field">
+              <label>Correct answer</label>
+              <textarea id="corr-correct" placeholder="e.g. We are closed on weekends. Please call during weekday hours, Monday–Friday 9am–5pm."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="submitCorrection()">Submit correction</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /portal-content -->
+  </div><!-- /portal -->
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp }      from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut }
+                                  from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getFirestore, doc, getDoc, setDoc, updateDoc,
+             collection, addDoc, query, orderBy, limit,
+             getDocs, serverTimestamp, where }
+                                  from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    // ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyAmZbRI37rbHWGaOSVomMdcG-IvHMf6S3Y",
+      authDomain: "minescout-5533a.firebaseapp.com",
+      projectId: "minescout-5533a",
+      storageBucket: "minescout-5533a.firebasestorage.app",
+      messagingSenderId: "639262143843",
+      appId: "1:639262143843:web:4fe407d3b15a4c885a8f56",
+    };
+    // ─────────────────────────────────────────────────────────
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    let currentUser = null;
+    let clientId    = null;
+    let clientData  = {};
+    let faqs        = [];
+
+    // ── Auth gate ─────────────────────────────────────────────
+    onAuthStateChanged(auth, async user => {
+      if (!user) {
+        window.location.href = '/ai/clients/login';
+        return;
+      }
+      currentUser = user;
+      clientId    = user.uid;
+
+      await loadClientData();
+      hideLoading();
+    });
+
+    async function loadClientData() {
+      try {
+        // Load business info
+        const bizRef  = doc(db, 'clients', clientId, 'data', 'businessInfo');
+        const bizSnap = await getDoc(bizRef);
+        if (bizSnap.exists()) {
+          const d = bizSnap.data();
+          clientData = d;
+          document.getElementById('topbar-client').textContent = d.name || currentUser.email;
+          document.getElementById('biz-name').value        = d.name        || '';
+          document.getElementById('biz-phone').value       = d.phone       || '';
+          document.getElementById('biz-address').value     = d.address     || '';
+          document.getElementById('biz-website').value     = d.website     || '';
+          document.getElementById('biz-hours').value       = d.hours       || '';
+          document.getElementById('biz-description').value = d.description || '';
+          document.getElementById('biz-services').value    = d.services    || '';
+        } else {
+          document.getElementById('topbar-client').textContent = currentUser.email;
+        }
+
+        // Load FAQs
+        await loadFaqs();
+
+        // Load stats + recent conversations
+        await loadStats();
+        await loadRecentConversations();
+
+        // Load corrections
+        await loadCorrections();
+
+      } catch (err) {
+        console.error('Error loading client data:', err);
+        showToast('Error loading data. Try refreshing.', 'error');
+      }
+    }
+
+    // ── Business info ─────────────────────────────────────────
+    window.saveBusinessInfo = async function() {
+      setSaveStatus('saving');
+      try {
+        const payload = {
+          name:        document.getElementById('biz-name').value.trim(),
+          phone:       document.getElementById('biz-phone').value.trim(),
+          address:     document.getElementById('biz-address').value.trim(),
+          website:     document.getElementById('biz-website').value.trim(),
+          hours:       document.getElementById('biz-hours').value.trim(),
+          description: document.getElementById('biz-description').value.trim(),
+          services:    document.getElementById('biz-services').value.trim(),
+          updatedAt:   serverTimestamp(),
+        };
+        await setDoc(doc(db, 'clients', clientId, 'data', 'businessInfo'), payload, { merge: true });
+        setSaveStatus('saved');
+        showToast('Business info saved ✓', 'success');
+        document.getElementById('topbar-client').textContent = payload.name || currentUser.email;
+      } catch (err) {
+        setSaveStatus('');
+        showToast('Save failed. Try again.', 'error');
+        console.error(err);
+      }
+    };
+
+    // ── FAQs ──────────────────────────────────────────────────
+    async function loadFaqs() {
+      const faqRef  = collection(db, 'clients', clientId, 'faqs');
+      const faqSnap = await getDocs(query(faqRef, orderBy('createdAt', 'asc')));
+      faqs = [];
+      faqSnap.forEach(d => faqs.push({ id: d.id, ...d.data() }));
+      renderFaqs();
+    }
+
+    function renderFaqs() {
+      const container = document.getElementById('faq-list');
+      const empty     = document.getElementById('faq-empty');
+
+      // Remove existing faq items (keep empty state)
+      container.querySelectorAll('.faq-item').forEach(el => el.remove());
+
+      if (faqs.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      faqs.forEach((faq, i) => {
+        const el = document.createElement('div');
+        el.className = 'faq-item';
+        el.id = 'faq-' + faq.id;
+        el.innerHTML = `
+          <div class="faq-item-header">
+            <div class="faq-item-q">${escHtml(faq.question)}</div>
+            <button class="btn btn-danger btn-sm" onclick="deleteFaq('${faq.id}')">Remove</button>
+          </div>
+          <div class="faq-item-body">
+            <div class="faq-item-a">${escHtml(faq.answer)}</div>
+          </div>
+        `;
+        container.insertBefore(el, document.getElementById('faq-empty'));
+      });
+    }
+
+    window.addFaq = async function() {
+      const q = document.getElementById('new-faq-q').value.trim();
+      const a = document.getElementById('new-faq-a').value.trim();
+      if (!q || !a) { showToast('Please fill in both fields.', 'error'); return; }
+
+      try {
+        const ref = await addDoc(collection(db, 'clients', clientId, 'faqs'), {
+          question: q, answer: a, createdAt: serverTimestamp()
+        });
+        faqs.push({ id: ref.id, question: q, answer: a });
+        renderFaqs();
+        document.getElementById('new-faq-q').value = '';
+        document.getElementById('new-faq-a').value = '';
+        showToast('FAQ added ✓', 'success');
+      } catch (err) {
+        showToast('Error adding FAQ.', 'error');
+      }
+    };
+
+    window.deleteFaq = async function(faqId) {
+      if (!confirm('Remove this FAQ?')) return;
+      try {
+        const { deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        await deleteDoc(doc(db, 'clients', clientId, 'faqs', faqId));
+        faqs = faqs.filter(f => f.id !== faqId);
+        renderFaqs();
+        showToast('FAQ removed.', 'success');
+      } catch (err) {
+        showToast('Error removing FAQ.', 'error');
+      }
+    };
+
+    // ── Corrections ───────────────────────────────────────────
+    async function loadCorrections() {
+      const corrRef  = collection(db, 'clients', clientId, 'corrections');
+      const corrSnap = await getDocs(query(corrRef, orderBy('createdAt', 'desc'), limit(20)));
+      const corrections = [];
+      corrSnap.forEach(d => corrections.push({ id: d.id, ...d.data() }));
+      renderCorrections(corrections);
+    }
+
+    function renderCorrections(corrections) {
+      const container = document.getElementById('corrections-list');
+      const empty     = document.getElementById('corrections-empty');
+      container.querySelectorAll('.correction-item').forEach(el => el.remove());
+
+      if (corrections.length === 0) { empty.style.display = 'block'; return; }
+      empty.style.display = 'none';
+
+      corrections.forEach(c => {
+        const el = document.createElement('div');
+        el.className = 'correction-item ' + (c.status === 'applied' ? 'applied' : 'pending');
+        const ts = c.createdAt?.toDate?.()?.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) || '';
+        el.innerHTML = `
+          <div class="correction-header">
+            <div class="correction-q">${escHtml(c.question || 'Unknown question')}</div>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              ${ts ? `<span style="font-size:0.6rem;color:var(--muted);">${ts}</span>` : ''}
+              <span class="status-tag ${c.status === 'applied' ? 'tag-applied' : 'tag-pending'}">
+                ${c.status === 'applied' ? 'Applied' : 'Pending'}
+              </span>
+            </div>
+          </div>
+          <div class="correction-body">
+            <div>
+              <div class="correction-col-label">AI said (wrong)</div>
+              <div class="correction-col-text">${escHtml(c.wrongAnswer || '—')}</div>
+            </div>
+            <div>
+              <div class="correction-col-label">Correct answer</div>
+              <div class="correction-col-text">${escHtml(c.correction || '—')}</div>
+            </div>
+          </div>
+        `;
+        container.insertBefore(el, empty);
+      });
+
+      // Update pending stat
+      const pending = corrections.filter(c => c.status !== 'applied').length;
+      document.getElementById('stat-pending').textContent = pending;
+    }
+
+    window.submitCorrection = async function() {
+      const q      = document.getElementById('corr-q').value.trim();
+      const wrong  = document.getElementById('corr-wrong').value.trim();
+      const correct = document.getElementById('corr-correct').value.trim();
+      if (!q || !correct) { showToast('Question and correct answer are required.', 'error'); return; }
+
+      try {
+        await addDoc(collection(db, 'clients', clientId, 'corrections'), {
+          question: q, wrongAnswer: wrong, correction: correct,
+          status: 'pending', source: 'manual', createdAt: serverTimestamp()
+        });
+        document.getElementById('corr-q').value     = '';
+        document.getElementById('corr-wrong').value = '';
+        document.getElementById('corr-correct').value = '';
+        showToast('Correction submitted ✓ — applied within 48hrs', 'success');
+        await loadCorrections();
+      } catch (err) {
+        showToast('Error submitting correction.', 'error');
+      }
+    };
+
+    // ── Stats ─────────────────────────────────────────────────
+    async function loadStats() {
+      try {
+        const statsRef  = doc(db, 'clients', clientId, 'data', 'stats');
+        const statsSnap = await getDoc(statsRef);
+        if (statsSnap.exists()) {
+          const s = statsSnap.data();
+          document.getElementById('stat-total').textContent     = s.total      ?? 0;
+          document.getElementById('stat-thumbsup').textContent  = s.thumbsUp   ?? 0;
+          document.getElementById('stat-thumbsdown').textContent = s.thumbsDown ?? 0;
+        } else {
+          ['stat-total','stat-thumbsup','stat-thumbsdown'].forEach(id => {
+            document.getElementById(id).textContent = '0';
+          });
+        }
+      } catch (err) { /* Stats are non-critical */ }
+    }
+
+    async function loadRecentConversations() {
+      try {
+        const convRef  = collection(db, 'clients', clientId, 'conversations');
+        const convSnap = await getDocs(query(convRef, orderBy('timestamp', 'desc'), limit(10)));
+        const convs = [];
+        convSnap.forEach(d => convs.push(d.data()));
+        renderRecentConversations(convs);
+      } catch (err) { /* Non-critical */ }
+    }
+
+    function renderRecentConversations(convs) {
+      const list = document.getElementById('recent-list');
+      list.innerHTML = '';
+      if (convs.length === 0) {
+        list.innerHTML = '<div class="empty-state">No conversations yet.</div>';
+        return;
+      }
+      convs.forEach(c => {
+        const el = document.createElement('div');
+        el.className = 'recent-item';
+        const ts = c.timestamp?.toDate?.()?.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) || '';
+        el.innerHTML = `
+          <div>
+            <div class="recent-q">${escHtml(c.question || '—')}</div>
+            <div class="recent-a">${escHtml((c.answer || '').substring(0, 120))}${(c.answer||'').length > 120 ? '…' : ''}</div>
+          </div>
+          <div class="recent-meta">
+            ${ts}<br>
+            <span class="rating-badge">${c.rating === '👍' ? '👍' : c.rating === '👎' ? '👎' : ''}</span>
+          </div>
+        `;
+        list.appendChild(el);
+      });
+    }
+
+    // ── Sign out ──────────────────────────────────────────────
+    window.doSignOut = async function() {
+      await signOut(auth);
+      window.location.href = '/ai/clients/login';
+    };
+
+    // ── UI helpers ────────────────────────────────────────────
+    function hideLoading() {
+      const ls = document.getElementById('loading-screen');
+      ls.style.opacity = '0';
+      setTimeout(() => { ls.style.display = 'none'; document.getElementById('portal').style.display = 'block'; }, 300);
+    }
+
+    function setSaveStatus(status) {
+      const el = document.getElementById('save-status');
+      el.className = 'save-status ' + status;
+      el.textContent = status === 'saving' ? 'Saving...' : status === 'saved' ? 'Saved ✓' : '';
+      if (status === 'saved') setTimeout(() => { el.textContent = ''; el.className = 'save-status'; }, 3000);
+    }
+
+    let toastTimer;
+    window.showToast = function(msg, type = '') {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = 'toast show ' + type;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { el.className = 'toast'; }, 3000);
+    };
+
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  </script>
+
+  <script>
+    // Tab switching (non-module so it's global)
+    function switchTab(id, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

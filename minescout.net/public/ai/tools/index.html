@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Tools I Actually Use — Minescout AI</title>
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/styles/main.css?v=8.1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Schema Markup for SEO star ratings -->
+  <script type="application/ld+json">
+  [
+    {"@context":"https://schema.org/","@type":"SoftwareApplication","name":"Claude","operatingSystem":"Web","applicationCategory":"AIApplication","aggregateRating":{"@type":"AggregateRating","ratingValue":"5","ratingCount":"1"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+    {"@context":"https://schema.org/","@type":"SoftwareApplication","name":"ChatGPT","operatingSystem":"Web","applicationCategory":"AIApplication","aggregateRating":{"@type":"AggregateRating","ratingValue":"4","ratingCount":"1"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+    {"@context":"https://schema.org/","@type":"SoftwareApplication","name":"Perplexity","operatingSystem":"Web","applicationCategory":"AIApplication","aggregateRating":{"@type":"AggregateRating","ratingValue":"5","ratingCount":"1"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+    {"@context":"https://schema.org/","@type":"SoftwareApplication","name":"Canva","operatingSystem":"Web","applicationCategory":"DesignApplication","aggregateRating":{"@type":"AggregateRating","ratingValue":"4","ratingCount":"1"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+    {"@context":"https://schema.org/","@type":"SoftwareApplication","name":"Gemini","operatingSystem":"Web","applicationCategory":"AIApplication","aggregateRating":{"@type":"AggregateRating","ratingValue":"4","ratingCount":"1"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+    {"@context":"https://schema.org/","@type":"SoftwareApplication","name":"Google AI Studio","operatingSystem":"Web","applicationCategory":"DeveloperApplication","aggregateRating":{"@type":"AggregateRating","ratingValue":"4","ratingCount":"1"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+    {"@context":"https://schema.org/","@type":"SoftwareApplication","name":"GitHub","operatingSystem":"Web","applicationCategory":"DeveloperApplication","aggregateRating":{"@type":"AggregateRating","ratingValue":"5","ratingCount":"1"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  ]
+  </script>
+
+  <style>
+    .tools-wrap { max-width: 680px; }
+
+    .tools-intro { font-size: 0.88rem; color: var(--muted); line-height: 1.8; margin-bottom: 0.5rem; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
+    .tools-meta { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.5s ease 0.25s forwards; }
+    .tools-meta span { color: var(--accent); }
+
+    /* Filter tabs */
+    .tools-filters {
+      display: flex; gap: 0.4rem; margin-bottom: 1.75rem; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.5s ease 0.28s forwards;
+    }
+    .filter-btn {
+      font-family: var(--sans); font-size: 0.65rem; font-weight: 500;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      border: 1px solid var(--border); background: none; border-radius: 3px;
+      padding: 0.3rem 0.75rem; cursor: pointer; color: var(--muted);
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { border-color: var(--fg); color: var(--fg); }
+    .filter-btn.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+    /* Tool cards */
+    .tools-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 2rem; }
+
+    .tool-card {
+      border-bottom: 1px solid var(--border);
+      padding: 1.4rem 1.5rem;
+      opacity: 0; animation: fadeUp 0.4s ease forwards;
+      animation-delay: var(--d, 0.3s);
+      transition: background 0.15s;
+    }
+    .tool-card:last-child { border-bottom: none; }
+    .tool-card:hover { background: var(--light); }
+    .tool-card.hidden { display: none; }
+
+    .tool-card-top {
+      display: grid;
+      grid-template-columns: 38px 1fr auto;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .tool-icon { font-size: 1.4rem; padding-top: 0.1rem; }
+
+    .tool-name {
+      font-family: var(--serif); font-size: 1.05rem; font-weight: 700;
+      letter-spacing: -0.01em; color: var(--fg); margin-bottom: 0.2rem;
+      display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+    }
+
+    .tool-pick {
+      font-size: 0.55rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; background: var(--accent); color: #fff;
+      padding: 0.15rem 0.45rem; border-radius: 2px;
+    }
+
+    .tool-price {
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--muted); border: 1px solid var(--border);
+      border-radius: 3px; padding: 0.2rem 0.5rem; white-space: nowrap;
+    }
+
+    /* Stars */
+    .tool-stars { display: flex; gap: 2px; margin-bottom: 0.3rem; }
+    .star { font-size: 0.7rem; color: var(--border); }
+    .star.filled { color: #f5a623; }
+
+    .tool-category {
+      font-size: 0.6rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    /* Review body */
+    .tool-review { font-size: 0.8rem; color: var(--muted); line-height: 1.75; margin-bottom: 1rem; }
+
+    /* Pro/con row */
+    .tool-verdict {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;
+    }
+    .verdict-box { border-radius: 4px; padding: 0.6rem 0.8rem; }
+    .verdict-box.pro { background: #f0faf4; border: 1px solid #c3e8d0; }
+    .verdict-box.con { background: #fff4f1; border: 1px solid #ffd5c8; }
+    .verdict-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.3rem; }
+    .verdict-box.pro .verdict-label { color: #4caf82; }
+    .verdict-box.con .verdict-label { color: var(--accent); }
+    .verdict-text { font-size: 0.72rem; color: var(--muted); line-height: 1.5; }
+
+    /* CTA row */
+    .tool-cta-row { display: flex; align-items: center; gap: 0.75rem; }
+    .tool-link {
+      font-size: 0.68rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--bg); background: var(--fg); border-radius: 3px;
+      padding: 0.4rem 0.9rem; text-decoration: none; transition: background 0.15s;
+    }
+    .tool-link:hover { background: var(--accent); }
+    .tool-link.ghost {
+      background: none; color: var(--muted); border: 1px solid var(--border);
+    }
+    .tool-link.ghost:hover { border-color: var(--fg); color: var(--fg); background: none; }
+    .affiliate-tag {
+      font-size: 0.58rem; color: var(--muted); letter-spacing: 0.04em;
+      border: 1px solid var(--border); border-radius: 2px; padding: 0.15rem 0.4rem;
+    }
+
+    /* "Not for me" section */
+    .not-for-me {
+      border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+      margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.5s ease 0.6s forwards;
+    }
+    .not-header { background: var(--light); padding: 0.85rem 1.25rem; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+    .not-item { display: grid; grid-template-columns: 36px 1fr; gap: 0.75rem; align-items: flex-start; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+    .not-item:last-child { border-bottom: none; }
+    .not-icon { font-size: 1.1rem; }
+    .not-name { font-size: 0.82rem; font-weight: 500; color: var(--fg); margin-bottom: 0.2rem; }
+    .not-reason { font-size: 0.73rem; color: var(--muted); line-height: 1.6; }
+
+    /* Disclaimer */
+    .tools-disclaimer {
+      font-size: 0.65rem; color: var(--muted); line-height: 1.75;
+      opacity: 0; animation: fadeUp 0.5s ease 0.65s forwards;
+    }
+    .tools-disclaimer a { color: var(--muted); border-bottom: 1px solid var(--border); }
+
+    @media (max-width: 580px) {
+      .tool-verdict { grid-template-columns: 1fr; }
+      .tool-card-top { grid-template-columns: 36px 1fr; }
+      .tool-price { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+
+
+  <main class="main main--page">
+    <div class="page-content tools-wrap">
+      <p class="page-label">Minescout AI</p>
+      <h1 class="page-title">Tools I Actually Use</h1>
+
+      <p class="tools-intro">No sponsored picks, no filler. These are the tools I use daily for building projects, doing schoolwork, and running Minescout AI. I've listed what each one is actually good for — and where it falls short.</p>
+      <p class="tools-meta">Updated: <span id="tools-date"></span> &nbsp;&middot;&nbsp; Some links are affiliate links — labeled clearly below. This never influences what I recommend.</p>
+
+      <!-- Filters -->
+      <div class="tools-filters">
+        <button class="filter-btn active" onclick="filterTools('all', this)">All</button>
+        <button class="filter-btn" onclick="filterTools('ai', this)">AI Assistants</button>
+        <button class="filter-btn" onclick="filterTools('dev', this)">Dev &amp; Code</button>
+        <button class="filter-btn" onclick="filterTools('design', this)">Design</button>
+        <button class="filter-btn" onclick="filterTools('research', this)">Research</button>
+      </div>
+
+      <!-- Tool cards -->
+      <div class="tools-list">
+
+        <!-- Claude -->
+        <div class="tool-card" data-cat="ai" style="--d:0.32s;">
+          <div class="tool-card-top">
+            <div class="tool-icon">&#129302;</div>
+            <div>
+              <div class="tool-name">Claude <span class="tool-pick">My #1</span></div>
+              <div class="tool-stars">
+                <span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span>
+              </div>
+              <div class="tool-category">AI Assistant</div>
+            </div>
+            <div class="tool-price">Free / Pro</div>
+          </div>
+          <p class="tool-review">Claude is the AI I reach for first, every time. It writes cleaner code, explains things more clearly, and handles long conversations without losing context. I use it for everything — building this site, writing proposals, debugging Workers, and thinking through problems. Anthropic's focus on being genuinely helpful rather than just agreeable makes it feel more like a collaborator than a chatbot.</p>
+          <div class="tool-verdict">
+            <div class="verdict-box pro">
+              <div class="verdict-label">Works well for</div>
+              <div class="verdict-text">Code, long documents, nuanced writing, complex multi-step tasks, anything where accuracy actually matters.</div>
+            </div>
+            <div class="verdict-box con">
+              <div class="verdict-label">Watch out for</div>
+              <div class="verdict-text">Free tier has message limits. Doesn't browse the web unless you use the paid version with tools enabled.</div>
+            </div>
+          </div>
+          <div class="tool-cta-row">
+            <a href="https://claude.ai" target="_blank" class="tool-link">Try Claude</a>
+          </div>
+        </div>
+
+        <!-- Perplexity -->
+        <div class="tool-card" data-cat="research" style="--d:0.36s;">
+          <div class="tool-card-top">
+            <div class="tool-icon">&#128269;</div>
+            <div>
+              <div class="tool-name">Perplexity</div>
+              <div class="tool-stars">
+                <span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span>
+              </div>
+              <div class="tool-category">AI Research &amp; Search</div>
+            </div>
+            <div class="tool-price">Free / Pro</div>
+          </div>
+          <p class="tool-review">Perplexity replaced Google for me on anything research-related. It gives cited, sourced answers instead of a list of links to click through. When I'm researching a business before pitching them, or need to understand a technical concept quickly, Perplexity is faster and more useful than any search engine. The sources panel means I can always verify what it's telling me.</p>
+          <div class="tool-verdict">
+            <div class="verdict-box pro">
+              <div class="verdict-label">Works well for</div>
+              <div class="verdict-text">Current events, research with citations, quick fact-finding, comparing options without opening 10 tabs.</div>
+            </div>
+            <div class="verdict-box con">
+              <div class="verdict-label">Watch out for</div>
+              <div class="verdict-text">Not great for creative tasks or long-form writing. Pro is worth it if you search a lot, but free covers most use cases.</div>
+            </div>
+          </div>
+          <div class="tool-cta-row">
+            <!-- AFFILIATE LINK -->
+            <a href="https://perplexity.ai" target="_blank" class="tool-link">Try Perplexity</a>
+            <span class="affiliate-tag">affiliate link</span>
+          </div>
+        </div>
+
+        <!-- ChatGPT -->
+        <div class="tool-card" data-cat="ai" style="--d:0.4s;">
+          <div class="tool-card-top">
+            <div class="tool-icon">&#127744;</div>
+            <div>
+              <div class="tool-name">ChatGPT</div>
+              <div class="tool-stars">
+                <span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star">&#9733;</span>
+              </div>
+              <div class="tool-category">AI Assistant</div>
+            </div>
+            <div class="tool-price">Free / Plus</div>
+          </div>
+          <p class="tool-review">I use ChatGPT when I need image generation (DALL-E), or when I want a second opinion on something Claude gave me. It's capable and the free tier is generous, but for most writing and coding tasks I find Claude more precise and less prone to confidently wrong answers. Still a strong tool — just not my first pick anymore.</p>
+          <div class="tool-verdict">
+            <div class="verdict-box pro">
+              <div class="verdict-label">Works well for</div>
+              <div class="verdict-text">Image generation via DALL-E, brainstorming, casual conversation, voice mode on mobile.</div>
+            </div>
+            <div class="verdict-box con">
+              <div class="verdict-label">Watch out for</div>
+              <div class="verdict-text">Can be overconfident with wrong information. I prefer Claude for anything where accuracy is critical.</div>
+            </div>
+          </div>
+          <div class="tool-cta-row">
+            <a href="https://chatgpt.com" target="_blank" class="tool-link">Try ChatGPT</a>
+          </div>
+        </div>
+
+        <!-- Gemini -->
+        <div class="tool-card" data-cat="ai" style="--d:0.44s;">
+          <div class="tool-card-top">
+            <div class="tool-icon">&#128171;</div>
+            <div>
+              <div class="tool-name">Gemini</div>
+              <div class="tool-stars">
+                <span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star">&#9733;</span>
+              </div>
+              <div class="tool-category">AI Assistant</div>
+            </div>
+            <div class="tool-price">Free / Advanced</div>
+          </div>
+          <p class="tool-review">Gemini is Google's AI and it's genuinely good — especially for anything that benefits from Google integration (Docs, Sheets, search). I use it for generating CSV data, working inside Google Workspace, and tasks where I want the Google ecosystem plugged in. It's not my daily driver, but it earns its place in the rotation for specific jobs.</p>
+          <div class="tool-verdict">
+            <div class="verdict-box pro">
+              <div class="verdict-label">Works well for</div>
+              <div class="verdict-text">Google Workspace integration, generating structured data, tasks tied to Search or Maps context.</div>
+            </div>
+            <div class="verdict-box con">
+              <div class="verdict-label">Watch out for</div>
+              <div class="verdict-text">Personality feels more corporate than Claude or ChatGPT. Not as strong on creative or nuanced writing tasks.</div>
+            </div>
+          </div>
+          <div class="tool-cta-row">
+            <a href="https://gemini.google.com" target="_blank" class="tool-link">Try Gemini</a>
+          </div>
+        </div>
+
+        <!-- AI Studio -->
+        <div class="tool-card" data-cat="dev" style="--d:0.48s;">
+          <div class="tool-card-top">
+            <div class="tool-icon">&#9881;&#65039;</div>
+            <div>
+              <div class="tool-name">Google AI Studio</div>
+              <div class="tool-stars">
+                <span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star">&#9733;</span>
+              </div>
+              <div class="tool-category">Developer / API Playground</div>
+            </div>
+            <div class="tool-price">Free</div>
+          </div>
+          <p class="tool-review">AI Studio is where I go to prototype system prompts and test API calls before wiring them into real projects. It's a free browser-based playground for Gemini's API — you can test different models, adjust parameters, and see raw responses without writing any backend code. Essential for anyone building AI-powered apps on a budget.</p>
+          <div class="tool-verdict">
+            <div class="verdict-box pro">
+              <div class="verdict-label">Works well for</div>
+              <div class="verdict-text">Testing prompts, experimenting with API parameters, prototyping before committing to code. Completely free.</div>
+            </div>
+            <div class="verdict-box con">
+              <div class="verdict-label">Watch out for</div>
+              <div class="verdict-text">It's a dev tool, not a polished product. Not useful if you're not building something. Rate limits on free tier.</div>
+            </div>
+          </div>
+          <div class="tool-cta-row">
+            <a href="https://aistudio.google.com" target="_blank" class="tool-link">Try AI Studio</a>
+          </div>
+        </div>
+
+        <!-- Canva AI -->
+        <div class="tool-card" data-cat="design" style="--d:0.52s;">
+          <div class="tool-card-top">
+            <div class="tool-icon">&#127912;</div>
+            <div>
+              <div class="tool-name">Canva AI</div>
+              <div class="tool-stars">
+                <span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star">&#9733;</span>
+              </div>
+              <div class="tool-category">Design</div>
+            </div>
+            <div class="tool-price">Free / Pro</div>
+          </div>
+          <p class="tool-review">Canva is the fastest way to produce a polished graphic if you're not a designer — and the AI features (Magic Write, background remover, image generation) make it genuinely useful. I use it for social graphics, pitch decks, and quick mockups. Honest caveat: the AI image outputs can feel generic if you're not specific with prompts, and heavy Canva use tends to make things look the same.</p>
+          <div class="tool-verdict">
+            <div class="verdict-box pro">
+              <div class="verdict-label">Works well for</div>
+              <div class="verdict-text">Quick presentations, social graphics, removing backgrounds, anything where speed matters more than originality.</div>
+            </div>
+            <div class="verdict-box con">
+              <div class="verdict-label">Watch out for</div>
+              <div class="verdict-text">AI image outputs feel generic. Everything looks like Canva if you use default templates. Not a substitute for real design work.</div>
+            </div>
+          </div>
+          <div class="tool-cta-row">
+            <!-- AFFILIATE LINK -->
+            <a href="https://canva.com" target="_blank" class="tool-link">Try Canva</a>
+            <span class="affiliate-tag">affiliate link</span>
+          </div>
+        </div>
+
+        <!-- GitHub / GitHub Pages -->
+        <div class="tool-card" data-cat="dev" style="--d:0.56s;">
+          <div class="tool-card-top">
+            <div class="tool-icon">&#128024;</div>
+            <div>
+              <div class="tool-name">GitHub &amp; GitHub Pages</div>
+              <div class="tool-stars">
+                <span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span><span class="star filled">&#9733;</span>
+              </div>
+              <div class="tool-category">Dev / Version Control / Hosting</div>
+            </div>
+            <div class="tool-price">Free</div>
+          </div>
+          <p class="tool-review">GitHub is non-negotiable for any serious project. Version control means I can experiment without fear, roll back mistakes, and keep a full history of every change. GitHub Pages is how I host static sites for free — including early versions of Minescout. If you're building anything in code and not using Git, start today.</p>
+          <div class="tool-verdict">
+            <div class="verdict-box pro">
+              <div class="verdict-label">Works well for</div>
+              <div class="verdict-text">All code projects. Free static hosting via Pages. Version history, collaboration, and backup all in one place.</div>
+            </div>
+            <div class="verdict-box con">
+              <div class="verdict-label">Watch out for</div>
+              <div class="verdict-text">Learning curve for Git if you've never used it. GitHub Pages has limits for dynamic sites — fine for static HTML/CSS/JS.</div>
+            </div>
+          </div>
+          <div class="tool-cta-row">
+            <a href="https://github.com" target="_blank" class="tool-link">Try GitHub</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Not for me -->
+      <div class="not-for-me">
+        <div class="not-header">Tools I tried &mdash; not for me</div>
+        <div class="not-item">
+          <div class="not-icon">&#128273;</div>
+          <div>
+            <div class="not-name">GitHub Copilot</div>
+            <div class="not-reason">I wanted to like it, but inline autocomplete in the editor never clicked for me the way a proper chat interface does. I'd rather describe what I want and get a full solution than tab-complete my way through code. If you love in-editor suggestions it might work for you — it just wasn't my workflow.</div>
+          </div>
+        </div>
+        <div class="not-item">
+          <div class="not-icon">&#128034;</div>
+          <div>
+            <div class="not-name">Replit</div>
+            <div class="not-reason">Good concept — browser-based coding with AI assistance — but I found it too slow and too limited compared to working locally with VS Code and deploying via Cloudflare. The AI features felt bolted on rather than integrated. Might be useful for someone who can't install anything locally, but it's not for me.</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="tools-disclaimer">
+        Ratings are my personal opinion based on regular use. Affiliate links are labeled above — I earn a small commission if you sign up through them, at no cost to you. This never changes what I recommend. Updated: <span id="tools-date-2"></span>. Questions? <a href="/contact">Get in touch</a>.
+      </p>
+
+    </div>
+  </main>
+  <script src="/scripts/sidebar.js"></script>
+  <script src="/scripts/main.js"></script>
+  <script>
+    document.getElementById('copyright').textContent = '\u00A9 ' + new Date().getFullYear() + ' Minescout AI';
+    const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    document.getElementById('tools-date').textContent = dateStr;
+    document.getElementById('tools-date-2').textContent = dateStr;
+
+    function filterTools(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.tool-card').forEach(card => {
+        card.classList.toggle('hidden', cat !== 'all' && card.dataset.cat !== cat);
+      });
+    }
+  </script>
+</body>
+</html>

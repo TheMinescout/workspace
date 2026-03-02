@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legal &amp; Terms — Minescout AI</title>
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/styles/main.css?v=8.1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    .legal-wrap { max-width: 620px; }
+
+    .legal-updated {
+      font-size: 0.65rem; color: var(--muted); margin-bottom: 2.5rem;
+      letter-spacing: 0.04em; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards;
+    }
+
+    .legal-section {
+      margin-bottom: 0; opacity: 0; animation: fadeUp 0.5s ease forwards;
+      animation-delay: var(--d, 0.3s);
+    }
+
+    .legal-section-title {
+      font-family: var(--serif); font-size: 1rem; font-weight: 700; color: var(--fg);
+      margin-top: 2rem; margin-bottom: 0.75rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .legal-body { font-size: 0.8rem; color: var(--muted); line-height: 1.85; margin-bottom: 1rem; }
+    .legal-body strong { color: var(--fg); font-weight: 500; }
+    .legal-body a { color: var(--fg); border-bottom: 1px solid var(--border); }
+
+    /* Fixed: CSS content can't parse HTML entities — use Unicode instead */
+    .legal-list {
+      font-size: 0.8rem; color: var(--muted); line-height: 1.85;
+      padding-left: 0; list-style: none; margin-bottom: 1rem;
+    }
+    .legal-list li { padding-left: 1.25rem; position: relative; margin-bottom: 0.4rem; }
+    .legal-list li::before { content: '\2014'; position: absolute; left: 0; color: var(--border); }
+
+    /* Charter detail box */
+    .charter-detail {
+      border: 1px solid var(--border); border-radius: 6px;
+      overflow: hidden; margin: 1rem 0;
+    }
+    .charter-detail-row {
+      display: grid; grid-template-columns: 140px 1fr; gap: 0;
+      border-bottom: 1px solid var(--border); font-size: 0.78rem;
+    }
+    .charter-detail-row:last-child { border-bottom: none; }
+    .charter-key {
+      padding: 0.75rem 1rem; background: var(--light);
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--muted);
+      border-right: 1px solid var(--border);
+      display: flex; align-items: center;
+    }
+    .charter-val { padding: 0.75rem 1rem; color: var(--muted); line-height: 1.6; }
+    .charter-val strong { color: var(--fg); font-weight: 500; }
+
+    /* Partner slot tags */
+    .partner-slots {
+      display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.75rem;
+    }
+    .partner-tag {
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.07em;
+      text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 3px;
+      background: var(--fg); color: var(--bg);
+    }
+    .partner-tag.closed {
+      background: #f0faf4; color: #4caf82; border: 1px solid #c3e8d0;
+    }
+
+    .legal-contact {
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 1.25rem 1.5rem; margin-top: 2.5rem;
+      opacity: 0; animation: fadeUp 0.5s ease 0.75s forwards;
+    }
+    .legal-contact-title { font-size: 0.8rem; font-weight: 500; color: var(--fg); margin-bottom: 0.5rem; }
+    .legal-contact-body { font-size: 0.76rem; color: var(--muted); line-height: 1.7; }
+    .legal-contact-body a { color: var(--fg); border-bottom: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+
+
+  <main class="main main--page">
+    <div class="page-content legal-wrap">
+      <p class="page-label">Minescout AI</p>
+      <h1 class="page-title">Legal &amp; Terms</h1>
+      <p class="legal-updated">Last updated: <span id="legal-date"></span></p>
+
+      <!-- Who we are -->
+      <div class="legal-section" style="--d:0.28s;">
+        <div class="legal-section-title">Who we are</div>
+        <p class="legal-body">
+          Minescout AI is operated by <strong>Thomas Carleton</strong>, based in Sammamish, Washington.
+          This is not a registered business entity. All services are delivered directly by Thomas Carleton
+          as an individual. By engaging Minescout AI, you agree to work with Thomas Carleton personally
+          as your service provider.
+        </p>
+      </div>
+
+      <!-- Services -->
+      <div class="legal-section" style="--d:0.34s;">
+        <div class="legal-section-title">Services &amp; scope</div>
+        <p class="legal-body">Minescout AI provides web development, AI assistant configuration, and related technical services for small businesses. Deliverables, pricing, and timeline are agreed upon in writing before work begins.</p>
+        <p class="legal-body">Services are delivered on a best-effort basis. I cannot guarantee specific outcomes such as increased sales, lead conversion rates, or AI response accuracy beyond what is tested and agreed upon at launch.</p>
+      </div>
+
+      <!-- Charter Partners — expanded -->
+      <div class="legal-section" style="--d:0.4s;">
+        <div class="legal-section-title">Charter Partner program</div>
+        <p class="legal-body">
+          The Charter Partner program is an invite-only arrangement in which Minescout AI provides the
+          full AI Upgrade at no cost in exchange for a defined set of commitments from the partner.
+          The inaugural cohort is now full.
+        </p>
+
+        <div class="partner-slots">
+          <span class="partner-tag closed">SBGS &#10003;</span>
+          <span class="partner-tag closed">OFFC &#10003;</span>
+          <span class="partner-tag closed">SCC &#10003;</span>
+        </div>
+
+        <p class="legal-body" style="margin-top:1rem;">
+          The terms of the Charter Partner arrangement are as follows:
+        </p>
+
+        <div class="charter-detail">
+          <div class="charter-detail-row">
+            <div class="charter-key">What you receive</div>
+            <div class="charter-val">
+              The full AI Upgrade at no cost — custom-trained AI assistant, website integration,
+              Google Sheets Training Bridge, and 12 months of maintenance. <strong>Valued at $500 setup + $600/yr.</strong>
+            </div>
+          </div>
+          <div class="charter-detail-row">
+            <div class="charter-key">Testimonial</div>
+            <div class="charter-val">
+              A signed written testimonial about your experience, provided within 30 days of the AI going live.
+              The testimonial may be published on minescout.net and used in marketing materials.
+            </div>
+          </div>
+          <div class="charter-detail-row">
+            <div class="charter-key">Case study</div>
+            <div class="charter-val">
+              Permission for a named, published case study documenting the project — including your
+              business name, what was built, and measurable outcomes where available.
+              You will be given the opportunity to review the case study before publication.
+            </div>
+          </div>
+          <div class="charter-detail-row">
+            <div class="charter-key">Feedback commitment</div>
+            <div class="charter-val">
+              12 months of active participation in the feedback loop. This means reviewing AI responses
+              in your Google Sheets Training Bridge, submitting corrections when the AI gets something wrong,
+              and responding to occasional check-in messages (no more than once per month).
+            </div>
+          </div>
+          <div class="charter-detail-row">
+            <div class="charter-key">Corrections &amp; updates</div>
+            <div class="charter-val">
+              You may submit corrections at any time via your Training Bridge sheet. I will apply all
+              corrections within <strong>48 hours</strong>. Scheduled content updates (changed hours, new services,
+              pricing changes) are processed in the monthly maintenance cycle. Urgent updates are
+              handled within 24 hours on request.
+            </div>
+          </div>
+          <div class="charter-detail-row">
+            <div class="charter-key">Early termination</div>
+            <div class="charter-val">
+              If a Charter Partner exits the program before 12 months, the free setup benefit is forfeited.
+              A pro-rated setup fee — calculated as ($500 &times; months remaining &divide; 12) — may be invoiced
+              at my discretion. Partners who have already delivered a signed testimonial and published
+              case study may exit without penalty after 6 months.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI accuracy -->
+      <div class="legal-section" style="--d:0.46s;">
+        <div class="legal-section-title">AI accuracy &amp; limitations</div>
+        <p class="legal-body">AI assistants are trained on content you provide. <strong>Response accuracy depends directly on the accuracy of your source material.</strong> I am not responsible for incorrect responses resulting from outdated, incomplete, or inaccurate content supplied by the client.</p>
+        <p class="legal-body">The Training Bridge exists to catch and fix these issues. Corrections submitted will be applied within 48 hours of the next maintenance cycle.</p>
+        <ul class="legal-list">
+          <li>AI assistants may occasionally produce incorrect or incomplete responses.</li>
+          <li>AI assistants should not be relied upon for legal, medical, or financial advice.</li>
+          <li>Guardrails keep responses on-topic but cannot guarantee complete coverage.</li>
+        </ul>
+      </div>
+
+      <!-- Data & privacy -->
+      <div class="legal-section" style="--d:0.52s;">
+        <div class="legal-section-title">Data &amp; privacy</div>
+        <p class="legal-body">Conversations are logged to a Google Sheet controlled by you. <strong>You own your data.</strong> I do not share conversation logs with third parties.</p>
+        <p class="legal-body">The AI infrastructure uses:</p>
+        <ul class="legal-list">
+          <li><strong>Anthropic Claude API</strong> &mdash; processes messages. Subject to <a href="https://www.anthropic.com/legal/privacy" target="_blank">Anthropic's Privacy Policy</a>.</li>
+          <li><strong>Cloudflare Workers</strong> &mdash; routes requests. Subject to <a href="https://www.cloudflare.com/privacypolicy/" target="_blank">Cloudflare's Privacy Policy</a>.</li>
+          <li><strong>Google Sheets</strong> &mdash; stores conversation logs. Subject to <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a>.</li>
+        </ul>
+        <p class="legal-body">No personally identifiable information is stored beyond what appears in the conversation itself.</p>
+      </div>
+
+      <!-- Payment -->
+      <div class="legal-section" style="--d:0.58s;">
+        <div class="legal-section-title">Payment &amp; cancellation</div>
+        <p class="legal-body">Setup fees are due before work begins. Monthly fees are due at the start of each billing period. No contracts or lock-ins &mdash; monthly services can be cancelled with 7 days written notice.</p>
+        <p class="legal-body">On cancellation: the widget is removed, all training data is returned in a readable format, and charges stop within one billing cycle. Setup fees are non-refundable once work has begun.</p>
+      </div>
+
+      <!-- Affiliate links -->
+      <div class="legal-section" style="--d:0.62s;">
+        <div class="legal-section-title">Affiliate links</div>
+        <p class="legal-body">The <a href="/ai/tools">Tools I Use</a> page contains affiliate links, clearly labeled. I earn a small commission if you sign up through them at no cost to you. This does not influence what I recommend.</p>
+      </div>
+
+      <!-- IP -->
+      <div class="legal-section" style="--d:0.66s;">
+        <div class="legal-section-title">Intellectual property</div>
+        <p class="legal-body">Code and content I produce for clients becomes the client's property upon full payment. I retain the right to reference the engagement in my portfolio unless a confidentiality agreement is in place. Charter Partners explicitly grant permission for a named case study as detailed above.</p>
+      </div>
+
+      <!-- Liability -->
+      <div class="legal-section" style="--d:0.7s;">
+        <div class="legal-section-title">Limitation of liability</div>
+        <p class="legal-body">Services are provided "as is." Thomas Carleton shall not be liable for any indirect, incidental, or consequential damages. Total liability is limited to the amount paid for the specific service in question.</p>
+      </div>
+
+      <div class="legal-contact">
+        <div class="legal-contact-title">Questions about these terms?</div>
+        <div class="legal-contact-body">
+          Reach out directly &mdash; happy to clarify anything.
+          <a href="/contact">Contact page</a> or <a href="mailto:tmcarleton11@gmail.com">tmcarleton11@gmail.com</a>.
+        </div>
+      </div>
+
+    </div>
+  </main>
+  <script src="/scripts/sidebar.js"></script>
+  <script src="/scripts/main.js"></script>
+  <script>
+    document.getElementById('copyright').textContent = '\u00A9 ' + new Date().getFullYear() + ' Minescout AI';
+    document.getElementById('legal-date').textContent = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  </script>
+</body>
+</html>

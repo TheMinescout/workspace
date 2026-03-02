@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Thomas Carleton</title>
+  <link rel="icon" type="image/png" href="../../assets/favicon.png" />
+  <link rel="stylesheet" href="../../styles/main.css?v=8.1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:site_name"    content="Thomas Carleton" />
+  <meta property="og:title"        content="Contact — Thomas Carleton" />
+  <meta property="og:description"  content="Get in touch with Thomas Carleton." />
+  <meta property="og:url"          content="https://minescout.net/contact" />
+  <meta property="og:image"        content="https://minescout.net/assets/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Contact — Thomas Carleton" />
+  <meta name="twitter:description" content="Get in touch with Thomas Carleton." />
+  <meta name="twitter:image"       content="https://minescout.net/assets/og-image.png" />
+  <style>
+    .contact-wrap { max-width: 520px; }
+    .contact-intro { font-size: 0.95rem; color: var(--muted); line-height: 1.7; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
+    .contact-form { display: flex; flex-direction: column; gap: 1.25rem; opacity: 0; animation: fadeUp 0.5s ease 0.35s forwards; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg); }
+    .form-group input, .form-group textarea {
+      font-family: var(--sans); font-size: 0.9rem; color: var(--fg);
+      background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
+      padding: 0.7rem 0.9rem; outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+      resize: none; width: 100%; box-sizing: border-box;
+    }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--border); }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,77,28,0.1); }
+    .form-group textarea { min-height: 140px; line-height: 1.6; }
+    .form-submit {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--sans); font-size: 0.72rem; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--bg);
+      background: var(--fg); border: none; border-radius: 4px;
+      padding: 0.8rem 1.75rem; cursor: pointer; transition: background 0.15s, transform 0.1s;
+      align-self: flex-start;
+    }
+    .form-submit:hover { background: var(--accent); }
+    .form-submit:active { transform: scale(0.98); }
+    .form-success { display: none; padding: 1.25rem; background: var(--light); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 0.88rem; color: var(--fg); line-height: 1.6; }
+    .form-success.visible { display: block; }
+    .contact-divider { margin: 3rem 0 2rem; border: none; border-top: 1px solid var(--border); opacity: 0; animation: fadeUp 0.5s ease 0.5s forwards; }
+    .contact-alt { font-size: 0.82rem; color: var(--muted); line-height: 1.8; opacity: 0; animation: fadeUp 0.5s ease 0.55s forwards; }
+    .contact-alt a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--border); transition: border-color 0.15s, color 0.15s; }
+    .contact-alt a:hover { color: var(--accent); border-color: var(--accent); }
+  </style>
+</head>
+<body>
+
+
+
+  <main class="main main--page">
+    <div class="page-content contact-wrap">
+      <p class="page-label">Contact</p>
+      <h1 class="page-title">Get in Touch</h1>
+
+      <p class="contact-intro">
+        Whether you want to collaborate on a project, ask about my work, or just say hello —
+        I'd love to hear from you. I'll get back to you as soon as I can.
+      </p>
+
+      <form class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" id="contact-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="your@email.com" required />
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="What's on your mind?" required></textarea>
+        </div>
+        <button type="submit" class="form-submit" id="form-btn">Send Message</button>
+      </form>
+
+      <div class="form-success" id="form-success">
+        ✓ &nbsp; Message sent! I'll get back to you soon.
+      </div>
+
+      <hr class="contact-divider" />
+
+      <p class="contact-alt">
+        You can also reach me directly via email or find my work at
+        <a href="https://minescout.net" target="_blank">minescout.net</a> and
+        <a href="https://github.com" target="_blank">GitHub</a>.
+      </p>
+    </div>
+  </main>
+  <script src="/scripts/sidebar.js"></script>
+  <script src="/scripts/main.js"></script>
+  <script>
+    const form = document.getElementById('contact-form');
+    const success = document.getElementById('form-success');
+    const btn = document.getElementById('form-btn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btn.disabled = true;
+      btn.innerText = 'Sending...';
+
+      const data = new FormData(form);
+      try {
+        const res = await fetch(form.action, { 
+          method: 'POST', 
+          body: data, 
+          headers: { 'Accept': 'application/json' } 
+        });
+        
+        if (res.ok) { 
+          form.style.display = 'none'; 
+          success.classList.add('visible'); 
+        } else {
+            alert('Something went wrong. Please try emailing directly.');
+            btn.disabled = false;
+            btn.innerText = 'Send Message';
+        }
+      } catch (err) {
+        alert('Could not reach the server. Please try again.');
+        btn.disabled = false;
+        btn.innerText = 'Send Message';
+      }
+    });
+  </script>
+</body>
+</html>

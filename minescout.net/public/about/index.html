@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Thomas Carleton</title>
+  <link rel="icon" type="image/png" href="../../assets/favicon.png" />
+  <link rel="stylesheet" href="../../styles/main.css?v=8.1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:site_name"    content="Thomas Carleton" />
+  <meta property="og:title"        content="About — Thomas Carleton" />
+  <meta property="og:description"  content="9th grader, builder, Eagle Scout based in the Pacific Northwest." />
+  <meta property="og:url"          content="https://minescout.net/about" />
+  <meta property="og:image"        content="https://minescout.net/assets/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="About — Thomas Carleton" />
+  <meta name="twitter:description" content="9th grader, builder, Eagle Scout based in the Pacific Northwest." />
+  <meta name="twitter:image"       content="https://minescout.net/assets/og-image.png" />
+</head>
+<style>
+    /* === ABOUT PAGE SPECIFIC LAYOUT === */
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr 200px; /* Restores the two-column look */
+      gap: 4rem;
+      align-items: start;
+      max-width: 700px;
+      margin-top: 2rem;
+    }
+
+    .about-text { 
+      opacity: 0; 
+      animation: fadeUp 0.5s ease 0.3s forwards; 
+    }
+
+    .about-text p { 
+      font-size: 0.92rem; 
+      line-height: 1.9; 
+      color: var(--fg); 
+      margin-bottom: 1.25rem; 
+    }
+
+    .about-aside { 
+      opacity: 0; 
+      animation: fadeUp 0.5s ease 0.45s forwards; 
+    }
+
+    .about-detail { 
+      margin-bottom: 1.5rem; 
+    }
+
+    .about-detail-label { 
+      font-size: 0.62rem; 
+      letter-spacing: 0.1em; 
+      text-transform: uppercase; 
+      color: var(--muted); 
+      margin-bottom: 0.3rem; 
+    }
+
+    .about-detail-value { 
+      font-size: 0.85rem; 
+      color: var(--fg); 
+      font-weight: 400; 
+    }
+
+    /* === SIDEBAR SECONDARY (Fixing the line) === */
+    .sidebar-secondary {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      padding-top: 1rem;
+      border-top: none; /* REMOVES THE LINE YOU POINTED OUT */
+      margin-top: 0;
+    }
+
+    .sidebar-secondary a {
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      color: var(--muted);
+      padding: 0.4rem 0.85rem;
+      border-radius: 5px;
+      transition: color 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    /* Red marker for secondary links */
+    .sidebar-secondary a::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%) scaleY(0);
+      width: 2px;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: transform 0.2s;
+    }
+
+    .sidebar-secondary a:hover { color: var(--fg); background: var(--light); }
+    .sidebar-secondary a:hover::before,
+    .sidebar-secondary a.active::before { transform: translateY(-50%) scaleY(1); }
+    .sidebar-secondary a.active { color: var(--fg); font-weight: 500; }
+
+    /* General Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 700px) {
+      .about-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+</style>
+<body>
+
+  
+
+  <main class="main main--page">
+    <div class="page-content">
+      <p class="page-label">About</p>
+      <h1 class="page-title">A little about me</h1>
+
+      <div class="about-layout">
+        <div class="about-text">
+          <p>
+            Hey, I'm Thomas — a 9th grader based in the Pacific Northwest.
+            I've been building things on the internet for a few years now,
+            starting with Minecraft tools and expanding into full web apps.
+          </p>
+          <p>
+            Minescout started as a personal project and grew into something
+            I'm genuinely proud of. I like making things that solve real
+            problems, even small ones.
+          </p>
+          <p>
+            Outside of building, I earned my Eagle Scout rank and spend a lot
+            of time outdoors — running, hiking, and fly-fishing.
+          </p>
+        </div>
+
+        <div class="about-aside">
+          <div class="about-detail">
+            <div class="about-detail-label">Grade</div>
+            <div class="about-detail-value">9th (2025–26)</div>
+          </div>
+          <div class="about-detail">
+            <div class="about-detail-label">Location</div>
+            <div class="about-detail-value">Pacific Northwest</div>
+          </div>
+          <div class="about-detail">
+            <div class="about-detail-label">Building since</div>
+            <div class="about-detail-value">2023</div>
+          </div>
+          <div class="about-detail">
+            <div class="about-detail-label">Currently</div>
+            <div class="about-detail-value">FRC Team 1294</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="/scripts/sidebar.js"></script>
+  <script src="/scripts/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- CHANGE: Update title for each post -->
+  <title>Launching This Site — Thomas Carleton</title>
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/styles/main.css?v=8.1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <!-- Open Graph — CHANGE these per post -->
+  <meta property="og:type"         content="article" />
+  <meta property="og:site_name"    content="Thomas Carleton" />
+  <meta property="og:title"        content="Launching This Site — Thomas Carleton" />
+  <meta property="og:description"  content="I've been wanting a personal corner of the internet for a while. Here's how I built it." />
+  <meta property="og:url"          content="https://minescout.net/blog/launching-this-site" />
+  <meta property="og:image"        content="https://minescout.net/assets/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Launching This Site — Thomas Carleton" />
+  <meta name="twitter:description" content="I've been wanting a personal corner of the internet for a while. Here's how I built it." />
+  <meta name="twitter:image"       content="https://minescout.net/assets/og-image.png" />
+  <style>
+    .post-wrap {
+      max-width: 620px;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.15s forwards;
+    }
+
+    .post-date {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .post-tag {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+    }
+
+    /* Override page-title animation delay for posts */
+    .post-wrap .page-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Post body */
+    .post-body {
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.3s forwards;
+    }
+
+    .post-body p {
+      font-size: 0.95rem;
+      line-height: 1.95;
+      color: var(--fg);
+      margin-bottom: 1.5rem;
+    }
+
+    .post-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .post-body h2 {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 2.5rem 0 0.75rem;
+      color: var(--fg);
+    }
+
+    .post-body h3 {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 2rem 0 0.5rem;
+    }
+
+    .post-body a {
+      color: var(--fg);
+      border-bottom: 1px solid var(--border);
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .post-body a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .post-body ul, .post-body ol {
+      padding-left: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .post-body li {
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: var(--fg);
+      margin-bottom: 0.25rem;
+    }
+
+    .post-body blockquote {
+      border-left: 3px solid var(--accent);
+      margin: 2rem 0;
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .post-body hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    /* Back link */
+    .post-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      transition: color 0.15s;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.05s forwards;
+    }
+
+    .post-back:hover { color: var(--fg); }
+
+    /* Footer nav between posts */
+    .post-nav {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.5s forwards;
+    }
+
+    .post-nav a {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.15s;
+    }
+
+    .post-nav a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+
+
+  <!-- MAIN CONTENT -->
+  <main class="main main--page">
+    <div class="page-content post-wrap">
+
+      <a href="/blog.html" class="post-back">← All posts</a>
+
+      <!-- CHANGE: Update label, title, date, tag per post -->
+      <p class="page-label">Blog</p>
+      <h1 class="page-title">Launching This Site — What I Built and Why</h1>
+
+      <div class="post-meta">
+        <span class="post-date">February 21, 2026</span>
+        <span class="post-tag">Building</span>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           WRITE YOUR POST BELOW HERE
+           Use <p> for paragraphs
+           Use <h2> for section headings
+           Use <h3> for smaller subheadings
+           Use <blockquote> for pull quotes
+           Use <ul> or <ol> for lists
+           Use <hr> for a divider between sections
+      ════════════════════════════════════════════════ -->
+      <div class="post-body">
+
+        <p>
+          I've been wanting a personal corner of the internet for a while. Not just a GitHub profile
+          or a project page — something that actually felt like me. This is that thing.
+        </p>
+
+        <p>
+          I started building Minescout a couple years ago, and that became its own thing. But I never
+          had a place to put the rest of it — the robotics work, the Eagle Scout stuff, the running,
+          all of it. So I built this site.
+        </p>
+
+        <h2>What's on it</h2>
+
+        <p>
+          There's a work page that lists my projects, a resume that mirrors my actual CV,
+          a guestbook powered by Firebase, and now this blog. The whole thing is plain HTML and CSS —
+          no framework, no build step, no CMS. Just files.
+        </p>
+
+        <blockquote>
+          The constraint of plain HTML makes you think carefully about every element you add.
+          It's a good constraint.
+        </blockquote>
+
+        <p>
+          I'm genuinely happy with how it turned out. The design is warm and editorial — inspired
+          by my dad's site — and it actually feels like something I made, not something that was
+          generated.
+        </p>
+
+        <h2>What I learned</h2>
+
+        <p>
+          CSS custom properties are incredibly powerful when you commit to them from the start.
+          The whole site shares one set of variables and it makes everything consistent without
+          any effort. I also got a lot better at thinking about mobile layout — the hamburger
+          menu took a few attempts to get right.
+        </p>
+
+        <p>
+          More to come. I'll keep updating the Now page and writing here when something's worth
+          writing about.
+        </p>
+
+      </div>
+      <!-- ═══════════════════════════════════════════════
+           END OF POST CONTENT
+      ════════════════════════════════════════════════ -->
+
+      <!-- CHANGE: Update prev/next links as you add more posts -->
+      <div class="post-nav">
+        <span></span> <!-- empty left if no previous post -->
+        <a href="/blog/eagle-scout-project">Next post →</a>
+      </div>
+
+    </div>
+  </main>
+  <script src="/scripts/sidebar.js"></script>
+  <script src="/scripts/main.js"></script>
+</body>
+</html>

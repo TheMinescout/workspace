@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow">
+  <title>OFFC — Live AI Upgrade Preview</title>
+  
+  <link rel="icon" type="image/png" href="https://offc.org/wp-content/uploads/2019/05/offclogo.png" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  
+  <style>
+    :root {
+      --river-navy: #1c2b3a;
+      --sage-green: #5d8c58;
+      --trout-gold: #c9a96e;
+      --cream: #fdfdfc;
+      --slate: #475569;
+      --border: #e2e1db;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--river-navy); line-height: 1.7; overflow-x: hidden; }
+
+    .preview-banner {
+      background: var(--river-navy); color: var(--trout-gold); padding: 12px;
+      text-align: center; font-size: 0.7rem; letter-spacing: 0.15em;
+      text-transform: uppercase; font-weight: 600; border-bottom: 2px solid var(--trout-gold);
+    }
+    .preview-banner a { color: white; text-decoration: underline; }
+
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 4rem; background: white; border-bottom: 1px solid var(--border);
+    }
+    .logo-wrap { display: flex; align-items: center; gap: 1rem; }
+    .nav-logo { height: 45px; width: auto; }
+    .logo-text { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.3rem; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--river-navy); font-size: 0.8rem; text-transform: uppercase; font-weight: 500; letter-spacing: 0.05em; }
+    .cta-btn { background: var(--sage-green); color: white; padding: 0.8rem 1.5rem; border-radius: 4px; text-decoration: none; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; transition: 0.2s; border: none; cursor: pointer; }
+
+    .hero {
+      display: grid; grid-template-columns: 1fr 1.2fr; align-items: center;
+      min-height: 80vh; padding: 0 4rem; gap: 6rem;
+    }
+    .hero-label { color: var(--sage-green); font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.2em; }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; margin: 1rem 0; }
+    .hero-image { width: 100%; height: 550px; object-fit: cover; border-radius: 8px; box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
+
+    .hero-search {
+      background: white; padding: 0.6rem; border-radius: 50px; border: 1px solid var(--border);
+      display: flex; gap: 1rem; align-items: center; max-width: 500px; margin-top: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    .hero-search input { border: none; outline: none; flex: 1; padding-left: 1.5rem; font-family: inherit; font-size: 0.95rem; }
+    .hero-search button { background: var(--river-navy); color: white; border: none; padding: 0.8rem 1.8rem; border-radius: 50px; cursor: pointer; font-weight: 600; }
+
+    .stories-section { padding: 8rem 4rem; background: #fff; }
+    .section-header { margin-bottom: 3rem; text-align: center; }
+    .section-label { color: var(--trout-gold); text-transform: uppercase; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; display: block; margin-bottom: 1rem; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--river-navy); }
+
+    .stories-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .story-card { position: relative; border-radius: 8px; overflow: hidden; height: 450px; cursor: pointer; }
+    .story-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .story-card:hover .story-img { transform: scale(1.05); }
+    .story-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent 60%); display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; color: white; }
+    .story-overlay h4 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.4rem; }
+    .story-overlay span { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--trout-gold); }
+
+    .meeting-strip { background: var(--river-navy); color: white; padding: 4rem; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin: 0 4rem 4rem; }
+    .meeting-strip h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--trout-gold); margin-bottom: 0.5rem; }
+
+    /* ── Chat Widget ── */
+    .chat-fab { position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; background: var(--river-navy); border: 2px solid var(--trout-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000; font-size: 1.5rem; transition: transform 0.2s; }
+    .chat-fab:hover { transform: scale(1.1); }
+
+    .chat-panel { position: fixed; bottom: 6.5rem; right: 2rem; width: 380px; background: white; border-radius: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; border: 1px solid var(--border); z-index: 1000; }
+
+    .chat-header { background: var(--river-navy); color: white; padding: 1.2rem 1.5rem; font-family: 'Playfair Display'; border-bottom: 2px solid var(--trout-gold); display: flex; justify-content: space-between; align-items: center; }
+    .chat-header-name { font-size: 1rem; font-weight: 700; }
+    .chat-header-sub { font-size: 0.65rem; color: rgba(255,255,255,0.55); font-family: 'Jost', sans-serif; font-weight: 400; margin-top: 0.1rem; }
+
+    .chat-messages { padding: 1.25rem; overflow-y: auto; background: #f9f8f6; font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.85rem; max-height: 380px; }
+    .chat-messages::-webkit-scrollbar { width: 3px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .msg { padding: 0.75rem 1rem; border-radius: 10px; max-width: 88%; line-height: 1.55; font-size: 0.84rem; }
+    .msg.ai { background: white; border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 2px; color: var(--river-navy); }
+    .msg.user { background: var(--river-navy); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+
+    /* Demo notice badge inside ai messages */
+    .demo-notice {
+      margin-top: 0.6rem; padding: 0.5rem 0.7rem;
+      background: #fff8e8; border: 1px solid #f5e0a0; border-radius: 5px;
+      font-size: 0.68rem; color: #7a5c1a; line-height: 1.55;
+    }
+    .demo-notice strong { color: #5a3f0a; }
+
+    /* Typing dots */
+    .typing-dots { display: flex; gap: 3px; align-items: center; padding: 0.75rem 1rem; background: white; border: 1px solid var(--border); border-radius: 10px; border-bottom-left-radius: 2px; align-self: flex-start; width: fit-content; }
+    .typing-dots span { width: 5px; height: 5px; background: #c0bab2; border-radius: 50%; animation: tdot 1.2s ease infinite; }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes tdot { 0%,60%,100%{transform:translateY(0);opacity:0.4}30%{transform:translateY(-4px);opacity:1} }
+
+    .chat-input-row { padding: 0.85rem 1rem; border-top: 1px solid var(--border); display: flex; background: white; gap: 0.5rem; align-items: center; flex-shrink: 0; }
+    .chat-input-row input { flex: 1; border: none; outline: none; font-family: inherit; font-size: 0.88rem; color: var(--river-navy); background: transparent; }
+    .chat-input-row input::placeholder { color: #b0aba3; }
+    .chat-send { background: none; border: none; cursor: pointer; font-size: 1.1rem; color: var(--river-navy); padding: 0.25rem; transition: color 0.15s; }
+    .chat-send:hover { color: var(--sage-green); }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem; flex-direction: column; gap: 1.2rem; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 4rem 2rem; text-align: center; }
+      .hero-search { margin: 2rem auto; }
+      .hero-image { height: 350px; }
+      .meeting-strip { margin: 0 1rem; flex-direction: column; text-align: center; gap: 2rem; padding: 3rem 2rem; }
+      .stories-grid { grid-template-columns: 1fr; }
+      .stories-section { padding: 4rem 2rem; }
+      .chat-panel { width: calc(100vw - 2rem); right: 1rem; bottom: 5.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="preview-banner">Concept Preview for OFFC &middot; Built by <a href="/ai">Minescout AI</a></div>
+
+  <nav>
+    <div class="logo-wrap">
+      <img src="https://offc.org/wp-content/uploads/2019/05/offclogo.png" class="nav-logo" alt="OFFC Logo">
+      <div class="logo-text">Overlake Fly Fishing Club</div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#meetings">Meetings</a></li>
+      <li><a href="#stories">Field Reports</a></li>
+      <li><a href="#about">About Us</a></li>
+    </ul>
+    <a href="#join" class="cta-btn">Join Club</a>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <span class="hero-label">Established 1974 &middot; Redmond, WA</span>
+      <h1 class="hero-title">Fishing is the Heart of our <em>Community.</em></h1>
+      <p style="font-size: 1.15rem; color: var(--slate); margin-bottom: 2rem;">The PNW's premier home for fly fishing enthusiasts. Experience 50 years of heritage with a modern edge.</p>
+      <div class="hero-search">
+        <input type="text" id="hero-input" placeholder="Search the club archives with AI...">
+        <button onclick="triggerHeroAI()">Ask AI</button>
+      </div>
+    </div>
+    <img src="https://offc.org/wp-content/uploads/2026/02/Picture11.jpg" class="hero-image" alt="OFFC Members">
+  </section>
+
+  <section id="meetings" style="padding-bottom: 0;">
+    <div class="meeting-strip">
+      <div>
+        <span class="section-label" style="color: white; opacity: 0.7;">Next Event</span>
+        <h2>Monthly Members Meeting</h2>
+        <p>4th Tuesday of the month &middot; 6:00PM &middot; Redmond VFW</p>
+      </div>
+      <a href="#" class="cta-btn" style="background: var(--trout-gold); color: var(--river-navy);">Add to Calendar</a>
+    </div>
+  </section>
+
+  <section class="stories-section" id="stories">
+    <div class="section-header">
+      <span class="section-label">Club Life</span>
+      <h2 class="section-title">Field Reports</h2>
+    </div>
+    <div class="stories-grid">
+      <div class="story-card">
+        <img src="https://offc.org/wp-content/uploads/2022/01/thumbnail_IMG_2044.jpg.NAHALEM.-4.jpg" class="story-img" alt="Fishing">
+        <div class="story-overlay"><span>Outings</span><h4>Spring Steelhead on the Cedar</h4></div>
+      </div>
+      <div class="story-card">
+        <img src="https://offc.org/wp-content/uploads/2022/01/Shadfishing-1024x767.jpg" class="story-img" alt="Casting">
+        <div class="story-overlay"><span>Community</span><h4>Memories at the Lake</h4></div>
+      </div>
+      <div class="story-card">
+        <img src="https://offc.org/wp-content/uploads/2019/03/Entomology-768x576.jpg" class="story-img" alt="Fly Tying">
+        <div class="story-overlay"><span>Education</span><h4>Mastering the Art of Tying</h4></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Chat Widget -->
+  <div class="chat-fab" onclick="toggleChat()">&#127907;</div>
+
+  <div class="chat-panel" id="chat-panel">
+    <div class="chat-header">
+      <div>
+        <div class="chat-header-name">River Guide AI</div>
+        <div class="chat-header-sub">OFFC Club Assistant &mdash; Demo Mode</div>
+      </div>
+      <span onclick="toggleChat()" style="cursor:pointer; font-size: 1.4rem; opacity:0.6;">&times;</span>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-input-field" placeholder="Ask a question..." onkeydown="if(event.key==='Enter') sendMessage()" />
+      <button class="chat-send" onclick="sendMessage()">&#9658;</button>
+    </div>
+  </div>
+
+  <script>
+    // ── Demo response library ──────────────────────────────────
+    // Each entry matches keywords in the user's question and returns
+    // a simulated answer + a note about what the real AI would do.
+    const DEMO_RESPONSES = [
+      {
+        keywords: ['meet', 'meeting', 'when', 'next', 'tuesday', 'vfw', 'time', 'schedule'],
+        answer: 'The next OFFC meeting is the 4th Tuesday of the month at 6:00 PM, held at the Redmond VFW Hall — 4330 148th Ave NE, Redmond WA 98052.',
+        realWouldDo: 'pull live meeting dates from the OFFC website and cross-reference your club calendar for any special events or cancellations that month.'
+      },
+      {
+        keywords: ['join', 'member', 'membership', 'sign up', 'how to'],
+        answer: 'Joining OFFC is easy — just show up to any monthly meeting or reach out to the club through the website. Dues and details are discussed at meetings.',
+        realWouldDo: 'pull the current membership fee, the online application link, and any waitlist status directly from the OFFC member portal.'
+      },
+      {
+        keywords: ['president', 'officer', 'board', 'leadership', 'rick'],
+        answer: 'The current OFFC President is Rick Williams. Full board information is available on the OFFC website.',
+        realWouldDo: 'retrieve the full current board roster with contact details and roles from the OFFC member directory.'
+      },
+      {
+        keywords: ['newsletter', 'windknot', 'windknots', 'publication'],
+        answer: 'The OFFC newsletter is called "Windknots." It\'s published regularly and covers outings, fly tying tips, and club news.',
+        realWouldDo: 'link you to the most recent Windknots issue and let you search past editions by topic or date.'
+      },
+      {
+        keywords: ['history', 'founded', 'established', 'since', '1974'],
+        answer: 'OFFC was established in 1974, making it one of the longest-running fly fishing clubs in the Pacific Northwest — over 50 years of heritage.',
+        realWouldDo: 'surface detailed club history, notable milestones, and archived newsletters from the full 50+ year history.'
+      },
+      {
+        keywords: ['location', 'where', 'address', 'redmond', 'place'],
+        answer: 'OFFC meetings are held at the Redmond VFW Hall, 4330 148th Ave NE, Redmond, WA 98052.',
+        realWouldDo: 'provide a live map embed, parking tips, and transit directions pulled from your club\'s location data.'
+      },
+      {
+        keywords: ['outing', 'trip', 'fish', 'fishing', 'river', 'stream', 'lake', 'cedar', 'steelhead'],
+        answer: 'OFFC organizes regular fishing outings across the Pacific Northwest — rivers, lakes, and coastal spots. Check the website or ask at the next meeting for the current outing schedule.',
+        realWouldDo: 'show you the full upcoming outing calendar, trip leader contacts, and past field reports from that specific location.'
+      },
+      {
+        keywords: ['fly', 'tying', 'tie', 'pattern', 'entomology'],
+        answer: 'Fly tying is a core part of OFFC — members regularly share patterns, host tying nights, and publish techniques in Windknots.',
+        realWouldDo: 'search the club\'s full archive of tying articles, videos, and patterns by species or technique.'
+      }
+    ];
+
+    // Fallback if nothing matches
+    const FALLBACK = {
+      answer: "That's a great question for the club. I'd recommend asking at the next meeting (4th Tuesday, 6PM, Redmond VFW) or checking offc.org directly.",
+      realWouldDo: 'search the full OFFC website archive, cross-reference past newsletters, and give you a direct answer — or provide a link to the most relevant page.'
+    };
+
+    // ── State ──────────────────────────────────────────────────
+    let chatOpen = false;
+
+    function toggleChat() {
+      chatOpen = !chatOpen;
+      document.getElementById('chat-panel').style.display = chatOpen ? 'flex' : 'none';
+      if (chatOpen) document.getElementById('chat-input-field').focus();
+    }
+
+    function triggerHeroAI() {
+      const val = document.getElementById('hero-input').value.trim();
+      if (!val) return;
+      document.getElementById('chat-panel').style.display = 'flex';
+      chatOpen = true;
+      document.getElementById('chat-input-field').value = val;
+      document.getElementById('hero-input').value = '';
+      sendMessage();
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chat-input-field');
+      const text = input.value.trim();
+      if (!text) return;
+      addMessage(text, 'user');
+      input.value = '';
+
+      // Show typing indicator
+      const typing = addTyping();
+
+      // Simulate a short delay like a real API call
+      setTimeout(() => {
+        typing.remove();
+
+        const lower = text.toLowerCase();
+        let match = DEMO_RESPONSES.find(r => r.keywords.some(k => lower.includes(k)));
+        const response = match || FALLBACK;
+
+        addDemoMessage(response.answer, response.realWouldDo);
+      }, 900 + Math.random() * 600); // 0.9–1.5s delay feels natural
+    }
+
+    // ── Message helpers ────────────────────────────────────────
+
+    function addMessage(text, role) {
+      const container = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = 'msg ' + role;
+      div.textContent = text;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function addDemoMessage(answer, realWouldDo) {
+      const container = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = 'msg ai';
+      div.innerHTML =
+        '<div>' + answer + '</div>' +
+        '<div class="demo-notice">' +
+          '<strong>&#9432; Demo mode.</strong> In the real product, the AI would ' + realWouldDo +
+        '</div>';
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function addTyping() {
+      const container = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = 'typing-dots';
+      div.innerHTML = '<span></span><span></span><span></span>';
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+      return div;
+    }
+
+    // ── Greeting on load ───────────────────────────────────────
+    window.onload = () => {
+      addDemoMessage(
+        "Welcome to the OFFC. I'm your River Guide. Ask me anything about our meetings, outings, or club history!",
+        'answer questions live using the full OFFC website, past newsletters, and your club calendar — with no searching required.'
+      );
+    };
+  </script>
+</body>
+</html>
