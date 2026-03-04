@@ -390,6 +390,160 @@
 
     .pricing-disclaimer a { color: var(--muted); border-bottom: 1px solid var(--border); }
 
+    /* ── Plan quiz ── */
+    .plan-quiz {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.22s forwards;
+    }
+    .plan-quiz-header {
+      background: var(--light);
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .plan-quiz-title {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 0.35rem;
+    }
+    .plan-quiz-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .plan-quiz-progress {
+      height: 3px;
+      background: var(--border);
+      margin-bottom: 0;
+    }
+    .plan-quiz-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.35s ease;
+    }
+    .plan-quiz-body { padding: 1.5rem 1.5rem; }
+    .plan-quiz-step { display: none; }
+    .plan-quiz-step.active { display: block; }
+    .plan-quiz-q {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--fg);
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+    .plan-quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .plan-quiz-opt {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.85rem 1rem;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      color: var(--fg);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      line-height: 1.4;
+    }
+    .plan-quiz-opt:hover {
+      border-color: var(--fg);
+      background: var(--light);
+    }
+    .plan-quiz-opt:focus { outline: none; border-color: var(--accent); }
+    .plan-quiz-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.25rem;
+      gap: 1rem;
+    }
+    .plan-quiz-back {
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.25rem 0;
+    }
+    .plan-quiz-back:hover { color: var(--fg); }
+    .plan-quiz-next {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--fg);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .plan-quiz-next:hover { background: var(--accent); }
+    .plan-quiz-next:disabled { opacity: 0.5; cursor: not-allowed; }
+    .plan-quiz-result {
+      display: none;
+      padding: 1.5rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .plan-quiz-result.active { display: block; }
+    .plan-quiz-result-label {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .plan-quiz-result-title {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 0.5rem;
+    }
+    .plan-quiz-result-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+    .plan-quiz-result-cta {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--bg);
+      background: var(--fg);
+      padding: 0.65rem 1.25rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .plan-quiz-result-cta:hover { background: var(--accent); color: var(--bg); }
+    .plan-quiz-retry {
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-top: 1rem;
+      text-decoration: underline;
+    }
+    .plan-quiz-retry:hover { color: var(--fg); }
+
     @media (max-width: 700px) {
       .tiers { grid-template-columns: 1fr; }
       .tier { border-right: none; border-bottom: 1px solid var(--border); }
@@ -419,6 +573,61 @@
         <div class="anchor-bar-text">
           A standard agency website redesign costs <strong>$5,000&ndash;$10,000</strong>.
           Minescout AI starts at <strong>$250</strong> &mdash; with AI included.
+        </div>
+      </div>
+
+      <!-- Plan finder quiz -->
+      <div class="plan-quiz" id="plan-quiz">
+        <div class="plan-quiz-header">
+          <div class="plan-quiz-title">Find your plan</div>
+          <div class="plan-quiz-desc">A few quick questions so we can suggest the best fit. You&rsquo;ll still see all options below.</div>
+        </div>
+        <div class="plan-quiz-progress"><div class="plan-quiz-progress-fill" id="quiz-progress"></div></div>
+        <div class="plan-quiz-body" id="quiz-body">
+          <!-- Step 1 -->
+          <div class="plan-quiz-step active" data-step="1">
+            <div class="plan-quiz-q">What best describes your website right now?</div>
+            <div class="plan-quiz-options">
+              <button type="button" class="plan-quiz-opt" data-q="1" data-remodel="2" data-ai="0">I don&rsquo;t have one yet</button>
+              <button type="button" class="plan-quiz-opt" data-q="1" data-remodel="2" data-ai="0">I have one but it&rsquo;s outdated or I&rsquo;m embarrassed by it</button>
+              <button type="button" class="plan-quiz-opt" data-q="1" data-remodel="1" data-ai="1">It&rsquo;s okay but I&rsquo;d like it more modern</button>
+              <button type="button" class="plan-quiz-opt" data-q="1" data-remodel="0" data-ai="2">I&rsquo;m happy with it &mdash; I&rsquo;m mainly looking to add something (e.g. AI)</button>
+            </div>
+          </div>
+          <!-- Step 2 -->
+          <div class="plan-quiz-step" data-step="2">
+            <div class="plan-quiz-q">Do customers ask you the same questions over and over (hours, pricing, services)?</div>
+            <div class="plan-quiz-options">
+              <button type="button" class="plan-quiz-opt" data-q="2" data-remodel="1" data-ai="0">Rarely</button>
+              <button type="button" class="plan-quiz-opt" data-q="2" data-remodel="0" data-ai="1">Sometimes</button>
+              <button type="button" class="plan-quiz-opt" data-q="2" data-remodel="0" data-ai="2">All the time &mdash; it takes real time to answer</button>
+            </div>
+          </div>
+          <!-- Step 3 -->
+          <div class="plan-quiz-step" data-step="3">
+            <div class="plan-quiz-q">Do you miss leads or calls when you&rsquo;re closed or too busy?</div>
+            <div class="plan-quiz-options">
+              <button type="button" class="plan-quiz-opt" data-q="3" data-remodel="1" data-ai="0">No, we keep up</button>
+              <button type="button" class="plan-quiz-opt" data-q="3" data-remodel="0" data-ai="1">Sometimes</button>
+              <button type="button" class="plan-quiz-opt" data-q="3" data-remodel="0" data-ai="2">Yes, it&rsquo;s a real problem</button>
+            </div>
+          </div>
+          <!-- Step 4 -->
+          <div class="plan-quiz-step" data-step="4">
+            <div class="plan-quiz-q">What matters most for your budget?</div>
+            <div class="plan-quiz-options">
+              <button type="button" class="plan-quiz-opt" data-q="4" data-remodel="2" data-ai="0">I&rsquo;d rather pay once and keep ongoing costs minimal</button>
+              <button type="button" class="plan-quiz-opt" data-q="4" data-remodel="0" data-ai="1">I&rsquo;m okay with a small monthly fee if the value is there</button>
+              <button type="button" class="plan-quiz-opt" data-q="4" data-remodel="0" data-ai="0">I&rsquo;m open &mdash; just want the right fit</button>
+            </div>
+          </div>
+        </div>
+        <div class="plan-quiz-result" id="quiz-result">
+          <div class="plan-quiz-result-label">Our recommendation</div>
+          <div class="plan-quiz-result-title" id="quiz-result-title"></div>
+          <div class="plan-quiz-result-desc" id="quiz-result-desc"></div>
+          <a href="/contact" class="plan-quiz-result-cta" id="quiz-result-cta">Get started</a>
+          <button type="button" class="plan-quiz-retry" id="quiz-retry">Take the quiz again</button>
         </div>
       </div>
 
@@ -686,6 +895,78 @@
       document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
       if (!wasOpen) item.classList.add('open');
     }
+
+    // Plan quiz
+    (function() {
+      const TOTAL_STEPS = 4;
+      const progressFill = document.getElementById('quiz-progress');
+      const quizBody = document.getElementById('quiz-body');
+      const quizResult = document.getElementById('quiz-result');
+      const resultTitle = document.getElementById('quiz-result-title');
+      const resultDesc = document.getElementById('quiz-result-desc');
+      const resultCta = document.getElementById('quiz-result-cta');
+      const retryBtn = document.getElementById('quiz-retry');
+
+      let step = 1;
+      let remodelScore = 0;
+      let aiScore = 0;
+
+      function updateProgress() {
+        const pct = step <= TOTAL_STEPS ? (step / TOTAL_STEPS) * 100 : 100;
+        progressFill.style.width = pct + '%';
+      }
+
+      function goToStep(s) {
+        step = s;
+        document.querySelectorAll('.plan-quiz-step').forEach(function(el) {
+          el.classList.toggle('active', parseInt(el.getAttribute('data-step'), 10) === step);
+        });
+        updateProgress();
+      }
+
+      function showResult() {
+        quizBody.style.display = 'none';
+        quizResult.classList.add('active');
+        progressFill.style.width = '100%';
+
+        var recommendFullAI = aiScore >= remodelScore;
+        if (recommendFullAI) {
+          resultTitle.textContent = 'Full AI Upgrade';
+          resultDesc.textContent = 'You want a modern site and get enough repeat questions or after-hours interest that an AI assistant will pay off. The Full AI Upgrade gives you a complete remodel plus a custom-trained assistant that answers as your business, captures leads, and works 24/7. Intro rate: $25/mo for 12 months, then $50/mo.';
+          resultCta.textContent = 'Get started with Full AI Upgrade';
+        } else {
+          resultTitle.textContent = 'Digital Remodel';
+          resultDesc.textContent = 'You need a better website first, and you\u2019re either keeping ongoing costs minimal or not yet sure you need an AI layer. The Digital Remodel is a one-time $250 build for a fast, modern front door. You can add the AI later when you\u2019re ready. Optional $20/mo for managed hosting.';
+          resultCta.textContent = 'Get started with Digital Remodel';
+        }
+        resultCta.href = '/contact';
+      }
+
+      function resetQuiz() {
+        step = 1;
+        remodelScore = 0;
+        aiScore = 0;
+        quizBody.style.display = '';
+        quizResult.classList.remove('active');
+        goToStep(1);
+      }
+
+      document.getElementById('plan-quiz').addEventListener('click', function(e) {
+        var opt = e.target.closest('.plan-quiz-opt');
+        if (!opt) return;
+        var r = parseInt(opt.getAttribute('data-remodel'), 10) || 0;
+        var a = parseInt(opt.getAttribute('data-ai'), 10) || 0;
+        remodelScore += r;
+        aiScore += a;
+        if (step >= TOTAL_STEPS) {
+          showResult();
+        } else {
+          goToStep(step + 1);
+        }
+      });
+
+      if (retryBtn) retryBtn.addEventListener('click', resetQuiz);
+    })();
   </script>
 
 </body>
