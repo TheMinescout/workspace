@@ -40,33 +40,6 @@
     .legal-list li { padding-left: 1.25rem; position: relative; margin-bottom: 0.4rem; }
     .legal-list li::before { content: '\2014'; position: absolute; left: 0; color: var(--border); }
 
-    /* Charter detail box */
-    .charter-detail {
-      border: 1px solid var(--border); border-radius: 6px;
-      overflow: hidden; margin: 1rem 0;
-    }
-    .charter-detail-row {
-      display: grid; grid-template-columns: 150px 1fr;
-      border-bottom: 1px solid var(--border); font-size: 0.78rem;
-    }
-    .charter-detail-row:last-child { border-bottom: none; }
-    .charter-key {
-      padding: 0.75rem 1rem; background: var(--light);
-      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em;
-      text-transform: uppercase; color: var(--muted);
-      border-right: 1px solid var(--border);
-      display: flex; align-items: center;
-    }
-    .charter-val { padding: 0.75rem 1rem; color: var(--muted); line-height: 1.6; }
-    .charter-val strong { color: var(--fg); font-weight: 500; }
-
-    .partner-slots { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.75rem; }
-    .partner-tag {
-      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.07em;
-      text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 3px;
-      background: #f0faf4; color: #4caf82; border: 1px solid #c3e8d0;
-    }
-
     .legal-contact {
       border: 1px solid var(--border); border-radius: 6px;
       padding: 1.25rem 1.5rem; margin-top: 2.5rem;
@@ -76,10 +49,6 @@
     .legal-contact-body { font-size: 0.76rem; color: var(--muted); line-height: 1.7; }
     .legal-contact-body a { color: var(--fg); border-bottom: 1px solid var(--border); text-decoration: none; }
 
-    @media (max-width: 500px) {
-      .charter-detail-row { grid-template-columns: 1fr; }
-      .charter-key { border-right: none; border-bottom: 1px solid var(--border); }
-    }
   </style>
 </head>
 <body>
@@ -108,75 +77,6 @@
         <div class="legal-section-title">Services &amp; scope</div>
         <p class="legal-body">Minescout AI provides web development, AI assistant configuration, and related technical services for small businesses and clubs. Deliverables, pricing, and timeline are agreed upon in writing before work begins.</p>
         <p class="legal-body">Services are delivered on a best-effort basis. I cannot guarantee specific outcomes such as increased sales, lead conversion rates, or AI response accuracy beyond what is tested and agreed upon at launch.</p>
-      </div>
-
-      <!-- Charter Partners -->
-      <div class="legal-section" style="--d:0.4s;">
-        <div class="legal-section-title">Charter Partner program</div>
-        <p class="legal-body">
-          The Charter Partner program is an invite-only arrangement in which Minescout AI provides the
-          full AI Upgrade at no cost in exchange for a defined set of commitments from the partner.
-          3 spots are currently available.
-        </p>
-
-        <div class="partner-slots">
-          <span class="partner-tag">SBGS &#10003;</span>
-          <span class="partner-tag">OFFC &#10003;</span>
-          <span class="partner-tag">SCC &#10003;</span>
-        </div>
-
-        <p class="legal-body" style="margin-top:1rem;">The terms of the Charter Partner arrangement are as follows:</p>
-
-        <div class="charter-detail">
-          <div class="charter-detail-row">
-            <div class="charter-key">What you receive</div>
-            <div class="charter-val">
-              The full AI Upgrade at no cost — custom-trained AI assistant, website integration,
-              a client portal for managing your AI's knowledge, and 12 months of maintenance.
-              <strong>Valued at $500 setup + $50 per month.</strong>
-            </div>
-          </div>
-          <div class="charter-detail-row">
-            <div class="charter-key">Testimonial</div>
-            <div class="charter-val">
-              A signed written testimonial provided within 30 days of the AI going live.
-              May be published on minescout.net and used in marketing materials.
-            </div>
-          </div>
-          <div class="charter-detail-row">
-            <div class="charter-key">Case study</div>
-            <div class="charter-val">
-              Permission for a named, published case study documenting the project — including your
-              business name, what was built, and measurable outcomes where available.
-              You will review the case study before publication.
-            </div>
-          </div>
-          <div class="charter-detail-row">
-            <div class="charter-key">Feedback commitment</div>
-            <div class="charter-val">
-              12 months of active participation: using the client portal to review AI responses,
-              submitting corrections when the AI gets something wrong, and responding to
-              check-in messages (no more than once per month).
-            </div>
-          </div>
-          <div class="charter-detail-row">
-            <div class="charter-key">Corrections &amp; updates</div>
-            <div class="charter-val">
-              Corrections submitted through the client portal are applied within <strong>48 hours</strong>.
-              Scheduled updates (hours, services, pricing) are processed in the monthly maintenance cycle.
-              Urgent updates handled within 24 hours on request.
-            </div>
-          </div>
-          <div class="charter-detail-row">
-            <div class="charter-key">Early termination</div>
-            <div class="charter-val">
-              If a Charter Partner exits before 12 months, the free setup benefit is forfeited.
-              A pro-rated fee — ($500 &times; months remaining &divide; 12) — may be invoiced at my discretion.
-              Partners who have delivered a signed testimonial and published case study may exit
-              without penalty after 6 months.
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- AI accuracy -->
@@ -210,7 +110,6 @@
         <p class="legal-body"><strong>Limited-time introductory rate.</strong> For new Full AI Upgrade clients who sign up during the promotional period, the monthly fee is <strong>$25 per month for the first 12 months</strong> from the date your AI goes live. The 12-month period starts on the first day of the first full month after launch (or as otherwise agreed in writing). After those 12 months, the rate becomes <strong>$50 per month</strong> unless we agree to a different rate in writing. The introductory offer may be withdrawn at any time for new signups; it does not affect clients who have already started under the $25-per-month rate.</p>
         <p class="legal-body"><strong>Setup fees.</strong> One-time setup fees (e.g. $250 for the Full AI Upgrade) are due before work begins. Work does not start until the setup fee is received.</p>
         <p class="legal-body"><strong>When monthly fees are due.</strong> Monthly fees are due at the start of each billing period. Billing is monthly (one invoice per month). If you are on the introductory rate, you will be charged $25 per month for each of the first 12 months, then $50 per month from month 13 onward.</p>
-        <p class="legal-body"><strong>Charter Partners.</strong> Charter Partners do not pay setup or monthly fees for the duration of their Charter terms; the value is stated elsewhere in these terms (e.g. valued at $500 setup + $600 per year).</p>
       </div>
 
       <!-- Cancellation -->
@@ -229,7 +128,7 @@
       <!-- IP -->
       <div class="legal-section" style="--d:0.66s;">
         <div class="legal-section-title">Intellectual property</div>
-        <p class="legal-body">Code and content I produce for clients becomes the client's property upon full payment. I retain the right to reference the engagement in my portfolio unless a confidentiality agreement is in place. Charter Partners explicitly grant permission for a named case study as detailed above.</p>
+        <p class="legal-body">Code and content I produce for clients becomes the client's property upon full payment. I retain the right to reference the engagement in my portfolio unless a confidentiality agreement is in place. If we agree to a case study or testimonial use, you grant permission as set out in that agreement.</p>
       </div>
 
       <!-- Liability -->
