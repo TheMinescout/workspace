@@ -142,7 +142,7 @@ body {
 
 /* 4. MOBILE HAMBURGER & OVERLAY */
 .hamburger {
-  display: flex;
+  display: none; /* shown only in mobile media query below */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -318,7 +318,7 @@ body {
   }
 
   .hamburger {
-    display: inline-flex;
+    display: inline-flex !important;
   }
 
   .sidebar-nav,
