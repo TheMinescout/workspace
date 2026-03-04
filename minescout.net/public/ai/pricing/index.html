@@ -399,6 +399,9 @@
       opacity: 0;
       animation: fadeUp 0.5s ease 0.22s forwards;
     }
+    .plan-quiz.is-hidden {
+      display: none;
+    }
     .plan-quiz-header {
       background: var(--light);
       padding: 1.25rem 1.5rem;
@@ -576,61 +579,6 @@
         </div>
       </div>
 
-      <!-- Plan finder quiz -->
-      <div class="plan-quiz" id="plan-quiz">
-        <div class="plan-quiz-header">
-          <div class="plan-quiz-title">Find your plan</div>
-          <div class="plan-quiz-desc">A few quick questions so we can suggest the best fit. You&rsquo;ll still see all options below.</div>
-        </div>
-        <div class="plan-quiz-progress"><div class="plan-quiz-progress-fill" id="quiz-progress"></div></div>
-        <div class="plan-quiz-body" id="quiz-body">
-          <!-- Step 1 -->
-          <div class="plan-quiz-step active" data-step="1">
-            <div class="plan-quiz-q">What best describes your website right now?</div>
-            <div class="plan-quiz-options">
-              <button type="button" class="plan-quiz-opt" data-q="1" data-remodel="2" data-ai="0">I don&rsquo;t have one yet</button>
-              <button type="button" class="plan-quiz-opt" data-q="1" data-remodel="2" data-ai="0">I have one but it&rsquo;s outdated or I&rsquo;m embarrassed by it</button>
-              <button type="button" class="plan-quiz-opt" data-q="1" data-remodel="1" data-ai="1">It&rsquo;s okay but I&rsquo;d like it more modern</button>
-              <button type="button" class="plan-quiz-opt" data-q="1" data-remodel="0" data-ai="2">I&rsquo;m happy with it &mdash; I&rsquo;m mainly looking to add something (e.g. AI)</button>
-            </div>
-          </div>
-          <!-- Step 2 -->
-          <div class="plan-quiz-step" data-step="2">
-            <div class="plan-quiz-q">Do customers ask you the same questions over and over (hours, pricing, services)?</div>
-            <div class="plan-quiz-options">
-              <button type="button" class="plan-quiz-opt" data-q="2" data-remodel="1" data-ai="0">Rarely</button>
-              <button type="button" class="plan-quiz-opt" data-q="2" data-remodel="0" data-ai="1">Sometimes</button>
-              <button type="button" class="plan-quiz-opt" data-q="2" data-remodel="0" data-ai="2">All the time &mdash; it takes real time to answer</button>
-            </div>
-          </div>
-          <!-- Step 3 -->
-          <div class="plan-quiz-step" data-step="3">
-            <div class="plan-quiz-q">Do you miss leads or calls when you&rsquo;re closed or too busy?</div>
-            <div class="plan-quiz-options">
-              <button type="button" class="plan-quiz-opt" data-q="3" data-remodel="1" data-ai="0">No, we keep up</button>
-              <button type="button" class="plan-quiz-opt" data-q="3" data-remodel="0" data-ai="1">Sometimes</button>
-              <button type="button" class="plan-quiz-opt" data-q="3" data-remodel="0" data-ai="2">Yes, it&rsquo;s a real problem</button>
-            </div>
-          </div>
-          <!-- Step 4 -->
-          <div class="plan-quiz-step" data-step="4">
-            <div class="plan-quiz-q">What matters most for your budget?</div>
-            <div class="plan-quiz-options">
-              <button type="button" class="plan-quiz-opt" data-q="4" data-remodel="2" data-ai="0">I&rsquo;d rather pay once and keep ongoing costs minimal</button>
-              <button type="button" class="plan-quiz-opt" data-q="4" data-remodel="0" data-ai="1">I&rsquo;m okay with a small monthly fee if the value is there</button>
-              <button type="button" class="plan-quiz-opt" data-q="4" data-remodel="0" data-ai="0">I&rsquo;m open &mdash; just want the right fit</button>
-            </div>
-          </div>
-        </div>
-        <div class="plan-quiz-result" id="quiz-result">
-          <div class="plan-quiz-result-label">Our recommendation</div>
-          <div class="plan-quiz-result-title" id="quiz-result-title"></div>
-          <div class="plan-quiz-result-desc" id="quiz-result-desc"></div>
-          <a href="/contact" class="plan-quiz-result-cta" id="quiz-result-cta">Get started</a>
-          <button type="button" class="plan-quiz-retry" id="quiz-retry">Take the quiz again</button>
-        </div>
-      </div>
-
       <!-- 3 tiers -->
       <div class="tiers">
 
@@ -692,6 +640,68 @@
           <a href="/contact" class="tier-cta">Request an invite</a>
         </div>
 
+      </div>
+
+      <!-- Not sure what plan -->
+      <div class="pricing-section-label" style="--ad:0.26s;">Not sure what plan?</div>
+      <div style="font-size:0.78rem;color:var(--muted);line-height:1.7;margin-bottom:1.25rem;">
+        Not sure which plan is right for you?
+        <button type="button" class="btn-ghost" id="open-plan-quiz" style="margin-left:0.5rem;">Take a quick quiz</button>
+      </div>
+
+      <!-- Plan finder quiz -->
+      <div class="plan-quiz is-hidden" id="plan-quiz">
+        <div class="plan-quiz-header">
+          <div class="plan-quiz-title">Find your plan</div>
+          <div class="plan-quiz-desc">A few quick questions so we can suggest the best fit. You&rsquo;ll still see all options below.</div>
+        </div>
+        <div class="plan-quiz-progress"><div class="plan-quiz-progress-fill" id="quiz-progress"></div></div>
+        <div class="plan-quiz-body" id="quiz-body">
+          <!-- Step 1 -->
+          <div class="plan-quiz-step active" data-step="1">
+            <div class="plan-quiz-q">What best describes your website right now?</div>
+            <div class="plan-quiz-options">
+              <button type="button" class="plan-quiz-opt" data-q="1" data-remodel="2" data-ai="0">I don&rsquo;t have one yet</button>
+              <button type="button" class="plan-quiz-opt" data-q="1" data-remodel="2" data-ai="0">I have one but it&rsquo;s outdated or I&rsquo;m embarrassed by it</button>
+              <button type="button" class="plan-quiz-opt" data-q="1" data-remodel="1" data-ai="1">It&rsquo;s okay but I&rsquo;d like it more modern</button>
+              <button type="button" class="plan-quiz-opt" data-q="1" data-remodel="0" data-ai="2">I&rsquo;m happy with it &mdash; I&rsquo;m mainly looking to add something (e.g. AI)</button>
+            </div>
+          </div>
+          <!-- Step 2 -->
+          <div class="plan-quiz-step" data-step="2">
+            <div class="plan-quiz-q">Do customers ask you the same questions over and over (hours, pricing, services)?</div>
+            <div class="plan-quiz-options">
+              <button type="button" class="plan-quiz-opt" data-q="2" data-remodel="1" data-ai="0">Rarely</button>
+              <button type="button" class="plan-quiz-opt" data-q="2" data-remodel="0" data-ai="1">Sometimes</button>
+              <button type="button" class="plan-quiz-opt" data-q="2" data-remodel="0" data-ai="2">All the time &mdash; it takes real time to answer</button>
+            </div>
+          </div>
+          <!-- Step 3 -->
+          <div class="plan-quiz-step" data-step="3">
+            <div class="plan-quiz-q">Do you miss leads or calls when you&rsquo;re closed or too busy?</div>
+            <div class="plan-quiz-options">
+              <button type="button" class="plan-quiz-opt" data-q="3" data-remodel="1" data-ai="0">No, we keep up</button>
+              <button type="button" class="plan-quiz-opt" data-q="3" data-remodel="0" data-ai="1">Sometimes</button>
+              <button type="button" class="plan-quiz-opt" data-q="3" data-remodel="0" data-ai="2">Yes, it&rsquo;s a real problem</button>
+            </div>
+          </div>
+          <!-- Step 4 -->
+          <div class="plan-quiz-step" data-step="4">
+            <div class="plan-quiz-q">What matters most for your budget?</div>
+            <div class="plan-quiz-options">
+              <button type="button" class="plan-quiz-opt" data-q="4" data-remodel="2" data-ai="0">I&rsquo;d rather pay once and keep ongoing costs minimal</button>
+              <button type="button" class="plan-quiz-opt" data-q="4" data-remodel="0" data-ai="1">I&rsquo;m okay with a small monthly fee if the value is there</button>
+              <button type="button" class="plan-quiz-opt" data-q="4" data-remodel="0" data-ai="0">I&rsquo;m open &mdash; just want the right fit</button>
+            </div>
+          </div>
+        </div>
+        <div class="plan-quiz-result" id="quiz-result">
+          <div class="plan-quiz-result-label">Our recommendation</div>
+          <div class="plan-quiz-result-title" id="quiz-result-title"></div>
+          <div class="plan-quiz-result-desc" id="quiz-result-desc"></div>
+          <a href="/contact" class="plan-quiz-result-cta" id="quiz-result-cta">Get started</a>
+          <button type="button" class="plan-quiz-retry" id="quiz-retry">Take the quiz again</button>
+        </div>
       </div>
 
       <!-- ROI stats -->
@@ -898,6 +908,16 @@
 
     // Plan quiz
     (function() {
+      const planQuizEl = document.getElementById('plan-quiz');
+      const openQuizBtn = document.getElementById('open-plan-quiz');
+
+      if (openQuizBtn && planQuizEl) {
+        openQuizBtn.addEventListener('click', function () {
+          planQuizEl.classList.remove('is-hidden');
+          planQuizEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+
       const TOTAL_STEPS = 4;
       const progressFill = document.getElementById('quiz-progress');
       const quizBody = document.getElementById('quiz-body');
@@ -951,7 +971,7 @@
         goToStep(1);
       }
 
-      document.getElementById('plan-quiz').addEventListener('click', function(e) {
+      planQuizEl.addEventListener('click', function(e) {
         var opt = e.target.closest('.plan-quiz-opt');
         if (!opt) return;
         var r = parseInt(opt.getAttribute('data-remodel'), 10) || 0;

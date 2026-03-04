@@ -40,6 +40,33 @@
     .legal-list li { padding-left: 1.25rem; position: relative; margin-bottom: 0.4rem; }
     .legal-list li::before { content: '\2014'; position: absolute; left: 0; color: var(--border); }
 
+    /* Charter detail box */
+    .charter-detail {
+      border: 1px solid var(--border); border-radius: 6px;
+      overflow: hidden; margin: 1rem 0;
+    }
+    .charter-detail-row {
+      display: grid; grid-template-columns: 150px 1fr;
+      border-bottom: 1px solid var(--border); font-size: 0.78rem;
+    }
+    .charter-detail-row:last-child { border-bottom: none; }
+    .charter-key {
+      padding: 0.75rem 1rem; background: var(--light);
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--muted);
+      border-right: 1px solid var(--border);
+      display: flex; align-items: center;
+    }
+    .charter-val { padding: 0.75rem 1rem; color: var(--muted); line-height: 1.6; }
+    .charter-val strong { color: var(--fg); font-weight: 500; }
+
+    .partner-slots { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.75rem; }
+    .partner-tag {
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.07em;
+      text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 3px;
+      background: #f0faf4; color: #4caf82; border: 1px solid #c3e8d0;
+    }
+
     .legal-contact {
       border: 1px solid var(--border); border-radius: 6px;
       padding: 1.25rem 1.5rem; margin-top: 2.5rem;
@@ -49,6 +76,10 @@
     .legal-contact-body { font-size: 0.76rem; color: var(--muted); line-height: 1.7; }
     .legal-contact-body a { color: var(--fg); border-bottom: 1px solid var(--border); text-decoration: none; }
 
+    @media (max-width: 500px) {
+      .charter-detail-row { grid-template-columns: 1fr; }
+      .charter-key { border-right: none; border-bottom: 1px solid var(--border); }
+    }
   </style>
 </head>
 <body>
