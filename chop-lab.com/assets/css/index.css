@@ -1,49 +1,67 @@
-/* =========================================
-   1. VARIABLES & RESET
-   ========================================= */
+/* ==========================================================================
+   THE CHOP LAB - MATERIAL DESIGN 3 (M3) THEME
+   ========================================================================== */
+
 :root {
-    --bg: #ffffff;        
-    --text: #2a2a2a;      
-    --accent: #D26244;    /* Terracotta */
-    --light-grey: #f9f9f9;      
-    --border-color: #eee;
+    /* M3 Color System - The Chop Lab Palette */
+    --md-sys-color-primary: #D26244; /* Terracotta Orange */
+    --md-sys-color-on-primary: #ffffff;
+    --md-sys-color-surface: #ffffff;
+    --md-sys-color-surface-container-low: #F4F4F6; /* Clean Slate Background */
+    --md-sys-color-surface-container: #ebebee;
+    --md-sys-color-on-surface: #3A3F42; /* Engineered Grey text */
+    --md-sys-color-on-surface-variant: #5f6368;
+    --md-sys-color-outline: #c4c7c5;
+
+    /* M3 Elevation (Shadows) */
+    --md-sys-elevation-1: 0px 1px 3px 1px rgba(0, 0, 0, 0.1), 0px 1px 2px 0px rgba(0, 0, 0, 0.2);
+    --md-sys-elevation-2: 0px 2px 6px 2px rgba(0, 0, 0, 0.1), 0px 1px 2px 0px rgba(0, 0, 0, 0.2);
     
-    --font-head: 'Playfair Display', serif; 
-    --font-body: 'Lato', sans-serif;        
+    /* M3 Shapes (Corner Radii) */
+    --md-shape-corner-medium: 12px;
+    --md-shape-corner-large: 16px;
+    --md-shape-corner-full: 9999px; /* Pill shape for buttons */
+
+    /* Typography */
+    --font-primary: 'Lato', sans-serif;
+    --font-heading: 'Playfair Display', serif;
 }
 
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
+/* --- Global Resets --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    background-color: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-weight: 300;
+    font-family: var(--font-primary);
+    background-color: var(--md-sys-color-surface-container-low);
+    color: var(--md-sys-color-on-surface);
     line-height: 1.6;
-    overflow-x: hidden; /* Prevents side-scrolling on mobile */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-a { text-decoration: none; color: inherit; transition: 0.3s; }
-img { max-width: 100%; display: block; }
-ul { list-style: none; }
-
-.container { 
-    max-width: 1200px; 
-    margin: 0 auto; 
-    padding: 0 40px; 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-/* =========================================
-   2. NAVIGATION (Hamburger Style)
-   ========================================= */
+/* --- Navigation --- */
 .navbar {
-    padding: 30px 0;
-    position: relative;
+    background-color: var(--md-sys-color-surface);
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
     z-index: 100;
+    box-shadow: var(--md-sys-elevation-1);
 }
 
 .nav-flex {
@@ -53,569 +71,317 @@ ul { list-style: none; }
 }
 
 .logo {
-    font-family: var(--font-head);
-    font-size: 1.8rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    z-index: 102;
-    position: relative;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--md-sys-color-primary);
+    text-decoration: none;
+    letter-spacing: 0.5px;
 }
 
 .menu-toggle {
+    font-size: 1.5rem;
     cursor: pointer;
-    z-index: 102;
-    font-size: 1.8rem;
-    padding: 10px;
-    user-select: none;
+    color: var(--md-sys-color-on-surface);
 }
 
-/* Full Screen Overlay */
+/* --- Mobile Overlay Menu --- */
 .overlay-menu {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: #fff;
-    display: flex;
+    display: none; 
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 101;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;
+    background-color: var(--md-sys-color-surface);
+    padding: 24px;
+    position: fixed;
+    top: 65px;
+    right: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: 99;
+    box-shadow: var(--md-sys-elevation-2);
 }
 
 .overlay-menu.active {
-    opacity: 1;
-    pointer-events: all;
+    display: flex;
 }
 
 .overlay-menu a {
-    font-family: var(--font-head);
-    font-size: 2.5rem;
-    margin: 15px 0;
-    color: #ccc;
-    transition: transform 0.3s, color 0.3s;
+    text-decoration: none;
+    color: var(--md-sys-color-on-surface-variant);
+    padding: 16px 0;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--md-sys-color-surface-container);
+    transition: color 0.2s;
 }
 
-.overlay-menu a:hover, .overlay-menu a.current {
-    color: var(--accent);
-    transform: translateX(10px);
+.overlay-menu a:hover {
+    color: var(--md-sys-color-primary);
 }
 
-/* =========================================
-   3. HERO SECTION
-   ========================================= */
+.overlay-menu a.current {
+    color: var(--md-sys-color-primary);
+    font-weight: 700;
+}
+
+/* --- Hero Section --- */
 .hero {
-    height: 50vh; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center; 
+    padding: 80px 20px;
     text-align: center;
+    background-color: var(--md-sys-color-surface);
+    border-radius: 0 0 32px 32px;
+    margin-bottom: 40px;
+    box-shadow: var(--md-sys-elevation-1);
 }
 
 .hero h1 {
-    font-family: var(--font-head);
-    font-size: 4.5rem;
-    font-weight: 400;
-    line-height: 1.1;
-    margin-bottom: 20px;
-    color: var(--text);
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    color: var(--md-sys-color-primary);
+    margin-bottom: 12px;
 }
 
 .hero p {
-    font-style: italic;
-    color: #888;
-    font-family: var(--font-head);
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    color: var(--md-sys-color-on-surface-variant);
 }
 
-/* =========================================
-   4. PRODUCT GALLERY (Home Page)
-   ========================================= */
-.gallery { padding-bottom: 150px; }
+/* --- Gallery & Product Cards (M3 Style) --- */
+.gallery {
+    flex-grow: 1;
+}
 
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 80px 50px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
 }
 
-/* The Wrapper Link */
 .card-link {
-    display: block;
     text-decoration: none;
     color: inherit;
-    height: 100%; 
+    display: block;
+    border-radius: var(--md-shape-corner-large);
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.card-link:hover, .card-link:focus {
+    transform: translateY(-4px);
+    outline: none;
 }
 
 .art-card {
-    text-align: center; 
-    transition: transform 0.5s ease;
+    background-color: var(--md-sys-color-surface);
+    border-radius: var(--md-shape-corner-large);
+    overflow: hidden;
+    box-shadow: var(--md-sys-elevation-1);
+    display: flex;
+    flex-direction: column;
     height: 100%;
+    transition: box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* Hover Effect moves the card up */
 .card-link:hover .art-card {
-    transform: translateY(-10px);
+    box-shadow: var(--md-sys-elevation-2);
 }
 
+/* PERFECT 1:1 CROPPING FOR ALL PRODUCT IMAGES */
 .art-image {
     width: 100%;
-    aspect-ratio: 1 / 1; 
-    object-fit: contain; 
-    margin-bottom: 25px;
-    /* Subtle radial gradient background */
-    background: radial-gradient(circle, #fcfcfc 0%, #ffffff 70%);
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    background-color: var(--md-sys-color-surface-container); 
+}
+
+.art-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .art-info h3 {
-    font-family: var(--font-head);
-    font-weight: 400;
-    font-size: 1.4rem;
-    margin-bottom: 5px;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--md-sys-color-on-surface);
 }
 
 .price {
-    color: #999;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    display: block;
+    font-weight: 700;
+    color: var(--md-sys-color-primary);
+    font-size: 1.1rem;
+    margin-bottom: 12px;
 }
 
 .desc {
-    font-size: 0.9rem;
-    color: #555;
-    max-width: 90%;
-    margin: 0 auto; 
+    font-size: 0.95rem;
+    color: var(--md-sys-color-on-surface-variant);
+    flex-grow: 1;
 }
 
-.gallery-footer { text-align: center; margin-top: 100px; }
-
-/* =========================================
-   5. PORTFOLIO & BIO PAGE
-   ========================================= */
-.portfolio-intro {
+/* --- Buttons (M3 Filled) --- */
+.btn-minimal, .btn-launch {
+    display: inline-block;
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    padding: 12px 32px;
+    border-radius: var(--md-shape-corner-full);
+    text-decoration: none;
+    font-weight: 600;
+    font-family: var(--font-primary);
     text-align: center;
-    max-width: 700px;
-    margin: 0 auto 80px auto;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.portfolio-section { margin-bottom: 120px; }
-
-.section-title {
-    font-family: var(--font-head);
-    font-size: 2.2rem;
-    margin-bottom: 40px;
-    border-top: 1px solid var(--border-color);
-    padding-top: 20px;
+.btn-minimal:hover, .btn-launch:hover {
+    background-color: #be5337; 
+    box-shadow: var(--md-sys-elevation-1);
 }
 
-.bio-grid {
+.gallery-footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-bottom: 60px;
+}
+
+/* --- Forms & Inputs (M3 Outlined Fields) --- */
+.order-page-content {
+    background-color: var(--md-sys-color-surface);
+    border-radius: var(--md-shape-corner-large);
+    box-shadow: var(--md-sys-elevation-1);
+    padding: 40px 24px;
+    margin: 40px auto;
+}
+
+.order-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.order-header h1 {
+    font-family: var(--font-heading);
+    color: var(--md-sys-color-primary);
+    margin-bottom: 8px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
+    gap: 16px;
 }
 
-.bio-text h3 { font-family: var(--font-head); font-size: 1.5rem; margin-bottom: 15px; }
-.bio-text p { margin-bottom: 20px; font-size: 1.05rem; color: #555; }
-
-.tech-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
+.form-group label {
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--md-sys-color-on-surface-variant);
 }
 
-.tech-item h4 { font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 10px; color: var(--accent); }
-.tech-item p { font-size: 0.9rem; color: #666; }
-
-/* =========================================
-   6. CHOPS INFO PAGE
-   ========================================= */
-.info-header { text-align: center; margin-bottom: 60px; }
-.info-header h1 { font-family: var(--font-head); font-size: 3rem; margin-bottom: 10px; }
-
-.split-section {
-    display: flex;
-    align-items: center;
-    gap: 60px;
-    margin-bottom: 80px;
-}
-
-.split-section.reverse { flex-direction: row-reverse; }
-
-.split-image { flex: 1; }
-.split-image img { width: 100%; border-radius: 2px; }
-
-.split-content { flex: 1; }
-.split-content h2 { font-family: var(--font-head); font-size: 2rem; margin-bottom: 5px; }
-.split-content .price { color: var(--accent); font-weight: bold; font-size: 1.2rem; }
-
-.feature-list { margin-top: 20px; }
-.feature-list li {
-    margin-bottom: 10px;
-    font-size: 0.95rem;
-    border-left: 2px solid var(--border-color);
-    padding-left: 15px;
-    color: #555;
-}
-
-.divider-line { height: 1px; background: var(--border-color); width: 100%; margin: 60px 0; }
-
-/* Handle System Grid */
-.handle-section { margin-top: 80px; text-align: center; }
-.handle-diagram img { max-width: 800px; width: 100%; margin: 40px auto; }
-
-.handle-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
-    text-align: left;
-}
-
-.handle-card {
-    background: var(--light-grey);
-    padding: 30px;
-    border: 1px solid var(--border-color);
-}
-
-.handle-card h3 {
-    font-family: var(--font-head);
-    color: var(--accent);
-    margin-bottom: 10px;
-    font-size: 1.2rem;
-}
-
-/* =========================================
-   7. ORDER FORM STYLES
-   ========================================= */
-.order-page-content { max-width: 800px; padding-bottom: 100px; }
-.order-header { text-align: center; margin-bottom: 60px; }
-.order-header h1 { font-family: var(--font-head); font-size: 3rem; margin-bottom: 20px; }
-.sub-text { margin-bottom: 20px; color: #666; max-width: 600px; margin: 0 auto; text-align: center; }
-
-.order-form { 
-    max-width: 650px; 
-    margin: 0 auto; 
-    background: #fff; 
-    padding: 40px; 
-    border: 1px solid var(--border-color); 
-    box-shadow: 0 5px 25px rgba(0,0,0,0.03); 
-}
-
-.form-group { margin-bottom: 25px; text-align: left; }
-.form-row { display: flex; gap: 20px; }
-.form-row .form-group { flex: 1; }
-
-label {
-    display: block;
-    font-family: 'Lato', sans-serif;
-    font-weight: 700;
-    margin-bottom: 8px;
-    font-size: 0.8rem;
-    color: var(--text);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-input[type="text"], input[type="email"], input[type="number"], select {
-    width: 100%;
-    padding: 14px;
-    border: 1px solid #ccc;
-    border-radius: 0px;
-    font-family: 'Lato', sans-serif;
+input[type="text"], 
+input[type="email"], 
+input[type="number"], 
+select, 
+textarea {
+    font-family: var(--font-primary);
     font-size: 1rem;
-    background: #fafafa;
-    transition: all 0.3s;
+    padding: 14px 16px;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 4px; /* M3 outlined fields use 4px standard */
+    background-color: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
 }
 
-input:focus, select:focus {
+input:focus, 
+select:focus, 
+textarea:focus {
     outline: none;
-    border-color: var(--accent);
-    background: #fff;
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 1px var(--md-sys-color-primary);
 }
 
-input[type="file"] { padding: 10px; background: #fff; border: 1px dashed #ccc; width: 100%; }
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
 
-.divider { height: 1px; background: var(--border-color); margin: 30px 0; }
-.note { display: block; font-size: 0.8rem; color: #999; margin-top: 5px; font-style: italic; }
+.divider {
+    height: 1px;
+    background-color: var(--md-sys-color-surface-container);
+    margin: 32px 0;
+}
 
-/* Dynamic Sections (Hidden Logic) */
 .dynamic-section {
-    background: #fdfdfd;
-    padding: 25px;
-    border-left: 3px solid var(--accent);
-    margin-bottom: 30px;
-    animation: fadeIn 0.5s ease;
+    background-color: var(--md-sys-color-surface-container-low);
+    padding: 24px;
+    border-radius: var(--md-shape-corner-medium);
+    margin-bottom: 24px;
+    border: 1px solid var(--md-sys-color-surface-container);
 }
 
 .dynamic-section h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    margin-bottom: 20px;
-    color: var(--text);
+    font-family: var(--font-heading);
+    margin-bottom: 16px;
+    color: var(--md-sys-color-primary);
 }
 
-/* Force hide elements */
-.hidden { display: none !important; }
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.hidden {
+    display: none !important;
 }
 
-/* =========================================
-   8. BUTTONS
-   ========================================= */
-.btn-minimal {
-    font-family: var(--font-head);
-    font-size: 1.2rem;
-    border-bottom: 1px solid var(--text);
-    padding-bottom: 5px;
-    cursor: pointer;
+.note {
+    font-size: 0.8rem;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-top: 6px;
 }
-.btn-minimal:hover { color: var(--accent); border-color: var(--accent); padding-right: 10px; }
 
-.btn-launch { 
-    display: inline-block; 
-    background-color: var(--accent); 
-    color: #fff; 
-    padding: 15px 30px; 
-    font-family: var(--font-body); 
-    text-transform: uppercase; 
-    letter-spacing: 2px; 
-    font-size: 0.9rem; 
-    margin-top: 20px; 
-    transition: all 0.3s; 
-    border: none; 
-    cursor: pointer; 
-    width: 100%;
-}
-.btn-launch:hover { background-color: #b54d32; }
-
-/* =========================================
-   9. SUCCESS MODAL
-   ========================================= */
+/* --- Modals --- */
 .modal-overlay {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    backdrop-filter: blur(5px);
 }
 
 .modal-box {
-    background: #fff;
-    padding: 50px;
-    max-width: 500px;
-    width: 90%;
+    background-color: var(--md-sys-color-surface);
+    padding: 40px;
+    border-radius: var(--md-shape-corner-large);
     text-align: center;
-    border-top: 5px solid var(--accent);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    border-radius: 2px;
-    animation: slideUp 0.3s ease-out;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: var(--md-sys-elevation-2);
 }
 
-.modal-box h2 { font-family: var(--font-head); font-size: 2rem; margin-bottom: 15px; }
-.modal-box p { color: #666; margin-bottom: 10px; }
-
-@keyframes slideUp {
-    from { transform: translateY(50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+.modal-box h2 {
+    font-family: var(--font-heading);
+    margin-bottom: 16px;
 }
 
-/* =========================================
-   10. FOOTER & MOBILE
-   ========================================= */
+/* --- Footer --- */
 footer {
     text-align: center;
-    padding: 80px 0;
-    font-size: 0.8rem;
-    color: #ccc;
-    border-top: 1px solid #fafafa;
-    margin-top: 50px;
-}
-
-@media (max-width: 768px) {
-    .hero h1 { font-size: 3rem; }
-    .product-grid { gap: 60px 0; }
-    .bio-grid { grid-template-columns: 1fr; }
-    .split-section, .split-section.reverse { flex-direction: column; gap: 30px; }
-    .form-row { flex-direction: column; gap: 10px; }
-    .container { padding: 0 25px; }
-    .overlay-menu a { font-size: 2rem; }
-}
-/* =========================================
-   1. VARIABLES & RESET
-   ========================================= */
-:root {
-    --bg: #ffffff;        
-    --text: #2a2a2a;      
-    --accent: #D26244;    /* Terracotta */
-    --light-grey: #f9f9f9;      
-    --border-color: #eee;
-    
-    --font-head: 'Playfair Display', serif; 
-    --font-body: 'Lato', sans-serif;        
-}
-
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
-}
-
-body {
-    background-color: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-weight: 300;
-    line-height: 1.6;
-    overflow-x: hidden; 
-}
-
-a { text-decoration: none; color: inherit; transition: 0.3s; }
-img { max-width: 100%; display: block; }
-ul { list-style: none; }
-
-.container { 
-    max-width: 1200px; 
-    margin: 0 auto; 
-    padding: 0 40px; 
-}
-
-/* =========================================
-   2. NAVIGATION (Hamburger Style)
-   ========================================= */
-.navbar { padding: 30px 0; position: relative; z-index: 100; }
-.nav-flex { display: flex; justify-content: space-between; align-items: center; }
-.logo { font-family: var(--font-head); font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; z-index: 102; position: relative; }
-.menu-toggle { cursor: pointer; z-index: 102; font-size: 1.8rem; padding: 10px; user-select: none; }
-
-/* Overlay */
-.overlay-menu { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 101; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
-.overlay-menu.active { opacity: 1; pointer-events: all; }
-.overlay-menu a { font-family: var(--font-head); font-size: 2.5rem; margin: 15px 0; color: #ccc; transition: transform 0.3s, color 0.3s; }
-.overlay-menu a:hover, .overlay-menu a.current { color: var(--accent); transform: translateX(10px); }
-
-/* =========================================
-   3. HERO SECTION
-   ========================================= */
-.hero { height: 50vh; display: flex; flex-direction: column; justify-content: center; text-align: center; }
-.hero h1 { font-family: var(--font-head); font-size: 4.5rem; font-weight: 400; line-height: 1.1; margin-bottom: 20px; color: var(--text); }
-.hero p { font-style: italic; color: #888; font-family: var(--font-head); font-size: 1.3rem; }
-
-/* =========================================
-   4. PRODUCT GALLERY
-   ========================================= */
-.gallery { padding-bottom: 150px; }
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 80px 50px; }
-.card-link { display: block; text-decoration: none; color: inherit; height: 100%; }
-.art-card { text-align: center; transition: transform 0.5s ease; height: 100%; }
-.card-link:hover .art-card { transform: translateY(-10px); }
-.art-image { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; margin-bottom: 25px; background: radial-gradient(circle, #fcfcfc 0%, #ffffff 70%); }
-.art-info h3 { font-family: var(--font-head); font-weight: 400; font-size: 1.4rem; margin-bottom: 5px; }
-.price { color: #999; font-size: 0.9rem; letter-spacing: 1px; margin-bottom: 10px; display: block; }
-.desc { font-size: 0.9rem; color: #555; max-width: 90%; margin: 0 auto; }
-.gallery-footer { text-align: center; margin-top: 100px; }
-
-/* =========================================
-   5. PORTFOLIO & BIO PAGE
-   ========================================= */
-.portfolio-intro { text-align: center; max-width: 700px; margin: 0 auto 80px auto; }
-.portfolio-section { margin-bottom: 120px; }
-.section-title { font-family: var(--font-head); font-size: 2.2rem; margin-bottom: 40px; border-top: 1px solid var(--border-color); padding-top: 20px; }
-.bio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-.bio-text h3 { font-family: var(--font-head); font-size: 1.5rem; margin-bottom: 15px; }
-.bio-text p { margin-bottom: 20px; font-size: 1.05rem; color: #555; }
-.tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
-.tech-item h4 { font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 10px; color: var(--accent); }
-.tech-item p { font-size: 0.9rem; color: #666; }
-
-/* =========================================
-   6. CHOPS INFO PAGE
-   ========================================= */
-.info-header { text-align: center; margin-bottom: 60px; }
-.info-header h1 { font-family: var(--font-head); font-size: 3rem; margin-bottom: 10px; }
-.split-section { display: flex; align-items: center; gap: 60px; margin-bottom: 80px; }
-.split-section.reverse { flex-direction: row-reverse; }
-.split-image { flex: 1; }
-.split-image img { width: 100%; border-radius: 2px; }
-.split-content { flex: 1; }
-.split-content h2 { font-family: var(--font-head); font-size: 2rem; margin-bottom: 5px; }
-.split-content .price { color: var(--accent); font-weight: bold; font-size: 1.2rem; }
-.feature-list { margin-top: 20px; }
-.feature-list li { margin-bottom: 10px; font-size: 0.95rem; border-left: 2px solid var(--border-color); padding-left: 15px; color: #555; }
-.divider-line { height: 1px; background: var(--border-color); width: 100%; margin: 60px 0; }
-.handle-section { margin-top: 80px; text-align: center; }
-.handle-diagram img { max-width: 800px; width: 100%; margin: 40px auto; }
-.handle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; margin-top: 40px; text-align: left; }
-.handle-card { background: var(--light-grey); padding: 30px; border: 1px solid var(--border-color); }
-.handle-card h3 { font-family: var(--font-head); color: var(--accent); margin-bottom: 10px; font-size: 1.2rem; }
-
-/* =========================================
-   7. ORDER FORM STYLES
-   ========================================= */
-.order-page-content { max-width: 800px; padding-bottom: 100px; }
-.order-header { text-align: center; margin-bottom: 60px; }
-.order-header h1 { font-family: var(--font-head); font-size: 3rem; margin-bottom: 20px; }
-.sub-text { margin-bottom: 20px; color: #666; max-width: 600px; margin: 0 auto; text-align: center; }
-.order-form { max-width: 650px; margin: 0 auto; background: #fff; padding: 40px; border: 1px solid var(--border-color); box-shadow: 0 5px 25px rgba(0,0,0,0.03); }
-.form-group { margin-bottom: 25px; text-align: left; }
-.form-row { display: flex; gap: 20px; }
-.form-row .form-group { flex: 1; }
-label { display: block; font-family: 'Lato', sans-serif; font-weight: 700; margin-bottom: 8px; font-size: 0.8rem; color: var(--text); text-transform: uppercase; letter-spacing: 1px; }
-input[type="text"], input[type="email"], input[type="number"], select { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 0px; font-family: 'Lato', sans-serif; font-size: 1rem; background: #fafafa; transition: all 0.3s; }
-input:focus, select:focus { outline: none; border-color: var(--accent); background: #fff; }
-input[type="file"] { padding: 10px; background: #fff; border: 1px dashed #ccc; width: 100%; }
-.divider { height: 1px; background: var(--border-color); margin: 30px 0; }
-.note { display: block; font-size: 0.8rem; color: #999; margin-top: 5px; font-style: italic; }
-.dynamic-section { background: #fdfdfd; padding: 25px; border-left: 3px solid var(--accent); margin-bottom: 30px; animation: fadeIn 0.5s ease; }
-.dynamic-section h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 20px; color: var(--text); }
-.hidden { display: none !important; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-/* =========================================
-   8. BUTTONS & UI
-   ========================================= */
-.btn-minimal { font-family: var(--font-head); font-size: 1.2rem; border-bottom: 1px solid var(--text); padding-bottom: 5px; cursor: pointer; }
-.btn-minimal:hover { color: var(--accent); border-color: var(--accent); padding-right: 10px; }
-.btn-launch { display: inline-block; background-color: var(--accent); color: #fff; padding: 15px 30px; font-family: var(--font-body); text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin-top: 20px; transition: all 0.3s; border: none; cursor: pointer; width: 100%; }
-.btn-launch:hover { background-color: #b54d32; }
-
-/* =========================================
-   9. ACCOUNT & MODAL
-   ========================================= */
-/* Account Portal specific */
-#auth-container input { background: #fafafa; margin-bottom: 15px; }
-#historyTableBody tr:hover { background-color: #fcfcfc; }
-.status-pill { padding: 5px 10px; background: #f0f0f0; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: #555; }
-
-/* Success Modal */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
-.modal-box { background: #fff; padding: 50px; max-width: 500px; width: 90%; text-align: center; border-top: 5px solid var(--accent); box-shadow: 0 20px 50px rgba(0,0,0,0.3); border-radius: 2px; animation: slideUp 0.3s ease-out; }
-.modal-box h2 { font-family: var(--font-head); font-size: 2rem; margin-bottom: 15px; }
-.modal-box p { color: #666; margin-bottom: 10px; }
-@keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-/* =========================================
-   10. FOOTER & MOBILE
-   ========================================= */
-footer { text-align: center; padding: 80px 0; font-size: 0.8rem; color: #ccc; border-top: 1px solid #fafafa; margin-top: 50px; }
-
-@media (max-width: 768px) {
-    .hero h1 { font-size: 3rem; }
-    .product-grid { gap: 60px 0; }
-    .bio-grid { grid-template-columns: 1fr; }
-    .split-section, .split-section.reverse { flex-direction: column; gap: 30px; }
-    .form-row { flex-direction: column; gap: 10px; }
-    .container { padding: 0 25px; }
-    .overlay-menu a { font-size: 2rem; }
+    padding: 40px 20px;
+    background-color: var(--md-sys-color-surface-container);
+    color: var(--md-sys-color-on-surface-variant);
+    margin-top: auto;
 }
