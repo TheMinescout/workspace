@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minescout - Switching Frequencies</title>
+  
+  <!-- Google Fonts: Graffiti & Monospace -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --neon-yellow: #FFDE00;
+      --hot-pink: #FF007F;
+      --cyan: #00E5FF;
+      --black: #111111;
+      --white: #FAFAFA;
+      
+      --font-graffiti: 'Permanent Marker', cursive;
+      --font-body: 'Space Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--neon-yellow);
+      background-image: radial-gradient(var(--black) 2px, transparent 2px);
+      background-size: 30px 30px;
+      font-family: var(--font-body);
+      color: var(--black);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .redirect-container {
+      background: var(--black);
+      border: 6px solid var(--black);
+      box-shadow: 15px 15px 0px var(--hot-pink), -15px -15px 0px var(--cyan);
+      padding: 3rem;
+      text-align: center;
+      max-width: 90%;
+      width: 500px;
+      transform: rotate(-1.5deg);
+      animation: shift 5s infinite ease-in-out;
+    }
+
+    @keyframes shift {
+      0%, 100% { transform: rotate(-1.5deg) scale(1); }
+      50% { transform: rotate(1deg) scale(1.02); }
+    }
+
+    h1 {
+      font-family: var(--font-graffiti);
+      color: var(--cyan);
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      text-shadow: 4px 4px 0px var(--hot-pink);
+    }
+
+    p {
+      color: var(--white);
+      font-weight: 700;
+      margin-bottom: 2rem;
+    }
+
+    /* Retro Progress Bar */
+    .bar-container {
+      width: 100%;
+      height: 25px;
+      background: #222;
+      border: 3px solid var(--white);
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--neon-yellow);
+      width: 0%;
+      animation: fillBar 3s linear forwards;
+    }
+
+    @keyframes fillBar {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    .btn-manual {
+      display: inline-block;
+      background: var(--hot-pink);
+      color: var(--white);
+      padding: 12px 25px;
+      text-decoration: none;
+      font-weight: 700;
+      text-transform: uppercase;
+      border: 4px solid var(--black);
+      box-shadow: 6px 6px 0px var(--cyan);
+      transition: all 0.1s ease;
+    }
+
+    .btn-manual:hover {
+      transform: translate(3px, 3px);
+      box-shadow: 2px 2px 0px var(--cyan);
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .timer-text {
+      color: var(--hot-pink);
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="redirect-container">
+    <h1>New Signal Found</h1>
+    <p>Minescout is switching to a new frequency. Bouncing you in <span id="timer" class="timer-text">3</span>...</p>
+    
+    <div class="bar-container">
+      <div class="bar-fill"></div>
+    </div>
+
+    <a href="https://minescout-ai.pages.dev/" class="btn-manual">Drop In Now ➔</a>
+  </div>
+
+  <script>
+    const url = "https://minescout-ai.pages.dev/";
+    let time = 3;
+    const display = document.getElementById('timer');
+
+    // Automatic countdown
+    const interval = setInterval(() => {
+      time--;
+      display.textContent = time;
+      if (time <= 0) {
+        clearInterval(interval);
+        window.location.href = url;
+      }
+    }, 1000);
+
+    // Fallback if JS is slow
+    setTimeout(() => {
+      window.location.href = url;
+    }, 3500);
+  </script>
+
+</body>
+</html>

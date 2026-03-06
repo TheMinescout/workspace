@@ -36,7 +36,7 @@
       { label: 'Legal',        href: '/ai/legal' },
       { label: 'Portfolio',    href: '/' },
       { label: 'Ask AI',       href: '/ask' },
-      { label: 'Client Login', href: '/ai/clients/login' }
+      { label: 'Client Login', href: 'https://minescout-ai.base44.app/' }
     ];
 
     let isAiSite = PATH.startsWith('/ai');

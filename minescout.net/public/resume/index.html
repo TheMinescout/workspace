@@ -8,11 +8,11 @@
   <link rel="stylesheet" href="/styles/main.css?v=11" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
   
   <style>
-    /* ── SCREEN STYLES (What you see on the website) ── */
-    .resume-table { width: 100%; border-collapse: collapse; margin-top: 0; }
+    /* ── SCREEN STYLES ── */
+    .resume-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
     .year-row td {
       padding: 2.5rem 0 0.5rem; font-family: var(--serif); font-size: 1.4rem;
       font-weight: 700; color: var(--fg); border-bottom: 2px solid var(--fg);
@@ -34,95 +34,85 @@
     }
     .pdf-btn:hover { background: var(--fg); color: var(--bg); }
 
+    /* 2026 Skills Highlight */
+    .competencies-header {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .competencies-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .comp-card {
+      background: var(--white);
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    .comp-card h4 {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: var(--fg);
+      margin-bottom: 0.5rem;
+    }
+
+    .comp-card p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
     .resume-skills { margin-top: 2.5rem; border-top: 2px solid var(--fg); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
     .skills-block { display: flex; gap: 1.5rem; font-size: 0.85rem; line-height: 1.5; }
     .skills-label { width: 100px; flex-shrink: 0; font-weight: 500; color: var(--fg); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
     .skills-value { color: var(--muted); }
 
-    /* ── PRINT STYLES (Match the high-end Screenshot) ── */
+    /* ── PRINT STYLES ── */
     @media print {
       @page { margin: 0.5in; size: letter; }
-      
-      /* Hide navigation and UI */
       .sidebar, .hamburger, .nav-overlay, .pdf-btn, .page-label, .sidebar-bottom { display: none !important; }
-      
-      /* Canvas setup */
       body { background: white !important; color: black !important; font-family: "Times New Roman", Times, serif !important; }
       .main { margin-left: 0 !important; padding: 0 !important; }
       .page-content { max-width: 100% !important; padding: 0 !important; }
       .page-title { display: none; }
-
-      /* Name and Header */
       .print-header { display: block !important; margin-bottom: 25pt; }
       .print-name { font-size: 32pt; font-weight: bold; color: #000; letter-spacing: -1pt; margin-bottom: 4pt; }
       .print-contact { font-size: 10pt; color: #333; border-bottom: 1.5pt solid black; padding-bottom: 8pt; }
-
-      /* Year Dividers */
+      .competencies-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 10pt !important; margin-bottom: 20pt !important; }
+      .comp-card { border: 1pt solid #ccc !important; padding: 10pt !important; box-shadow: none !important; }
+      .comp-card h4 { font-size: 12pt !important; margin-bottom: 4pt !important; }
+      .comp-card p { font-size: 9pt !important; }
       .resume-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-      .year-row td { 
-        padding: 25pt 0 6pt !important;
-        font-size: 14pt !important;
-        font-weight: bold !important;
-        border-bottom: 1.5pt solid black !important;
-      }
-
-      /* Entry Rows (Date | Title | Desc) */
-      .entry-row td { 
-        border: none !important; 
-        padding: 10pt 0 !important; 
-        font-size: 11pt !important; 
-        vertical-align: top;
-      }
-
-      /* Column 1: Date */
-      .entry-row td:nth-child(1) { 
-        width: 18% !important; 
-        font-weight: bold !important;
-      }
-      /* Column 2: Title */
-      .entry-row td:nth-child(2) { 
-        width: 22% !important; 
-        font-weight: bold !important;
-        padding-right: 15pt !important;
-      }
-      /* Column 3: Description */
-      .entry-row td:nth-child(3) { 
-        width: 60% !important; 
-        text-align: justify;
-        line-height: 1.4;
-      }
-
-      /* Skills Section at Bottom */
-      .resume-skills { 
-        border-top: 2pt solid black !important; 
-        margin-top: 30pt !important; 
-        padding-top: 15pt !important;
-      }
-      .skills-block { 
-        display: flex !important; 
-        flex-direction: row !important;
-        gap: 0 !important; 
-        margin-bottom: 8pt !important; 
-      }
-      .skills-label { 
-        width: 18% !important; 
-        font-weight: bold !important; 
-        font-size: 10pt !important; 
-        text-align: left !important;
-      }
-      .skills-value { 
-        width: 82% !important;
-        font-size: 10.5pt !important; 
-        color: black !important; 
-      }
+      .year-row td { padding: 20pt 0 6pt !important; font-size: 14pt !important; font-weight: bold !important; border-bottom: 1.5pt solid black !important; }
+      .entry-row td { border: none !important; padding: 8pt 0 !important; font-size: 10.5pt !important; vertical-align: top; }
+      .entry-row td:nth-child(1) { width: 18% !important; font-weight: bold !important; }
+      .entry-row td:nth-child(2) { width: 22% !important; font-weight: bold !important; padding-right: 15pt !important; }
+      .entry-row td:nth-child(3) { width: 60% !important; text-align: justify; line-height: 1.3; }
+      .resume-skills { border-top: 1.5pt solid black !important; margin-top: 20pt !important; padding-top: 10pt !important; }
+      .skills-block { display: flex !important; flex-direction: row !important; margin-bottom: 6pt !important; }
+      .skills-label { width: 18% !important; font-weight: bold !important; font-size: 9pt !important; }
+      .skills-value { width: 82% !important; font-size: 10pt !important; color: black !important; }
     }
 
     .print-header { display: none; }
+
+    @media (max-width: 768px) {
+      .competencies-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
-
-  <!-- Sidebar injected by sidebar.js -->
 
   <main class="main main--page">
     <div class="page-content" style="max-width: 720px;">
@@ -143,63 +133,80 @@
         Download PDF / Print
       </button>
 
+      <!-- 2026 Strategic Competencies Section -->
+      <p class="competencies-header">2026 Strategic Competencies</p>
+      <div class="competencies-grid">
+        <div class="comp-card">
+          <h4>AI Fluency</h4>
+          <p>Architecting RAG systems and LLM workflows to automate high-frequency operations for local enterprises.</p>
+        </div>
+        <div class="comp-card">
+          <h4>Stakeholder Influence</h4>
+          <p>Translating technical AI architecture into tangible business value for project stakeholders and owners.</p>
+        </div>
+        <div class="comp-card">
+          <h4>Data-Driven Strategy</h4>
+          <p>Utilizing real-time analytics to measure ROI on automation deployments and pivot project engineering.</p>
+        </div>
+      </div>
+
       <table class="resume-table">
         <tbody>
           <tr class="year-row"><td colspan="3">2026</td></tr>
           
-          <tr class="entry-row" style="--delay: 200ms;">
+          <tr class="entry-row" style="--delay: 100ms;">
             <td>Feb 2026</td>
             <td>Minescout AI</td>
-            <td>Founder & Developer — Launched a business offering custom-trained AI chat upgrades for local firms. Built with Cloudflare Workers, Firebase, and LLMs.</td>
+            <td>Founder & Developer — Launched a business offering custom-trained AI chat upgrades for local firms. Engineered secure RAG pipelines and managed client infrastructure.</td>
+          </tr>
+
+          <tr class="entry-row" style="--delay: 150ms;">
+            <td>Feb 2026</td>
+            <td>Portfolio Launch</td>
+            <td>Lead Developer — Engineered high-performance modular portfolio. Features automated PDF syncing and an editorial design system.</td>
+          </tr>
+
+          <tr class="entry-row" style="--delay: 200ms;">
+            <td>Jan 2026</td>
+            <td>The Chop Lab</td>
+            <td>Designer & Creator — Developed an end-to-end digital storefront for an artisanal pottery shop, focusing on conversion and load-speed optimization.</td>
           </tr>
 
           <tr class="entry-row" style="--delay: 250ms;">
-            <td>Feb 2026</td>
-            <td>Portfolio Launch</td>
-            <td>Lead Developer — Engineered this personal portfolio from the ground up. Features modular components, automated PDF syncing, and editorial design.</td>
-          </tr>
-
-          <tr class="entry-row" style="--delay: 300ms;">
-            <td>Jan 2026</td>
-            <td>The Chop Lab</td>
-            <td>Designer & Creator — Digital storefront for a pottery shop at chop-lab.com. Integrated modern web design and Python/JS debugging.</td>
-          </tr>
-
-          <tr class="entry-row" style="--delay: 350ms;">
             <td>2025–Present</td>
             <td>FRC Team 1294</td>
-            <td>Turret Subteam Member — Mechanical and electrical development of the robot's turret system. Hardware integration and assembly.</td>
+            <td>Turret Subteam — Mechanical and electrical development of competition-grade robotic systems. Hardware integration and real-time sensor assembly.</td>
           </tr>
         </tbody>
 
         <tbody>
           <tr class="year-row"><td colspan="3">2025</td></tr>
-          <tr class="entry-row" style="--delay: 400ms;">
+          <tr class="entry-row" style="--delay: 300ms;">
             <td>Oct 2025</td>
             <td>Minescout Beta</td>
-            <td>System Architect — Created a dedicated beta environment for testing AI integrations and UI/UX updates before deployment.</td>
+            <td>System Architect — Established a full-stack beta testing environment to validate LLM performance and UI/UX changes.</td>
           </tr>
-          <tr class="entry-row" style="--delay: 450ms;">
+          <tr class="entry-row" style="--delay: 350ms;">
             <td>Mar 2025</td>
             <td>Minescout Life</td>
-            <td>Lead Developer — Founder of technology review platform. Managed site architecture and content delivery.</td>
+            <td>Founder — Built a specialized technology review platform managing content delivery and site architecture.</td>
           </tr>
-          <tr class="entry-row" style="--delay: 500ms;">
+          <tr class="entry-row" style="--delay: 400ms;">
             <td>Jan 2025</td>
             <td>Future City</td>
-            <td>Award Winner — Won Best Overall City Essay and Student Choice Award. Focused on engineering and urban planning.</td>
+            <td>Award Winner — Won Best Overall City Essay and Student Choice Award for excellence in urban engineering planning.</td>
           </tr>
         </tbody>
       </table>
 
       <div class="resume-skills">
         <div class="skills-block">
-          <span class="skills-label">Languages</span>
-          <span class="skills-value">HTML, CSS, JavaScript, Python</span>
+          <span class="skills-label">Tech Stack</span>
+          <span class="skills-value">HTML5, CSS3, JavaScript (ES6+), Python, Node.js, Cloudflare Workers, Firebase</span>
         </div>
         <div class="skills-block">
-          <span class="skills-label">Tools</span>
-          <span class="skills-value">GitHub, VS Code, Git, Cloudflare, Firebase, AI-Assisted Dev</span>
+          <span class="skills-label">Workflow</span>
+          <span class="skills-value">Git, VS Code, AI-Assisted Development, Modular Architecture, SEO Optimization</span>
         </div>
         <div class="skills-block">
           <span class="skills-label">Athletics</span>
