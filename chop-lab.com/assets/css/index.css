@@ -482,3 +482,157 @@ footer {
         padding: 30px 20px;
     }
 }
+/* ==========================================================================
+   RESTORED: INNER PAGE HEADERS & CHOPS PAGE LAYOUT
+   ========================================================================== */
+
+/* --- Fixes the jammed text under the navbar --- */
+.portfolio-intro {
+    padding: 60px 0 40px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--tcl-border);
+}
+
+.portfolio-intro h1 {
+    font-family: var(--font-heading);
+    font-size: 2.8rem;
+    color: var(--tcl-text-main);
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+.portfolio-intro p {
+    font-size: 1.15rem;
+    color: var(--tcl-text-muted);
+}
+
+/* --- Chops Page: Split Layout --- */
+.split-section {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    margin: 50px 0;
+    background-color: var(--tcl-surface);
+    border-radius: var(--radius-md);
+    padding: 40px;
+    box-shadow: var(--elevation-1);
+    border: 1px solid var(--tcl-border);
+}
+
+.split-section.reverse {
+    flex-direction: row-reverse;
+}
+
+.split-image {
+    flex: 1;
+}
+
+.split-image img {
+    width: 100%;
+    border-radius: var(--radius-sm);
+    background-color: var(--tcl-background);
+    border: 1px solid var(--tcl-border);
+    box-shadow: var(--elevation-1);
+}
+
+.split-content {
+    flex: 1;
+}
+
+.split-content h2 {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    color: var(--tcl-primary);
+    margin-bottom: 8px;
+}
+
+.split-content .price {
+    display: inline-block;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+}
+
+.feature-list {
+    margin-top: 24px;
+    list-style: none;
+    padding: 0;
+}
+
+.feature-list li {
+    margin-bottom: 12px;
+    color: var(--tcl-text-main);
+    padding-left: 15px;
+    border-left: 3px solid var(--tcl-primary);
+}
+
+.feature-list li strong {
+    color: var(--tcl-text-main);
+}
+
+/* --- Chops Page: Handle Grid --- */
+.handle-section {
+    margin: 80px 0 40px 0;
+    text-align: center;
+}
+
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--tcl-text-main);
+    margin-bottom: 40px;
+}
+
+.handle-diagram img {
+    max-width: 100%;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--tcl-border);
+    margin-bottom: 50px;
+    box-shadow: var(--elevation-1);
+}
+
+.handle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin-bottom: 50px;
+}
+
+.handle-card {
+    background-color: var(--tcl-surface);
+    padding: 30px 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--tcl-border);
+    box-shadow: var(--elevation-1);
+    transition: transform 0.2s ease;
+}
+
+.handle-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--elevation-2);
+}
+
+.handle-card h3 {
+    font-family: var(--font-primary);
+    color: var(--tcl-primary);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.handle-card p {
+    font-size: 0.95rem;
+    color: var(--tcl-text-muted);
+}
+
+/* --- Mobile Responsiveness for Chops Page --- */
+@media (max-width: 768px) {
+    .split-section, .split-section.reverse {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 20px;
+        gap: 30px;
+    }
+    
+    .feature-list li {
+        text-align: left;
+    }
+}
