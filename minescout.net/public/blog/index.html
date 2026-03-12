@@ -8,19 +8,19 @@
   <link rel="stylesheet" href="../../styles/main.css?v=8.1" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
-  <meta property="og:type"         content="website" />
-  <meta property="og:site_name"    content="Thomas Carleton" />
-  <meta property="og:title"        content="Blog — Thomas Carleton" />
-  <meta property="og:description"  content="Thoughts on building, the outdoors, and everything in between." />
-  <meta property="og:url"          content="https://minescout.net/blog" />
-  <meta property="og:image"        content="https://minescout.net/assets/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="Blog — Thomas Carleton" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <meta property="og:type"          content="website" />
+  <meta property="og:site_name"        content="Thomas Carleton" />
+  <meta property="og:title"         content="Blog — Thomas Carleton" />
+  <meta property="og:description"   content="Thoughts on building, the outdoors, and everything in between." />
+  <meta property="og:url"           content="https://minescout.net/blog" />
+  <meta property="og:image"         content="https://minescout.net/assets/og-image.png" />
+  <meta property="og:image:width"   content="1200" />
+  <meta property="og:image:height"  content="630" />
+  <meta name="twitter:card"         content="summary_large_image" />
+  <meta name="twitter:title"        content="Blog — Thomas Carleton" />
   <meta name="twitter:description" content="Thoughts on building, the outdoors, and everything in between." />
-  <meta name="twitter:image"       content="https://minescout.net/assets/og-image.png" />
+  <meta name="twitter:image"        content="https://minescout.net/assets/og-image.png" />
   <style>
     .blog-grid {
       display: grid;
@@ -73,9 +73,10 @@
     }
 
     .blog-card-tag.tag-outdoors { background: #4a7c59; }
-    .blog-card-tag.tag-tech     { background: #2c5f8a; }
-    .blog-card-tag.tag-life     { background: #7a5c8a; }
-    .blog-card-tag.tag-building { background: var(--accent); }
+    .blog-card-tag.tag-tech      { background: #2c5f8a; }
+    .blog-card-tag.tag-life      { background: #7a5c8a; }
+    .blog-card-tag.tag-building  { background: var(--accent); }
+    .blog-card-tag.tag-engineering { background: #1c2b3a; }
 
     .blog-card-title {
       font-family: var(--serif);
@@ -151,8 +152,6 @@
 </head>
 <body>
 
-
-
   <main class="main main--page">
     <div class="page-content" style="max-width: 760px;">
       <p class="page-label">Blog</p>
@@ -160,26 +159,54 @@
 
       <div class="blog-grid">
 
-        <a class="blog-card featured" href="/blog/launching-this-site" style="--delay: 0.3s;">
+        <!-- LATEST FEATURED POST -->
+        <a class="blog-card featured" href="/blog/minescout-genesis" style="--delay: 0.1s;">
           <div>
             <div class="blog-card-meta">
-              <span class="blog-card-date">Feb 21, 2026</span>
-              <span class="blog-card-tag tag-building">Building</span>
+              <span class="blog-card-date">Mar 9, 2026</span>
+              <span class="blog-card-tag tag-engineering">Engineering</span>
             </div>
-            <div class="blog-card-title">Launching This Site — What I Built and Why</div>
+            <div class="blog-card-title">Minescout Genesis: The 17-Day Multi-Tenant Pivot</div>
             <div class="blog-card-excerpt">
-              I've been wanting a personal corner of the internet for a while. Not just a GitHub profile or a Minecraft server page — something that actually felt like me. Here's how I built it and what I learned along the way.
+              Moving from static sites to a serverless SaaS engine. Here is how I architected the multi-tenant core of Minescout AI and launched its first two nodes in under three weeks.
             </div>
-            <div class="blog-card-footer">Read post →</div>
+            <div class="blog-card-footer">Read case study →</div>
           </div>
           <span class="featured-label">Latest</span>
         </a>
 
-        
+        <!-- PREVIOUS POSTS -->
+        <a class="blog-card" href="/blog/launching-this-site" style="--delay: 0.2s;">
+          <div class="blog-card-meta">
+            <span class="blog-card-date">Feb 21, 2026</span>
+            <span class="blog-card-tag tag-building">Building</span>
+          </div>
+          <div class="blog-card-title">Launching This Site</div>
+          <div class="blog-card-excerpt">
+            I've been wanting a personal corner of the internet for a while. Not just a GitHub profile — something that actually felt like me.
+          </div>
+          <div class="blog-card-footer">Read post →</div>
+        </a>
+
+        <!-- 
+        --- TEMPLATE FOR NEW REGULAR CARDS ---
+        <a class="blog-card" href="/blog/your-slug-here" style="--delay: 0.3s;">
+          <div class="blog-card-meta">
+            <span class="blog-card-date">Month Day, Year</span>
+            <span class="blog-card-tag tag-life">Category</span>
+          </div>
+          <div class="blog-card-title">Your Title Here</div>
+          <div class="blog-card-excerpt">
+            Short summary of the post content goes here...
+          </div>
+          <div class="blog-card-footer">Read post →</div>
+        </a>
+        -->
 
       </div>
     </div>
   </main>
+  
   <script src="/scripts/sidebar.js"></script>
   <script src="/scripts/main.js"></script>
 </body>
