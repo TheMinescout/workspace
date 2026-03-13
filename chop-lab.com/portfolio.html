@@ -8,19 +8,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="assets/images/Favicon.png">
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#D26244">
+    <meta name="theme-color" content="#D26244">
 </head>
 <body>
 
-    <!-- NAV -->
     <nav class="navbar">
         <div class="container nav-flex">
-            <a href="index.html" class="logo">The Chop Lab.</a>
+            <a href="index.html" class="logo">The Chop Lab<span>.</span></a>
             <div class="menu-toggle">&#9776;</div>
         </div>
     </nav>
 
-    <!-- OVERLAY -->
     <div class="overlay-menu">
         <a href="index.html">Gallery</a>
         <a href="portfolio.html" class="current">Portfolio & Process</a>
@@ -29,7 +27,6 @@
         <a href="account.html">My Account</a>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="container">
         
         <header class="portfolio-intro">
@@ -37,84 +34,101 @@
             <p>Where robotics precision meets ceramic tradition.</p>
         </header>
 
-        <!-- 1. THE MAKER -->
-        <section class="portfolio-section">
-            <h2 class="section-title">The Origin Story</h2>
+        <section class="portfolio-section" style="padding: 80px 0;">
+            <h2 class="section-title" style="font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 40px;">The Origin Story</h2>
             <div class="bio-grid">
                 <div class="bio-image">
-                    <img src="assets/images/maker-photo.png" alt="Thomas Carleton" style="width:100%; border-radius:2px; background:#fafafa;">
+                    <img src="assets/images/maker-photo.png" alt="Thomas Carleton" class="art-image" style="border-radius: 2px;">
                 </div>
                 <div class="bio-text">
-                    <h3>Thomas Carleton</h3>
-                    <p>I am a 9th-grade robotics student and CAD designer applying engineering principles to the messy world of clay. Through courses like IED (Introduction to Engineering Design), I learned that the best tools are the ones built for a specific purpose.</p>
-                    <p><strong>The Spark:</strong> The Chop Lab started in the studio. My mother is a potter who struggled with generic stamps—they were too shallow, stuck to the clay, or were uncomfortable to hold. I realized I could use Fusion 360 and 3D printing to solve this.</p>
-                    <p>Today, every tool is beta-tested by her before it ever makes it to the shop.</p>
+                    <h3 style="font-family: var(--font-heading); font-size: 1.8rem; margin-bottom: 20px;">Thomas Carleton</h3>
+                    <p>I am a robotics student and CAD designer applying engineering principles to the messy world of clay. Through courses like IED (Introduction to Engineering Design), I learned that the best tools are the ones built for a specific purpose.</p>
+                    <p style="margin-top: 15px;"><strong>The Spark:</strong> The Chop Lab started in the studio. My mother is a potter who struggled with generic stamps—they were too shallow, stuck to the clay, or were uncomfortable to hold. I realized I could use Fusion 360 and 3D printing to solve this.</p>
+                    <p style="margin-top: 15px;">Today, every tool is beta-tested by her before it ever makes it to the shop.</p>
                 </div>
             </div>
         </section>
 
-        <!-- 2. THE TECH -->
-        <section class="portfolio-section">
-            <h2 class="section-title">The Lab</h2>
+        <section class="portfolio-section" style="padding: 80px 0; background-color: #fff; margin: 0 -100vw; padding-left: 100vw; padding-right: 100vw; border-top: 1px solid var(--tcl-border); border-bottom: 1px solid var(--tcl-border);">
+            <h2 class="section-title" style="font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 40px; text-align: center;">The Lab</h2>
             <div class="bio-grid">
                 <div class="bio-text">
-                    <div class="tech-item" style="margin-bottom:30px;">
-                        <h4>Fusion 360 Design</h4>
+                    <div class="tech-item" style="margin-bottom:40px;">
+                        <h4 style="text-transform: uppercase; letter-spacing: 1px; color: var(--tcl-primary); font-size: 0.9rem; margin-bottom: 10px;">Fusion 360 Design</h4>
                         <p>We don't just "resize" images. We rebuild them using parametric modeling. This allows for rapid adjustments and mathematical precision, ensuring your logo looks exactly the way you want it.</p>
                     </div>
-                    <div class="tech-item" style="margin-bottom:30px;">
-                        <h4>Bambu Lab A1</h4>
-                        <p>Our manufacturing engine. Chosen for its incredible speed, reliability, and "Color Pop" capabilities, allowing us to create multi-colored handles that stand out in a messy studio.</p>
+                    <div class="tech-item" style="margin-bottom:40px;">
+                        <h4 style="text-transform: uppercase; letter-spacing: 1px; color: var(--tcl-primary); font-size: 0.9rem; margin-bottom: 10px;">Bambu Lab A1</h4>
+                        <p>Our manufacturing engine. Chosen for its incredible speed, reliability, and precision, allowing us to create multi-colored handles that stand out in a messy studio.</p>
                     </div>
                     <div class="tech-item">
-                        <h4>Material Science</h4>
+                        <h4 style="text-transform: uppercase; letter-spacing: 1px; color: var(--tcl-primary); font-size: 0.9rem; margin-bottom: 10px;">Material Science</h4>
                         <p>We print exclusively in <strong>PLA Matte</strong>. Unlike glossy plastics, the matte finish releases moist clay cleanly without sticking, while offering a superior grip texture.</p>
                     </div>
                 </div>
                 <div class="bio-image">
-                    <img src="assets/images/printer-action.png" alt="Bambu Lab A1" style="width:100%; border-radius:2px; background:#fafafa;">
+                    <img src="assets/images/printer-action.png" alt="Bambu Lab A1 in action" class="art-image" style="border-radius: 2px;">
                 </div>
             </div>
         </section>
 
-        <!-- 3. SELECTED WORKS -->
-        <section class="portfolio-section">
-            <h2 class="section-title">Selected Works</h2>
+        <section class="portfolio-section" style="padding: 100px 0;">
+            <h2 class="section-title" style="font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 60px; text-align: center;">Selected Works</h2>
             <div class="product-grid">
+                
                 <div class="art-card">
-                    <img src="assets/images/compex-FC-chop.png" class="art-image"> 
+                    <img src="assets/images/compex-FC-chop.png" class="art-image" alt="Red Panda Custom Chop"> 
                     <div class="art-info">
                         <h3>The "Red Panda"</h3>
-                        <p class="desc"><strong>The Challenge:</strong> Incorporate the letters "FC" naturally into the ears of a Red Panda illustration.</p>
-                        <p class="desc" style="margin-top:5px; font-style:italic;">Result: A complex variable-height stamp that captures fine lines without trapping clay.</p>
+                        <p class="desc"><strong>The Challenge:</strong> Incorporate the letters "FC" naturally into the ears of an illustration.</p>
+                        <p class="desc" style="margin-top:15px; font-style:italic; color: var(--tcl-primary);">Variable-height engineering prevents clay trapping.</p>
                     </div>
                 </div>
+
                 <div class="art-card">
-                    <img src="assets/images/simple-chop-ex.png" class="art-image">
+                    <img src="assets/images/hex-lattice-close-up.JPG" class="art-image" alt="Hex Lattice Impression">
                     <div class="art-info">
-                        <h3>The Standard Mark</h3>
-                        <p class="desc"><strong>The Crowd Favorite.</strong> Simple, deep-cut initials.</p>
-                        <p class="desc" style="margin-top:5px; font-style:italic;">Designed with our custom handles for comfort during repetitive stamping of large batches.</p>
+                        <h3>Geometric Fidelity</h3>
+                        <p class="desc"><strong>The Hex-Lattice.</strong> High-relief geometric impressions that remain crisp even through glazing.</p>
                     </div>
                 </div>
+
+                <div class="art-card">
+                    <img src="assets/images/mason-close-up.JPG" class="art-image" alt="Mason Brick Impression">
+                    <div class="art-info">
+                        <h3>Architectural Masonry</h3>
+                        <p class="desc"><strong>The Mason.</strong> Precisely spaced mortar lines engineered for a staggered brickwork finish.</p>
+                    </div>
+                </div>
+
+                <div class="art-card">
+                    <img src="assets/images/torqe-close-up.JPG" class="art-image" alt="Torqe Spiral Impression">
+                    <div class="art-info">
+                        <h3>The Spiral Torqe</h3>
+                        <p class="desc"><strong>Torqe Profile.</strong> A continuous high-energy spiral cut designed for large-surface texturing.</p>
+                    </div>
+                </div>
+
             </div>
         </section>
 
-        <div class="gallery-footer">
-            <a href="order.html" class="btn-minimal">Start Your Project &rarr;</a>
+        <div class="gallery-footer" style="padding-bottom: 100px;">
+            <a href="order.html" class="btn-launch">Start Your Project &rarr;</a>
         </div>
 
     </div>
 
     <footer>
-    <!-- Add the span with id="year" here -->
-    <p>&copy; <span id="year"></span> The Chop Lab</p>
-    <div style="margin-top: 10px;">
-        <a href="admin.html" style="color: #eee; font-size: 0.7rem; text-decoration: none;">Admin</a>
-    </div>
-</footer>
-
+        <p>&copy; <span id="year"></span> The Chop Lab</p>
+        <div style="margin-top: 20px;">
+            <a href="admin.html" style="color: #666; font-size: 0.7rem; text-decoration: none; text-transform: uppercase; letter-spacing: 1px;">Admin Portal</a>
+        </div>
+    </footer>
 
     <script src="assets/js/nav.js"></script>
+    <script>
+        // Simple script to keep the year updated
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>

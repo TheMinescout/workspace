@@ -8,17 +8,45 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="assets/images/Favicon.png">
     
-    <!-- 1. LOAD FIREBASE SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#D26244">
+
+    <style>
+        /* Table and Portal Specific Styling */
+        .status-pill {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #eee;
+            color: #333;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            border-radius: 2px;
+        }
+        th {
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: #888;
+            border-bottom: 1px solid var(--tcl-border);
+        }
+        .portal-input {
+            margin-bottom: 15px;
+            border: 1px solid var(--tcl-border);
+            border-radius: 0;
+            padding: 14px;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="container nav-flex">
-            <a href="index.html" class="logo">The Chop Lab.</a>
+            <a href="index.html" class="logo">The Chop Lab<span>.</span></a>
             <div class="menu-toggle">&#9776;</div>
         </div>
     </nav>
@@ -31,45 +59,42 @@
         <a href="account.html" class="current">My Account</a>
     </div>
 
-    <div class="container" style="margin-top: 50px; min-height: 60vh;">
+    <div class="container" style="margin-top: 80px; min-height: 70vh; max-width: 900px;">
         
-        <!-- LOGIN FORM -->
-        <div id="auth-container" class="order-form" style="max-width: 400px; text-align: center;">
-            <h2 style="font-family:'Playfair Display'; margin-bottom: 20px;">Client Portal</h2>
-            <p style="color:#666; margin-bottom: 30px;">Login to view project status and final drafts.</p>
+        <div id="auth-container" class="order-form" style="max-width: 450px; margin: 0 auto; padding: 50px; border: 1px solid var(--tcl-border); background: #fff;">
+            <h2 style="font-family:'Playfair Display'; font-size: 2rem; margin-bottom: 15px; text-align: center;">Client Portal</h2>
+            <p style="color:#666; margin-bottom: 35px; text-align: center; font-size: 0.95rem;">Login to view project status and final engineering drafts.</p>
             
-            <input type="email" id="loginEmail" placeholder="Email Address" style="margin-bottom: 15px;">
-            <input type="password" id="loginPass" placeholder="Password" style="margin-bottom: 20px;">
+            <input type="email" id="loginEmail" class="portal-input" placeholder="Email Address">
+            <input type="password" id="loginPass" class="portal-input" placeholder="Password">
             
-            <button onclick="handleLogin()" class="btn-launch">Log In</button>
-            <button onclick="handleSignup()" class="btn-minimal" style="margin-top: 20px; font-size: 0.9rem; border:none;">Create Account</button>
+            <button onclick="handleLogin()" class="btn-launch" style="width: 100%; margin-top: 10px;">Log In</button>
+            <button onclick="handleSignup()" class="btn-minimal" style="margin-top: 25px; width: 100%; font-size: 0.75rem; background: transparent; color: #888; border: 1px solid #eee;">Create New Account</button>
             
-            <p id="authMsg" style="color: red; margin-top: 15px; font-size: 0.9rem;"></p>
+            <p id="authMsg" style="color: var(--tcl-primary); margin-top: 20px; font-size: 0.85rem; text-align: center;"></p>
         </div>
 
-        <!-- USER DASHBOARD -->
         <div id="dashboard-container" class="hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 40px;">
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 50px; border-bottom: 1px solid var(--tcl-border); padding-bottom: 20px;">
                 <h1 style="font-family:'Playfair Display'; font-size: 2.5rem;">Project History</h1>
-                <button onclick="handleLogout()" class="btn-minimal" style="font-size:0.9rem;">Sign Out</button>
+                <button onclick="handleLogout()" class="btn-minimal" style="font-size:0.7rem; background: #eee; color: #333; padding: 8px 16px;">Sign Out</button>
             </div>
 
-            <p id="user-email-display" style="color:#888; margin-bottom: 20px;">Loading projects...</p>
+            <p id="user-email-display" style="color:#888; margin-bottom: 30px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Retrieving lab records...</p>
 
-            <div style="overflow-x:auto; border:1px solid #eee; border-radius:4px;">
+            <div style="overflow-x:auto; background: #fff; border: 1px solid var(--tcl-border);">
                 <table style="width:100%; border-collapse:collapse;">
-                    <thead style="background:#2C3E50; color:white; font-family:'Roboto Mono'; font-size:0.85rem;">
+                    <thead>
                         <tr>
-                            <th style="padding:15px; text-align:left;">Date</th>
-                            <th style="padding:15px; text-align:left;">ID</th>
-                            <th style="padding:15px; text-align:left;">Project</th>
-                            <th style="padding:15px; text-align:left;">Status</th>
-                            <th style="padding:15px; text-align:left;">Final Render</th>
+                            <th style="padding:20px; text-align:left; font-size: 0.7rem;">Date</th>
+                            <th style="padding:20px; text-align:left; font-size: 0.7rem;">ID</th>
+                            <th style="padding:20px; text-align:left; font-size: 0.7rem;">Project</th>
+                            <th style="padding:20px; text-align:left; font-size: 0.7rem;">Status</th>
+                            <th style="padding:20px; text-align:left; font-size: 0.7rem;">Engineering Draft</th>
                         </tr>
                     </thead>
-                    <tbody id="historyTableBody" style="font-family:'Lato'; font-size:0.9rem;">
-                        <!-- Data inserted here -->
-                    </tbody>
+                    <tbody id="historyTableBody">
+                        </tbody>
                 </table>
             </div>
         </div>
@@ -77,35 +102,28 @@
     </div>
 
     <footer>
-        <p>&copy; The Chop Lab</p>
+        <p>&copy; <span id="footer-year"></span> The Chop Lab</p>
     </footer>
 
-    <!-- 2. LOAD SCRIPTS -->
     <script src="assets/js/nav.js"></script>
-    
-    <!-- 3. LOAD YOUR CONFIG (GitIgnored File) -->
     <script src="assets/js/firebase-config.js"></script>
 
-    <!-- 4. PAGE LOGIC -->
     <script>
-        // --- GOOGLE SCRIPT URL ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxA0tHDzsc4baNHSURGJRMFVvRpXLZMAL0Hhkezq5xC641ehY5asGkTD1X4k6uauBJF9A/exec";
+        document.getElementById('footer-year').textContent = new Date().getFullYear();
 
-        // Auth Listener (auth object comes from firebase-config.js)
         if(typeof auth !== 'undefined') {
             auth.onAuthStateChanged((user) => {
                 if (user) {
                     document.getElementById('auth-container').classList.add('hidden');
                     document.getElementById('dashboard-container').classList.remove('hidden');
-                    document.getElementById('user-email-display').innerText = "Logged in as: " + user.email;
+                    document.getElementById('user-email-display').innerText = "Logged in: " + user.email;
                     fetchHistory(user.email);
                 } else {
                     document.getElementById('auth-container').classList.remove('hidden');
                     document.getElementById('dashboard-container').classList.add('hidden');
                 }
             });
-        } else {
-            console.error("Firebase Auth not initialized. Check firebase-config.js path.");
         }
 
         function handleLogin() {
@@ -119,56 +137,49 @@
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
             auth.createUserWithEmailAndPassword(email, pass)
-                .then(() => { alert("Account created! You are now logged in."); })
+                .then(() => { alert("Account created! Accessing lab records..."); })
                 .catch((error) => { document.getElementById('authMsg').innerText = error.message; });
         }
 
-        function handleLogout() {
-            auth.signOut();
-        }
+        function handleLogout() { auth.signOut(); }
 
         async function fetchHistory(email) {
             const tbody = document.getElementById('historyTableBody');
-            tbody.innerHTML = '<tr><td colspan="5" style="padding:20px; text-align:center;">Retrieving records from the lab...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="padding:40px; text-align:center; color: #888;">Scanning database...</td></tr>';
 
             try {
                 const response = await fetch(SCRIPT_URL + "?email=" + encodeURIComponent(email));
                 const data = await response.json();
-
                 tbody.innerHTML = '';
 
                 if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="padding:20px; text-align:center;">No project history found for this email.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" style="padding:40px; text-align:center; color: #888;">No project history found for this email address.</td></tr>';
                     return;
                 }
 
                 data.reverse().forEach(row => {
                     const date = new Date(row[0]).toLocaleDateString();
+                    let renderLink = `<span style="color:#ccc;">TBD</span>`;
                     
-                    // Render Link (Col I -> Index 8)
-                    let renderLink = `<span style="color:#ccc;">Pending</span>`;
                     if (row[8] && row[8].startsWith('http')) {
-                        renderLink = `<a href="${row[8]}" target="_blank" class="btn-minimal" style="font-size:0.8rem; border-bottom:1px solid #D26244;">VIEW DRAFT</a>`;
+                        renderLink = `<a href="${row[8]}" target="_blank" style="color: var(--tcl-primary); font-weight:700; text-decoration:none; font-size: 0.8rem;">VIEW RENDER &rarr;</a>`;
                     }
 
-                    // Status (Col J -> Index 9)
                     const status = row[9] || "Received";
-
                     const tr = document.createElement('tr');
-                    tr.style.borderBottom = "1px solid #eee";
+                    tr.style.borderBottom = "1px solid #f5f5f5";
                     tr.innerHTML = `
-                        <td style="padding:15px;">${date}</td>
-                        <td style="padding:15px; font-family:'Roboto Mono';">${row[1]}</td>
-                        <td style="padding:15px;">${row[4]}</td>
-                        <td style="padding:15px;"><span class="status-pill">${status}</span></td>
-                        <td style="padding:15px;">${renderLink}</td>
+                        <td style="padding:20px;">${date}</td>
+                        <td style="padding:20px; font-family: monospace; color: #888;">${row[1]}</td>
+                        <td style="padding:20px; font-weight:700;">${row[4]}</td>
+                        <td style="padding:20px;"><span class="status-pill">${status}</span></td>
+                        <td style="padding:20px;">${renderLink}</td>
                     `;
                     tbody.appendChild(tr);
                 });
 
             } catch (error) {
-                console.error(error);
-                tbody.innerHTML = '<tr><td colspan="5" style="padding:20px; text-align:center; color:red;">Connection Error.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="padding:40px; text-align:center; color:red;">Connection Error. Please try again.</td></tr>';
             }
         }
     </script>
