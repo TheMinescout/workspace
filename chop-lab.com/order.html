@@ -77,7 +77,7 @@
                 </div>
                 <div class="form-group">
                     <label>Handle Style</label>
-                    <img src="assets/images/handle-options.png" alt="Handles" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
+                    <img src="assets/images/handle-options.png" alt="Handles" style="width:100%; margin-bottom:10px; border:1px solid #eee; border-radius: 8px;">
                     <select name="handleShape">
                         <option value="standard-round">Standard Handle (Circular Base)</option>
                         <option value="standard-hex">Standard Handle (Hexagonal Base)</option>
@@ -113,7 +113,7 @@
                 </div>
                 <div class="form-group">
                     <label>Handle Style</label>
-                    <img src="assets/images/handle-options.png" alt="Handles" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
+                    <img src="assets/images/handle-options.png" alt="Handles" style="width:100%; margin-bottom:10px; border:1px solid #eee; border-radius: 8px;">
                     <select name="handleShapeComplex">
                         <option value="standard-round">Standard Handle (Circular Base)</option>
                         <option value="standard-hex">Standard Handle (Hexagonal Base)</option>
@@ -139,26 +139,32 @@
             <div id="opt-roller-4in" class="dynamic-section hidden">
                 <h3>Configuration: 4" Texture Roller</h3>
                 <div class="form-group">
-                    <label>Select Texture</label>
-                    <img src="assets/images/roller-options.png" alt="Rollers" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
-                    <select name="rollerTexture4in">
-                        <option value="torque">Torque (Spiral)</option>
-                        <option value="hex-lattice">Hex-Lattice</option>
-                        <option value="mason">Mason (Brick Pattern)</option>
-                    </select>
+                    <label>Select Texture Profile</label>
+                    <input type="hidden" name="rollerTexture4in" id="rollerTexture4in" value="">
+                    
+                    <div class="visual-selector" onclick="openTextureModal('rollerTexture4in', 'img-preview-4in', 'text-preview-4in')">
+                        <img id="img-preview-4in" src="assets/images/2744.jpg" alt="Select Texture">
+                        <div class="selector-content">
+                            <span id="text-preview-4in" class="selector-title">Click to Choose Texture</span>
+                            <span class="selector-action">View Gallery &rarr;</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div id="opt-roller-10in" class="dynamic-section hidden">
                 <h3>Configuration: 10" Texture Roller</h3>
                 <div class="form-group">
-                    <label>Select Texture</label>
-                    <img src="assets/images/roller-options.png" alt="Rollers" style="width:100%; margin-bottom:10px; border:1px solid #eee;">
-                    <select name="rollerTexture10in">
-                        <option value="torque">Torque (Spiral)</option>
-                        <option value="hex-lattice">Hex-Lattice</option>
-                        <option value="mason">Mason (Brick Pattern)</option>
-                    </select>
+                    <label>Select Texture Profile</label>
+                    <input type="hidden" name="rollerTexture10in" id="rollerTexture10in" value="">
+                    
+                    <div class="visual-selector" onclick="openTextureModal('rollerTexture10in', 'img-preview-10in', 'text-preview-10in')">
+                        <img id="img-preview-10in" src="assets/images/2744.jpg" alt="Select Texture">
+                        <div class="selector-content">
+                            <span id="text-preview-10in" class="selector-title">Click to Choose Texture</span>
+                            <span class="selector-action">View Gallery &rarr;</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -209,8 +215,8 @@
                 <textarea name="comments" placeholder="E.g. Rush order, specific sizing notes, questions..."></textarea>
             </div>
 
-            <div class="form-group" style="background: #f9f9f9; padding: 15px; border-left: 3px solid #D26244; margin-top: 30px;">
-                <h4 style="margin:0 0 10px 0; font-family:'Playfair Display', serif;">The Process</h4>
+            <div class="form-group" style="background: #f9f9f9; padding: 15px; border-left: 3px solid #D26244; margin-top: 30px; border-radius: 4px;">
+                <h4 style="margin:0 0 10px 0; font-family:'Playfair Display', serif; color:#3A3F42;">The Process</h4>
                 <ul style="font-size: 0.85rem; color: #555; padding-left: 20px; margin: 0;">
                     <li style="margin-bottom: 5px;">This form starts the engineering process. <strong>No payment is required today.</strong></li>
                     <li style="margin-bottom: 5px;">I will email you a digital draft for approval before printing.</li>
@@ -239,7 +245,116 @@
         </div>
     </div>
 
+    <div id="textureModal" class="modal-overlay hidden">
+        <div class="modal-box modal-large" style="max-width: 800px; padding: 30px;">
+            <span class="close-modal" onclick="closeTextureModal()" style="position:absolute; top:15px; right:20px; font-size:1.5rem; cursor:pointer; color:#888;">&times;</span>
+            
+            <div id="texture-step-1">
+                <h2 style="margin-bottom: 20px; font-family: 'Playfair Display', serif; color: #D26244;">Select a Texture Profile</h2>
+                <div class="texture-grid">
+                    
+                    <div class="texture-card" onclick="viewTextureDetails('Torque (Spiral)', 'torque', ['2738.jpg', '2739.jpg', '2740.jpg'])">
+                        <img src="assets/images/2738.jpg" alt="Torque Roller">
+                        <h3>Torque (Spiral)</h3>
+                        <p>Deep, continuous diagonal cut.</p>
+                    </div>
+
+                    <div class="texture-card" onclick="viewTextureDetails('Hex-Lattice', 'hex', ['2735.jpg', '2734.jpg', '2733.jpg'])">
+                        <img src="assets/images/2735.jpg" alt="Hex Roller">
+                        <h3>Hex-Lattice</h3>
+                        <p>Interlocking structural honeycomb.</p>
+                    </div>
+
+                    <div class="texture-card" onclick="viewTextureDetails('Mason (Brick)', 'mason', ['2745.jpg', '2744.jpg', '2743.jpg'])">
+                        <img src="assets/images/2745.jpg" alt="Mason Roller">
+                        <h3>Mason (Brick)</h3>
+                        <p>Classic staggered architectural brick.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="texture-step-2" class="hidden">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <button onclick="backToOverview()" style="background:none; border:none; color:#D26244; font-weight:bold; cursor:pointer; font-size:1rem;">&larr; Back to Profiles</button>
+                    <h2 id="detail-title" style="margin:0; font-family: 'Playfair Display', serif;">Texture Name</h2>
+                    <div style="width: 100px;"></div> </div>
+                
+                <div class="detail-gallery" id="detail-gallery">
+                    </div>
+
+                <button class="btn-launch" id="confirmTextureBtn" style="width:100%; margin-top:25px;" onclick="confirmTextureSelection()">Lock In This Texture</button>
+            </div>
+
+        </div>
+    </div>
+
     <script src="assets/js/nav.js"></script>
     <script src="assets/js/order.js"></script>
+
+    <script>
+        let currentTargetInputId = '';
+        let currentTargetImgId = '';
+        let currentTargetTextId = '';
+        let pendingTextureValue = '';
+        let pendingTextureName = '';
+        let pendingTextureMainImage = '';
+
+        function openTextureModal(inputId, imgId, textId) {
+            currentTargetInputId = inputId;
+            currentTargetImgId = imgId;
+            currentTargetTextId = textId;
+            
+            document.getElementById('textureModal').classList.remove('hidden');
+            backToOverview(); // Always open on Step 1
+        }
+
+        function closeTextureModal() {
+            document.getElementById('textureModal').classList.add('hidden');
+        }
+
+        function viewTextureDetails(name, value, imageArray) {
+            // Save what the user clicked so we can apply it later
+            pendingTextureValue = value;
+            pendingTextureName = name;
+            pendingTextureMainImage = 'assets/images/' + imageArray[0];
+
+            // Update Step 2 UI
+            document.getElementById('detail-title').innerText = name;
+            
+            const galleryDiv = document.getElementById('detail-gallery');
+            galleryDiv.innerHTML = ''; // Clear old images
+            
+            // Add the 3 new images
+            imageArray.forEach(img => {
+                const imgEl = document.createElement('img');
+                imgEl.src = 'assets/images/' + img;
+                imgEl.className = 'gallery-detail-img';
+                galleryDiv.appendChild(imgEl);
+            });
+
+            // Switch views
+            document.getElementById('texture-step-1').classList.add('hidden');
+            document.getElementById('texture-step-2').classList.remove('hidden');
+        }
+
+        function backToOverview() {
+            document.getElementById('texture-step-2').classList.add('hidden');
+            document.getElementById('texture-step-1').classList.remove('hidden');
+        }
+
+        function confirmTextureSelection() {
+            // 1. Update the hidden form input
+            document.getElementById(currentTargetInputId).value = pendingTextureValue;
+            
+            // 2. Update the visual UI on the main form
+            document.getElementById(currentTargetImgId).src = pendingTextureMainImage;
+            document.getElementById(currentTargetTextId).innerText = pendingTextureName;
+            document.getElementById(currentTargetTextId).style.color = '#D26244';
+
+            // 3. Close the modal
+            closeTextureModal();
+        }
+    </script>
 </body>
 </html>

@@ -5,83 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Minescout - Switching Frequencies</title>
   
-  <!-- Google Fonts: Graffiti & Monospace -->
+  <!-- Google Fonts: Editorial Serif and Clean Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --neon-yellow: #FFDE00;
-      --hot-pink: #FF007F;
-      --cyan: #00E5FF;
-      --black: #111111;
-      --white: #FAFAFA;
+      /* Organic Modern Palette matching Jayme's new site */
+      --forest: #2D3A2D;     
+      --sage: #4F5D4F;       
+      --wood: #C2A378;       
+      --clay: #E8E2D6;       
+      --wall: #F9F7F2;       
+      --charcoal: #2C3333;   
+      --white: #FFFFFF;
       
-      --font-graffiti: 'Permanent Marker', cursive;
-      --font-body: 'Space Mono', monospace;
+      --font-header: 'Playfair Display', serif;
+      --font-body: 'Inter', sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--neon-yellow);
-      background-image: radial-gradient(var(--black) 2px, transparent 2px);
-      background-size: 30px 30px;
+      background-color: var(--wall);
       font-family: var(--font-body);
-      color: var(--black);
+      color: var(--charcoal);
       height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     .redirect-container {
-      background: var(--black);
-      border: 6px solid var(--black);
-      box-shadow: 15px 15px 0px var(--hot-pink), -15px -15px 0px var(--cyan);
-      padding: 3rem;
+      background: var(--white);
+      border: 1px solid var(--clay);
+      padding: 4rem 3rem;
       text-align: center;
       max-width: 90%;
       width: 500px;
-      transform: rotate(-1.5deg);
-      animation: shift 5s infinite ease-in-out;
+      box-shadow: 0 20px 50px rgba(45, 58, 45, 0.05);
+      border-radius: 4px;
+      position: relative;
     }
 
-    @keyframes shift {
-      0%, 100% { transform: rotate(-1.5deg) scale(1); }
-      50% { transform: rotate(1deg) scale(1.02); }
+    /* Subtle decorative leaf-style corners */
+    .redirect-container::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 40px;
+      height: 40px;
+      border-top: 2px solid var(--wood);
+      border-left: 2px solid var(--wood);
     }
 
     h1 {
-      font-family: var(--font-graffiti);
-      color: var(--cyan);
-      font-size: 2.5rem;
+      font-family: var(--font-header);
+      color: var(--forest);
+      font-size: 2.2rem;
       margin-bottom: 1rem;
       text-transform: uppercase;
-      text-shadow: 4px 4px 0px var(--hot-pink);
+      letter-spacing: 0.1em;
+      font-weight: 500;
     }
 
     p {
-      color: var(--white);
-      font-weight: 700;
-      margin-bottom: 2rem;
+      color: var(--sage);
+      font-weight: 400;
+      margin-bottom: 2.5rem;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
     }
 
-    /* Retro Progress Bar */
+    /* Refined Progress Bar */
     .bar-container {
       width: 100%;
-      height: 25px;
-      background: #222;
-      border: 3px solid var(--white);
-      margin-bottom: 2rem;
+      height: 4px;
+      background: var(--clay);
+      margin-bottom: 2.5rem;
       position: relative;
+      overflow: hidden;
     }
 
     .bar-fill {
       height: 100%;
-      background: var(--neon-yellow);
+      background: var(--wood);
       width: 0%;
       animation: fillBar 3s linear forwards;
     }
@@ -93,27 +105,28 @@
 
     .btn-manual {
       display: inline-block;
-      background: var(--hot-pink);
+      background-color: var(--forest);
       color: var(--white);
-      padding: 12px 25px;
+      padding: 1rem 2rem;
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
-      border: 4px solid var(--black);
-      box-shadow: 6px 6px 0px var(--cyan);
-      transition: all 0.1s ease;
+      letter-spacing: 0.2em;
+      font-size: 0.75rem;
+      transition: all 0.3s ease;
+      border-radius: 2px;
     }
 
     .btn-manual:hover {
-      transform: translate(3px, 3px);
-      box-shadow: 2px 2px 0px var(--cyan);
-      background: var(--white);
-      color: var(--black);
+      background-color: var(--wood);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     }
 
     .timer-text {
-      color: var(--hot-pink);
-      font-size: 1.2rem;
+      color: var(--wood);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
     }
   </style>
 </head>
@@ -121,21 +134,21 @@
 
   <div class="redirect-container">
     <h1>New Signal Found</h1>
-    <p>Minescout is switching to a new frequency. Bouncing you in <span id="timer" class="timer-text">3</span>...</p>
+    <p>Minescout is switching to a new frequency.<br>Bouncing you in <span id="timer" class="timer-text">3</span>...</p>
     
     <div class="bar-container">
       <div class="bar-fill"></div>
     </div>
 
-    <a href="https://minescout-ai.pages.dev/" class="btn-manual">Drop In Now ➔</a>
+    <a href="https://handmadebyjayme.pages.dev/" class="btn-manual">Drop In Now ➔</a>
   </div>
 
   <script>
-    const url = "https://minescout-ai.pages.dev/";
+    const url = "https://handmadebyjayme.pages.dev/";
     let time = 3;
     const display = document.getElementById('timer');
 
-    // Automatic countdown
+    // Automatic countdown logic
     const interval = setInterval(() => {
       time--;
       display.textContent = time;
@@ -145,7 +158,7 @@
       }
     }, 1000);
 
-    // Fallback if JS is slow
+    // Fallback if browser script execution is delayed
     setTimeout(() => {
       window.location.href = url;
     }, 3500);

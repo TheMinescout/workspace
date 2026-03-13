@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="/styles/main.css?v=8.1" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     .clients-wrap { max-width: 640px; }
     .clients-intro { font-size: 0.88rem; color: var(--muted); line-height: 1.8; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
@@ -25,6 +25,7 @@
       border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
       margin-bottom: 1.25rem; opacity: 0; animation: fadeUp 0.5s ease forwards;
       animation-delay: var(--d, 0.3s);
+      background: var(--bg);
     }
 
     .client-card-header { padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; border-bottom: 1px solid var(--border); }
@@ -38,8 +39,12 @@
     .client-card-body { padding: 1.25rem 1.5rem; }
     .client-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
     .client-detail-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.25rem; }
-    .client-detail-val { font-size: 0.78rem; color: var(--fg); }
+    .client-detail-val { font-size: 0.78rem; color: var(--fg); font-weight: 500; }
     .client-note { font-size: 0.75rem; color: var(--muted); line-height: 1.7; border-top: 1px solid var(--border); padding-top: 1rem; }
+
+    /* CTA / Buttons */
+    .view-link { display: inline-block; margin-top: 1rem; font-size: 0.75rem; font-weight: 600; color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--border); transition: border-color 0.2s; }
+    .view-link:hover { border-color: var(--fg); }
 
     /* Demo card */
     .demo-card { border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.5s ease 0.55s forwards; }
@@ -58,26 +63,24 @@
 </head>
 <body>
 
-
-
   <main class="main main--page">
     <div class="page-content clients-wrap">
       <p class="page-label">Minescout AI</p>
       <h1 class="page-title">Client Work</h1>
-      <p class="clients-intro">Minescout AI launched in early 2026. I'm currently onboarding my first Charter Partners — local Sammamish businesses who get the full stack free in exchange for a signed testimonial and 12 months of feedback. Case studies will be published here as they go live.</p>
+      <p class="clients-intro">Minescout AI provides strategic automation and modernization for Sammamish businesses. We are currently working with our **Charter Partners** — foundational clients who help us refine our enterprise systems and high-performance digital presence. Case studies are updated here weekly.</p>
 
       <!-- Status -->
       <div class="status-bar">
         <div class="status-dot-live"></div>
-        <div class="status-text"><strong>Currently accepting Charter Partner applications.</strong> 3 spots remaining for the inaugural cohort. Setup is free — see <a href="/ai/pricing" style="color:var(--fg);border-bottom:1px solid var(--border);">pricing</a> for details.</div>
+        <div class="status-text"><strong>2 Charter spots remaining.</strong> The inaugural cohort is 33% full. Free implementation for local firms &mdash; see <a href="/ai/pricing" style="color:var(--fg);border-bottom:1px solid var(--border);">pricing</a>.</div>
       </div>
 
-      <!-- Demo / internal project -->
+      <!-- Charter Partner #1 -->
       <div class="client-card" style="--d:0.32s;">
         <div class="client-card-header">
           <div>
-            <div class="client-name">Smith &amp; Cole Law — Live Demo</div>
-            <div class="client-type">Mock law firm &mdash; internal demo project</div>
+            <div class="client-name">Handmade by Jayme</div>
+            <div class="client-type">Artisanal Skincare &amp; Sustainability Consulting &mdash; Inaugural Partner</div>
           </div>
           <span class="client-status status-live">Live</span>
         </div>
@@ -85,77 +88,94 @@
           <div class="client-detail-grid">
             <div>
               <div class="client-detail-label">Plan</div>
-              <div class="client-detail-val">Full AI Upgrade (demo)</div>
+              <div class="client-detail-val">Charter Partner Upgrade</div>
             </div>
             <div>
               <div class="client-detail-label">Industry</div>
-              <div class="client-detail-val">Legal services</div>
+              <div class="client-detail-val">Lifestyle &amp; E-commerce</div>
             </div>
             <div>
-              <div class="client-detail-label">Features</div>
-              <div class="client-detail-val">Chat widget, feedback loop, Google Sheets Training Bridge</div>
+              <div class="client-detail-label">Solutions</div>
+              <div class="client-detail-val">Editorial Remodel, Dynamic CMS</div>
             </div>
             <div>
               <div class="client-detail-label">Launched</div>
-              <div class="client-detail-val">February 2026</div>
+              <div class="client-detail-val">March 2026</div>
             </div>
           </div>
-          <p class="client-note">This is a working demo I built to show local businesses exactly what they'd be getting. The AI answers as the firm, the feedback thumbs up/down system logs to a real Google Sheet, and the "Want this?" CTA at the end links to my contact page. Try it at <a href="/ai/demo" style="color:var(--fg);border-bottom:1px solid var(--border);">minescout.net/ai/demo</a>.</p>
+          <p class="client-note">Our first Charter implementation. We transformed a legacy archive into a high-performance "Organic Modern" site featuring a Google Docs powered CMS for real-time editorial publishing and brand identity modernization.
+          <br><a href="/ai/clients/demo/handmadebyjayme/" class="view-link">View Project Demo &rarr;</a></p>
         </div>
       </div>
 
-      <!-- Charter spots 1, 2 & 3 -->
+      <!-- Internal Project -->
       <div class="client-card" style="--d:0.4s;">
         <div class="client-card-header">
           <div>
-            <div class="client-name">Charter Partner &mdash; Spots #1, #2 &amp; #3</div>
-            <div class="client-type">Sammamish area businesses &mdash; category open</div>
+            <div class="client-name">Smith &amp; Cole Law</div>
+            <div class="client-type">Mock Law Firm &mdash; Standard AI Demo</div>
           </div>
-          <span class="client-status status-prospect">3 spots open</span>
+          <span class="client-status status-live">Demo</span>
         </div>
         <div class="client-card-body">
           <div class="client-detail-grid">
             <div>
               <div class="client-detail-label">Plan</div>
-              <div class="client-detail-val">Charter Partner (free)</div>
+              <div class="client-detail-val">Full AI Upgrade (Mock)</div>
             </div>
             <div>
-              <div class="client-detail-label">Setup cost</div>
-              <div class="client-detail-val">$0 (valued at $500)</div>
+              <div class="client-detail-label">Industry</div>
+              <div class="client-detail-val">Professional Services</div>
             </div>
             <div>
-              <div class="client-detail-label">Commitment</div>
-              <div class="client-detail-val">Signed testimonial + 12mo feedback</div>
+              <div class="client-detail-label">Features</div>
+              <div class="client-detail-val">RAG Ingestion, Lead Triage</div>
             </div>
             <div>
-              <div class="client-detail-label">Status</div>
-              <div class="client-detail-val">All 3 spots available</div>
+              <div class="client-detail-label">Created</div>
+              <div class="client-detail-val">February 2026</div>
             </div>
           </div>
-          <p class="client-note">Three Charter spots are available in the inaugural cohort. Full AI Upgrade at no cost in exchange for a signed testimonial and 12 months of active feedback. Case studies from all three partners will be published here. <a href="/contact" style="color:var(--fg);border-bottom:1px solid var(--border);">Reach out to apply &rarr;</a></p>
+          <p class="client-note">A working internal demo showcasing how AI can answer complex service inquiries and triage new leads for a law firm. Try it at <a href="/ai/demo" style="color:var(--fg);border-bottom:1px solid var(--border);">minescout.net/ai/demo</a>.</p>
         </div>
       </div>
 
-      <!-- Try the demo -->
-      <div class="demo-card">
-        <div class="demo-card-title">&#128172; See it working — try the live demo</div>
-        <div class="demo-card-desc">NOT REAL: The Smith &amp; Cole demo is a fully functional AI chat widget on a mock law firm site. Ask it about hours, services, consultations — it answers as the business. The feedback buttons and Google Sheets logging all work live.</div>
-        <div class="demo-card-cta">
-          <a href="/demo" class="btn-primary">Try the demo</a>
-          <a href="/ai/process" class="btn-ghost">How it works &rarr;</a>
+      <!-- Remaining Charter spots -->
+      <div class="client-card" style="--d:0.48s;">
+        <div class="client-card-header">
+          <div>
+            <div class="client-name">Charter Partner &mdash; Spots #2 &amp; #3</div>
+            <div class="client-type">Open to Sammamish Local Businesses</div>
+          </div>
+          <span class="client-status status-prospect">2 spots open</span>
+        </div>
+        <div class="client-card-body">
+          <div class="client-detail-grid">
+            <div>
+              <div class="client-detail-label">Investment</div>
+              <div class="client-detail-val">$0.00 (Standard $500 setup)</div>
+            </div>
+            <div>
+              <div class="client-detail-label">Eligibility</div>
+              <div class="client-detail-val">Service/Retail (Sammamish based)</div>
+            </div>
+          </div>
+          <p class="client-note">Two spots remain in the inaugural cohort. Get a complete website modernization and a custom AI assistant at no cost in exchange for feedback. <a href="/contact" style="color:var(--fg);border-bottom:1px solid var(--border);">Contact to apply &rarr;</a></p>
         </div>
       </div>
 
-      <div class="clients-cta">
-        <a href="/contact" class="btn-primary">Apply for a Charter spot</a>
-        <a href="/ai/pricing" class="btn-ghost">View pricing &rarr;</a>
+      <div class="clients-cta" style="margin-top: 2rem;">
+        <a href="/contact" class="btn-primary">Apply for Charter spot</a>
+        <a href="/ai/roi" class="btn-ghost">Calculate ROI &rarr;</a>
       </div>
     </div>
   </main>
+
   <script src="/scripts/sidebar.js"></script>
   <script src="/scripts/main.js"></script>
   <script>
-    document.getElementById('copyright').textContent = '\u00A9 ' + new Date().getFullYear() + ' Minescout AI';
+    const cp = document.getElementById('copyright');
+    if (cp) cp.textContent = '\u00A9 ' + new Date().getFullYear() + ' Minescout AI';
   </script>
 </body>
 </html>
