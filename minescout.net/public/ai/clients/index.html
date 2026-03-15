@@ -46,12 +46,6 @@
     .view-link { display: inline-block; margin-top: 1rem; font-size: 0.75rem; font-weight: 600; color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--border); transition: border-color 0.2s; }
     .view-link:hover { border-color: var(--fg); }
 
-    /* Demo card */
-    .demo-card { border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.5s ease 0.55s forwards; }
-    .demo-card-title { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; color: var(--fg); margin-bottom: 0.5rem; }
-    .demo-card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.75; margin-bottom: 1.25rem; }
-    .demo-card-cta { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
-
     /* CTA bottom */
     .clients-cta { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.5s ease 0.6s forwards; }
 
@@ -67,20 +61,53 @@
     <div class="page-content clients-wrap">
       <p class="page-label">Minescout AI</p>
       <h1 class="page-title">Client Work</h1>
-      <p class="clients-intro">Minescout AI provides strategic automation and modernization for Sammamish businesses. We are currently working with our **Charter Partners** — foundational clients who help us refine our enterprise systems and high-performance digital presence. Case studies are updated here weekly.</p>
+      <p class="clients-intro">Minescout AI provides strategic automation and modernization for Sammamish businesses. We are currently working with our **Charter Partners** — foundational clients who help us refine our multi-tenant infrastructure and high-performance digital presence.</p>
 
       <!-- Status -->
       <div class="status-bar">
         <div class="status-dot-live"></div>
-        <div class="status-text"><strong>2 Charter spots remaining.</strong> The inaugural cohort is 33% full. Free implementation for local firms &mdash; see <a href="/ai/pricing" style="color:var(--fg);border-bottom:1px solid var(--border);">pricing</a>.</div>
+        <div class="status-text"><strong>1 Charter spot remaining.</strong> The inaugural cohort is 66% full. Free implementation for local firms &mdash; see <a href="/ai" style="color:var(--fg);border-bottom:1px solid var(--border);">Managed Intelligence</a>.</div>
+      </div>
+
+      <!-- Charter Partner #2 - NEW LIVE SITE -->
+      <div class="client-card" style="--d:0.3s;">
+        <div class="client-card-header">
+          <div>
+            <div class="client-name">Fern Carleton Studio</div>
+            <div class="client-type">Fine Arts &amp; Performance &mdash; Arts Charter Partner</div>
+          </div>
+          <span class="client-status status-live">Live</span>
+        </div>
+        <div class="client-card-body">
+          <div class="client-detail-grid">
+            <div>
+              <div class="client-detail-label">Plan</div>
+              <div class="client-detail-val">Charter Architecture Upgrade</div>
+            </div>
+            <div>
+              <div class="client-detail-label">Industry</div>
+              <div class="client-detail-val">Art &amp; Reasoning</div>
+            </div>
+            <div>
+              <div class="client-detail-label">Solutions</div>
+              <div class="client-detail-val">Artistic Edge CSS, Backstage CMS</div>
+            </div>
+            <div>
+              <div class="client-detail-label">Launched</div>
+              <div class="client-detail-val">March 2026</div>
+            </div>
+          </div>
+          <p class="client-note">A sophisticated visual archive built on our multi-tenant serverless engine. Features proprietary watercolor washes, deckled-edge architecture, and a custom Backstage dashboard for non-technical content management.
+          <br><a href="https://ferncarleton.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
+        </div>
       </div>
 
       <!-- Charter Partner #1 -->
-      <div class="client-card" style="--d:0.32s;">
+      <div class="client-card" style="--d:0.38s;">
         <div class="client-card-header">
           <div>
             <div class="client-name">Handmade by Jayme</div>
-            <div class="client-type">Artisanal Skincare &amp; Sustainability Consulting &mdash; Inaugural Partner</div>
+            <div class="client-type">Sustainability Consulting &mdash; Inaugural Partner</div>
           </div>
           <span class="client-status status-live">Live</span>
         </div>
@@ -96,20 +123,20 @@
             </div>
             <div>
               <div class="client-detail-label">Solutions</div>
-              <div class="client-detail-val">Editorial Remodel, Dynamic CMS</div>
+              <div class="client-detail-val">Editorial Remodel, EchoStream CMS</div>
             </div>
             <div>
               <div class="client-detail-label">Launched</div>
               <div class="client-detail-val">March 2026</div>
             </div>
           </div>
-          <p class="client-note">Our first Charter implementation. We transformed a legacy archive into a high-performance "Organic Modern" site featuring a Google Docs powered CMS for real-time editorial publishing and brand identity modernization.
-          <br><a href="/ai/clients/demo/handmadebyjayme/" class="view-link">View Project Demo &rarr;</a></p>
+          <p class="client-note">Our first Charter implementation. We transformed a legacy archive into a high-performance "Organic Modern" site featuring a Google Docs powered CMS for real-time editorial publishing within restricted networks.
+          <br><a href="https://jaymecarleton.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
         </div>
       </div>
 
       <!-- Internal Project -->
-      <div class="client-card" style="--d:0.4s;">
+      <div class="client-card" style="--d:0.45s;">
         <div class="client-card-header">
           <div>
             <div class="client-name">Smith &amp; Cole Law</div>
@@ -136,46 +163,42 @@
               <div class="client-detail-val">February 2026</div>
             </div>
           </div>
-          <p class="client-note">A working internal demo showcasing how AI can answer complex service inquiries and triage new leads for a law firm. Try it at <a href="/ai/demo" style="color:var(--fg);border-bottom:1px solid var(--border);">minescout.net/ai/demo</a>.</p>
+          <p class="client-note">A working internal demo showcasing how Managed Intelligence can answer complex service inquiries and triage new leads 24/7. Try the assistant at <a href="/ai/demo" style="color:var(--fg);border-bottom:1px solid var(--border);">minescout.net/ai/demo</a>.</p>
         </div>
       </div>
 
       <!-- Remaining Charter spots -->
-      <div class="client-card" style="--d:0.48s;">
+      <div class="client-card" style="--d:0.52s;">
         <div class="client-card-header">
           <div>
-            <div class="client-name">Charter Partner &mdash; Spots #2 &amp; #3</div>
+            <div class="client-name">Charter Partner &mdash; Final Spot (#3)</div>
             <div class="client-type">Open to Sammamish Local Businesses</div>
           </div>
-          <span class="client-status status-prospect">2 spots open</span>
+          <span class="client-status status-prospect">1 spot open</span>
         </div>
         <div class="client-card-body">
           <div class="client-detail-grid">
             <div>
               <div class="client-detail-label">Investment</div>
-              <div class="client-detail-val">$0.00 (Standard $500 setup)</div>
+              <div class="client-detail-val">$0.00 Beta Scholarship</div>
             </div>
             <div>
               <div class="client-detail-label">Eligibility</div>
-              <div class="client-detail-val">Service/Retail (Sammamish based)</div>
+              <div class="client-detail-val">Sammamish based organization</div>
             </div>
           </div>
-          <p class="client-note">Two spots remain in the inaugural cohort. Get a complete website modernization and a custom AI assistant at no cost in exchange for feedback. <a href="/contact" style="color:var(--fg);border-bottom:1px solid var(--border);">Contact to apply &rarr;</a></p>
+          <p class="client-note">One spot remains in our inaugural cohort. Organizations receive a complete website modernization and a custom AI assistant at no cost in exchange for feedback. <a href="/contact" style="color:var(--fg);border-bottom:1px solid var(--border);">Contact to apply &rarr;</a></p>
         </div>
       </div>
 
       <div class="clients-cta" style="margin-top: 2rem;">
-        <a href="/contact" class="btn-primary">Apply for Charter spot</a>
-        <a href="/ai/roi" class="btn-ghost">Calculate ROI &rarr;</a>
+        <a href="/contact" class="btn-primary">Claim Final Charter Spot</a>
+        <a href="/ai/roi" class="btn-ghost">Calculate Efficiency Gains &rarr;</a>
       </div>
     </div>
   </main>
 
   <script src="/scripts/sidebar.js"></script>
   <script src="/scripts/main.js"></script>
-  <script>
-    const cp = document.getElementById('copyright');
-    if (cp) cp.textContent = '\u00A9 ' + new Date().getFullYear() + ' Minescout AI';
-  </script>
 </body>
 </html>

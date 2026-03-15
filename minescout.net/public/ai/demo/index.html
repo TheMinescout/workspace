@@ -3,38 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Upgrade Demo — Thomas Carleton</title>
+  <title>AI Upgrade Demo — Minescout AI</title>
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; font-family: 'Jost', sans-serif; }
+    html, body { height: 100%; font-family: 'Jost', sans-serif; scroll-behavior: smooth; }
 
-    /* ── Demo banner at top ── */
+    /* ── Demo banner ── */
     .demo-banner {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 1000;
+      z-index: 3000;
       background: #1a1916;
       color: #faf9f7;
-      font-size: 0.75rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      padding: 0.6rem 1.5rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.75rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
-    .demo-banner-left {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
+    .demo-banner-left { display: flex; align-items: center; gap: 0.75rem; }
 
     .demo-dot {
       width: 7px; height: 7px;
@@ -46,143 +44,159 @@
 
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.3); }
+      50% { opacity: 0.5; transform: scale(1.4); }
     }
 
     .demo-banner a {
       color: #ff4d1c;
       text-decoration: none;
-      font-weight: 500;
-      border-bottom: 1px solid rgba(255,77,28,0.4);
-      transition: border-color 0.15s;
+      font-weight: 600;
+      transition: opacity 0.2s;
     }
 
-    .demo-banner a:hover { border-color: #ff4d1c; }
+    .demo-banner a:hover { opacity: 0.8; }
 
-    /* ── Mock business site ── */
-    body { background: #f8f7f4; padding-top: 36px; }
+    /* ── SPA Architecture ── */
+    body { background: #fdfcfb; padding-top: 40px; color: #1c2b3a; }
 
     .biz-nav {
-      background: #1c2b3a;
+      background: #fff;
       padding: 0 4rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 64px;
+      height: 80px;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 40px;
+      z-index: 1000;
     }
 
     .biz-logo {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: #fff;
+      color: #1c2b3a;
+      letter-spacing: -0.01em;
+      cursor: pointer;
     }
 
     .biz-logo span { color: #c9a96e; }
 
-    .biz-nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
+    .biz-nav-links { display: flex; gap: 2.5rem; list-style: none; }
     .biz-nav-links a {
-      font-size: 0.78rem;
-      font-weight: 400;
-      letter-spacing: 0.06em;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.7);
+      color: #1c2b3a;
       text-decoration: none;
       transition: color 0.15s;
+      cursor: pointer;
     }
 
-    .biz-nav-links a:hover { color: #fff; }
+    .biz-nav-links a:hover, .biz-nav-links a.active { color: #c9a96e; }
 
+    /* Views */
+    #view-content { min-height: calc(100vh - 120px); }
+    .page-view { display: none; animation: fadeIn 0.5s ease; }
+    .page-view.active { display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Shared Components ── */
     .biz-hero {
-      background: linear-gradient(135deg, #1c2b3a 0%, #2c3e50 100%);
-      padding: 6rem 4rem;
+      background: #1c2b3a;
+      padding: 8rem 4rem;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 4rem;
+      text-align: center;
+      color: #fff;
     }
-
-    .biz-hero-text { max-width: 520px; }
 
     .biz-hero-eyebrow {
-      font-size: 0.68rem;
-      font-weight: 500;
-      letter-spacing: 0.14em;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: #c9a96e;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .biz-hero-title {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(2rem, 4vw, 3rem);
+      font-size: clamp(2.5rem, 6vw, 4rem);
       font-weight: 700;
-      color: #fff;
-      line-height: 1.15;
-      margin-bottom: 1.25rem;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      max-width: 800px;
     }
 
     .biz-hero-sub {
-      font-size: 0.92rem;
-      color: rgba(255,255,255,0.65);
+      font-size: 1rem;
+      color: rgba(255,255,255,0.7);
       line-height: 1.8;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
+      max-width: 600px;
     }
 
     .biz-btn {
       display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.1em;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: #1c2b3a;
       background: #c9a96e;
-      padding: 0.85rem 1.75rem;
-      border-radius: 3px;
+      padding: 1.1rem 2.5rem;
+      border-radius: 2px;
       text-decoration: none;
-      transition: background 0.15s;
+      transition: transform 0.2s, background 0.2s;
+      cursor: pointer;
+      border: none;
     }
 
-    .biz-btn:hover { background: #b8945a; }
+    .biz-btn:hover { background: #b8945a; transform: translateY(-2px); }
 
-    .biz-section { padding: 4rem; background: #fff; }
-
+    .biz-section { padding: 6rem 4rem; background: #fff; }
     .biz-section-title {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #1c2b3a;
-      margin-bottom: 0.5rem;
-    }
-
-    .biz-section-sub { font-size: 0.82rem; color: #888; margin-bottom: 2.5rem; }
-
-    .biz-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-
-    .biz-card { border: 1px solid #e8e4dd; border-radius: 6px; padding: 1.5rem; }
-
-    .biz-card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
-
-    .biz-card-title {
       font-family: 'Playfair Display', serif;
-      font-size: 0.95rem;
+      font-size: 2.2rem;
       font-weight: 700;
-      color: #1c2b3a;
-      margin-bottom: 0.4rem;
+      margin-bottom: 1rem;
+      text-align: center;
     }
+    .biz-section-sub { font-size: 0.9rem; color: #888; text-align: center; margin-bottom: 4rem; }
 
-    .biz-card-desc { font-size: 0.78rem; color: #888; line-height: 1.65; }
+    .biz-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+    .biz-card { border: 1px solid #f0ede8; padding: 2.5rem; border-radius: 4px; transition: border-color 0.2s; }
+    .biz-card:hover { border-color: #c9a96e; }
+    .biz-card-icon { font-size: 1.8rem; margin-bottom: 1.25rem; color: #c9a96e; }
+    .biz-card-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 0.75rem; }
+    .biz-card-desc { font-size: 0.85rem; color: #666; line-height: 1.7; }
+
+    /* Team Layout */
+    .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4rem; max-width: 1000px; margin: 0 auto; }
+    .team-card { display: flex; gap: 2rem; align-items: center; }
+    .team-img { width: 150px; height: 150px; object-fit: cover; border-radius: 4px; filter: grayscale(0.5); border: 1px solid #eee; }
+    .team-img-placeholder { width: 150px; height: 150px; background: #1c2b3a; color: #fff; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+    .team-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 0.25rem; }
+    .team-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #c9a96e; letter-spacing: 0.1em; }
+
+    /* Contact Form Layout */
+    .contact-container { max-width: 600px; margin: 0 auto; background: #fdfcfb; padding: 4rem; border: 1px solid #eee; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; color: #888; }
+    .form-group input, .form-group textarea { width: 100%; padding: 1rem; border: 1px solid #eee; background: #fff; font-family: inherit; outline: none; }
 
     .biz-footer {
       background: #1c2b3a;
-      padding: 2rem 4rem;
+      padding: 4rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      color: #fff;
     }
 
     .biz-footer-text { font-size: 0.72rem; color: rgba(255,255,255,0.4); }
@@ -192,8 +206,7 @@
       position: fixed;
       bottom: 2rem;
       right: 2rem;
-      width: 56px;
-      height: 56px;
+      width: 60px; height: 60px;
       background: #1c2b3a;
       border-radius: 50%;
       border: none;
@@ -201,26 +214,26 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-      transition: transform 0.2s, background 0.2s;
-      z-index: 500;
+      font-size: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 2000;
     }
 
-    .chat-fab:hover { transform: scale(1.08); background: #2c3e50; }
-    .chat-fab .fab-close { display: none; }
+    .chat-fab:hover { transform: scale(1.1); }
+    .chat-fab .fab-close { display: none; color: #fff; }
     .chat-fab.open .fab-icon { display: none; }
     .chat-fab.open .fab-close { display: block; }
 
     .chat-badge {
       position: absolute;
-      top: -2px; right: -2px;
-      width: 18px; height: 18px;
+      top: -4px; right: -4px;
+      width: 22px; height: 22px;
       background: #ff4d1c;
       border-radius: 50%;
-      border: 2px solid #f8f7f4;
-      font-size: 0.55rem;
-      font-weight: 700;
+      border: 3px solid #fdfcfb;
+      font-size: 0.6rem;
+      font-weight: 800;
       color: #fff;
       display: flex;
       align-items: center;
@@ -229,260 +242,505 @@
 
     .chat-panel {
       position: fixed;
-      bottom: 5.5rem;
+      bottom: 6.5rem;
       right: 2rem;
-      width: 340px;
-      max-height: 520px;
+      width: 360px;
+      height: 580px;
+      max-height: calc(100vh - 10rem);
       background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+      border-radius: 16px;
+      box-shadow: 0 12px 60px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      z-index: 500;
-      transform: scale(0.92) translateY(16px);
+      z-index: 2000;
+      transform: scale(0.95) translateY(20px);
       opacity: 0;
       pointer-events: none;
-      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: bottom right;
     }
 
     .chat-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
 
-    .chat-panel-header { background: #1c2b3a; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; }
+    .chat-header { background: #1c2b3a; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    .chat-avatar { width: 40px; height: 40px; background: #c9a96e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .chat-info-name { font-size: 0.9rem; font-weight: 600; color: #fff; margin-bottom: 0.2rem; }
+    .chat-info-status { font-size: 0.7rem; color: #4caf82; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+    .chat-status-dot { width: 6px; height: 6px; background: #4caf82; border-radius: 50%; }
 
-    .chat-panel-avatar { width: 36px; height: 36px; background: #c9a96e; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; background: #fdfcfb; }
+    .msg { max-width: 85%; line-height: 1.6; font-size: 0.85rem; padding: 0.8rem 1rem; border-radius: 12px; }
+    .msg-bot { align-self: flex-start; background: #fff; border: 1px solid #eee; border-bottom-left-radius: 2px; }
+    .msg-user { align-self: flex-end; background: #1c2b3a; color: #fff; border-bottom-right-radius: 2px; }
 
-    .chat-panel-name { font-size: 0.85rem; font-weight: 500; color: #fff; }
+    .chat-input-area { padding: 1rem; border-top: 1px solid #eee; background: #fff; display: flex; align-items: center; gap: 0.5rem; }
+    .chat-input { flex: 1; border: none; outline: none; font-family: inherit; font-size: 0.85rem; padding: 0.5rem; }
+    .chat-submit { background: none; border: none; cursor: pointer; color: #1c2b3a; font-size: 1.2rem; transition: color 0.2s; }
+    .chat-submit:hover { color: #c9a96e; }
+    .chat-submit:disabled { opacity: 0.3; cursor: not-allowed; }
 
-    .chat-panel-status { font-size: 0.68rem; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 0.3rem; }
+    .typing { font-style: italic; font-size: 0.75rem; color: #999; margin-bottom: 0.5rem; padding-left: 1.5rem; display: none; }
 
-    .status-dot { width: 6px; height: 6px; background: #4caf82; border-radius: 50%; }
+    /* ── Admin Dashboard ── */
+    #admin-view { background: #f1f5f9; min-height: 100vh; padding: 4rem 2rem; padding-top: 80px; }
+    .admin-card { background: #fff; max-width: 800px; margin: 0 auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
+    .admin-header { background: #1c2b3a; color: #fff; padding: 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .admin-nav { display: flex; border-bottom: 1px solid #eee; }
+    .admin-nav-btn { flex: 1; padding: 1rem; border: none; background: none; cursor: pointer; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: #888; border-bottom: 2px solid transparent; }
+    .admin-nav-btn.active { color: #1c2b3a; border-bottom-color: #c9a96e; }
+    .admin-content { padding: 2.5rem; }
+    .admin-group { margin-bottom: 2rem; position: relative; }
+    .admin-group label { display: block; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #c9a96e; margin-bottom: 0.5rem; }
+    .admin-group input, .admin-group textarea { width: 100%; padding: 0.8rem; border: 1px solid #eee; border-radius: 4px; font-family: inherit; font-size: 0.9rem; outline: none; }
+    .save-bar { padding: 1.5rem 2.5rem; background: #fafafa; border-top: 1px solid #eee; text-align: right; }
 
-    .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; background: #f8f7f4; }
+    .admin-list-item { background: #fdfcfb; border: 1px solid #eee; padding: 1.5rem; border-radius: 6px; margin-bottom: 1.5rem; position: relative; }
+    .remove-btn { position: absolute; top: 1rem; right: 1rem; color: #e11d48; font-size: 0.6rem; font-weight: 700; cursor: pointer; background: none; border: none; text-transform: uppercase; }
 
-    .cmsg { display: flex; flex-direction: column; max-width: 82%; }
-    .cmsg.bot { align-self: flex-start; }
-    .cmsg.user { align-self: flex-end; align-items: flex-end; }
-
-    .cmsg-bubble { padding: 0.6rem 0.85rem; border-radius: 10px; font-size: 0.82rem; line-height: 1.6; }
-
-    .cmsg.bot .cmsg-bubble { background: #fff; color: #1a1916; border: 1px solid #e8e4dd; border-bottom-left-radius: 3px; }
-
-    .cmsg.user .cmsg-bubble { background: #1c2b3a; color: #fff; border-bottom-right-radius: 3px; }
-
-    .chat-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0 1rem 0.75rem; background: #f8f7f4; }
-
-    .chat-chip { font-family: 'Jost', sans-serif; font-size: 0.68rem; color: #1c2b3a; background: #fff; border: 1px solid #e8e4dd; border-radius: 14px; padding: 0.25rem 0.7rem; cursor: pointer; transition: all 0.15s; }
-
-    .chat-chip:hover { background: #f0ede8; border-color: #1c2b3a; }
-
-    .chat-input-row { display: flex; border-top: 1px solid #e8e4dd; background: #fff; }
-
-    .chat-input { flex: 1; font-family: 'Jost', sans-serif; font-size: 0.82rem; color: #1a1916; background: transparent; border: none; outline: none; padding: 0.75rem 1rem; }
-
-    .chat-send-btn { background: none; border: none; cursor: pointer; padding: 0.75rem 1rem; color: #1c2b3a; font-size: 1rem; }
-
-    .chat-send-btn:hover { color: #ff4d1c; }
-
-    .typing-dots { display: flex; gap: 3px; align-items: center; padding: 0.6rem 0.85rem; background: #fff; border: 1px solid #e8e4dd; border-radius: 10px; border-bottom-left-radius: 3px; }
-
-    .typing-dots span { width: 5px; height: 5px; background: #c0bab2; border-radius: 50%; animation: tdot 1.2s ease infinite; }
-
-    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-
-    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes tdot { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
-
-    /* ── Complete AI Upgrade CTA ── */
-    .chat-cta-banner {
-      position: fixed;
-      bottom: 5.5rem;
-      right: 2rem;
-      width: 340px;
-      background: #fff;
-      border: 1px solid #e8e4dd;
-      border-radius: 10px;
-      padding: 1.25rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      display: none;
-      z-index: 499;
-      font-size: 0.78rem;
-      color: #9a9488;
-      line-height: 1.6;
-    }
-
-    .chat-cta-banner strong { color: #1a1916; display: block; margin-bottom: 0.4rem; font-size: 0.85rem; }
-
-    .chat-cta-banner a {
-      display: inline-block;
-      margin-top: 0.8rem;
-      font-size: 0.68rem;
-      font-weight: 500;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: #fff;
-      background: #ff4d1c;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      text-decoration: none;
-      transition: background 0.15s;
-    }
-
-    .chat-cta-banner a:hover { background: #e03d10; }
+    .add-btn { background: #f1f5f9; border: 2px dashed #cbd5e1; color: #64748b; width: 100%; padding: 1rem; border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; transition: 0.2s; margin-bottom: 2rem; }
+    .add-btn:hover { background: #e2e8f0; color: #1c2b3a; border-color: #1c2b3a; }
 
     @media (max-width: 600px) {
-      .biz-nav { padding: 0 1.5rem; }
+      .biz-nav, .biz-hero, .biz-section { padding: 2rem 1.5rem; }
       .biz-nav-links { display: none; }
-      .biz-hero { padding: 3rem 1.5rem; }
-      .biz-section { padding: 2.5rem 1.5rem; }
       .biz-cards { grid-template-columns: 1fr; }
-      .biz-footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
-      .chat-panel, .chat-cta-banner { width: calc(100vw - 3rem); right: 1.5rem; }
+      .team-grid { grid-template-columns: 1fr; }
+      .chat-panel { width: calc(100vw - 2rem); right: 1rem; bottom: 5.5rem; height: 500px; }
     }
   </style>
 </head>
-<body>
+<body onload="initSPA()">
 
   <!-- Demo banner -->
   <div class="demo-banner">
     <div class="demo-banner-left">
       <div class="demo-dot"></div>
-      <span>This is a <strong>Live Preview</strong> of a Complete AI Upgrade (Modern Remodel + Custom Assistant).</span>
+      <span><strong>Minescout Managed Intelligence</strong> — Multi-Place SPA Architecture</span>
     </div>
-    <a href="/contact">Upgrade your site →</a>
+    <a href="/contact">Apply for Charter spot →</a>
   </div>
 
-  <!-- Mock business site -->
-  <nav class="biz-nav">
-    <div class="biz-logo">Smith <span>&</span> Cole</div>
+  <nav class="biz-nav" id="public-nav">
+    <div class="biz-logo" onclick="switchView('home')">Smith <span>&</span> Cole</div>
     <ul class="biz-nav-links">
-      <li><a href="#">Practice Areas</a></li>
-      <li><a href="#">Our Team</a></li>
-      <li><a href="#">Cases</a></li>
-      <li><a href="#">Contact</a></li>
+      <li><a onclick="switchView('home')" id="nav-home">Home</a></li>
+      <li><a onclick="switchView('practices')" id="nav-practices">Practices</a></li>
+      <li><a onclick="switchView('attorneys')" id="nav-attorneys">Attorneys</a></li>
+      <li><a onclick="switchView('contact-view')" id="nav-contact-view">Contact</a></li>
     </ul>
   </nav>
 
-  <div class="biz-hero">
-    <div class="biz-hero-text">
-      <p class="biz-hero-eyebrow">Trusted Legal Counsel · Sammamish, WA</p>
-      <h1 class="biz-hero-title">Experience You Can Depend On</h1>
-      <p class="biz-hero-sub">
-        Representing individuals and small businesses with decades of combined experience. 
-        Modern solutions for a complex legal landscape.
-      </p>
-      <a href="#" class="biz-btn">Book a Consultation</a>
+  <div id="view-content">
+    
+    <!-- HOME VIEW -->
+    <section id="home" class="page-view">
+      <header class="biz-hero">
+        <p class="biz-hero-eyebrow" id="home-eyebrow">Professional Legal Counsel · Sammamish, WA</p>
+        <h1 class="biz-hero-title" id="home-title">Experience You Can Depend On</h1>
+        <p class="biz-hero-sub" id="home-sub">Providing high-performance legal strategies across Washington state for over 25 years.</p>
+        <button class="biz-btn" onclick="switchView('contact-view')">Schedule Consultation</button>
+      </header>
+
+      <section class="biz-section">
+        <h2 class="biz-section-title">Core Expertise</h2>
+        <p class="biz-section-sub">Modern solutions for a complex landscape.</p>
+        <div class="biz-cards" id="expertise-grid">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+    </section>
+
+    <!-- PRACTICES VIEW -->
+    <section id="practices" class="page-view">
+      <section class="biz-section" style="background: #fdfcfb;">
+        <h2 class="biz-section-title">Legal Practice Areas</h2>
+        <p class="biz-section-sub">Specialized counsel tailored to the Pacific Northwest.</p>
+        <div class="biz-cards" id="practices-page-grid">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+    </section>
+
+    <!-- ATTORNEYS VIEW -->
+    <section id="attorneys" class="page-view">
+      <section class="biz-section">
+        <h2 class="biz-section-title">Our Legal Team</h2>
+        <p class="biz-section-sub">Experienced advocates committed to your success.</p>
+        <div class="team-grid" id="team-grid">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+    </section>
+
+    <!-- CONTACT VIEW -->
+    <section id="contact-view" class="page-view">
+      <section class="biz-section">
+        <h2 class="biz-section-title">Contact the Firm</h2>
+        <p class="biz-section-sub">Request a consultation at our Sammamish office.</p>
+        <div class="contact-container">
+          <form onsubmit="event.preventDefault(); alert('Inquiry Sent to Firm Registry.');">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" placeholder="john@example.com" required>
+            </div>
+            <div class="form-group">
+              <label>Message</label>
+              <textarea rows="5" placeholder="How can we assist you?" required></textarea>
+            </div>
+            <button class="biz-btn" style="width: 100%;">Submit Inquiry</button>
+          </form>
+        </div>
+      </section>
+    </section>
+
+    <!-- ADMIN VIEW -->
+    <section id="admin-view" class="page-view">
+      <div class="admin-card">
+        <header class="admin-header">
+          <div>
+            <h2 style="font-family: 'Playfair Display';">Backstage Manager</h2>
+            <p style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;">Site Node: SMITH_COLE</p>
+          </div>
+          <button class="biz-btn" style="padding: 0.5rem 1rem; font-size: 0.65rem;" onclick="switchView('home')">View Site</button>
+        </header>
+
+        <div id="admin-auth" style="padding: 4rem; text-align: center;">
+          <h3 style="margin-bottom: 1.5rem;">Verification Required</h3>
+          <input type="password" id="admin-key-input" placeholder="Enter Reason Key..." style="width: 260px; padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px; outline: none;">
+          <button class="biz-btn" style="margin-top: 1rem; display: block; margin-left: auto; margin-right: auto;" onclick="verifyAdmin()">Unlock Dashboard</button>
+        </div>
+
+        <div id="admin-dashboard" style="display: none;">
+          <nav class="admin-nav">
+            <button class="admin-nav-btn active" onclick="switchAdminTab('general', this)">General</button>
+            <button class="admin-nav-btn" onclick="switchAdminTab('expertise', this)">Expertise (Home)</button>
+            <button class="admin-nav-btn" onclick="switchAdminTab('practices', this)">Practices (Page)</button>
+            <button class="admin-nav-btn" onclick="switchAdminTab('team', this)">Team</button>
+            <button class="admin-nav-btn" onclick="switchAdminTab('ai', this)">AI Training</button>
+          </nav>
+
+          <div class="admin-content">
+            <!-- GENERAL TAB -->
+            <div id="admin-tab-general" class="admin-tab-panel">
+              <div class="admin-group"><label>Headline</label><input type="text" id="edit-home-title"></div>
+              <div class="admin-group"><label>Sub-text</label><textarea rows="3" id="edit-home-sub"></textarea></div>
+            </div>
+
+            <!-- EXPERTISE TAB (HOME) -->
+            <div id="admin-tab-expertise" class="admin-tab-panel" style="display: none;">
+              <p style="font-size: 0.7rem; color: #888; margin-bottom: 1rem;">These cards appear on the homepage.</p>
+              <div id="expertise-list-container"></div>
+              <button class="add-btn" onclick="addAdminListItem('expertise')">+ Add Home Card</button>
+            </div>
+
+            <!-- PRACTICES TAB (PAGE) -->
+            <div id="admin-tab-practices" class="admin-tab-panel" style="display: none;">
+              <p style="font-size: 0.7rem; color: #888; margin-bottom: 1rem;">These detailed cards appear on the dedicated Practices page.</p>
+              <div id="practices-list-container"></div>
+              <button class="add-btn" onclick="addAdminListItem('practices')">+ Add Practice Card</button>
+            </div>
+
+            <!-- TEAM TAB -->
+            <div id="admin-tab-team" class="admin-tab-panel" style="display: none;">
+              <div id="team-list-container"></div>
+              <button class="add-btn" onclick="addAdminListItem('team')">+ Add Team Member</button>
+            </div>
+
+            <!-- AI TRAINING TAB -->
+            <div id="admin-tab-ai" class="admin-tab-panel" style="display: none;">
+              <div class="admin-group">
+                <label>AI Knowledge Base (The "Brain")</label>
+                <textarea rows="12" id="edit-ai-knowledge" placeholder="List facts for the AI here..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="save-bar">
+            <button class="biz-btn" id="save-btn" onclick="saveAdminChanges()">Publish Updates</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="biz-footer" id="public-footer">
+    <div>
+      <div class="biz-logo" style="color: #fff; font-size: 1rem; margin-bottom: 0.5rem;">Smith <span>&</span> Cole</div>
+      <span class="biz-footer-text">© 2026 Smith & Cole Law — Sammamish WA</span>
     </div>
+    <span class="biz-footer-text">Backstage: <a href="#admin" style="color: inherit;" onclick="switchView('admin-view')">Login</a></span>
   </div>
 
-  <div class="biz-section">
-    <h2 class="biz-section-title">Areas of Expertise</h2>
-    <p class="biz-section-sub">Providing tailored legal strategies across Washington State.</p>
-    <div class="biz-cards">
-      <div class="biz-card">
-        <div class="biz-card-icon">🏠</div>
-        <div class="biz-card-title">Real Estate</div>
-        <div class="biz-card-desc">Residential and commercial transactions, title disputes, and contract litigation.</div>
-      </div>
-      <div class="biz-card">
-        <div class="biz-card-icon">📋</div>
-        <div class="biz-card-title">Estate Planning</div>
-        <div class="biz-card-desc">Comprehensive wills, trusts, and probate administration for your family's future.</div>
-      </div>
-      <div class="biz-card">
-        <div class="biz-card-icon">⚖️</div>
-        <div class="biz-card-title">Business Law</div>
-        <div class="biz-card-desc">Entity formation, operational contracts, and dispute resolution for local firms.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="biz-footer">
-    <span class="biz-footer-text">© 2026 Smith & Cole Law — Sammamish WA</span>
-    <span class="biz-footer-text">Privacy Policy · Disclaimer</span>
-  </div>
-
-  <!-- AI Chat Widget -->
-  <button class="chat-fab" id="chat-fab" onclick="toggleChat()" aria-label="Open chat">
+  <!-- AI Chat Widget (Global) -->
+  <button class="chat-fab" id="chat-fab" onclick="toggleChat()">
     <span class="fab-icon">💬</span>
     <span class="fab-close">✕</span>
     <div class="chat-badge" id="chat-badge">1</div>
   </button>
 
   <div class="chat-panel" id="chat-panel">
-    <div class="chat-panel-header">
-      <div class="chat-panel-avatar">⚖️</div>
-      <div>
-        <div class="chat-panel-name">Firm Assistant</div>
-        <div class="chat-panel-status">
-          <div class="status-dot"></div>
-          Online
+    <div class="chat-header">
+      <div class="chat-avatar">⚖️</div>
+      <div class="chat-info">
+        <div class="chat-info-name">Smith & Cole Assistant</div>
+        <div class="chat-info-status">
+          <div class="chat-status-dot"></div>
+          Llama-3 Edge Core
         </div>
       </div>
     </div>
 
-    <div class="chat-messages" id="chat-messages"></div>
-
-    <div class="chat-chips" id="chat-chips">
-      <button class="chat-chip" onclick="sendChip(this)">What are your hours?</button>
-      <button class="chat-chip" onclick="sendChip(this)">Do you offer free consultations?</button>
-      <button class="chat-chip" onclick="sendChip(this)">Where is the office located?</button>
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg msg-bot">Hello. I am the Smith & Cole virtual assistant. I can navigate the site for you or answer legal service questions. How can I help?</div>
     </div>
 
-    <div class="chat-input-row">
-      <input class="chat-input" id="chat-input" placeholder="Ask a question..." autocomplete="off" />
-      <button class="chat-send-btn" id="chat-send" onclick="sendMessage()">➤</button>
-    </div>
-  </div>
+    <div class="typing" id="typing">Assistant is thinking...</div>
 
-  <div class="chat-cta-banner" id="chat-cta">
-    <strong>Complete AI Upgrade</strong>
-    Transform your online presence with a modern website remodel integrated with a 24/7 custom-trained assistant.
-    <a href="/contact">Book your upgrade →</a>
+    <div class="chat-input-area">
+      <input type="text" class="chat-input" id="chat-input" placeholder="Ask a question..." autocomplete="off">
+      <button class="chat-submit" id="chat-submit" onclick="handleSend()">➤</button>
+    </div>
   </div>
 
   <script>
-    // ── Config ────────────────────────────────────────────────
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzs5P42_E5r1opjHek5WfF_S78QvDdAHnYx_UMbfBfJb8pfr0IvUzvKnclFxvWzBKXi/exec'; 
-
-    // Premade Knowledge Base
-    const RESPONSES = [
-      { keys: ['hour', 'open', 'time', 'when'], text: "We are open Monday through Friday, 9am to 5pm. We are closed on weekends and major holidays." },
-      { keys: ['consult', 'free', 'price', 'cost', 'fee'], text: "Yes, we offer a free 30-minute initial consultation for new clients. Please call us to schedule." },
-      { keys: ['location', 'address', 'where'], text: "Our office is located at 123 Main St, Sammamish WA 98075." },
-      { keys: ['phone', 'call', 'contact', 'number'], text: "You can reach us directly at (425) 555-0100." },
-      { keys: ['real estate', 'property'], text: "We handle residential and commercial transactions, title disputes, and contract litigation." },
-      { keys: ['estate', 'will', 'trust', 'probate'], text: "We provide comprehensive estate planning services, including wills, trusts, and probate administration." },
-      { keys: ['business', 'contract', 'entity'], text: "We assist with entity formation, operational contracts, and dispute resolution for local businesses." }
-    ];
+    /* ── CONFIG ── */
+    const BACKEND_URL = 'https://backend.tmcarleton11.workers.dev/';
+    const CHAT_WORKER = 'https://thomas-chat.tmcarleton11.workers.dev/';
+    const SITE_ID = 'SMITH_COLE';
     
-    const DEFAULT_RESPONSE = "I can help with hours, services, location, or booking a consultation. How can I assist you today?";
+    // In-memory state with nested structures
+    let siteData = {
+      welcome: { title: "Experience You Can Depend On", text: "Providing high-performance legal strategies across Washington state for over 25 years." },
+      skills: [
+        { label: "Real Estate Law", content: "Residential and commercial transactions, title disputes, and contract litigation." },
+        { label: "Estate Planning", content: "Comprehensive wills, trusts, and probate administration for your family's future." },
+        { label: "Business Law", content: "Entity formation, operational contracts, and dispute resolution for local firms." }
+      ],
+      practices: [
+        { label: "Commercial Litigation", content: "Complex business disputes and breach of contract resolved through strategic negotiation or trial." },
+        { label: "Land Use & Zoning", content: "Navigating city ordinances and state regulations for development projects." }
+      ],
+      resume: [
+        { label: "Marcus Smith", content: "Founding Partner — 25+ Years Experience.", img: "" },
+        { label: "Elena Cole", content: "Managing Partner — Specialist in Estate Planning.", img: "" }
+      ],
+      ai_knowledge: `ROLE: You are the AI for Smith & Cole Law in Sammamish, WA. 
+KNOWLEDGE:
+- Hours: Mon-Fri, 9am - 5pm.
+- Attorneys: Marcus Smith and Elena Cole.`
+    };
 
-    // ── State ─────────────────────────────────────────────────
+    let adminKey = "";
     let chatOpen = false;
-    let ctaShown = false;
+    let history_log = [];
 
-    // ── Logging ──────────────────────────────────────────────
-    // We log the *local* response to maintain the feedback loop demo
-    async function logToGoogleSheet(question, response) {
-      if (SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") return;
-      try {
-        await fetch(SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userQuestion: question, aiResponse: response })
-        });
-      } catch (e) { console.error("Logging failed", e); }
+    /* ── SPA LOGIC ── */
+    async function initSPA() {
+      await fetchSiteData();
+      
+      window.onpopstate = (e) => {
+        if (e.state && e.state.page) renderView(e.state.page);
+      };
+      
+      const hash = window.location.hash.replace('#', '');
+      const startPage = hash === 'admin' ? 'admin-view' : (hash || 'home');
+      switchView(startPage, false);
     }
 
-    // ── UI ────────────────────────────────────────────────────
-    setTimeout(() => {
-      addBotMessage("Hi! I'm the Smith & Cole virtual assistant. How can I help you today?");
-    }, 600);
+    async function fetchSiteData() {
+      try {
+        const res = await fetch(BACKEND_URL, { headers: { 'X-Site-Id': SITE_ID } });
+        if (res.ok) {
+          const d = await res.json();
+          if (d && d.welcome) {
+            // Ensure array fields exist
+            if(!d.practices) d.practices = siteData.practices;
+            siteData = d;
+            updatePublicUI();
+          }
+        }
+      } catch (e) { console.warn("KV sync failed, using defaults."); }
+    }
 
+    function updatePublicUI() {
+      document.getElementById('home-title').textContent = siteData.welcome.title;
+      document.getElementById('home-sub').textContent = siteData.welcome.text;
+      
+      // Homepage Expertise
+      const eGrid = document.getElementById('expertise-grid');
+      eGrid.innerHTML = siteData.skills.map(s => `
+        <div class="biz-card">
+          <div class="biz-card-icon">⚖️</div>
+          <div class="biz-card-title">${s.label}</div>
+          <div class="biz-card-desc">${s.content}</div>
+        </div>
+      `).join('');
+
+      // Practices Page Grid
+      const pGrid = document.getElementById('practices-page-grid');
+      pGrid.innerHTML = siteData.practices.map(p => `
+        <div class="biz-card">
+          <div class="biz-card-title">${p.label}</div>
+          <div class="biz-card-desc">${p.content}</div>
+        </div>
+      `).join('');
+
+      // Team Grid
+      const tGrid = document.getElementById('team-grid');
+      tGrid.innerHTML = siteData.resume.map(r => `
+        <div class="team-card">
+          ${r.img ? `<img src="${r.img}" class="team-img" alt="${r.label}">` : `<div class="team-img-placeholder">⚖️</div>`}
+          <div>
+            <h4 class="team-name">${r.label}</h4>
+            <p class="team-title">${r.content}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function switchView(viewName, pushState = true) {
+      if (viewName === 'contact') viewName = 'contact-view';
+      if (pushState) history.pushState({ page: viewName }, "", viewName === 'admin-view' ? '#admin' : `#${viewName}`);
+      renderView(viewName);
+    }
+
+    function renderView(viewName) {
+      document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+      const target = document.getElementById(viewName);
+      if (target) target.classList.add('active');
+      
+      const isA = viewName === 'admin-view';
+      document.getElementById('public-nav').style.display = isA ? 'none' : 'flex';
+      document.getElementById('public-footer').style.display = isA ? 'none' : 'flex';
+      
+      if (isA) populateAdminForm();
+      window.scrollTo(0, 0);
+    }
+
+    /* ── ADMIN LOGIC ── */
+    function verifyAdmin() {
+      const input = document.getElementById('admin-key-input').value;
+      if (!input) return;
+      adminKey = input;
+      document.getElementById('admin-auth').style.display = 'none';
+      document.getElementById('admin-dashboard').style.display = 'block';
+    }
+
+    function switchAdminTab(id, btn) {
+      document.querySelectorAll('.admin-nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.admin-tab-panel').forEach(p => p.style.display = 'none');
+      btn.classList.add('active');
+      document.getElementById(`admin-tab-${id}`).style.display = 'block';
+    }
+
+    function populateAdminForm() {
+      document.getElementById('edit-home-title').value = siteData.welcome.title;
+      document.getElementById('edit-home-sub').value = siteData.welcome.text;
+      document.getElementById('edit-ai-knowledge').value = siteData.ai_knowledge || "";
+      
+      renderAdminList('expertise', siteData.skills);
+      renderAdminList('practices', siteData.practices);
+      renderAdminList('team', siteData.resume);
+    }
+
+    function renderAdminList(type, list) {
+      const container = document.getElementById(`${type}-list-container`);
+      container.innerHTML = list.map((item, idx) => `
+        <div class="admin-list-item" data-type="${type}" data-index="${idx}">
+          <button class="remove-btn" onclick="removeAdminListItem('${type}', ${idx})">Remove</button>
+          
+          <div class="admin-group">
+            <label>Label / Name</label>
+            <input type="text" class="list-label" value="${item.label}">
+          </div>
+
+          ${type === 'team' ? `
+          <div class="admin-group">
+            <label>Profile Image URL</label>
+            <input type="text" class="list-img" value="${item.img || ''}" placeholder="https://...">
+          </div>
+          ` : ''}
+
+          <div class="admin-group" style="margin-bottom:0;">
+            <label>Description / Details</label>
+            <textarea rows="2" class="list-content">${item.content}</textarea>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addAdminListItem(type) {
+      const list = siteData[type === 'team' ? 'resume' : type];
+      list.push({ label: "New Entry", content: "Description...", img: "" });
+      renderAdminList(type, list);
+    }
+
+    function removeAdminListItem(type, idx) {
+      const list = siteData[type === 'team' ? 'resume' : type];
+      list.splice(idx, 1);
+      renderAdminList(type, list);
+    }
+
+    async function saveAdminChanges() {
+      const btn = document.getElementById('save-btn');
+      btn.textContent = "Publishing...";
+      btn.disabled = true;
+
+      // Scrape data from all dynamic containers
+      const updatedSkills = Array.from(document.querySelectorAll('#expertise-list-container .admin-list-item')).map(el => ({
+        label: el.querySelector('.list-label').value,
+        content: el.querySelector('.list-content').value
+      }));
+
+      const updatedPractices = Array.from(document.querySelectorAll('#practices-list-container .admin-list-item')).map(el => ({
+        label: el.querySelector('.list-label').value,
+        content: el.querySelector('.list-content').value
+      }));
+
+      const updatedTeam = Array.from(document.querySelectorAll('#team-list-container .admin-list-item')).map(el => ({
+        label: el.querySelector('.list-label').value,
+        content: el.querySelector('.list-content').value,
+        img: el.querySelector('.list-img')?.value || ""
+      }));
+
+      const updated = {
+        welcome: { 
+          title: document.getElementById('edit-home-title').value,
+          text: document.getElementById('edit-home-sub').value 
+        },
+        skills: updatedSkills,
+        practices: updatedPractices,
+        resume: updatedTeam,
+        ai_knowledge: document.getElementById('edit-ai-knowledge').value
+      };
+
+      try {
+        const res = await fetch(BACKEND_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Site-Id': SITE_ID },
+          body: JSON.stringify({ key: adminKey, data: updated })
+        });
+
+        if (res.ok) {
+          siteData = updated;
+          updatePublicUI();
+          alert("Updates Live. Backstage Node Sync Complete.");
+        } else {
+          alert("Authorization Failed.");
+        }
+      } catch (e) { alert("Server connectivity error."); }
+      
+      btn.textContent = "Publish Updates";
+      btn.disabled = false;
+    }
+
+    /* ── AI CHAT LOGIC ── */
     function toggleChat() {
       chatOpen = !chatOpen;
       document.getElementById('chat-panel').classList.toggle('open', chatOpen);
@@ -491,86 +749,54 @@
       if (chatOpen) document.getElementById('chat-input').focus();
     }
 
-    function sendChip(btn) {
-      document.getElementById('chat-input').value = btn.textContent;
-      document.getElementById('chat-chips').style.display = 'none';
-      sendMessage();
-    }
-
-    document.getElementById('chat-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
-    });
-
-    async function sendMessage() {
+    async function handleSend() {
       const input = document.getElementById('chat-input');
       const text = input.value.trim();
-      const sendBtn = document.getElementById('chat-send');
-      if (!text || sendBtn.disabled) return;
+      if (!text) return;
 
-      addUserMessage(text);
       input.value = '';
-      sendBtn.disabled = true;
+      addMessage(text, 'user');
+      history_log.push({ role: 'user', content: text });
 
-      const typing = addTyping();
+      const typing = document.getElementById('typing');
+      const submit = document.getElementById('chat-submit');
+      typing.style.display = 'block';
+      submit.disabled = true;
 
-      // Simulate network delay for realism
-      setTimeout(() => {
-        typing.remove();
-        
-        // 1. Determine Response
-        const lower = text.toLowerCase();
-        let reply = DEFAULT_RESPONSE;
-        
-        for (const r of RESPONSES) {
-          if (r.keys.some(k => lower.includes(k))) {
-            reply = r.text;
-            break;
-          }
-        }
-        
-        // 2. Display Response
-        addBotMessage(reply);
-        sendBtn.disabled = false;
+      try {
+        const response = await fetch(CHAT_WORKER, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            client_id: SITE_ID,
+            messages: history_log,
+            system_override: siteData.ai_knowledge,
+            temperature: 0.0
+          })
+        });
 
-        // 3. Log to Google Sheet (Background)
-        logToGoogleSheet(text, reply);
-
-        // 4. Show CTA (Once)
-        if (!ctaShown) {
-          ctaShown = true;
-          setTimeout(() => document.getElementById('chat-cta').style.display = 'block', 3000);
-        }
-
-      }, 800); // 800ms natural delay
+        const data = await response.json();
+        const reply = data.content || "Service initializing.";
+        addMessage(reply, 'bot');
+        history_log.push({ role: 'assistant', content: reply });
+      } catch (err) {
+        addMessage("Engine standby.", 'bot');
+      } finally {
+        typing.style.display = 'none';
+        submit.disabled = false;
+      }
     }
 
-    function addBotMessage(text) {
-      const msgs = document.getElementById('chat-messages');
-      const el = document.createElement('div');
-      el.className = 'cmsg bot';
-      el.innerHTML = `<div class="cmsg-bubble">${text}</div>`;
-      msgs.appendChild(el);
-      msgs.scrollTop = msgs.scrollHeight;
+    function addMessage(text, role) {
+      const container = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = `msg msg-${role}`;
+      div.textContent = text;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
     }
 
-    function addUserMessage(text) {
-      const msgs = document.getElementById('chat-messages');
-      const el = document.createElement('div');
-      el.className = 'cmsg user';
-      el.innerHTML = `<div class="cmsg-bubble">${text}</div>`;
-      msgs.appendChild(el);
-      msgs.scrollTop = msgs.scrollHeight;
-    }
-
-    function addTyping() {
-      const msgs = document.getElementById('chat-messages');
-      const el = document.createElement('div');
-      el.className = 'cmsg bot';
-      el.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
-      msgs.appendChild(el);
-      msgs.scrollTop = msgs.scrollHeight;
-      return el;
-    }
+    document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
   </script>
 </body>
 </html>

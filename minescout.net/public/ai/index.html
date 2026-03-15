@@ -3,230 +3,211 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minescout AI — The AI Upgrade for Local Business</title>
+  <title>Minescout AI — Managed Intelligence for Sammamish</title>
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
   <link rel="stylesheet" href="/styles/main.css?v=8.1" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Minescout AI",
-    "description": "AI chat widgets and website upgrades for small businesses in Sammamish, WA.",
+    "description": "Multi-tenant digital architecture and Managed Intelligence for organizations in Sammamish, WA.",
     "url": "https://minescout.net/ai",
     "founder": { "@type": "Person", "name": "Thomas Carleton" },
     "areaServed": "Sammamish, WA"
   }
   </script>
   <style>
-    .ai-wrap { max-width: 620px; }
+    .ai-wrap { max-width: 660px; }
 
-    .ai-eyebrow { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; opacity: 0; animation: fadeUp 0.5s ease 0.1s forwards; }
-    .ai-title { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 1rem; opacity: 0; animation: fadeUp 0.5s ease 0.15s forwards; }
-    .ai-title em { font-style: italic; color: var(--accent); }
-    .ai-lead { font-size: 0.92rem; color: var(--muted); line-height: 1.85; margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
+    .ai-eyebrow { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; opacity: 0; animation: fadeUp 0.5s ease 0.1s forwards; }
+    .ai-title { font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 3.2rem); letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 1.2rem; opacity: 0; animation: fadeUp 0.5s ease 0.15s forwards; }
+    .ai-title em { font-style: italic; color: var(--accent); font-family: var(--serif); }
+    .ai-lead { font-size: 0.95rem; color: var(--muted); line-height: 1.8; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
 
-    /* Stats */
-    .ai-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.5s ease 0.25s forwards; }
-    .ai-stat { padding: 1.25rem 1rem; text-align: center; border-right: 1px solid var(--border); }
+    /* Performance Stats */
+    .ai-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 3rem; opacity: 0; animation: fadeUp 0.5s ease 0.25s forwards; background: var(--bg); }
+    .ai-stat { padding: 1.5rem 1rem; text-align: center; border-right: 1px solid var(--border); }
     .ai-stat:last-child { border-right: none; }
-    .ai-stat-val { font-family: var(--serif); font-size: 1.7rem; font-weight: 700; color: var(--fg); letter-spacing: -0.02em; display: block; line-height: 1; margin-bottom: 0.3rem; }
+    .ai-stat-val { font-family: var(--serif); font-size: 1.8rem; font-weight: 700; color: var(--fg); letter-spacing: -0.02em; display: block; line-height: 1; margin-bottom: 0.4rem; }
     .ai-stat-val em { color: var(--accent); font-style: normal; }
-    .ai-stat-label { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+    .ai-stat-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 500; }
 
-    /* Section labels */
-    .ai-section-label { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; margin-top: 2.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); opacity: 0; animation: fadeUp 0.45s ease forwards; animation-delay: var(--delay, 0.3s); }
+    /* Feature Grid */
+    .ai-section-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem; margin-top: 3rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
 
-    /* Feature cards */
-    .ai-features { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.5s ease 0.35s forwards; }
-    .ai-feature { display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 1rem; padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--border); text-decoration: none; color: var(--fg); transition: background 0.15s; }
+    .ai-features { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.5s ease 0.35s forwards; background: var(--bg); }
+    .ai-feature { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 1.2rem; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); text-decoration: none; color: var(--fg); transition: all 0.2s; }
     .ai-feature:last-child { border-bottom: none; }
-    .ai-feature:hover { background: var(--light); }
-    .ai-feature-icon { font-size: 1.1rem; text-align: center; }
-    .ai-feature-title { font-size: 0.85rem; font-weight: 500; color: var(--fg); margin-bottom: 0.15rem; }
-    .ai-feature-desc { font-size: 0.71rem; color: var(--muted); line-height: 1.5; }
-    .ai-feature-badge { font-size: 0.58rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 3px; white-space: nowrap; flex-shrink: 0; }
-    .badge-live  { background: #f0faf4; color: #4caf82; border: 1px solid #c3e8d0; }
-    .badge-new   { background: #fff4f1; color: var(--accent); border: 1px solid #ffd5c8; }
-    .badge-ready { background: var(--light); color: var(--muted); border: 1px solid var(--border); }
+    .ai-feature:hover { background: var(--light); padding-left: 1.75rem; }
+    .ai-feature-icon { font-size: 1.2rem; }
+    .ai-feature-title { font-size: 0.9rem; font-weight: 600; color: var(--fg); margin-bottom: 0.2rem; }
+    .ai-feature-desc { font-size: 0.74rem; color: var(--muted); line-height: 1.6; }
+    .ai-feature-badge { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 3px; white-space: nowrap; }
+    .badge-live   { background: #f0faf4; color: #3b8a62; border: 1px solid #c3e8d0; }
+    .badge-node   { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .badge-ready  { background: #fffcf0; color: #b08d2b; border: 1px solid #fcf2c1; }
 
-    /* Steps */
-    .ai-steps { display: flex; flex-direction: column; opacity: 0; animation: fadeUp 0.5s ease 0.4s forwards; }
-    .ai-step { display: grid; grid-template-columns: 28px 1fr; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+    /* The Engine Logic */
+    .ai-steps { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 3rem; opacity: 0; animation: fadeUp 0.5s ease 0.4s forwards; }
+    .ai-step { display: grid; grid-template-columns: 32px 1fr; gap: 1.2rem; padding: 1.25rem 0; border-bottom: 1px solid var(--border); }
     .ai-step:last-child { border-bottom: none; }
-    .ai-step-num { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: var(--accent); line-height: 1; padding-top: 0.15rem; }
-    .ai-step-title { font-size: 0.85rem; font-weight: 500; color: var(--fg); margin-bottom: 0.2rem; }
-    .ai-step-desc { font-size: 0.76rem; color: var(--muted); line-height: 1.65; }
+    .ai-step-num { font-family: var(--serif); font-size: 1.1rem; font-weight: 700; color: var(--accent); line-height: 1; }
+    .ai-step-title { font-size: 0.9rem; font-weight: 600; color: var(--fg); margin-bottom: 0.3rem; }
+    .ai-step-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.7; }
 
-    /* Callout */
-    .ai-callout { border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 1rem 1.25rem; margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.5s ease 0.45s forwards; }
-    .ai-callout-title { font-size: 0.82rem; font-weight: 500; color: var(--fg); margin-bottom: 0.3rem; }
-    .ai-callout-desc { font-size: 0.74rem; color: var(--muted); line-height: 1.7; }
+    /* Architectural Callout */
+    .ai-callout { background: #f9f8f6; border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 0 4px 4px 0; padding: 1.5rem 2rem; margin-bottom: 3rem; opacity: 0; animation: fadeUp 0.5s ease 0.45s forwards; }
+    .ai-callout-title { font-size: 0.85rem; font-weight: 600; color: var(--fg); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px; }
+    .ai-callout-desc { font-size: 0.76rem; color: var(--muted); line-height: 1.8; }
 
-    /* Pricing */
-    .ai-pricing { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.5s ease 0.48s forwards; }
-    .ai-price-tier { padding: 1.25rem 1rem; border-right: 1px solid var(--border); text-align: center; }
+    /* Pricing Engine */
+    .ai-pricing { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 3rem; opacity: 0; animation: fadeUp 0.5s ease 0.48s forwards; background: var(--bg); }
+    .ai-price-tier { padding: 1.5rem 1rem; border-right: 1px solid var(--border); text-align: center; }
     .ai-price-tier:last-child { border-right: none; }
-    .ai-price-name { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
-    .ai-price-amount { font-family: var(--serif); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; color: var(--fg); margin-bottom: 0.25rem; }
+    .ai-price-name { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; }
+    .ai-price-amount { font-family: var(--serif); font-size: 1.4rem; font-weight: 700; color: var(--fg); margin-bottom: 0.3rem; }
     .ai-price-amount em { font-style: normal; color: var(--accent); }
-    .ai-price-desc { font-size: 0.64rem; color: var(--muted); line-height: 1.5; }
+    .ai-price-desc { font-size: 0.68rem; color: var(--muted); line-height: 1.5; padding: 0 0.5rem; }
 
-    /* CTA */
-    .ai-cta-group { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.5s ease 0.52s forwards; }
-    .ai-disclaimer { font-size: 0.65rem; color: var(--muted); margin-top: 1.25rem; line-height: 1.7; opacity: 0; animation: fadeUp 0.5s ease 0.56s forwards; }
-    .ai-disclaimer a { color: var(--muted); border-bottom: 1px solid var(--border); }
+    .ai-cta-group { display: flex; gap: 1.5rem; align-items: center; opacity: 0; animation: fadeUp 0.5s ease 0.52s forwards; }
+    .ai-disclaimer { font-size: 0.68rem; color: var(--muted); margin-top: 2rem; line-height: 1.8; opacity: 0; animation: fadeUp 0.5s ease 0.56s forwards; border-top: 1px solid var(--border); padding-top: 1.5rem; }
+    .ai-disclaimer a { color: var(--fg); font-weight: 500; text-decoration: underline; text-underline-offset: 2px; }
 
     @media (max-width: 600px) {
-      .ai-stats .ai-stat:nth-child(3) { border-top: 1px solid var(--border); }
+      .ai-stats { grid-template-columns: 1fr; }
+      .ai-stat { border-right: none; border-bottom: 1px solid var(--border); }
       .ai-pricing { grid-template-columns: 1fr; }
       .ai-price-tier { border-right: none; border-bottom: 1px solid var(--border); }
-      .ai-price-tier:last-child { border-bottom: none; }
       .ai-cta-group { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar injected by sidebar.js -->
-
   <main class="main main--page">
     <div class="page-content ai-wrap">
 
-      <p class="ai-eyebrow">Minescout AI &middot; Sammamish, WA</p>
-      <h1 class="ai-title">The <em>AI Upgrade</em><br>for Local Business.</h1>
+      <p class="ai-eyebrow">Minescout AI &middot; Architecture Node</p>
+      <h1 class="ai-title">The <em>Managed Intelligence</em><br>Platform for Sammamish.</h1>
+      
       <p class="ai-lead">
-        Custom-trained AI chat widgets for small businesses in the Pacific Northwest &mdash;
-        built, deployed, and maintained by Thomas Carleton. Every bot comes with
-        a real-time feedback dashboard so you always know exactly how it&rsquo;s performing.
+        I engineer multi-tenant digital systems and persistent AI assistants for organizations that value 
+        efficiency over overhead. Every project is built on serverless edge architecture, providing 
+        sub-second speed and a private "Backstage" dashboard for real-time management.
       </p>
 
       <div class="ai-stats">
         <div class="ai-stat">
-          <span class="ai-stat-val">24<em>/7</em></span>
-          <span class="ai-stat-label">Always on</span>
+          <span class="ai-stat-val">2<em>/3</em></span>
+          <span class="ai-stat-label">Charter Nodes Live</span>
         </div>
         <div class="ai-stat">
-          <span class="ai-stat-val">&lt;1<em>wk</em></span>
-          <span class="ai-stat-label">Setup time</span>
+          <span class="ai-stat-val">100<em>%</em></span>
+          <span class="ai-stat-label">Edge Serverless</span>
         </div>
         <div class="ai-stat">
           <span class="ai-stat-val">$<em>0</em></span>
-          <span class="ai-stat-label">Risk to you</span>
+          <span class="ai-stat-label">Financial Risk</span>
         </div>
       </div>
 
-      <div class="ai-section-label" style="--delay:0.3s;">What&rsquo;s available</div>
+      <div class="ai-section-label">Production Components</div>
 
       <div class="ai-features">
+        <a href="/blog/minescout-genesis" class="ai-feature">
+          <div class="ai-feature-icon">⚙️</div>
+          <div>
+            <div class="ai-feature-title">Multi-Tenant Routing Engine</div>
+            <div class="ai-feature-desc">The core v61.0 logic. Hosting unlimited client nodes from a single codebase via header-based routing and KV data persistence.</div>
+          </div>
+          <span class="ai-feature-badge badge-live">System Live</span>
+        </a>
+        <a href="https://ferncarleton.com?studio" target="_blank" class="ai-feature">
+          <div class="ai-feature-icon">🎭</div>
+          <div>
+            <div class="ai-feature-title">The "Backstage" Dashboard</div>
+            <div class="ai-feature-desc">A private, secure admin suite allowing clients to update photography, bios, and skills grids without touching a line of code.</div>
+          </div>
+          <span class="ai-feature-badge badge-node">Node 02</span>
+        </a>
         <a href="/ai/demo" class="ai-feature">
-          <div class="ai-feature-icon">&#129302;</div>
+          <div class="ai-feature-icon">🤖</div>
           <div>
-            <div class="ai-feature-title">AI Chat Widget &mdash; Live Demo</div>
-            <div class="ai-feature-desc">A working AI assistant on a mock law firm site. Ask it real questions &mdash; it answers as the business, with thumbs up/down feedback built in.</div>
+            <div class="ai-feature-title">River Guide AI (RAG Assistant)</div>
+            <div class="ai-feature-desc">A persistent assistant trained on proprietary data. Handles high-frequency inquiries with 24/7 accuracy and instant triage.</div>
           </div>
-          <span class="ai-feature-badge badge-live">Live</span>
-        </a>
-        <a href="/ai/tools" class="ai-feature">
-          <div class="ai-feature-icon">&#128295;</div>
-          <div>
-            <div class="ai-feature-title">AI Tools Directory</div>
-            <div class="ai-feature-desc">10 curated tools across coding, design, and general use &mdash; with honest ratings and schema markup for Google star ratings.</div>
-          </div>
-          <span class="ai-feature-badge badge-live">Live</span>
-        </a>
-        <a href="/contact" class="ai-feature">
-          <div class="ai-feature-icon">&#128202;</div>
-          <div>
-            <div class="ai-feature-title">Feedback Tracking Dashboard</div>
-            <div class="ai-feature-desc">Every conversation logged to Google Sheets. Clients grade responses and submit corrections &mdash; the AI learns from them automatically.</div>
-          </div>
-          <span class="ai-feature-badge badge-new">Included</span>
-        </a>
-        <a href="/contact" class="ai-feature">
-          <div class="ai-feature-icon">&#128196;</div>
-          <div>
-            <div class="ai-feature-title">One-Page Business Proposal</div>
-            <div class="ai-feature-desc">A print-ready PDF with pricing, technical specs, and risk overview &mdash; ready to hand to any business owner.</div>
-          </div>
-          <span class="ai-feature-badge badge-ready">PDF ready</span>
+          <span class="ai-feature-badge badge-ready">Demo Ready</span>
         </a>
       </div>
 
-      <div class="ai-section-label" style="--delay:0.38s;">How it works</div>
+      <div class="ai-section-label">The Implementation Loop</div>
 
       <div class="ai-steps">
         <div class="ai-step">
           <div class="ai-step-num">01</div>
           <div>
-            <div class="ai-step-title">You send me your business info</div>
-            <div class="ai-step-desc">Hours, FAQs, services, pricing &mdash; anything you want the AI to know. A Google Doc or PDF works perfectly.</div>
+            <div class="ai-step-title">The Technical Audit</div>
+            <div class="ai-step-desc">I analyze your current digital footprint to find "True Friction"—mobile bottlenecks, slow load times, or manual FAQ overhead.</div>
           </div>
         </div>
         <div class="ai-step">
           <div class="ai-step-num">02</div>
           <div>
-            <div class="ai-step-title">I train and deploy the AI</div>
-            <div class="ai-step-desc">I build a custom assistant using your documents as its knowledge base, hosted on Cloudflare&rsquo;s global edge network for 99.9% uptime.</div>
+            <div class="ai-step-title">Heritage Modernization</div>
+            <div class="ai-step-desc">I architect a high-performance "Front Door" that respects your brand's history while providing modern speed and accessibility.</div>
           </div>
         </div>
         <div class="ai-step">
           <div class="ai-step-num">03</div>
           <div>
-            <div class="ai-step-title">One line of code on your site</div>
-            <div class="ai-step-desc">Works on any website &mdash; WordPress, Squarespace, custom HTML. Your IT person or web host can add it in under a minute.</div>
-          </div>
-        </div>
-        <div class="ai-step">
-          <div class="ai-step-num">04</div>
-          <div>
-            <div class="ai-step-title">You grade the AI&rsquo;s answers</div>
-            <div class="ai-step-desc">Every response gets a thumbs up/down. If the AI got something wrong, type the correct answer &mdash; it learns from it automatically.</div>
+            <div class="ai-step-title">Intelligence Injection</div>
+            <div class="ai-step-desc">We deploy a custom-trained assistant to your site and connect your secure Backstage dashboard for real-time monitoring.</div>
           </div>
         </div>
       </div>
 
       <div class="ai-callout">
-        <div class="ai-callout-title">&#128260; The feedback loop is the difference.</div>
+        <div class="ai-callout-title">📦 Zero-Cost Infrastructure Promise.</div>
         <div class="ai-callout-desc">
-          Most AI chat widgets are a black box &mdash; you never know if they&rsquo;re answering correctly.
-          Every bot I deploy includes a real-time Google Sheets dashboard where you can see
-          every question asked, rate every answer, and submit corrections. The AI improves
-          continuously without any extra work from you.
+          By leveraging enterprise-grade "Free Tier" technologies (Cloudflare, Firebase, GitHub), 
+          I eliminate traditional hosting costs. You pay for the architecture and intelligence, 
+          not for the "digital rent" of slow servers.
         </div>
       </div>
 
-      <div class="ai-section-label" style="--delay:0.45s;">Pricing</div>
+      <div class="ai-section-label">Managed Service Access</div>
 
       <div class="ai-pricing">
         <div class="ai-price-tier">
-          <div class="ai-price-name">Basic</div>
-          <div class="ai-price-amount">$<em>250</em></div>
-          <div class="ai-price-desc">Custom AI, up to 20 docs, 1-line embed code</div>
+          <div class="ai-price-name">Basic Remodel</div>
+          <div class="ai-price-amount">Project Based</div>
+          <div class="ai-price-desc">Full site modernization, mobile optimization, & Backstage access.</div>
         </div>
         <div class="ai-price-tier">
-          <div class="ai-price-name">Advanced</div>
-          <div class="ai-price-amount">$<em>500</em></div>
-          <div class="ai-price-desc">Multi-channel, booking integration, complex logic</div>
+          <div class="ai-price-name">Managed AI</div>
+          <div class="ai-price-amount">Custom Quote</div>
+          <div class="ai-price-desc">Includes AI Assistant, RAG training, & automated feedback loops.</div>
         </div>
         <div class="ai-price-tier">
-          <div class="ai-price-name">Monthly</div>
-          <div class="ai-price-amount">$<em>50</em><span style="font-size:0.7rem;font-weight:400;">/mo</span></div>
-          <div class="ai-price-desc">Updates, monitoring, API management</div>
+          <div class="ai-price-name">Maintenance</div>
+          <div class="ai-price-amount">Service Plan</div>
+          <div class="ai-price-desc">Ongoing updates, API management, & technical oversight.</div>
         </div>
       </div>
 
       <div class="ai-cta-group">
-        <a href="/ai/demo" class="btn-primary">Try the Live Demo</a>
-        <a href="/contact" class="btn-ghost">Get a proposal &rarr;</a>
+        <a href="/contact" class="btn-primary">Request a Technical Audit</a>
+        <a href="/ai/demo" class="btn-ghost">Try the Live AI Demo &rarr;</a>
       </div>
 
       <p class="ai-disclaimer">
-        Minescout AI is operated by Thomas Carleton, a student developer in Sammamish, WA.
-        Total financial risk is $0.00 &mdash; all tools run on free developer tiers.
-        Questions? <a href="/contact">Reach out directly</a>.
+        Minescout AI is built and operated by <a href="/">Thomas Carleton</a>, a systems engineer at Eastlake HS. 
+        All operations are strictly capped at 5 hours weekly to maintain a 4.0 GPA standing. 
+        For collaboration or inquiries, <a href="/contact">reach out directly</a>.
       </p>
 
     </div>
