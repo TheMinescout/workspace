@@ -3,244 +3,396 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ROI Calculator — Minescout AI</title>
-  <link rel="icon" type="image/png" href="/assets/favicon.png" />
-  <link rel="stylesheet" href="/styles/main.css?v=8.1" />
+  <title>Growth Calculator — Minescout AI</title>
+  <link rel="icon" type="image/png" href="../../assets/favicon.png" />
+  <link rel="stylesheet" href="../../styles/main.css?v=6" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
-    .roi-wrap { max-width: 620px; }
-
-    .roi-intro { font-size: 0.88rem; color: var(--muted); line-height: 1.8; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
-
-    /* Calculator */
-    .calc-card {
-      border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
-      margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.5s ease 0.28s forwards;
+    .calc-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
     }
-    .calc-section { padding: 1.5rem; border-bottom: 1px solid var(--border); }
-    .calc-section:last-child { border-bottom: none; }
-    .calc-section-label { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; }
+    
+    .input-section {
+      background: var(--bg);
+      padding: 2.5rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 100%;
+    }
 
-    .calc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-    .calc-row:last-child { margin-bottom: 0; }
+    .output-section {
+      width: 100%;
+    }
 
-    .calc-field label { display: block; font-size: 0.7rem; color: var(--muted); margin-bottom: 0.4rem; }
-    .calc-field input, .calc-field select {
-      width: 100%; font-family: var(--sans); font-size: 0.88rem; color: var(--fg);
-      background: var(--light); border: 1px solid var(--border); border-radius: 4px;
-      padding: 0.6rem 0.85rem; outline: none; transition: border-color 0.15s;
+    .input-group { margin-bottom: 2rem; }
+    .input-group label { 
+      display: block; 
+      font-size: 0.7rem; 
+      text-transform: uppercase; 
+      letter-spacing: 0.1em; 
+      margin-bottom: 0.75rem; 
+      color: var(--muted);
+      font-weight: 600;
+    }
+    
+    .input-group input, .input-group select { 
+      width: 100%; 
+      padding: 1rem; 
+      border: 1px solid var(--border); 
+      border-radius: 8px; 
+      font-family: var(--sans); 
+      font-size: 1rem;
+      background: var(--light);
+      transition: border-color 0.2s;
       appearance: none;
     }
-    .calc-field input:focus, .calc-field select:focus { border-color: var(--fg); }
+    
+    .input-group input:focus, .input-group select:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
 
-    /* Results */
-    .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
-    .result-box { padding: 1.25rem; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .result-box:nth-child(even) { border-right: none; }
-    .result-box:nth-last-child(-n+2) { border-bottom: none; }
-    .result-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.4rem; }
-    .result-val { font-family: var(--serif); font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; color: var(--fg); }
-    .result-val.positive { color: #4caf82; }
-    .result-val.accent { color: var(--accent); }
-    .result-sub { font-size: 0.65rem; color: var(--muted); margin-top: 0.2rem; }
+    .result-card {
+      background: var(--fg);
+      color: var(--bg);
+      padding: 2.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .result-val {
+      font-family: var(--serif);
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    .mini-stat {
+      background: var(--light);
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .mini-val {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 0.25rem;
+    }
+
+    .mini-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .impact-note {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.7;
+      font-style: italic;
+    }
 
     /* Verdict bar */
     .verdict-bar {
-      background: var(--fg); color: var(--bg); border-radius: 6px; padding: 1.25rem 1.5rem;
-      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+      background: var(--fg); color: var(--bg); border-radius: 6px; padding: 1.5rem;
+      display: flex; justify-content: space-between; align-items: center; gap: 1.5rem;
       margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.5s ease 0.35s forwards;
     }
-    .verdict-text { font-size: 0.82rem; color: rgba(255,255,255,0.75); line-height: 1.5; }
+    .verdict-text { font-size: 0.85rem; color: rgba(255,255,255,0.8); line-height: 1.6; }
     .verdict-text strong { color: #fff; }
-    .verdict-cta { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--bg); background: var(--accent); border-radius: 3px; padding: 0.55rem 1.1rem; text-decoration: none; white-space: nowrap; transition: background 0.15s; }
+    .verdict-cta { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--bg); background: var(--accent); border-radius: 3px; padding: 0.65rem 1.25rem; text-decoration: none; white-space: nowrap; transition: background 0.15s; flex-shrink: 0; }
     .verdict-cta:hover { background: #e03d10; }
 
-    /* Assumptions */
-    .assumptions { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; opacity: 0; animation: fadeUp 0.5s ease 0.4s forwards; }
-    .assumptions-header { background: var(--light); padding: 0.85rem 1.25rem; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
-    .assumption-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.76rem; }
-    .assumption-row:last-child { border-bottom: none; }
-    .assumption-key { color: var(--fg); }
-    .assumption-val { color: var(--muted); text-align: right; max-width: 60%; }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: 0.2s;
+      font-family: var(--sans);
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: #fff;
+    }
 
-    @media (max-width: 580px) {
-      .calc-row { grid-template-columns: 1fr; }
-      .results-grid { grid-template-columns: 1fr; }
-      .result-box { border-right: none; }
+    .ai-loading { font-style: italic; color: var(--accent); animation: pulse-opacity 1.5s infinite; }
+    @keyframes pulse-opacity { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    @media (max-width: 800px) {
+      .stat-grid { grid-template-columns: 1fr 1fr; }
       .verdict-bar { flex-direction: column; align-items: flex-start; }
+      .verdict-cta { width: 100%; text-align: center; }
+    }
+
+    @media (max-width: 500px) {
+      .stat-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-
+  <aside class="sidebar">
+    <div class="sidebar-logo-wrap">
+      <img src="../../assets/favicon.png" alt="TC" class="sidebar-logo" />
+      <div>
+        <div class="sidebar-name">Thomas Carleton</div>
+        <div class="sidebar-tagline">minescout.net</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/">Home</a>
+      <a href="/ai/">AI Hub</a>
+      <a href="/ai/demo">Live Demo</a>
+      <a href="/ai/roi" class="active">Growth Calc</a>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-secondary">
+      <a href="/contact">Enquire</a>
+    </div>
+  </aside>
 
   <main class="main main--page">
-    <div class="page-content roi-wrap">
-      <p class="page-label">Minescout AI</p>
-      <h1 class="page-title">ROI Calculator</h1>
-      <p class="roi-intro">Enter your business numbers below. The calculator shows how much time and money an AI assistant could recover for you each month — and how long until it pays for itself.</p>
+    <div class="page-content">
+      <p class="page-label">Business Intelligence</p>
+      <h1 class="page-title">Growth & Efficiency Calculator</h1>
+      <p style="margin-bottom: 2rem; color: var(--muted);">Estimate the combined impact of automated support and optimized lead capture.</p>
 
-      <div class="calc-card">
-        <!-- Inputs -->
-        <div class="calc-section">
-          <div class="calc-section-label">Your business</div>
-          <div class="calc-row">
-            <div class="calc-field">
-              <label>Hours/week answering repeat questions</label>
-              <input type="number" id="hoursPerWeek" value="11" min="1" max="80" oninput="calc()" />
-            </div>
-            <div class="calc-field">
-              <label>Your hourly rate (or staff cost)</label>
-              <input type="number" id="hourlyRate" value="20" min="1" oninput="calc()" />
-            </div>
-          </div>
-          <div class="calc-row">
-            <div class="calc-field">
-              <label>Avg. leads missed after hours/week</label>
-              <input type="number" id="missedLeads" value="10" min="0" oninput="calc()" />
-            </div>
-            <div class="calc-field">
-              <label>Avg. value of one new customer ($)</label>
-              <input type="number" id="leadValue" value="200" min="0" oninput="calc()" />
-            </div>
-          </div>
-          <div class="calc-row">
-            <div class="calc-field">
-              <label>Plan</label>
-              <select id="plan" onchange="calc()">
-                <option value="300">Full AI Upgrade — $250 setup + $50/mo</option>
-                <option value="50">Managed Intelligence — $250 setup + $50/mo</option>
-                <option value="270">Digital Remodel — $250 setup + $20/mo</option>
-              </select>
-            </div>
-            <div class="calc-field">
-              <label>AI handles what % of repeat questions?</label>
-              <input type="number" id="aiCoverage" value="80" min="10" max="100" oninput="calc()" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Results -->
-        <div class="calc-section" style="padding:0;">
-          <div class="results-grid">
-            <div class="result-box">
-              <div class="result-label">Hours saved / month</div>
-              <div class="result-val positive" id="hoursSaved">—</div>
-              <div class="result-sub" id="hoursSavedSub"></div>
-            </div>
-            <div class="result-box">
-              <div class="result-label">Labour cost saved / month</div>
-              <div class="result-val positive" id="labourSaved">—</div>
-              <div class="result-sub">based on your hourly rate</div>
-            </div>
-            <div class="result-box">
-              <div class="result-label">Leads recovered / month</div>
-              <div class="result-val positive" id="leadsRecovered">—</div>
-              <div class="result-sub" id="leadRevSub"></div>
-            </div>
-            <div class="result-box">
-              <div class="result-label">Payback period</div>
-              <div class="result-val accent" id="payback">—</div>
-              <div class="result-sub">from setup cost to ROI-positive</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Monthly net -->
-        <div class="calc-section" style="background:var(--light);">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div>
-              <div class="calc-section-label" style="margin-bottom:0.25rem;">Net monthly value</div>
-              <div style="font-size:0.72rem;color:var(--muted);">Total recovered minus Minescout AI monthly fee</div>
-            </div>
-            <div style="font-family:var(--serif);font-size:2rem;font-weight:700;letter-spacing:-0.02em;color:#4caf82;" id="netMonthly">—</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Verdict -->
+      <!-- Verdict Bar (Moved up for better visibility) -->
       <div class="verdict-bar" id="verdict-bar">
-        <div class="verdict-text" id="verdict-text">Enter your numbers above.</div>
+        <div style="flex: 1;">
+          <div class="verdict-text" id="verdict-text">
+            Enter your numbers below to see your estimated ROI.
+          </div>
+          <button type="button" class="btn-ghost" id="ai-verdict-btn" onclick="getAIVerdict()" style="margin-top: 1rem; font-size: 0.7rem; padding: 0.5rem 1rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">✨ Generate AI Analysis</button>
+        </div>
         <a href="/contact" class="verdict-cta">Get started</a>
       </div>
 
-      <!-- Assumptions -->
-      <div class="assumptions">
-        <div class="assumptions-header">How this is calculated</div>
-        <div class="assumption-row">
-          <span class="assumption-key">Labour savings</span>
-          <span class="assumption-val">Hours/week &times; AI coverage % &times; 4.3 weeks &times; hourly rate</span>
+      <div class="calc-container">
+        <!-- Inputs -->
+        <div class="input-section">
+          <h3 style="margin-bottom: 1.5rem; font-family: var(--serif);">Efficiency Metrics</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="input-group">
+              <label>Weekly Inquiries (Email/Phone)</label>
+              <input type="number" id="volume" value="50" oninput="calc()">
+            </div>
+            <div class="input-group">
+              <label>Avg. Time per Response (Minutes)</label>
+              <input type="number" id="time" value="8" oninput="calc()">
+            </div>
+          </div>
+
+          <h3 style="margin: 2.5rem 0 1.5rem; font-family: var(--serif);">Growth Metrics</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="input-group">
+              <label>Estimated Monthly Website Visitors</label>
+              <input type="number" id="traffic" value="800" oninput="calc()">
+            </div>
+            <div class="input-group">
+              <label>Avg. Customer Value ($)</label>
+              <input type="number" id="value" value="250" oninput="calc()">
+            </div>
+          </div>
+          
+          <h3 style="margin: 2.5rem 0 1.5rem; font-family: var(--serif);">Minescout Plan</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="input-group">
+              <label>Select Plan Tier</label>
+              <select id="plan" onchange="calc()">
+                <option value="59" data-setup="749">Full AI Upgrade — $749 setup + $59/mo</option>
+                <option value="29" data-setup="499">Digital Remodel — $499 setup + $29/mo</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>AI Coverage (Est. % of questions handled)</label>
+              <input type="number" id="aiCoverage" value="80" min="10" max="100" oninput="calc()">
+            </div>
+          </div>
         </div>
-        <div class="assumption-row">
-          <span class="assumption-key">Lead recovery</span>
-          <span class="assumption-val">Missed leads/week &times; 4.3 weeks &times; 40% conversion rate &times; customer value</span>
-        </div>
-        <div class="assumption-row">
-          <span class="assumption-key">Payback period</span>
-          <span class="assumption-val">Setup cost &divide; monthly net value (months to break even)</span>
-        </div>
-        <div class="assumption-row">
-          <span class="assumption-key">AI coverage</span>
-          <span class="assumption-val">Estimated % of repeat questions the AI can handle. Typically 70&ndash;90% for FAQs, hours, and services.</span>
-        </div>
-        <div class="assumption-row">
-          <span class="assumption-key">These are estimates</span>
-          <span class="assumption-val">Real results vary. This calculator is a starting point for conversation, not a guarantee.</span>
+
+        <!-- Outputs -->
+        <div class="output-section">
+          <div class="result-card">
+            <div class="result-label">Annual Business Impact</div>
+            <div class="result-val" id="total-impact">$0</div>
+            <p style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">Combined value of time saved + new lead revenue</p>
+          </div>
+
+          <div class="stat-grid">
+            <div class="mini-stat">
+              <div class="mini-label">Monthly Net Value</div>
+              <div class="mini-val" id="netMonthly" style="color: #4caf82;">$0</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Payback Period</div>
+              <div class="mini-val" id="payback" style="color: var(--accent);">—</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Monthly Hrs Reclaimed</div>
+              <div class="mini-val" id="hours-saved">0</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">New Leads / Mo</div>
+              <div class="mini-val" id="new-leads">0</div>
+            </div>
+          </div>
+
+          <p class="impact-note">
+            *Based on a conservative 2% increase in conversion rate via instant AI engagement and modern site speed optimization.
+          </p>
         </div>
       </div>
     </div>
   </main>
-  <script src="/scripts/sidebar.js"></script>
-  <script src="/scripts/main.js"></script>
+
   <script>
-    document.getElementById('copyright').textContent = '\u00A9 ' + new Date().getFullYear() + ' Minescout AI';
+    const CHAT_WORKER = 'https://thomas-chat.tmcarleton11.workers.dev/';
 
     function calc() {
-      const hrs   = parseFloat(document.getElementById('hoursPerWeek').value) || 0;
-      const rate  = parseFloat(document.getElementById('hourlyRate').value) || 0;
-      const leads = parseFloat(document.getElementById('missedLeads').value) || 0;
-      const lval  = parseFloat(document.getElementById('leadValue').value) || 0;
-      const cov   = (parseFloat(document.getElementById('aiCoverage').value) || 80) / 100;
+      // Inputs
+      const vol = parseFloat(document.getElementById('volume').value) || 0;
+      const time = parseFloat(document.getElementById('time').value) || 0;
+      const traffic = parseFloat(document.getElementById('traffic').value) || 0;
+      const val = parseFloat(document.getElementById('value').value) || 0;
+      const cov = (parseFloat(document.getElementById('aiCoverage').value) || 80) / 100;
+      
       const planEl = document.getElementById('plan');
       const monthlyCost = parseInt(planEl.value);
-      const setupCost = 250;
+      const setupCost = parseInt(planEl.options[planEl.selectedIndex].getAttribute('data-setup'));
 
-      const hoursSaved   = hrs * cov * 4.3;
-      const labourSaved  = hoursSaved * rate;
-      const leadsRec     = leads * 4.3 * 0.4;
-      const leadRev      = leadsRec * lval;
-      const totalRec     = labourSaved + leadRev;
-      const net          = totalRec - monthlyCost;
-      const paybackMo    = net > 0 ? (setupCost / net) : null;
+      // Efficiency Logic (Time)
+      const monthlyHours = (vol * time * 4.33) / 60; // 4.33 weeks per month
+      const hourlyRate = 35; // Conservative staff cost per hour
+      const efficiencyValue = (monthlyHours * cov) * hourlyRate;
 
-      document.getElementById('hoursSaved').textContent   = hoursSaved.toFixed(1) + ' hrs';
-      document.getElementById('hoursSavedSub').textContent = 'of your ' + (hrs * 4.3).toFixed(0) + ' hrs/month';
-      document.getElementById('labourSaved').textContent  = '$' + labourSaved.toFixed(0);
-      document.getElementById('leadsRecovered').textContent = leadsRec.toFixed(1);
-      document.getElementById('leadRevSub').textContent   = '$' + leadRev.toFixed(0) + ' in recovered revenue';
-      document.getElementById('netMonthly').textContent   = net >= 0 ? '+$' + net.toFixed(0) : '-$' + Math.abs(net).toFixed(0);
-      document.getElementById('netMonthly').style.color   = net >= 0 ? '#4caf82' : '#ff4d1c';
+      // Growth Logic (Leads)
+      const leadIncrease = traffic * 0.02; 
+      const conversionToSale = 0.25; 
+      const growthValue = leadIncrease * conversionToSale * val;
+
+      // Totals
+      const totalMonthlyImpact = efficiencyValue + growthValue;
+      const net = totalMonthlyImpact - monthlyCost;
+      const totalAnnualImpact = net * 12;
+      const paybackMo = net > 0 ? (setupCost / net) : null;
+
+      // Update UI
+      document.getElementById('hours-saved').innerText = (monthlyHours * cov).toFixed(1);
+      document.getElementById('new-leads').innerText = (leadIncrease * conversionToSale).toFixed(1);
+      document.getElementById('total-impact').innerText = '$' + Math.round(totalAnnualImpact).toLocaleString();
+      
+      const netEl = document.getElementById('netMonthly');
+      netEl.innerText = net >= 0 ? '+$' + net.toFixed(0) : '-$' + Math.abs(net).toFixed(0);
+      netEl.style.color = net >= 0 ? '#4caf82' : '#ff4d1c';
 
       if (paybackMo !== null) {
-        document.getElementById('payback').textContent = paybackMo < 1 ? '< 1 month' : paybackMo.toFixed(1) + ' months';
+        document.getElementById('payback').innerText = paybackMo < 1 ? '< 1 mo' : paybackMo.toFixed(1) + ' mos';
       } else {
-        document.getElementById('payback').textContent = 'Adjust inputs';
+        document.getElementById('payback').innerText = 'Adjust';
       }
 
+      // Reset AI Verdict text on input change
       const vt = document.getElementById('verdict-text');
-      if (net >= 500) {
-        vt.innerHTML = '<strong>Strong ROI.</strong> Based on your numbers, Minescout AI would net you +$' + net.toFixed(0) + '/month and pay for itself in ' + (paybackMo ? paybackMo.toFixed(1) + ' months' : 'under a month') + '.';
-      } else if (net >= 0) {
-        vt.innerHTML = '<strong>Positive ROI.</strong> You\'d recover your setup cost in ' + (paybackMo ? paybackMo.toFixed(1) + ' months' : 'under a month') + ' and net +$' + net.toFixed(0) + '/month ongoing.';
-      } else {
-        vt.innerHTML = 'Based on these numbers the monthly fee exceeds recovered value. Try increasing hours or lead value, or <strong>contact us</strong> to discuss your specific situation.';
+      const aiBtn = document.getElementById('ai-verdict-btn');
+      
+      vt.innerHTML = `<strong>Projected Net: ${net >= 0 ? '+$' : '-$'}${Math.abs(net).toFixed(0)}/month.</strong> Click below for a detailed AI analysis based on these specific numbers.`;
+      
+      if (aiBtn) {
+        aiBtn.style.display = 'inline-block';
+        aiBtn.textContent = "✨ Generate Custom AI Analysis";
       }
     }
 
-    calc();
+    function getAIVerdict() {
+      // Gather current state
+      const vol = document.getElementById('volume').value;
+      const traffic = document.getElementById('traffic').value;
+      const val = document.getElementById('value').value;
+      const planEl = document.getElementById('plan');
+      const planName = planEl.options[planEl.selectedIndex].text;
+      
+      const netMonthly = document.getElementById('netMonthly').innerText;
+      const hoursSaved = document.getElementById('hours-saved').innerText;
+      const totalImpact = document.getElementById('total-impact').innerText;
+      const payback = document.getElementById('payback').innerText;
+
+      const vt = document.getElementById('verdict-text');
+      const btn = document.getElementById('ai-verdict-btn');
+      
+      vt.innerHTML = '<span class="ai-loading">Consulting Minescout AI...</span>';
+      btn.style.display = 'none';
+
+      const prompt = `You are a technical sales advisor for Minescout AI. A potential client just used our Growth & Efficiency ROI calculator.
+      
+      Their Business Inputs:
+      - Weekly inquiries: ${vol}
+      - Monthly website visitors: ${traffic}
+      - Value of a new customer: $${val}
+      - Selected Plan: ${planName}
+      
+      Calculated Outcomes:
+      - Projected Net Monthly Value: ${netMonthly}
+      - Hours Saved per month: ${hoursSaved}
+      - Annual Financial Impact: ${totalImpact}
+      - Payback Period: ${payback}
+
+      Write exactly 1 short, highly compelling paragraph explaining why they should upgrade to Minescout AI based on these specific numbers. Focus on the exact financial ROI, the payback period, and the hours reclaimed. Speak directly and professionally to the client ("you"). Do not use markdown headers or greetings. Make it punchy.`;
+
+      fetch(CHAT_WORKER, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [{ role: "user", content: "Please analyze my projected ROI." }],
+          system_override: prompt,
+          temperature: 0.6
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        vt.innerHTML = `<strong>Minescout AI Analysis:</strong> ${data.content || "Based on your metrics, the selected plan offers a strong return on investment."}`;
+        btn.style.display = 'inline-block';
+        btn.textContent = "✨ Recalculate AI Analysis";
+      })
+      .catch(err => {
+        vt.innerHTML = `<strong>Strong ROI Projected.</strong> Based on your inputs, generating ${netMonthly} in net monthly value makes the ${planName.split('—')[0]} an obvious choice. You recover your costs rapidly while reclaiming ${hoursSaved} hours a month.`;
+        btn.style.display = 'inline-block';
+        btn.textContent = "✨ Retry AI Analysis";
+      });
+    }
+
+    // Run on load
+    window.onload = calc;
   </script>
 </body>
 </html>
