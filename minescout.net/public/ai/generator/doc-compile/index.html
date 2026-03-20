@@ -3,27 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minescout AI — Proposal Generator</title>
+  <title>Minescout AI — V2 Document Compiler</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   
   <style>
-    :root {
-      --bg: #ffffff;
-      --fg: #0a2540;
-      --accent: #c9a96e;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --success: #10b981;
-      --muted: #64748b;
-      --light: #f8fafc;
-      --border: #e2e8f0;
-      --serif: 'Libre Baskerville', serif;
-      --sans: 'Jost', sans-serif;
-    }
-
+    /* ... (Same exact typography and colors as your V1) ... */
+    :root { --bg: #ffffff; --fg: #0a2540; --accent: #c9a96e; --danger: #ef4444; --muted: #64748b; --light: #f8fafc; --border: #e2e8f0; --serif: 'Libre Baskerville', serif; --sans: 'Jost', sans-serif; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #f1f5f9; color: var(--fg); font-family: var(--sans); line-height: 1.6; padding: 40px 20px; -webkit-font-smoothing: antialiased; }
 
@@ -31,20 +19,14 @@
     .app-header { max-width: 900px; margin: 0 auto 30px auto; background: var(--bg); padding: 25px; border-radius: 6px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px; }
     .toolbar-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 5px;}
     
-    .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: var(--light); padding: 15px; border-radius: 4px; border: 1px solid var(--border); }
-    .editor-full { grid-column: span 2; }
+    .console-input { width: 100%; height: 250px; background: #1e293b; color: #38bdf8; font-family: monospace; font-size: 0.9rem; padding: 15px; border: none; border-radius: 4px; resize: vertical; outline: none; line-height: 1.5; }
+    .console-input:focus { box-shadow: 0 0 0 2px var(--accent); }
     
-    .input-group { display: flex; flex-direction: column; gap: 5px; }
-    .input-group label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em; }
-    .input-group input, .input-group textarea { padding: 10px 15px; border: 1px solid var(--border); border-radius: 4px; font-family: var(--sans); font-size: 0.95rem; outline: none; background: white; }
-    .input-group input:focus, .input-group textarea:focus { border-color: var(--accent); }
-    .input-group textarea { resize: vertical; min-height: 100px; }
-    
-    .btn { background: var(--fg); color: white; border: none; padding: 10px 20px; border-radius: 4px; font-family: var(--sans); font-weight: 600; cursor: pointer; transition: 0.2s; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.8rem; white-space: nowrap;}
+    .btn { background: var(--fg); color: white; border: none; padding: 10px 20px; border-radius: 4px; font-family: var(--sans); font-weight: 600; cursor: pointer; transition: 0.2s; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.8rem; }
     .btn:hover { background: var(--accent); }
     
     /* PDF Canvas */
-    .plan-container { background: var(--bg); max-width: 900px; margin: 0 auto; padding: 80px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border-radius: 4px; position: relative; outline: none; }
+    .plan-container { background: var(--bg); max-width: 900px; margin: 0 auto; padding: 80px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border-radius: 4px; position: relative; }
     .status-stamp { position: absolute; top: 50px; right: 80px; border: 2px solid var(--fg); color: var(--fg); padding: 6px 15px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; transform: rotate(4deg); }
     
     header { border-bottom: 3px solid var(--fg); padding-bottom: 30px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
@@ -61,18 +43,15 @@
     ul { margin-left: 20px; margin-bottom: 1.5rem; color: #334155; }
     li { margin-bottom: 0.5rem; }
 
-    /* Financial Grid */
     .financial-grid { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 30px;}
     .fin-row { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid var(--border); background: white;}
     .fin-row:last-child { border-bottom: none; }
     .fin-label { font-weight: 600; color: var(--fg); }
     .fin-val { font-family: var(--serif); font-weight: 700; color: var(--fg); }
     .fin-row.discount { background: #fef2f2; }
-    .fin-row.discount .fin-label { color: var(--danger); }
-    .fin-row.discount .fin-val { color: var(--danger); }
+    .fin-row.discount .fin-label, .fin-row.discount .fin-val { color: var(--danger); }
     .fin-note { font-size: 0.8rem; color: var(--muted); font-weight: 400; display: block; margin-top: 4px; font-family: var(--sans);}
 
-    /* The Fix Box (Total) */
     .solution-box { background: var(--fg); color: white; padding: 25px 30px; border-radius: 4px; border-bottom: 4px solid var(--accent); display: flex; justify-content: space-between; align-items: center;}
     .solution-box h3 { font-family: var(--serif); font-size: 1.4rem; color: var(--accent); margin: 0;}
     .solution-box .grand-total { font-family: var(--serif); font-size: 2rem; font-weight: 700; }
@@ -90,68 +69,31 @@
   <div class="app-header no-print">
     <div class="toolbar-top">
       <div>
-        <h2 style="font-family: var(--serif); font-size: 1.2rem; margin: 0; line-height: 1; border:none; padding:0; color: var(--fg)::after{display:none;}">Proposal Generator</h2>
-        <p style="margin: 0; font-size: 0.75rem; color: var(--muted);">Minescout Operations — Internal Tool</p>
+        <h2 style="font-family: var(--serif); font-size: 1.2rem; margin: 0; line-height: 1; border:none; padding:0; color: var(--fg);">V2 Document Compiler</h2>
+        <p style="margin: 0; font-size: 0.75rem; color: var(--muted);">Paste raw text. System will auto-parse variables.</p>
       </div>
       <div>
-        <button class="btn" onclick="generateProposal()" style="background: var(--accent); color: var(--fg); margin-right: 10px;">Update Preview</button>
+        <button class="btn" onclick="compileDocument()" style="background: var(--accent); color: var(--fg); margin-right: 10px;">Compile Proposal</button>
         <button class="btn" onclick="window.print()">Export PDF</button>
       </div>
     </div>
     
-    <div class="editor-grid">
-      <div class="input-group">
-        <label>Prepared For (Client Name)</label>
-        <input type="text" id="in-client" value="Chris [Last Name]" />
-      </div>
-      <div class="input-group">
-        <label>Project Title</label>
-        <input type="text" id="in-project" value="Digital Storefront & E-Commerce Architecture" />
-      </div>
-      
-      <div class="input-group editor-full">
-        <label>Project Scope (Use '-' for bullet points)</label>
-        <textarea id="in-scope">Minescout AI will architect and deploy a modern, high-performance digital storefront for your pottery business. The project includes:
-
+    <textarea id="raw-data" class="console-input" spellcheck="false">
+CLIENT: Chris Franz
+PROJECT: Digital Storefront & E-Commerce Architecture
+SCOPE:
 - Custom UI/UX design optimized for showcasing handmade ceramics.
 - Integration with an Etsy storefront for secure checkout and inventory management.
 - Deployment on a high-speed, Edge-network server (sub-second load times).
-- Mobile-responsive architecture.</textarea>
-      </div>
-
-      <div class="input-group">
-        <label>Base Architecture Cost</label>
-        <input type="text" id="in-base-cost" value="$499.00" />
-      </div>
-      <div class="input-group">
-        <label>Ongoing Monthly Maintenance</label>
-        <input type="text" id="in-monthly" value="$5.00 / month" />
-      </div>
-
-      <div class="input-group">
-        <label>Credit/Discount Amount (Include negative sign)</label>
-        <input type="text" id="in-credit-val" value="-$349.00" />
-      </div>
-      <div class="input-group">
-        <label>Credit Reason / Name</label>
-        <input type="text" id="in-credit-name" value='"Founding Tester" Credit' />
-      </div>
-      
-      <div class="input-group editor-full">
-        <label>Discount Note (Optional detail)</label>
-        <input type="text" id="in-credit-note" value="(Applied in gratitude for your extensive beta-testing and QA support on The Chop Lab)" />
-      </div>
-
-      <div class="input-group">
-        <label>Total Build Cost</label>
-        <input type="text" id="in-total" value="$150.00" />
-      </div>
-
-      <div class="input-group editor-full">
-        <label>Next Steps / Closing</label>
-        <textarea id="in-next">If this proposal aligns with your vision, let me know! We can set up a quick 10-minute call (or chat via email) to discuss your preferred color palette, photos of your pottery, and your Etsy account details.</textarea>
-      </div>
-    </div>
+- Mobile-responsive architecture.
+BASE COST: $499.00
+CREDIT NAME: "Founding Tester" Credit
+CREDIT VALUE: -$349.00
+MONTHLY: $5.00 / month
+TOTAL: $150.00
+NEXT STEPS:
+If this proposal aligns with your vision, let me know! We can set up a quick chat over email to discuss your preferred color palette, photos of your pottery, and your Etsy account details. Your first demo link is available at https://chrisceramics.pages.dev/
+    </textarea>
   </div>
 
   <div class="plan-container" contenteditable="true">
@@ -200,7 +142,7 @@
         <div class="fin-row discount" id="credit-row">
           <div class="fin-label">
             <span id="out-credit-name">Credit</span>
-            <span class="fin-note" id="out-credit-note">Note here</span>
+            <span class="fin-note">(Applied to initial build cost)</span>
           </div>
           <div class="fin-val" id="out-credit-val">-$0.00</div>
         </div>
@@ -232,11 +174,11 @@
   </div>
 
   <script>
-    // Auto-set the date
     document.getElementById('auto-date').innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-    // Simple text parser to turn lines starting with "-" into HTML bullet points
+    // Text parser to turn lines starting with "-" into HTML bullet points
     function parseTextToHTML(text) {
+      if(!text) return "";
       let lines = text.split('\n');
       let html = '';
       let inList = false;
@@ -255,43 +197,50 @@
       return html;
     }
 
-    function generateProposal() {
-      // Get values
-      document.getElementById('out-client').innerText = document.getElementById('in-client').value;
-      document.getElementById('out-project').innerText = document.getElementById('in-project').value;
-      
-      document.getElementById('out-scope-body').innerHTML = parseTextToHTML(document.getElementById('in-scope').value);
-      document.getElementById('out-next-body').innerHTML = parseTextToHTML(document.getElementById('in-next').value);
-      
-      // Financials
-      document.getElementById('out-base-cost').innerText = document.getElementById('in-base-cost').value;
-      document.getElementById('out-monthly').innerText = document.getElementById('in-monthly').value;
-      document.getElementById('out-total').innerText = document.getElementById('in-total').value;
+    // The Regex Extraction Engine
+    function extractValue(text, keyword) {
+      // Looks for "KEYWORD: " and grabs everything until the next ALL CAPS keyword or the end of the text.
+      const regex = new RegExp(`${keyword}:\\s*([\\s\\S]*?)(?=\\n[A-Z\\s]+:|$)`, 'i');
+      const match = text.match(regex);
+      return match ? match[1].trim() : '';
+    }
 
-      // Handle Credit row (hide if empty)
-      const creditVal = document.getElementById('in-credit-val').value;
+    function compileDocument() {
+      const rawText = document.getElementById('raw-data').value;
+
+      // Extract Data
+      const client = extractValue(rawText, 'CLIENT');
+      const project = extractValue(rawText, 'PROJECT');
+      const scope = extractValue(rawText, 'SCOPE');
+      const baseCost = extractValue(rawText, 'BASE COST');
+      const creditName = extractValue(rawText, 'CREDIT NAME');
+      const creditVal = extractValue(rawText, 'CREDIT VALUE');
+      const monthly = extractValue(rawText, 'MONTHLY');
+      const total = extractValue(rawText, 'TOTAL');
+      const nextSteps = extractValue(rawText, 'NEXT STEPS');
+
+      // Inject into DOM
+      document.getElementById('out-client').innerText = client || 'Unknown Client';
+      document.getElementById('out-project').innerText = project || 'Custom Build';
+      document.getElementById('out-scope-body').innerHTML = parseTextToHTML(scope);
+      document.getElementById('out-base-cost').innerText = baseCost || '$0.00';
+      document.getElementById('out-monthly').innerText = monthly || '$0.00';
+      document.getElementById('out-total').innerText = total || '$0.00';
+      document.getElementById('out-next-body').innerHTML = parseTextToHTML(nextSteps);
+
+      // Handle the Credit Row (Hide it if no credit is given)
       const creditRow = document.getElementById('credit-row');
-      
       if (creditVal && creditVal !== "$0.00" && creditVal !== "") {
         creditRow.style.display = 'flex';
-        document.getElementById('out-credit-name').innerText = document.getElementById('in-credit-name').value;
+        document.getElementById('out-credit-name').innerText = creditName || 'Credit';
         document.getElementById('out-credit-val').innerText = creditVal;
-        
-        const note = document.getElementById('in-credit-note').value;
-        const noteEl = document.getElementById('out-credit-note');
-        if (note) {
-          noteEl.style.display = 'block';
-          noteEl.innerText = note;
-        } else {
-          noteEl.style.display = 'none';
-        }
       } else {
         creditRow.style.display = 'none';
       }
     }
 
-    // Run once on load to populate the default template
-    window.onload = generateProposal;
+    // Run compile on load so the default text populates immediately
+    window.onload = compileDocument;
   </script>
 </body>
 </html>
