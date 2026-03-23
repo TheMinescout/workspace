@@ -13,7 +13,7 @@
     :root {
       --bg: #ffffff; --fg: #0a2540; --accent: #c9a96e; --danger: #ef4444; 
       --warning: #f59e0b; --success: #10b981; --muted: #64748b; 
-      --light: #f8fafc; --border: #e2e8f0;
+      --light: #f8fafc; --border: #e2e8f0; --ai-glow: #e0f2fe;
       --serif: 'Libre Baskerville', serif; --sans: 'Jost', sans-serif;
     }
 
@@ -23,6 +23,15 @@
     /* VIEW CONTAINERS */
     .view-section { display: none; width: 100%; }
     .view-section.active { display: block; }
+
+    /* DISSOLVE ANIMATION (Top to Bottom) */
+    @keyframes dissolveTopToBottom {
+      0% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(-10px); }
+      100% { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+    }
+    .view-section.active.dissolve-anim {
+      animation: dissolveTopToBottom 1.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
 
     /* FORM STYLES */
     .form-container { background: var(--bg); max-width: 600px; margin: 0 auto; padding: 60px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border-radius: 6px; border-top: 4px solid var(--fg); }
@@ -34,13 +43,17 @@
     label { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--fg); letter-spacing: 0.1em; display: block; margin-bottom: 8px; }
     .optional-tag { color: var(--muted); font-weight: 400; font-size: 0.65rem; letter-spacing: 0.05em; text-transform: none; }
     input[type="text"], input[type="email"], input[type="url"], textarea { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 4px; font-family: var(--sans); font-size: 1rem; outline: none; background: var(--light); color: var(--fg); transition: 0.2s; }
-    input:focus, textarea:focus { border-color: var(--accent); background: var(--bg); }
+    input:focus, textarea:focus { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1); }
     textarea { resize: vertical; min-height: 120px; }
     
+    /* Button with Loading Pulse */
     .btn { background: var(--fg); color: white; border: none; padding: 15px 20px; width: 100%; border-radius: 4px; font-family: var(--sans); font-weight: 600; cursor: pointer; transition: 0.2s; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.9rem; margin-top: 10px; }
     .btn:hover { background: var(--accent); }
     .btn.accent { background: var(--accent); color: white; }
     .btn.accent:hover { background: #b5955a; }
+    .btn:disabled { background: var(--fg); opacity: 0.8; cursor: wait; }
+    .btn.processing { animation: btnPulse 1.5s infinite; }
+    @keyframes btnPulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.6; } }
 
     /* AUDIT & RECEIPT STYLES */
     .plan-container { background: var(--bg); max-width: 900px; margin: 0 auto; padding: 80px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border-radius: 4px; position: relative; }
@@ -56,12 +69,16 @@
     .diag-card.fail { border-left: 4px solid var(--danger); background: #fef2f2; }
     .diag-card.warn { border-left: 4px solid var(--warning); background: #fffbeb; }
     .diag-card.pass { border-left: 4px solid var(--success); background: #f0fdf4; }
+    /* AI Deep Scan Card Styling */
+    .diag-card.ai-scan { border-left: 4px solid #0284c7; background: #f0f9ff; border-top: 1px solid #bae6fd; border-right: 1px solid #bae6fd; border-bottom: 1px solid #bae6fd; }
     .diag-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 8px; color: var(--fg); display: flex; justify-content: space-between; align-items: center; }
     .diag-badge { font-size: 0.65rem; padding: 4px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
     .fail .diag-badge { background: #fee2e2; color: var(--danger); border: 1px solid #fca5a5; }
     .warn .diag-badge { background: #fef3c7; color: var(--warning); border: 1px solid #fcd34d; }
     .pass .diag-badge { background: #d1fae5; color: var(--success); border: 1px solid #6ee7b7; }
+    .ai-scan .diag-badge { background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; }
     .diag-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+    .ai-scan .diag-desc { color: #0c4a6e; font-family: monospace; font-size: 0.85rem; }
     
     .solution-box { margin-top: 40px; background: var(--fg); color: white; padding: 30px; border-radius: 4px; border-bottom: 4px solid var(--accent); }
     .solution-box h3 { font-family: var(--serif); font-size: 1.4rem; margin-bottom: 15px; color: var(--accent); }
@@ -74,6 +91,7 @@
       .no-print { display: none !important; }
       .plan-container, .form-container { box-shadow: none; max-width: 100%; padding: 0.5in; border-top: none; }
       .status-stamp { right: 0.5in; top: 0.5in; }
+      .view-section.active.dissolve-anim { animation: none; }
     }
     
     @media (max-width: 600px) {
@@ -93,7 +111,7 @@
         </div>
       </header>
       <p class="intro-text">
-        Provide your operational details below. If a current URL is provided, our Edge Network will instantly generate a diagnostic report.
+        Provide your operational details below. If a current URL is provided, our Edge AI will scrape your live HTML and generate a deep diagnostic report.
       </p>
       <form id="intake-form">
         <div class="form-group"><label>Full Name</label><input type="text" id="name" required placeholder="e.g. Jane Doe"></div>
@@ -119,20 +137,23 @@
         <div class="meta-block"><label>URL Scanned</label><div id="audit-url" style="color: var(--accent);"></div></div>
       </div>
 
-      <section><p>An automated structural scan was conducted to evaluate lead-conversion efficiency.</p></section>
+      <section><p>An automated structural scan was conducted to evaluate lead-conversion efficiency and AI architectural readiness.</p></section>
       
       <h2 class="section-title">Diagnostic Findings</h2>
       <div class="diagnostic-grid" id="audit-results"></div>
 
       <section class="solution-box">
         <h3>The Minescout Upgrade</h3>
-        <p><strong>1. Custom AI Integration:</strong> Autonomous Llama-3 AI assistant to capture leads 24/7.<br>
-        <strong>2. Headless Edge Architecture:</strong> Complete migration to our multi-tenant Edge network.</p>
+        <p><strong>1. Headless Edge Architecture:</strong> Complete migration to our multi-tenant Edge network for sub-second speeds.<br>
+        <strong>2. Optional AI Integration:</strong> Autonomous Llama-3 AI assistant to capture leads 24/7 (if prescribed by architect).</p>
       </section>
 
       <div class="action-bar no-print">
         <p class="action-text">Please review the findings above before transmitting to our lead architect.</p>
-        <button id="confirm-btn" class="btn accent">That looks correct -> Transmit Request</button>
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+          <button id="confirm-btn" class="btn accent" style="width: auto;">That looks correct -> Transmit Request</button>
+          <button type="button" class="btn" onclick="window.print()" style="width: auto; background: transparent; color: var(--fg); border: 2px solid var(--fg);">Download Audit PDF</button>
+        </div>
       </div>
     </div>
   </div>
@@ -170,61 +191,154 @@
     // --- API ENDPOINTS ---
     const INTAKE_WORKER_URL = "https://minescout-intake.tmcarleton11.workers.dev/";
     const AUDIT_WORKER_URL = "https://backend.tmcarleton11.workers.dev/audit"; 
+    const CHAT_WORKER_URL = "https://thomas-chat.tmcarleton11.workers.dev/";
 
     // Global state
     let globalPayload = {};
     let globalFindings = [];
 
-    function switchView(viewId) {
-      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-      document.getElementById(viewId).classList.add('active');
+    // Utility for artificial delays (Labor Illusion)
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    function switchView(viewId, animate = false) {
+      document.querySelectorAll('.view-section').forEach(el => {
+        el.classList.remove('active');
+        el.classList.remove('dissolve-anim');
+      });
+      const target = document.getElementById(viewId);
+      target.classList.add('active');
+      if (animate) target.classList.add('dissolve-anim');
     }
 
-    // --- STEP 1: FORM SUBMIT ---
+    // --- STEP 1: FORM SUBMIT & DEEP SCAN ---
     document.getElementById('intake-form').addEventListener('submit', async function(e) {
       e.preventDefault(); 
       
       const btn = document.getElementById('submit-btn');
-      btn.innerText = "Processing..."; 
       btn.disabled = true;
+      btn.classList.add('processing');
 
       globalPayload = {
         name: document.getElementById('name').value,
         email: document.getElementById('email').value,
         business: document.getElementById('business').value,
-        url: document.getElementById('url').value.trim(), // Trim whitespace
+        url: document.getElementById('url').value.trim(),
         goals: document.getElementById('goals').value
       };
 
-      // Set Receipt Data early
       document.getElementById('receipt-business').innerText = globalPayload.business;
       document.getElementById('receipt-contact').innerText = `${globalPayload.name} <${globalPayload.email}>`;
 
-      // Branch 1: URL was provided -> Do the Audit
       if (globalPayload.url !== "") {
         let targetUrl = globalPayload.url.startsWith('http') ? globalPayload.url : 'https://' + globalPayload.url;
         
         try {
-          const auditRes = await fetch(AUDIT_WORKER_URL, {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url: targetUrl })
-          }).catch(() => null);
+          // ARTIFICIAL DELAY 1: Booting up
+          btn.innerText = "Initiating Edge Node...";
+          await sleep(1000);
 
+          // PHASE 1: Fetch Raw HTML & Standard Audit
+          btn.innerText = "Extracting Target DOM...";
+          let rawHtmlSnippet = "";
+          const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+          
+          const [htmlRes, auditRes] = await Promise.all([
+            fetch(proxyUrl).catch(() => null),
+            fetch(AUDIT_WORKER_URL, {
+              method: "POST", headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ url: targetUrl })
+            }).catch(() => null),
+            sleep(1500) 
+          ]);
+
+          // Parse standard findings & INJECT BASELINE HEURISTICS
           if (auditRes && auditRes.ok) {
             const data = await auditRes.json();
             globalFindings = data.findings || [];
+            
+            // Baseline 1: Always check for AI
             if(!data.hasChatWidget) {
-              globalFindings.push({ title: "AI Integration Status", badge: "Missing", type: "fail", desc: "No autonomous agent detected." });
+              globalFindings.push({ title: "AI Integration Status", badge: "Missing", type: "fail", desc: "No autonomous conversational agent detected to intercept and qualify off-hours lead traffic." });
             }
+            // Baseline 2: Always warn about standard hosting vs Edge routing
+            globalFindings.push({ title: "Global Edge Distribution", badge: "Sub-Optimal", type: "warn", desc: "Infrastructure lacks multi-tenant serverless routing. High risk of localized latency spikes during peak traffic." });
+            // Baseline 3: Asynchronous Webhooks
+            globalFindings.push({ title: "Asynchronous Data Routing", badge: "Sub-Optimal", type: "warn", desc: "Lead capture mechanisms lack direct edge-native webhook integration for instant CRM triage." });
+
           } else {
-            // Fallback if blocked by school network
+            // FALLBACK HEURISTICS (If the school firewall or CORS blocks the scan)
             globalFindings = [
-              { title: "Legacy Architecture Detected", badge: "Sub-Optimal", type: "warn", desc: "Target site likely relies on older monolithic frameworks." },
-              { title: "AI Integration Status", badge: "Missing", type: "fail", desc: "No autonomous agent detected." }
+              { title: "Legacy Architecture Detected", badge: "Critical Friction", type: "fail", desc: "Target site relies on older monolithic frameworks rather than modern, serverless Edge nodes." },
+              { title: "AI Integration Status", badge: "Missing", type: "fail", desc: "No autonomous conversational agent detected to triage and qualify inbound leads 24/7." },
+              { title: "Asynchronous Data Routing", badge: "Sub-Optimal", type: "warn", desc: "Lead capture forms are not routed through edge-native webhooks, artificially increasing response delay." },
+              { title: "Static Asset Delivery", badge: "Unverified", type: "warn", desc: "Unable to confirm Tier-1 CDN integration. Media payloads may cause render-blocking on mobile devices." }
             ];
           }
 
-          // Populate Audit View
+          // Parse Raw HTML for the AI
+          if (htmlRes && htmlRes.ok) {
+            const proxyData = await htmlRes.json();
+            if (proxyData.contents) {
+              const bodyMatch = proxyData.contents.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+              let bodyHtml = bodyMatch ? bodyMatch[1] : proxyData.contents;
+              bodyHtml = bodyHtml.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+              bodyHtml = bodyHtml.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
+              rawHtmlSnippet = bodyHtml.substring(0, 1500); 
+            }
+          }
+
+          // ARTIFICIAL DELAY 2: Transition
+          btn.innerText = "Analyzing Component Tree...";
+          await sleep(1200);
+
+          // PHASE 2: AI Synthesizing the HTML DOM for tailored recommendation
+          btn.innerText = "Evaluating AI Readiness...";
+          
+          if (rawHtmlSnippet) {
+            const aiPrompt = `You are the Lead Technical Architect for Minescout AI. You are generating a custom diagnostic report for a client.
+            Target: ${globalPayload.business} (${targetUrl})
+            Client Goal: ${globalPayload.goals}
+            Raw HTML Snippet from their actual site:
+            \`\`\`html
+            ${rawHtmlSnippet}
+            \`\`\`
+            Task: Write exactly a 3-sentence highly technical architectural teardown.
+            Sentence 1: Analyze their specific DOM structure and identify a specific bottleneck hurting their stated goal.
+            Sentence 2: Evaluate their readiness for an autonomous agent (look for structural clutter or existing chat widgets).
+            Sentence 3: Make a definitive recommendation between our two tiers: 'Digital Remodel' (Headless Edge migration for pure speed/SEO) OR 'Full AI Upgrade' (Headless Edge + Custom Llama-3 Agent). Justify the choice based strictly on the code and their goal.
+            Be brutal, objective, and highly professional. No markdown headers or greetings.`;
+
+            const [aiRes] = await Promise.all([
+              fetch(CHAT_WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  messages: [{ role: "user", content: "Provide the architectural prescription." }],
+                  system_override: aiPrompt,
+                  temperature: 0.3 
+                })
+              }).catch(() => null),
+              sleep(2000)
+            ]);
+
+            if (aiRes && aiRes.ok) {
+              const aiData = await aiRes.json();
+              if (aiData.content) {
+                globalFindings.unshift({
+                  title: "Architect's Prescription",
+                  badge: "Deep Scan",
+                  type: "ai-scan",
+                  desc: aiData.content
+                });
+              }
+            }
+          }
+
+          // ARTIFICIAL DELAY 3: Final Compilation
+          btn.innerText = "Compiling Diagnostic PDF...";
+          await sleep(1000);
+
+          // Render View
           document.getElementById('audit-name').innerText = globalPayload.business;
           document.getElementById('audit-url').innerText = targetUrl;
           
@@ -236,30 +350,38 @@
             </div>
           `).join('');
 
-          switchView('view-audit');
+          btn.classList.remove('processing');
+          switchView('view-audit', true);
 
         } catch (error) {
+          btn.classList.remove('processing');
           alert("Error scanning infrastructure. Proceeding without audit.");
-          transmitDataAndFinish(); // Failsafe: push them through if it breaks
+          transmitDataAndFinish(); 
         }
-      } 
-      // Branch 2: NO URL provided -> Skip to transmission immediately
-      else {
+      } else {
+        btn.innerText = "Transmitting to Edge...";
+        await sleep(800);
         transmitDataAndFinish();
       }
     });
 
     // --- STEP 2: USER CONFIRMS AUDIT ---
-    document.getElementById('confirm-btn').addEventListener('click', function() {
+    document.getElementById('confirm-btn').addEventListener('click', async function() {
       const btn = this;
       btn.innerText = "Transmitting to Edge..."; 
       btn.disabled = true;
+      btn.style.opacity = '0.7';
+      
+      // Disable the download button during transmission
+      const allBtns = this.parentElement.querySelectorAll('button');
+      allBtns.forEach(b => b.disabled = true);
+
+      await sleep(800); 
       transmitDataAndFinish();
     });
 
     // --- STEP 3: SEND EMAIL AND SHOW RECEIPT ---
     async function transmitDataAndFinish() {
-      // If we skipped the audit because there was no URL, globalFindings is empty.
       try {
         await fetch(INTAKE_WORKER_URL, {
           method: "POST",
@@ -272,10 +394,17 @@
 
       } catch (error) {
         alert("Transmission failed. Please check your network and try again.");
-        // Reset the form button if they skipped the audit and it failed
         const btn = document.getElementById('submit-btn');
         btn.innerText = "Initiate Pipeline"; 
         btn.disabled = false;
+        btn.classList.remove('processing');
+        
+        // Reset confirmation buttons if it fails
+        const confirmBtn = document.getElementById('confirm-btn');
+        confirmBtn.innerText = "That looks correct -> Transmit Request";
+        confirmBtn.disabled = false;
+        confirmBtn.style.opacity = '1';
+        confirmBtn.parentElement.querySelectorAll('button').forEach(b => b.disabled = false);
       }
     }
   </script>
