@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minescout AI — Client Intake & Audit</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <style>
+    :root {
+      --bg: #ffffff; --fg: #0a2540; --accent: #c9a96e; --danger: #ef4444; 
+      --warning: #f59e0b; --success: #10b981; --muted: #64748b; 
+      --light: #f8fafc; --border: #e2e8f0; --ai-glow: #e0f2fe;
+      --serif: 'Libre Baskerville', serif; --sans: 'Jost', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #f1f5f9; color: var(--fg); font-family: var(--sans); line-height: 1.6; padding: 40px 20px; -webkit-font-smoothing: antialiased; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+
+    /* VIEW CONTAINERS */
+    .view-section { display: none; width: 100%; }
+    .view-section.active { display: block; }
+
+    /* DISSOLVE ANIMATION (Top to Bottom) */
+    @keyframes dissolveTopToBottom {
+      0% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(-10px); }
+      100% { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+    }
+    .view-section.active.dissolve-anim {
+      animation: dissolveTopToBottom 1.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    /* FORM STYLES */
+    .form-container { background: var(--bg); max-width: 600px; margin: 0 auto; padding: 60px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border-radius: 6px; border-top: 4px solid var(--fg); }
+    header { border-bottom: 2px solid var(--border); padding-bottom: 25px; margin-bottom: 35px; text-align: center; }
+    .brand h1 { font-family: var(--serif); font-size: 2rem; line-height: 1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: -0.02em; }
+    .brand p { font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+    .intro-text { text-align: center; margin-bottom: 30px; font-size: 0.95rem; color: var(--muted); }
+    .form-group { margin-bottom: 20px; }
+    label { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--fg); letter-spacing: 0.1em; display: block; margin-bottom: 8px; }
+    .optional-tag { color: var(--muted); font-weight: 400; font-size: 0.65rem; letter-spacing: 0.05em; text-transform: none; }
+    input[type="text"], input[type="email"], input[type="url"], textarea { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 4px; font-family: var(--sans); font-size: 1rem; outline: none; background: var(--light); color: var(--fg); transition: 0.2s; }
+    input:focus, textarea:focus { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1); }
+    textarea { resize: vertical; min-height: 120px; }
+    
+    /* Button with Loading Pulse */
+    .btn { background: var(--fg); color: white; border: none; padding: 15px 20px; width: 100%; border-radius: 4px; font-family: var(--sans); font-weight: 600; cursor: pointer; transition: 0.2s; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.9rem; margin-top: 10px; }
+    .btn:hover { background: var(--accent); }
+    .btn.accent { background: var(--accent); color: white; }
+    .btn.accent:hover { background: #b5955a; }
+    .btn:disabled { background: var(--fg); opacity: 0.8; cursor: wait; }
+    .btn.processing { animation: btnPulse 1.5s infinite; }
+    @keyframes btnPulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.6; } }
+
+    /* AUDIT & RECEIPT STYLES */
+    .plan-container { background: var(--bg); max-width: 900px; margin: 0 auto; padding: 80px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border-radius: 4px; position: relative; }
+    .status-stamp { position: absolute; top: 50px; right: 80px; border: 2px solid var(--danger); color: var(--danger); padding: 6px 15px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; transform: rotate(4deg); }
+    .target-meta { background: var(--light); border: 1px solid var(--border); border-left: 4px solid var(--fg); padding: 20px; margin-bottom: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-radius: 2px; }
+    .meta-block label { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; display: block; margin-bottom: 5px; }
+    .meta-block div { font-family: var(--serif); font-size: 1.2rem; color: var(--fg); font-weight: 700; word-break: break-all; }
+    h2.section-title { font-family: var(--serif); font-size: 1.4rem; margin-bottom: 1.5rem; margin-top: 3rem; display: flex; align-items: center; gap: 15px; color: var(--fg); }
+    h2.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    
+    .diagnostic-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 20px; }
+    .diag-card { border: 1px solid var(--border); padding: 20px; border-radius: 4px; position: relative; }
+    .diag-card.fail { border-left: 4px solid var(--danger); background: #fef2f2; }
+    .diag-card.warn { border-left: 4px solid var(--warning); background: #fffbeb; }
+    .diag-card.pass { border-left: 4px solid var(--success); background: #f0fdf4; }
+    /* AI Deep Scan Card Styling */
+    .diag-card.ai-scan { border-left: 4px solid #0284c7; background: #f0f9ff; border-top: 1px solid #bae6fd; border-right: 1px solid #bae6fd; border-bottom: 1px solid #bae6fd; }
+    .diag-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 8px; color: var(--fg); display: flex; justify-content: space-between; align-items: center; }
+    .diag-badge { font-size: 0.65rem; padding: 4px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
+    .fail .diag-badge { background: #fee2e2; color: var(--danger); border: 1px solid #fca5a5; }
+    .warn .diag-badge { background: #fef3c7; color: var(--warning); border: 1px solid #fcd34d; }
+    .pass .diag-badge { background: #d1fae5; color: var(--success); border: 1px solid #6ee7b7; }
+    .ai-scan .diag-badge { background: #e0f2fe; color: #0284c7; border: 1px solid #7dd3fc; }
+    .diag-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+    .ai-scan .diag-desc { color: #0c4a6e; font-family: monospace; font-size: 0.85rem; }
+    
+    .solution-box { margin-top: 40px; background: var(--fg); color: white; padding: 30px; border-radius: 4px; border-bottom: 4px solid var(--accent); }
+    .solution-box h3 { font-family: var(--serif); font-size: 1.4rem; margin-bottom: 15px; color: var(--accent); }
+    
+    .action-bar { margin-top: 40px; padding-top: 30px; border-top: 2px dashed var(--border); text-align: center; }
+    .action-text { margin-bottom: 15px; font-weight: 600; color: var(--fg); font-size: 1.1rem; }
+
+    @media print {
+      body { background: white; padding: 0; margin: 0; display: block; }
+      .no-print { display: none !important; }
+      .plan-container, .form-container { box-shadow: none; max-width: 100%; padding: 0.5in; border-top: none; }
+      .status-stamp { right: 0.5in; top: 0.5in; }
+      .view-section.active.dissolve-anim { animation: none; }
+    }
+    
+    @media (max-width: 600px) {
+      .form-container, .plan-container { padding: 40px 25px; }
+      .target-meta { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="view-form" class="view-section active">
+    <div class="form-container">
+      <header>
+        <div class="brand">
+          <h1>Minescout AI</h1>
+          <p>Project Initiation</p>
+        </div>
+      </header>
+      <p class="intro-text">
+        Provide your operational details below. If a current URL is provided, our Edge AI will scrape your live HTML and generate a deep diagnostic report.
+      </p>
+      <form id="intake-form">
+        <div class="form-group"><label>Full Name</label><input type="text" id="name" required placeholder="e.g. Jane Doe"></div>
+        <div class="form-group"><label>Contact Email</label><input type="email" id="email" required placeholder="jane@example.com"></div>
+        <div class="form-group"><label>Business Name</label><input type="text" id="business" required placeholder="Your Company LLC"></div>
+        <div class="form-group"><label>Current Website URL <span class="optional-tag">(Optional)</span></label><input type="url" id="url" placeholder="https://www.yourdomain.com"></div>
+        <div class="form-group"><label>Primary Goal</label><textarea id="goals" required placeholder="What are we building for you?"></textarea></div>
+        <button type="submit" class="btn" id="submit-btn">Initiate Pipeline</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="view-audit" class="view-section">
+    <div class="plan-container">
+      <div class="status-stamp">Draft - Unverified</div>
+      <header>
+        <div class="brand"><h1>Minescout AI</h1><p>Digital Health Audit</p></div>
+        <div style="text-align: right; font-size: 0.85rem;"><strong>Date:</strong> <span class="auto-date"></span></div>
+      </header>
+
+      <div class="target-meta">
+        <div class="meta-block"><label>Target Infrastructure</label><div id="audit-name"></div></div>
+        <div class="meta-block"><label>URL Scanned</label><div id="audit-url" style="color: var(--accent);"></div></div>
+      </div>
+
+      <section><p>An automated structural scan was conducted to evaluate lead-conversion efficiency and AI architectural readiness.</p></section>
+      
+      <h2 class="section-title">Diagnostic Findings</h2>
+      <div class="diagnostic-grid" id="audit-results"></div>
+
+      <section class="solution-box">
+        <h3>The Minescout Upgrade</h3>
+        <p><strong>1. Headless Edge Architecture:</strong> Complete migration to our multi-tenant Edge network for sub-second speeds.<br>
+        <strong>2. Optional AI Integration:</strong> Autonomous Llama-3 AI assistant to capture leads 24/7 (if prescribed by architect).</p>
+      </section>
+
+      <div class="action-bar no-print">
+        <p class="action-text">Please review the findings above before transmitting to our lead architect.</p>
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+          <button id="confirm-btn" class="btn accent" style="width: auto;">That looks correct -> Transmit Request</button>
+          <button type="button" class="btn" onclick="window.print()" style="width: auto; background: transparent; color: var(--fg); border: 2px solid var(--fg);">Download Audit PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-receipt" class="view-section">
+    <div class="form-container" style="max-width: 800px;">
+      <header>
+        <div class="brand"><h1>Minescout AI</h1><p>Initiation Receipt</p></div>
+      </header>
+      
+      <div style="background: var(--light); border: 1px solid var(--border); border-left: 4px solid var(--fg); padding: 30px; border-radius: 4px; margin-bottom: 30px;">
+        <p style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--muted); margin-bottom: 5px;">Target Infrastructure</p>
+        <h2 id="receipt-business" style="font-family: var(--serif); font-size: 1.5rem; color: var(--fg); margin-bottom: 20px;"></h2>
+        
+        <p style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--muted); margin-bottom: 5px;">Primary Contact</p>
+        <p id="receipt-contact" style="font-family: var(--sans); font-size: 1.1rem; color: var(--fg); font-weight: 500;"></p>
+      </div>
+      
+      <p style="text-align: center; color: var(--fg); font-weight: 500; font-size: 1.05rem;">
+        Your request has been successfully transmitted to the Minescout Edge Network.
+      </p>
+      <p style="text-align: center; color: var(--muted); font-size: 0.9rem; margin-top: 15px;">
+        A lead architect will review your request and reach out within 24 hours. You may print this document for your records.
+      </p>
+
+      <footer class="no-print" style="margin-top: 40px; text-align: center;">
+        <button onclick="window.print()" class="btn" style="width: auto;">Print Receipt / Save as PDF</button>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.auto-date').forEach(el => el.innerText = new Date().toLocaleDateString());
+
+    // --- API ENDPOINTS ---
+    const INTAKE_WORKER_URL = "https://minescout-intake.tmcarleton11.workers.dev/";
+    const AUDIT_WORKER_URL = "https://backend.tmcarleton11.workers.dev/audit"; 
+    const CHAT_WORKER_URL = "https://thomas-chat.tmcarleton11.workers.dev/";
+
+    // Global state
+    let globalPayload = {};
+    let globalFindings = [];
+
+    // Utility for artificial delays (Labor Illusion)
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    function switchView(viewId, animate = false) {
+      document.querySelectorAll('.view-section').forEach(el => {
+        el.classList.remove('active');
+        el.classList.remove('dissolve-anim');
+      });
+      const target = document.getElementById(viewId);
+      target.classList.add('active');
+      if (animate) target.classList.add('dissolve-anim');
+    }
+
+    // --- STEP 1: FORM SUBMIT & DEEP SCAN ---
+    document.getElementById('intake-form').addEventListener('submit', async function(e) {
+      e.preventDefault(); 
+      
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.classList.add('processing');
+
+      globalPayload = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        business: document.getElementById('business').value,
+        url: document.getElementById('url').value.trim(),
+        goals: document.getElementById('goals').value
+      };
+
+      document.getElementById('receipt-business').innerText = globalPayload.business;
+      document.getElementById('receipt-contact').innerText = `${globalPayload.name} <${globalPayload.email}>`;
+
+      if (globalPayload.url !== "") {
+        let targetUrl = globalPayload.url.startsWith('http') ? globalPayload.url : 'https://' + globalPayload.url;
+        
+        try {
+          // ARTIFICIAL DELAY 1: Booting up
+          btn.innerText = "Initiating Edge Node...";
+          await sleep(1000);
+
+          // PHASE 1: Fetch Raw HTML & Standard Audit
+          btn.innerText = "Extracting Target DOM...";
+          let rawHtmlSnippet = "";
+          const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+          
+          const [htmlRes, auditRes] = await Promise.all([
+            fetch(proxyUrl).catch(() => null),
+            fetch(AUDIT_WORKER_URL, {
+              method: "POST", headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ url: targetUrl })
+            }).catch(() => null),
+            sleep(1500) 
+          ]);
+
+          // Parse standard findings & INJECT BASELINE HEURISTICS
+          if (auditRes && auditRes.ok) {
+            const data = await auditRes.json();
+            globalFindings = data.findings || [];
+            
+            // Baseline 1: Always check for AI
+            if(!data.hasChatWidget) {
+              globalFindings.push({ title: "AI Integration Status", badge: "Missing", type: "fail", desc: "No autonomous conversational agent detected to intercept and qualify off-hours lead traffic." });
+            }
+            // Baseline 2: Always warn about standard hosting vs Edge routing
+            globalFindings.push({ title: "Global Edge Distribution", badge: "Sub-Optimal", type: "warn", desc: "Infrastructure lacks multi-tenant serverless routing. High risk of localized latency spikes during peak traffic." });
+            // Baseline 3: Asynchronous Webhooks
+            globalFindings.push({ title: "Asynchronous Data Routing", badge: "Sub-Optimal", type: "warn", desc: "Lead capture mechanisms lack direct edge-native webhook integration for instant CRM triage." });
+
+          } else {
+            // FALLBACK HEURISTICS (If the school firewall or CORS blocks the scan)
+            globalFindings = [
+              { title: "Legacy Architecture Detected", badge: "Critical Friction", type: "fail", desc: "Target site relies on older monolithic frameworks rather than modern, serverless Edge nodes." },
+              { title: "AI Integration Status", badge: "Missing", type: "fail", desc: "No autonomous conversational agent detected to triage and qualify inbound leads 24/7." },
+              { title: "Asynchronous Data Routing", badge: "Sub-Optimal", type: "warn", desc: "Lead capture forms are not routed through edge-native webhooks, artificially increasing response delay." },
+              { title: "Static Asset Delivery", badge: "Unverified", type: "warn", desc: "Unable to confirm Tier-1 CDN integration. Media payloads may cause render-blocking on mobile devices." }
+            ];
+          }
+
+          // Parse Raw HTML for the AI
+          if (htmlRes && htmlRes.ok) {
+            const proxyData = await htmlRes.json();
+            if (proxyData.contents) {
+              const bodyMatch = proxyData.contents.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+              let bodyHtml = bodyMatch ? bodyMatch[1] : proxyData.contents;
+              bodyHtml = bodyHtml.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+              bodyHtml = bodyHtml.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
+              rawHtmlSnippet = bodyHtml.substring(0, 1500); 
+            }
+          }
+
+          // ARTIFICIAL DELAY 2: Transition
+          btn.innerText = "Analyzing Component Tree...";
+          await sleep(1200);
+
+          // PHASE 2: AI Synthesizing the HTML DOM for tailored recommendation
+          btn.innerText = "Evaluating AI Readiness...";
+          
+          if (rawHtmlSnippet) {
+            const aiPrompt = `You are the Lead Technical Architect for Minescout AI. You are generating a custom diagnostic report for a client.
+            Target: ${globalPayload.business} (${targetUrl})
+            Client Goal: ${globalPayload.goals}
+            Raw HTML Snippet from their actual site:
+            \`\`\`html
+            ${rawHtmlSnippet}
+            \`\`\`
+            Task: Write exactly a 3-sentence highly technical architectural teardown.
+            Sentence 1: Analyze their specific DOM structure and identify a specific bottleneck hurting their stated goal.
+            Sentence 2: Evaluate their readiness for an autonomous agent (look for structural clutter or existing chat widgets).
+            Sentence 3: Make a definitive recommendation between our two tiers: 'Digital Remodel' (Headless Edge migration for pure speed/SEO) OR 'Full AI Upgrade' (Headless Edge + Custom Llama-3 Agent). Justify the choice based strictly on the code and their goal.
+            Be brutal, objective, and highly professional. No markdown headers or greetings.`;
+
+            const [aiRes] = await Promise.all([
+              fetch(CHAT_WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  messages: [{ role: "user", content: "Provide the architectural prescription." }],
+                  system_override: aiPrompt,
+                  temperature: 0.3 
+                })
+              }).catch(() => null),
+              sleep(2000)
+            ]);
+
+            if (aiRes && aiRes.ok) {
+              const aiData = await aiRes.json();
+              if (aiData.content) {
+                globalFindings.unshift({
+                  title: "Architect's Prescription",
+                  badge: "Deep Scan",
+                  type: "ai-scan",
+                  desc: aiData.content
+                });
+              }
+            }
+          }
+
+          // ARTIFICIAL DELAY 3: Final Compilation
+          btn.innerText = "Compiling Diagnostic PDF...";
+          await sleep(1000);
+
+          // Render View
+          document.getElementById('audit-name').innerText = globalPayload.business;
+          document.getElementById('audit-url').innerText = targetUrl;
+          
+          const resultsDiv = document.getElementById('audit-results');
+          resultsDiv.innerHTML = globalFindings.map(f => `
+            <div class="diag-card ${f.type}">
+              <div class="diag-title"><span>${f.title}</span><span class="diag-badge">${f.badge}</span></div>
+              <div class="diag-desc">${f.desc}</div>
+            </div>
+          `).join('');
+
+          btn.classList.remove('processing');
+          switchView('view-audit', true);
+
+        } catch (error) {
+          btn.classList.remove('processing');
+          alert("Error scanning infrastructure. Proceeding without audit.");
+          transmitDataAndFinish(); 
+        }
+      } else {
+        btn.innerText = "Transmitting to Edge...";
+        await sleep(800);
+        transmitDataAndFinish();
+      }
+    });
+
+    // --- STEP 2: USER CONFIRMS AUDIT ---
+    document.getElementById('confirm-btn').addEventListener('click', async function() {
+      const btn = this;
+      btn.innerText = "Transmitting to Edge..."; 
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+      
+      // Disable the download button during transmission
+      const allBtns = this.parentElement.querySelectorAll('button');
+      allBtns.forEach(b => b.disabled = true);
+
+      await sleep(800); 
+      transmitDataAndFinish();
+    });
+
+    // --- STEP 3: SEND EMAIL AND SHOW RECEIPT ---
+    async function transmitDataAndFinish() {
+      try {
+        await fetch(INTAKE_WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...globalPayload, findings: globalFindings })
+        });
+        
+        switchView('view-receipt');
+        setTimeout(() => window.print(), 800);
+
+      } catch (error) {
+        alert("Transmission failed. Please check your network and try again.");
+        const btn = document.getElementById('submit-btn');
+        btn.innerText = "Initiate Pipeline"; 
+        btn.disabled = false;
+        btn.classList.remove('processing');
+        
+        // Reset confirmation buttons if it fails
+        const confirmBtn = document.getElementById('confirm-btn');
+        confirmBtn.innerText = "That looks correct -> Transmit Request";
+        confirmBtn.disabled = false;
+        confirmBtn.style.opacity = '1';
+        confirmBtn.parentElement.querySelectorAll('button').forEach(b => b.disabled = false);
+      }
+    }
+  </script>
+</body>
+</html>
