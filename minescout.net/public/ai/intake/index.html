@@ -371,12 +371,16 @@
       btn.innerText = "Transmitting to Edge..."; 
       btn.disabled = true;
       btn.style.opacity = '0.7';
+<<<<<<< HEAD
       
       // Disable the download button during transmission
       const allBtns = this.parentElement.querySelectorAll('button');
       allBtns.forEach(b => b.disabled = true);
 
       await sleep(800); 
+=======
+      await sleep(800); // Tiny delay for feel
+>>>>>>> 3dfa553 (general)
       transmitDataAndFinish();
     });
 
@@ -398,6 +402,7 @@
         btn.innerText = "Initiate Pipeline"; 
         btn.disabled = false;
         btn.classList.remove('processing');
+<<<<<<< HEAD
         
         // Reset confirmation buttons if it fails
         const confirmBtn = document.getElementById('confirm-btn');
@@ -405,6 +410,8 @@
         confirmBtn.disabled = false;
         confirmBtn.style.opacity = '1';
         confirmBtn.parentElement.querySelectorAll('button').forEach(b => b.disabled = false);
+=======
+>>>>>>> 3dfa553 (general)
       }
     }
   </script>

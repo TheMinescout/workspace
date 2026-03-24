@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Growth Calculator — Minescout AI</title>
-  <link rel="icon" type="image/png" href="../../assets/favicon.png" />
-  <link rel="stylesheet" href="../../styles/main.css?v=6" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/styles/main.css?v=8.1" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -163,7 +163,7 @@
 
   <aside class="sidebar">
     <div class="sidebar-logo-wrap">
-      <img src="../../assets/favicon.png" alt="TC" class="sidebar-logo" />
+      <img src="/assets/favicon.png" alt="TC" class="sidebar-logo" />
       <div>
         <div class="sidebar-name">Thomas Carleton</div>
         <div class="sidebar-tagline">minescout.net</div>
@@ -177,7 +177,7 @@
     </nav>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-secondary">
-      <a href="/contact">Enquire</a>
+      <a href="/ai/intake">Enquire</a>
     </div>
   </aside>
 
@@ -187,7 +187,6 @@
       <h1 class="page-title">Growth & Efficiency Calculator</h1>
       <p style="margin-bottom: 2rem; color: var(--muted);">Estimate the combined impact of automated support and optimized lead capture.</p>
 
-      <!-- Verdict Bar (Moved up for better visibility) -->
       <div class="verdict-bar" id="verdict-bar">
         <div style="flex: 1;">
           <div class="verdict-text" id="verdict-text">
@@ -195,11 +194,10 @@
           </div>
           <button type="button" class="btn-ghost" id="ai-verdict-btn" onclick="getAIVerdict()" style="margin-top: 1rem; font-size: 0.7rem; padding: 0.5rem 1rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">✨ Generate AI Analysis</button>
         </div>
-        <a href="/contact" class="verdict-cta">Get started</a>
+        <a href="/ai/intake" target="_blank" class="verdict-cta">Get started</a>
       </div>
 
       <div class="calc-container">
-        <!-- Inputs -->
         <div class="input-section">
           <h3 style="margin-bottom: 1.5rem; font-family: var(--serif);">Efficiency Metrics</h3>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
@@ -241,7 +239,6 @@
           </div>
         </div>
 
-        <!-- Outputs -->
         <div class="output-section">
           <div class="result-card">
             <div class="result-label">Annual Business Impact</div>
@@ -276,7 +273,9 @@
     </div>
   </main>
 
-  <script>
+  <script src="/scripts/sidebar.js"></script>
+  <script src="/scripts/main.js"></script>
+<script>
     const CHAT_WORKER = 'https://thomas-chat.tmcarleton11.workers.dev/';
 
     function calc() {
@@ -346,6 +345,7 @@
       const hoursSaved = document.getElementById('hours-saved').innerText;
       const totalImpact = document.getElementById('total-impact').innerText;
       const payback = document.getElementById('payback').innerText;
+      const isNegative = netMonthly.includes('-');
 
       const vt = document.getElementById('verdict-text');
       const btn = document.getElementById('ai-verdict-btn');
@@ -353,7 +353,8 @@
       vt.innerHTML = '<span class="ai-loading">Consulting Minescout AI...</span>';
       btn.style.display = 'none';
 
-      const prompt = `You are a technical sales advisor for Minescout AI. A potential client just used our Growth & Efficiency ROI calculator.
+      // The Updated Prompt ensuring absolute honesty
+      const prompt = `You are a Lead Architect and technical advisor for Minescout AI. A potential client just used our ROI calculator.
       
       Their Business Inputs:
       - Weekly inquiries: ${vol}
@@ -367,15 +368,19 @@
       - Annual Financial Impact: ${totalImpact}
       - Payback Period: ${payback}
 
-      Write exactly 1 short, highly compelling paragraph explaining why they should upgrade to Minescout AI based on these specific numbers. Focus on the exact financial ROI, the payback period, and the hours reclaimed. Speak directly and professionally to the client ("you"). Do not use markdown headers or greetings. Make it punchy.`;
+      Write exactly 1 short paragraph analyzing these numbers. 
+      CRITICAL INSTRUCTION: Be brutally honest and objective. 
+      If the "Projected Net Monthly Value" is negative (shows a loss), you MUST politely advise them that Minescout AI is NOT a good financial fit for them right now, explaining that their current traffic/inquiry volume doesn't justify the infrastructure cost yet. Tell them to wait until they scale.
+      If the net value is positive, write a compelling summary of why they should upgrade, focusing on the financial ROI, payback period, and hours reclaimed. 
+      Speak directly and professionally to the client ("you"). Do not use markdown headers or greetings. Make it candid and sharp.`;
 
       fetch(CHAT_WORKER, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [{ role: "user", content: "Please analyze my projected ROI." }],
+          messages: [{ role: "user", content: "Please analyze my projected ROI honestly." }],
           system_override: prompt,
-          temperature: 0.6
+          temperature: 0.5 // Lowered slightly for more analytical/direct responses
         })
       })
       .then(res => res.json())
@@ -385,7 +390,12 @@
         btn.textContent = "✨ Recalculate AI Analysis";
       })
       .catch(err => {
-        vt.innerHTML = `<strong>Strong ROI Projected.</strong> Based on your inputs, generating ${netMonthly} in net monthly value makes the ${planName.split('—')[0]} an obvious choice. You recover your costs rapidly while reclaiming ${hoursSaved} hours a month.`;
+        // Honest fallback logic if the edge worker fails
+        if (isNegative) {
+          vt.innerHTML = `<strong>Architect's Assessment:</strong> Based on your inputs, upgrading right now would result in a net loss of ${netMonthly}. Your current traffic and inquiry volume do not justify the cost of this infrastructure. We recommend holding off until your operation scales further.`;
+        } else {
+          vt.innerHTML = `<strong>Strong ROI Projected:</strong> Based on your inputs, generating ${netMonthly} in net monthly value makes the ${planName.split('—')[0]} a highly logical choice. You recover your costs rapidly while reclaiming ${hoursSaved} hours a month.`;
+        }
         btn.style.display = 'inline-block';
         btn.textContent = "✨ Retry AI Analysis";
       });
