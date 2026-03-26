@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Archive - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/assests/css/homepage.css">
+    <link rel="icon" type="image/png" href="/assests/images/favicon.png">
+    <style> #user-display a { text-decoration: none; color: white; } </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container"><a href="/login.html" id="login-link">Login</a></div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="/index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Archive: 2026</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <a href="/account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            <main class="main-content">
+                <div class="view-controls">
+                    <button id="grid-3" class="view-btn active" data-view="3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></button>
+                    <button id="grid-2" class="view-btn" data-view="2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg></button>
+                    <button id="grid-1" class="view-btn" data-view="1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+                </div>
+
+                <div id="posts-container">
+                    <section>
+                        <h2 class="month-separator">2026 Monthly Archives</h2>
+                        <div class="posts-grid">
+                            
+                            <article class="post-card">
+                                <img src="/assests/images/archive/March Archive.png" alt="Mar 2026" onerror="this.src='https://placehold.co/600x400?text=Mar+2026'">
+                                <div class="post-card-content">
+                                    <h3><a href="2026/archive-3-2026.html">March 2026</a></h3>
+                                    <p class="post-meta">Posts from March.</p>
+                                    <a href="2026/archive-3-2026.html" class="read-more">View Archive</a>
+                                </div>
+                            </article>
+
+                            <article class="post-card">
+                                <img src="/assests/images/archive/February Archive.png" alt="Feb 2026" onerror="this.src='https://placehold.co/600x400?text=Feb+2026'">
+                                <div class="post-card-content">
+                                    <h3><a href="2026/archive-2-2026.html">February 2026</a></h3>
+                                    <p class="post-meta">Posts from February.</p>
+                                    <a href="2026/archive-2-2026.html" class="read-more">View Archive</a>
+                                </div>
+                            </article>
+
+                            <article class="post-card">
+                                <img src="/assests/images/archive/January Archive.png" alt="Jan 2026" onerror="this.src='https://placehold.co/600x400?text=Jan+2026'">
+                                <div class="post-card-content">
+                                    <h3><a href="2026/archive-1-2026.html">January 2026</a></h3>
+                                    <p class="post-meta">Posts from January.</p>
+                                    <a href="2026/archive-1-2026.html" class="read-more">View Archive</a>
+                                </div>
+                            </article>
+
+                        </div>
+                    </section>
+                </div>
+            </main>
+
+            <aside id="sidebar">
+                <div id="sidebar-container"></div> 
+            </aside>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
+    </footer>
+
+<script type="module" src="/assests/js/auth.js"></script>
+<script type="module" src="/assests/js/homepage.js"></script>
+<script src="/assests/js/loader.js"></script>
+
+</body>
+</html>

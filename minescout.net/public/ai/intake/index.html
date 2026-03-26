@@ -24,7 +24,7 @@
     .view-section { display: none; width: 100%; }
     .view-section.active { display: block; }
 
-    /* DISSOLVE ANIMATION (Top to Bottom) */
+    /* DISSOLVE ANIMATION */
     @keyframes dissolveTopToBottom {
       0% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(-10px); }
       100% { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
@@ -69,7 +69,6 @@
     .diag-card.fail { border-left: 4px solid var(--danger); background: #fef2f2; }
     .diag-card.warn { border-left: 4px solid var(--warning); background: #fffbeb; }
     .diag-card.pass { border-left: 4px solid var(--success); background: #f0fdf4; }
-    /* AI Deep Scan Card Styling */
     .diag-card.ai-scan { border-left: 4px solid #0284c7; background: #f0f9ff; border-top: 1px solid #bae6fd; border-right: 1px solid #bae6fd; border-bottom: 1px solid #bae6fd; }
     .diag-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 8px; color: var(--fg); display: flex; justify-content: space-between; align-items: center; }
     .diag-badge { font-size: 0.65rem; padding: 4px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
@@ -176,7 +175,7 @@
         Your request has been successfully transmitted to the Minescout Edge Network.
       </p>
       <p style="text-align: center; color: var(--muted); font-size: 0.9rem; margin-top: 15px;">
-        A lead architect will review your request and reach out within 24 hours. You may print this document for your records.
+        Check your email for your initial diagnostic PDF. A lead architect will review your request and follow up shortly.
       </p>
 
       <footer class="no-print" style="margin-top: 40px; text-align: center;">
@@ -189,15 +188,13 @@
     document.querySelectorAll('.auto-date').forEach(el => el.innerText = new Date().toLocaleDateString());
 
     // --- API ENDPOINTS ---
-    const INTAKE_WORKER_URL = "https://minescout-intake.tmcarleton11.workers.dev/";
+    const INTAKE_WORKER_URL = "https://script.google.com/macros/s/AKfycbz50jqKq4iBAAuuDL7r1dZM8jEucfOMAWnhG6WO5WYf-qKhFiNs6gXVHQn7S7Q6-Yz1Bg/exec";
     const AUDIT_WORKER_URL = "https://backend.tmcarleton11.workers.dev/audit"; 
     const CHAT_WORKER_URL = "https://thomas-chat.tmcarleton11.workers.dev/";
 
-    // Global state
     let globalPayload = {};
     let globalFindings = [];
 
-    // Utility for artificial delays (Labor Illusion)
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     function switchView(viewId, animate = false) {
@@ -210,7 +207,6 @@
       if (animate) target.classList.add('dissolve-anim');
     }
 
-    // --- STEP 1: FORM SUBMIT & DEEP SCAN ---
     document.getElementById('intake-form').addEventListener('submit', async function(e) {
       e.preventDefault(); 
       
@@ -223,7 +219,8 @@
         email: document.getElementById('email').value,
         business: document.getElementById('business').value,
         url: document.getElementById('url').value.trim(),
-        goals: document.getElementById('goals').value
+        goals: document.getElementById('goals').value,
+        message: document.getElementById('goals').value
       };
 
       document.getElementById('receipt-business').innerText = globalPayload.business;
@@ -233,11 +230,9 @@
         let targetUrl = globalPayload.url.startsWith('http') ? globalPayload.url : 'https://' + globalPayload.url;
         
         try {
-          // ARTIFICIAL DELAY 1: Booting up
           btn.innerText = "Initiating Edge Node...";
           await sleep(1000);
 
-          // PHASE 1: Fetch Raw HTML & Standard Audit
           btn.innerText = "Extracting Target DOM...";
           let rawHtmlSnippet = "";
           const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
@@ -251,22 +246,16 @@
             sleep(1500) 
           ]);
 
-          // Parse standard findings & INJECT BASELINE HEURISTICS
           if (auditRes && auditRes.ok) {
             const data = await auditRes.json();
             globalFindings = data.findings || [];
-            
-            // Baseline 1: Always check for AI
             if(!data.hasChatWidget) {
               globalFindings.push({ title: "AI Integration Status", badge: "Missing", type: "fail", desc: "No autonomous conversational agent detected to intercept and qualify off-hours lead traffic." });
             }
-            // Baseline 2: Always warn about standard hosting vs Edge routing
             globalFindings.push({ title: "Global Edge Distribution", badge: "Sub-Optimal", type: "warn", desc: "Infrastructure lacks multi-tenant serverless routing. High risk of localized latency spikes during peak traffic." });
-            // Baseline 3: Asynchronous Webhooks
             globalFindings.push({ title: "Asynchronous Data Routing", badge: "Sub-Optimal", type: "warn", desc: "Lead capture mechanisms lack direct edge-native webhook integration for instant CRM triage." });
 
           } else {
-            // FALLBACK HEURISTICS (If the school firewall or CORS blocks the scan)
             globalFindings = [
               { title: "Legacy Architecture Detected", badge: "Critical Friction", type: "fail", desc: "Target site relies on older monolithic frameworks rather than modern, serverless Edge nodes." },
               { title: "AI Integration Status", badge: "Missing", type: "fail", desc: "No autonomous conversational agent detected to triage and qualify inbound leads 24/7." },
@@ -275,7 +264,6 @@
             ];
           }
 
-          // Parse Raw HTML for the AI
           if (htmlRes && htmlRes.ok) {
             const proxyData = await htmlRes.json();
             if (proxyData.contents) {
@@ -287,11 +275,9 @@
             }
           }
 
-          // ARTIFICIAL DELAY 2: Transition
           btn.innerText = "Analyzing Component Tree...";
           await sleep(1200);
 
-          // PHASE 2: AI Synthesizing the HTML DOM for tailored recommendation
           btn.innerText = "Evaluating AI Readiness...";
           
           if (rawHtmlSnippet) {
@@ -334,11 +320,9 @@
             }
           }
 
-          // ARTIFICIAL DELAY 3: Final Compilation
           btn.innerText = "Compiling Diagnostic PDF...";
           await sleep(1000);
 
-          // Render View
           document.getElementById('audit-name').innerText = globalPayload.business;
           document.getElementById('audit-url').innerText = targetUrl;
           
@@ -365,14 +349,12 @@
       }
     });
 
-    // --- STEP 2: USER CONFIRMS AUDIT ---
     document.getElementById('confirm-btn').addEventListener('click', async function() {
       const btn = this;
       btn.innerText = "Transmitting to Edge..."; 
       btn.disabled = true;
       btn.style.opacity = '0.7';
       
-      // Disable the download button during transmission
       const allBtns = this.parentElement.querySelectorAll('button');
       allBtns.forEach(b => b.disabled = true);
 
@@ -380,32 +362,18 @@
       transmitDataAndFinish();
     });
 
-    // --- STEP 3: SEND EMAIL AND SHOW RECEIPT ---
-    async function transmitDataAndFinish() {
-      try {
-        await fetch(INTAKE_WORKER_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...globalPayload, findings: globalFindings })
-        });
-        
-        switchView('view-receipt');
-        setTimeout(() => window.print(), 800);
-
-      } catch (error) {
-        alert("Transmission failed. Please check your network and try again.");
-        const btn = document.getElementById('submit-btn');
-        btn.innerText = "Initiate Pipeline"; 
-        btn.disabled = false;
-        btn.classList.remove('processing');
-        
-        // Reset confirmation buttons if it fails
-        const confirmBtn = document.getElementById('confirm-btn');
-        confirmBtn.innerText = "That looks correct -> Transmit Request";
-        confirmBtn.disabled = false;
-        confirmBtn.style.opacity = '1';
-        confirmBtn.parentElement.querySelectorAll('button').forEach(b => b.disabled = false);
-      }
+    function transmitDataAndFinish() {
+      // Fire and forget transmission. No await. Mode no-cors ignores Google redirect blocks.
+      fetch(INTAKE_WORKER_URL, {
+        method: "POST",
+        mode: "no-cors",
+        keepalive: true,
+        body: JSON.stringify({ ...globalPayload, findings: globalFindings })
+      }).catch(e => console.error("Silent Webhook Notice:", e));
+      
+      // Instantly show the receipt while Google processes it in the background
+      switchView('view-receipt');
+      setTimeout(() => window.print(), 800);
     }
   </script>
 </body>
