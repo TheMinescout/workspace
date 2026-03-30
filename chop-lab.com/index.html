@@ -305,6 +305,16 @@
         }
         .dynamic-section h3 { font-family: var(--font-primary); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 30px; color: var(--tcl-primary); font-weight: 700; }
         .note { font-size: 0.8rem; color: var(--tcl-text-muted); margin-top: 10px; font-style: italic; }
+        
+        .disclaimer-box {
+            background: var(--tcl-background);
+            border-left: 3px solid var(--tcl-primary);
+            padding: 20px;
+            margin-bottom: 40px;
+            font-size: 0.9rem;
+            color: var(--tcl-text-main);
+            line-height: 1.6;
+        }
 
         /* --- Interactive Texture Gallery --- */
         .visual-selector { display: flex; align-items: center; border: 1px dashed var(--tcl-text-muted); padding: 12px; cursor: pointer; transition: all 0.2s ease; background-color: transparent; }
@@ -372,9 +382,10 @@
     <!-- Shared Navigation -->
     <nav class="navbar" id="main-nav">
         <div class="container nav-flex">
-            <a href="#studio" class="logo">The Chop Lab<span>.</span></a>
+            <a href="#home" class="logo">The Chop Lab<span>.</span></a>
             
             <div class="desktop-menu">
+                <a href="#home" class="nav-link">Home</a>
                 <a href="#studio" class="nav-link">Studio</a>
                 <a href="#3dprint" class="nav-link">3D Print</a>
                 <a href="#qa" class="nav-link">Q&A</a>
@@ -387,6 +398,7 @@
     </nav>
 
     <div class="overlay-menu">
+        <a href="#home" class="nav-link">Home</a>
         <a href="#studio" class="nav-link">Studio Tools</a>
         <a href="#3dprint" class="nav-link">Custom 3D Printing</a>
         <a href="#qa" class="nav-link">Q&A / Ask AI</a>
@@ -395,9 +407,44 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- SECTION 1: STUDIO (Home) -->
+    <!-- SECTION 0: HOME / WELCOME PAGE -->
     <!-- ========================================== -->
-    <div id="page-studio" class="page-view">
+    <div id="page-home" class="page-view">
+        <header class="hero">
+            <div class="container">
+                <h1>The Chop Lab.</h1>
+                <p>Where robotics precision meets ceramic tradition.</p>
+            </div>
+        </header>
+
+        <section style="padding: 40px 0 80px 0;">
+            <div class="container">
+                <div style="text-align: center; max-width: 800px; margin: 0 auto; margin-bottom: 60px;">
+                    <h2 class="section-title" style="margin-bottom: 24px;">Welcome to the Lab</h2>
+                    <p style="color: var(--tcl-text-muted); font-size: 1.1rem; margin-bottom: 20px;">We specialize in bridging the gap between digital design and physical creation. Whether you are a potter looking for the perfect custom stamp, or a maker in need of rapid 3D prototyping, you've found the right place.</p>
+                    <p style="color: var(--tcl-text-muted); font-size: 1.1rem;">Thank you for supporting micro-manufacturing and independent engineering.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px;">
+                    <div style="border: 1px solid var(--tcl-border); padding: 40px; text-align: center; transition: border-color 0.3s ease;">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Ceramic Studio Tools</h3>
+                        <p style="color: var(--tcl-text-muted); margin-bottom: 30px;">Engineered chops, rollers, and trimming tools designed for the messy world of clay.</p>
+                        <a href="#studio" class="btn-launch">Browse Tools</a>
+                    </div>
+                    <div style="border: 1px solid var(--tcl-border); padding: 40px; text-align: center; transition: border-color 0.3s ease;">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Custom 3D Printing</h3>
+                        <p style="color: var(--tcl-text-muted); margin-bottom: 30px;">Send us your STL files. We print in durable PETG and high-detail PLA Matte. ($5 base + $1/hr)</p>
+                        <a href="#3dprint" class="btn-minimal" style="border: 1px solid var(--tcl-border); color: var(--tcl-text-main);">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SECTION 1: STUDIO -->
+    <!-- ========================================== -->
+    <div id="page-studio" class="page-view hidden-page">
         <header class="hero">
             <div class="container">
                 <h1>CAD meets Clay.</h1>
@@ -478,7 +525,7 @@
                     <ul class="feature-list">
                         <li><strong>Max Build Volume:</strong> 256 x 256 x 256 mm</li>
                         <li><strong>Materials:</strong> Tough PLA Matte & Durable PETG</li>
-                        <li><strong>File Types:</strong> Standard .STL uploads</li>
+                        <li><strong>Pricing:</strong> $5 base fee + $1 per hour of print time</li>
                         <li><strong>Turnaround:</strong> Typically 3-5 business days</li>
                     </ul>
                     <a href="#order?product=custom-stl" class="btn-minimal" style="margin-top: 30px;">Upload an STL</a>
@@ -559,6 +606,10 @@
                 <p style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; color: var(--tcl-text-muted);">Select a service to begin.</p>
             </header>
 
+            <div class="disclaimer-box">
+                <strong>Please Note:</strong> Payment is not required at checkout. Once your final project has been reviewed and agreed upon, a finalized quote will be sent to you before any printing begins.
+            </div>
+
             <form id="tcl-order-form" class="order-form">
                 
                 <div class="form-group">
@@ -596,7 +647,7 @@
                 <!-- Custom STL Upload Section -->
                 <div id="opt-3d-print" class="dynamic-section hidden">
                     <h3>Custom STL Print Configuration</h3>
-                    <p style="font-size: 0.85rem; color: var(--tcl-text-muted); margin-top: -20px; margin-bottom: 20px;">Pricing is calculated based on print time and material weight. We will email you a quote before starting.</p>
+                    <p style="font-size: 0.85rem; color: var(--tcl-text-muted); margin-top: -20px; margin-bottom: 20px;">Pricing is a $5 base fee + $1 per hour of print time. We will email you a quote before starting.</p>
                     
                     <div class="form-group">
                         <label>Upload STL File</label>
@@ -805,7 +856,7 @@
                 </div>
                 <div style="display: flex; gap: 16px;">
                     <button onclick="checkPass()" class="btn-minimal" style="border: 1px solid var(--tcl-border); color: var(--tcl-text-main);">Sync Data</button>
-                    <a href="#studio" class="btn-minimal" style="border: 1px solid var(--tcl-border); color: var(--tcl-text-muted);">Exit Console</a>
+                    <a href="#home" class="btn-minimal" style="border: 1px solid var(--tcl-border); color: var(--tcl-text-muted);">Exit Console</a>
                 </div>
             </div>
             
@@ -834,7 +885,7 @@
             <div style="margin-top: -20px; z-index: 1;">
                 <h2 style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--tcl-text-main); margin-bottom: 10px;">Scrapped Part.</h2>
                 <p style="color: var(--tcl-text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; margin-bottom: 40px;">The requested asset has been removed or does not exist.</p>
-                <a href="#studio" class="btn-launch">Return to Lab Floor</a>
+                <a href="#home" class="btn-launch">Return to Lab Floor</a>
             </div>
         </div>
     </div>
@@ -854,11 +905,11 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxA0tHDzsc4baNHSURGJRMFVvRpXLZMAL0Hhkezq5xC641ehY5asGkTD1X4k6uauBJF9A/exec";
         
         // PASTE YOUR CLOUDFLARE WORKER URL HERE:
-        const AI_WORKER_URL = ""; 
+        const AI_WORKER_URL = "https://backend.tmcarleton11.workers.dev/"; 
 
         // --- 1. SPA ROUTING & LAYOUT LOGIC ---
         function route() {
-            const hash = window.location.hash || '#studio';
+            const hash = window.location.hash || '#home';
             const [path, query] = hash.split('?');
             const pageId = 'page-' + path.replace('#', '');
 
