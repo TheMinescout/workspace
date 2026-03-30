@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>SnackTrack M3 - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/assests/css/homepage.css">
+    <link rel="stylesheet" href="/assests/css/AI-ASSISTANT.css">
+    <link rel="icon" type="image/png" href="/assests/images/favicon.png">
+    
+    <style>
+        .comparison-section { margin-bottom: 40px; }
+        .feature-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .feature-card h3 { margin-top: 0; color: #5a8a5a; }
+        .highlight-text { background-color: #f9f9f9; border-left: 4px solid #5a8a5a; padding: 15px; margin-top: 15px; color: #333; line-height: 1.6; }
+        .code-box { background-color: #f4f4f4; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 0.9rem; border: 1px solid #ccc; margin-bottom: 30px; white-space: pre-wrap; line-height: 1.5; color: #444; }
+        .action-btn { display: inline-block; background-color: #DD8566; color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 20px; transition: 0.2s; }
+        .action-btn:hover { background-color: #c07055; transform: translateY(-2px); }
+        .official-version-box { background-color: #fff; border: 2px solid #DD8566; border-radius: 8px; padding: 20px; margin: 40px 0; }
+        .official-version-box h2 { color: #DD8566; margin-top: 0; }
+        .post-image-full { width: 100%; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .disclaimer { font-size: 0.85rem; color: #666; font-style: italic; margin-top: 20px; }
+        .interview-question { font-weight: bold; color: #5a8a5a; margin-top: 25px; }
+        .ai-notification { background-color: #e8f0fe; border: 1px solid #d2e3fc; border-radius: 8px; padding: 15px; margin-top: 30px; font-size: 0.9rem; color: #1967d2; display: flex; align-items: center; gap: 10px; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container"><a href="/login.html" id="login-link">Login</a></div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="/index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Tech Tips</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <a href="/account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            
+            <main class="post-main" data-post-id="snacktrack-m3">
+                
+                <a href="/pages/tech-tips.html" class="back-link">« Back to Tech Tips</a>
+
+                <article class="post-full">
+                    <h1>🥗 SnackTrack M3: The Ultimate Free, AI-Powered Nutrition Tracker</h1>
+                    <p class="post-meta">Posted on 3/29/26 by TheMinescouter</p>
+
+                    <img src="/assests/images/tech/snacktrack-ai.png" alt="SnackTrack M3 Interface" class="post-image-full">
+                    
+                    <div class="post-content">
+                        <p>Tired of expensive subscription fees and cluttered interfaces just to track your daily macros? Meet <strong>SnackTrack M3</strong>. It is a 100% free, hosted, mobile-first Single Page Application (SPA) designed to revolutionize how you monitor your nutritional intake.</p>
+                        
+                        <p>Built entirely in a single HTML file, SnackTrack requires absolutely no backend database or paid subscriptions. Instead, it leverages a "Bring Your Own Key" (BYOK) model via Cloudflare AI, giving you the power to parse nutritionist PDFs, chat with an AI dietitian, and log meals using the OpenFoodFacts API—all while keeping your data under your control.</p>
+
+                        <div class="official-version-box">
+                            <h2>🚀 Start Tracking Instantly</h2>
+                            <p>You can access the app immediately. It's completely free, hosted for you, and requires zero downloads or installation!</p>
+                            <div style="text-align: center;">
+                                <a href="https://theminescout.github.io/SnackTrack/" class="action-btn" target="_blank">Launch SnackTrack M3</a>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <h2>✨ Feature Breakdown</h2>
+
+                        <div class="feature-card">
+                            <h3>📊 Dashboard & Social Accountability</h3>
+                            <ul>
+                                <li><strong>Calorie Speedometer:</strong> A dynamic visual gauge that shifts from Green to Orange to Red based on your daily consumption limits.</li>
+                                <li><strong>Macro Tracking:</strong> Dedicated, easy-to-read progress bars for Protein, Carbohydrates, and Fats.</li>
+                                <li><strong>Daily Timeline & History:</strong> View, edit, or delete items from your daily log, and seamlessly navigate between past dates and today.</li>
+                                <li><strong>Share Daily Recap:</strong> Instantly generate a summary of your day and push it to your phone's native Share Sheet (text, tweet, etc.) for accountability.</li>
+                                <li><strong>Smart Reminders:</strong> Local browser push notifications at 8 PM ensure you never forget to log your food.</li>
+                            </ul>
+                        </div>
+
+                        <div class="feature-card">
+                            <h3>🔍 Next-Gen Food Logging</h3>
+                            <ul>
+                                <li><strong>Conversational Food Tracking (Beta):</strong> Type naturally (e.g., "3 homemade tacos and a small bag of chips"). The AI automatically separates the items, fixes typos, and generates distinct logging buttons!</li>
+                                <li><strong>Photo Analysis (Beta):</strong> Snap a picture of your plate. The AI Vision model identifies the meal and estimates the macros for you.</li>
+                                <li><strong>Barcode Scanner & Text Search:</strong> Built-in camera integration to scan packaging, plus standard text search leveraging the global OpenFoodFacts database.</li>
+                                <li><strong>Dynamic Serving Sizes:</strong> Calculate macros based on 100g, standard servings, or custom amounts.</li>
+                            </ul>
+                        </div>
+
+                        <hr>
+
+                        <h2>🗣️ Developer Interview: Inside SnackTrack M3</h2>
+                        <p>We sat down with TheMinescouter to discuss the inspiration, technical challenges, and future of SnackTrack M3.</p>
+
+                        <p class="interview-question">Q: Why did you decide to build SnackTrack as a Single Page Application (SPA)?</p>
+                        <p><strong>TheMinescouter:</strong> Utilizing an SPA architecture made the application significantly faster and far more compatible across different devices. Without the need to constantly reload pages from a server, the interface feels incredibly snappy and app-like, whether you are on a flagship phone or an older laptop.</p>
+
+                        <p class="interview-question">Q: The AI features are a huge part of this. What's the current state of food logging?</p>
+                        <p><strong>TheMinescouter:</strong> We are really excited about our conversational food tracking, which is currently in its beta phase as of March 2026. You can essentially just talk to or text the app about what you ate, and it handles the heavy lifting of figuring out the math. It's a huge step up from manually searching for individual ingredients.</p>
+
+                        <p class="interview-question">Q: Can you explain the "Bring Your Own Key" (BYOK) model and why you chose it over a traditional backend?</p>
+                        <p><strong>TheMinescouter:</strong> The BYOK model puts the user in total control. You set up the Cloudflare account, the worker, and the key yourself. This allows you to manage your own connections and literally watch your data flow. Nothing is stored on our servers other than the template code. In fact, because it's open, we encourage our community to try and improve the worker code—if you find a way to make it better, let us see the improvements!</p>
+
+                        <p class="interview-question">Q: What's next for SnackTrack M3?</p>
+                        <p><strong>TheMinescouter:</strong> Our biggest hope for the near future is perfecting the vision AI. We want to give users the ability to simply take a photo of their meal and have the app accurately guesstimate the nutritional stuff for you instantly. SnackTrack is also designed to be part of our "everyday necessities" ecosystem, sitting right alongside tools like <a href="https://life.minescout.net/posts/tech/snack-guard.html" target="_blank" style="color: #DD8566;">Snack Guard</a> to help you maintain healthy habits across the board.</p>
+
+                        <p class="disclaimer"><strong>Disclaimer:</strong> SnackTrack is a tool for logging and estimating nutritional intake. AI estimates are generated for convenience and should not replace professional medical advice. Always consult with a healthcare provider or certified nutritionist regarding your diet and health goals.</p>
+                        
+                        <div class="ai-notification">
+                            <span>🤖 <strong>Written by AI:</strong> This article was generated by an artificial intelligence assistant based on project documentation and an interview simulation with the developer.</span>
+                        </div>
+
+                    </div>
+
+                </article>
+                
+            </main>
+
+            <aside id="sidebar">
+                <div id="sidebar-container"></div>
+            </aside>
+
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <script type="module" src="/assests/js/auth.js"></script>
+    <script type="module" src="/assests/js/homepage.js"></script>
+    <script src="/assests/js/loader.js"></script>
+
+</body>
+</html>
+<p hidden>Discover SnackTrack M3, a blazing-fast, free AI calorie tracker SPA that lets you control your own data and chat to log your meals.</p>
