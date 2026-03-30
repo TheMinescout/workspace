@@ -12,13 +12,16 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
+    <!-- Markdown Parser for AI Chat -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
     <style>
         /* ==========================================================================
            THE CHOP LAB - MINIMALIST ENGINEERED AESTHETIC
            ========================================================================== */
 
         :root {
-            /* Color System - Kept Intact */
+            /* Color System */
             --tcl-primary: #D26244; /* Terracotta Orange */
             --tcl-primary-hover: #b85035;
             --tcl-surface: #ffffff; 
@@ -38,7 +41,7 @@
         html { scroll-behavior: smooth; }
         body {
             font-family: var(--font-primary);
-            background-color: var(--tcl-surface); /* Pure white base for minimalism */
+            background-color: var(--tcl-surface);
             color: var(--tcl-text-main);
             line-height: 1.6;
             display: flex;
@@ -52,7 +55,7 @@
         img.img-broken {
             position: relative;
             background-color: var(--tcl-background) !important;
-            color: transparent !important; /* Hide default browser alt text */
+            color: transparent !important;
             min-height: 80px;
             min-width: 80px;
         }
@@ -74,7 +77,7 @@
             padding: 16px;
             z-index: 10;
             box-sizing: border-box;
-            border: 1px dashed var(--tcl-primary); /* Terracotta dashed border */
+            border: 1px dashed var(--tcl-primary);
         }
 
         /* --- SPA Classes --- */
@@ -82,7 +85,7 @@
         .hidden-page, .hidden { display: none !important; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- Navigation (Flat & Crisp) --- */
+        /* --- Navigation --- */
         .navbar { 
             background-color: var(--tcl-surface); 
             padding: 24px 0; 
@@ -100,7 +103,20 @@
             text-decoration: none; 
             letter-spacing: 0px; 
         }
-        .menu-toggle { font-size: 1.5rem; cursor: pointer; color: var(--tcl-text-main); }
+        .menu-toggle { font-size: 1.5rem; cursor: pointer; color: var(--tcl-text-main); display: none; }
+        
+        .desktop-menu { display: flex; gap: 30px; }
+        .desktop-menu a {
+            text-decoration: none; 
+            color: var(--tcl-text-muted); 
+            font-size: 0.85rem; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            transition: color 0.2s ease;
+        }
+        .desktop-menu a:hover, .desktop-menu a.current { color: var(--tcl-primary); }
+
         .overlay-menu { 
             display: none; 
             flex-direction: column; 
@@ -142,7 +158,7 @@
         .hero h1 { font-size: 4rem; color: var(--tcl-primary); margin-bottom: 12px; font-style: italic; }
         .hero p { font-size: 1.1rem; color: var(--tcl-text-muted); letter-spacing: 2px; text-transform: uppercase; }
 
-        /* --- Gallery & Product Cards (Flat Design) --- */
+        /* --- Gallery & Product Cards --- */
         .gallery { flex-grow: 1; }
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; margin-bottom: 60px; }
         .card-link { text-decoration: none; color: inherit; display: block; }
@@ -171,7 +187,7 @@
         .price { font-family: 'Roboto Mono', monospace; font-weight: 400; color: var(--tcl-primary); font-size: 1rem; margin-bottom: 12px; }
         .desc { font-size: 0.95rem; color: var(--tcl-text-muted); flex-grow: 1; line-height: 1.5; }
 
-        /* --- Buttons (Sharp & Technical) --- */
+        /* --- Buttons --- */
         .btn-minimal, .btn-launch { 
             display: inline-block; 
             background-color: var(--tcl-primary); 
@@ -192,15 +208,15 @@
         .btn-launch:hover { background-color: transparent; color: var(--tcl-primary); }
         .gallery-footer { text-align: center; margin-top: 40px; padding-bottom: 80px; }
 
-        /* --- Portfolio & Chops Sections (Grid & Borders) --- */
-        .portfolio-intro { padding: 80px 0 40px 0; border-bottom: 1px solid var(--tcl-border); margin-bottom: 40px; }
-        .portfolio-intro h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 16px; }
-        .portfolio-intro p { font-size: 1.1rem; color: var(--tcl-text-muted); letter-spacing: 1px; }
+        /* --- Info Sections --- */
+        .info-intro { padding: 80px 0 40px 0; border-bottom: 1px solid var(--tcl-border); margin-bottom: 40px; }
+        .info-intro h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 16px; }
+        .info-intro p { font-size: 1.1rem; color: var(--tcl-text-muted); letter-spacing: 1px; }
         
         .bio-grid { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 0; /* Remove gap, use borders for architectural feel */
+            gap: 0; 
             align-items: stretch; 
             margin: 60px 0; 
             border: 1px solid var(--tcl-border); 
@@ -233,15 +249,35 @@
             font-size: 0.95rem;
         }
 
-        .handle-section { padding: 80px 0; text-align: center; border-bottom: 1px solid var(--tcl-border); }
-        .handle-diagram img { max-width: 100%; border: 1px solid var(--tcl-border); margin-bottom: 60px; display: block; margin-left: auto; margin-right: auto; }
-        .handle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0; border: 1px solid var(--tcl-border); margin-bottom: 60px; }
-        .handle-card { padding: 40px 30px; border-right: 1px solid var(--tcl-border); text-align: left; }
-        .handle-card:last-child { border-right: none; }
-        .handle-card h3 { font-family: var(--font-primary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--tcl-primary); margin-bottom: 12px; font-weight: 700; }
-        .handle-card p { font-size: 0.9rem; color: var(--tcl-text-muted); }
+        /* --- Q&A / Ask AI Terminal --- */
+        .qa-container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 80px; }
+        .faq-item { border-bottom: 1px solid var(--tcl-border); padding: 20px 0; }
+        .faq-item h4 { font-family: var(--font-primary); font-weight: 700; color: var(--tcl-text-main); margin-bottom: 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+        .faq-item p { color: var(--tcl-text-muted); font-size: 0.95rem; line-height: 1.6; }
+        
+        .ai-terminal { border: 1px solid var(--tcl-border); display: flex; flex-direction: column; background: var(--tcl-surface); height: 600px; }
+        .ai-header { background: var(--tcl-background); border-bottom: 1px solid var(--tcl-border); padding: 15px 20px; font-family: 'Roboto Mono', monospace; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--tcl-text-main); display: flex; justify-content: space-between; align-items: center;}
+        .ai-status { display: inline-block; width: 8px; height: 8px; background-color: var(--tcl-accent-green); border-radius: 50%; margin-right: 8px; }
+        .ai-body { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+        .ai-message { font-size: 0.95rem; line-height: 1.5; }
+        .ai-message.user { text-align: right; color: var(--tcl-primary); font-weight: 700; font-family: 'Roboto Mono', monospace; }
+        .ai-message.system { text-align: left; color: var(--tcl-text-main); border-left: 2px solid var(--tcl-primary); padding-left: 15px; }
+        .ai-input-area { display: flex; border-top: 1px solid var(--tcl-border); }
+        .ai-input-area input { border: none; padding: 20px; flex-grow: 1; font-family: var(--font-primary); font-size: 1rem; outline: none; background: transparent;}
+        .ai-input-area button { background: var(--tcl-background); border: none; border-left: 1px solid var(--tcl-border); padding: 0 30px; font-family: var(--font-primary); font-weight: 700; text-transform: uppercase; cursor: pointer; transition: background 0.2s; color: var(--tcl-primary); }
+        .ai-input-area button:hover { background: var(--tcl-border); }
 
-        /* --- Order Form Config (Flat & Bordered) --- */
+        /* Markdown Customization for AI Output */
+        .markdown-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9rem; }
+        .markdown-body th, .markdown-body td { border: 1px solid var(--tcl-border); padding: 8px 12px; text-align: left; }
+        .markdown-body th { background: var(--tcl-background); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.8rem; color: var(--tcl-text-muted); }
+        .markdown-body p { margin-bottom: 12px; }
+        .markdown-body ul, .markdown-body ol { padding-left: 20px; margin-bottom: 12px; }
+        .markdown-body li { margin-bottom: 4px; }
+        .markdown-body a { color: var(--tcl-primary); text-decoration: underline; }
+        .markdown-body strong { font-weight: 700; color: var(--tcl-text-main); }
+
+        /* --- Order Form Config --- */
         .order-page-content { padding: 80px 0; max-width: 700px; margin: 0 auto; }
         .order-header { text-align: center; margin-bottom: 60px; }
         .form-group { margin-bottom: 30px; display: flex; flex-direction: column; }
@@ -307,13 +343,15 @@
         .modal-box { background-color: var(--tcl-surface); padding: 60px; border: 1px solid var(--tcl-border); text-align: center; max-width: 800px; width: 90%; position: relative; max-height: 90vh; overflow-y: auto; }
         
         /* --- Footer --- */
-        footer { text-align: center; padding: 60px 20px; background-color: var(--tcl-background); border-top: 1px solid var(--tcl-border); color: var(--tcl-text-muted); margin-top: auto; }
+        footer { text-align: center; padding: 60px 20px; background: var(--tcl-background); border-top: 1px solid var(--tcl-border); color: var(--tcl-text-muted); margin-top: auto; }
         footer a { color: var(--tcl-text-muted); text-decoration: none; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; transition: color 0.2s; }
         footer a:hover { color: var(--tcl-primary); }
 
         /* --- Responsive --- */
         @media (max-width: 768px) {
-            .bio-grid { grid-template-columns: 1fr; }
+            .desktop-menu { display: none; }
+            .menu-toggle { display: block; }
+            .bio-grid, .qa-container { grid-template-columns: 1fr; }
             .bio-image img { border-right: none; border-bottom: 1px solid var(--tcl-border); }
             .split-section, .split-section.reverse { flex-direction: column; }
             .split-image { border-right: none; border-bottom: 1px solid var(--tcl-border); }
@@ -322,6 +360,7 @@
             .handle-card { border-right: none; border-bottom: 1px solid var(--tcl-border); }
             .hero h1 { font-size: 3rem; }
             .order-page-content, .split-content, .bio-text { padding: 40px 20px; }
+            .ai-terminal { height: 500px; }
         }
         @media (max-width: 1000px) {
             th:nth-child(4), td:nth-child(4), th:nth-child(6), td:nth-child(6) { display: none; } 
@@ -333,44 +372,40 @@
     <!-- Shared Navigation -->
     <nav class="navbar" id="main-nav">
         <div class="container nav-flex">
-            <a href="#index" class="logo">The Chop Lab<span>.</span></a>
+            <a href="#studio" class="logo">The Chop Lab<span>.</span></a>
+            
+            <div class="desktop-menu">
+                <a href="#studio" class="nav-link">Studio</a>
+                <a href="#3dprint" class="nav-link">3D Print</a>
+                <a href="#qa" class="nav-link">Q&A</a>
+                <a href="#order" class="nav-link">Order</a>
+                <a href="#account" class="nav-link">Account</a>
+            </div>
+
             <div class="menu-toggle">&#9776;</div>
         </div>
     </nav>
 
     <div class="overlay-menu">
-        <a href="#index" class="nav-link">Gallery</a>
-        <a href="#portfolio" class="nav-link">Portfolio & Process</a>
-        <a href="#chops" class="nav-link">Chop Info</a>
+        <a href="#studio" class="nav-link">Studio Tools</a>
+        <a href="#3dprint" class="nav-link">Custom 3D Printing</a>
+        <a href="#qa" class="nav-link">Q&A / Ask AI</a>
         <a href="#order" class="nav-link">Order Form</a>
         <a href="#account" class="nav-link">My Account</a>
     </div>
 
     <!-- ========================================== -->
-    <!-- INDEX PAGE VIEW -->
+    <!-- SECTION 1: STUDIO (Home) -->
     <!-- ========================================== -->
-    <div id="page-index" class="page-view">
+    <div id="page-studio" class="page-view">
         <header class="hero">
             <div class="container">
                 <h1>CAD meets Clay.</h1>
-                <p>Engineered tools. Artistic intent.</p>
+                <p>Engineered tools for the ceramic studio.</p>
             </div>
         </header>
 
-        <section class="unboxing-preview" style="padding: 80px 0; background: var(--tcl-surface); border-bottom: 1px solid var(--tcl-border);">
-            <div class="container" style="display: flex; align-items: center; gap: 60px; flex-wrap: wrap; justify-content: center;">
-                <div style="flex: 1; min-width: 320px;">
-                    <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 20px;">Thoughtful Packaging.</h2>
-                    <p style="color: var(--tcl-text-muted); line-height: 1.8; font-size: 1.05rem;">Every tool is mathematically engineered in the lab and hand-packed with care. Our custom Kraft packaging and detailed care cards ensure your tools stay as precise as the day they arrived.</p>
-                </div>
-                <div style="display: flex; gap: 20px;">
-                    <img src="https://chop-lab.com/assets/images/kraft-packaging.JPG" alt="Chop Lab Packaging" style="width: 220px; border: 1px solid var(--tcl-border);">
-                    <img src="https://chop-lab.com/assets/images/care-instructions-close-up.JPG" alt="Care Instructions" style="width: 220px; border: 1px solid var(--tcl-border);">
-                </div>
-            </div>
-        </section>
-
-        <section class="gallery" style="margin-top: 80px;">
+        <section class="gallery">
             <div class="container">
                 <div class="product-grid">
                     <a href="#order?product=chop-simple" class="card-link">
@@ -406,28 +441,6 @@
                         </div>
                     </a>
 
-                    <a href="#order?product=roller-torqe" class="card-link">
-                        <div class="art-card">
-                            <img src="https://chop-lab.com/assets/images/torqe-roller.JPG" alt="Torqe Roller" class="art-image">
-                            <div class="art-info">
-                                <h3>Texture Roller (Torqe)</h3>
-                                <span class="price">$15.00</span>
-                                <p class="desc">High-energy spiral zig-zag.</p>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="#order?product=roller-mason" class="card-link">
-                        <div class="art-card">
-                            <img src="https://chop-lab.com/assets/images/mason-roller.JPG" alt="Mason Roller" class="art-image">
-                            <div class="art-info">
-                                <h3>Texture Roller (Mason)</h3>
-                                <span class="price">$15.00</span>
-                                <p class="desc">Architectural brickwork pattern.</p>
-                            </div>
-                        </div>
-                    </a>
-
                     <a href="#order?product=spinner" class="card-link">
                         <div class="art-card">
                             <img src="https://chop-lab.com/assets/images/trimming-spinner.png" alt="Trimming Spinner" class="art-image">
@@ -438,206 +451,112 @@
                             </div>
                         </div>
                     </a>
-
-                    <a href="#order?product=foot-ring-large" class="card-link">
-                        <div class="art-card">
-                            <img src="https://chop-lab.com/assets/images/Foot-ring-L.png" alt="Large Foot Ring Guide" class="art-image">
-                            <div class="art-info">
-                                <h3>Foot Guide (L)</h3>
-                                <span class="price">$18.00</span>
-                                <p class="desc">Ext. 9.5cm / Foot 7.7cm</p>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="#order?product=foot-ring-medium" class="card-link">
-                        <div class="art-card">
-                            <img src="https://chop-lab.com/assets/images/Foot-ring.png" alt="Medium Foot Ring Guide" class="art-image">
-                            <div class="art-info">
-                                <h3>Foot Guide (M)</h3>
-                                <span class="price">$15.00</span>
-                                <p class="desc">Ext. 6.5cm / Foot 4.7cm</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                
-                <div class="gallery-footer">
-                    <a href="#order" class="btn-minimal">Proceed to Order Form &rarr;</a>
                 </div>
             </div>
         </section>
     </div>
 
     <!-- ========================================== -->
-    <!-- PORTFOLIO PAGE VIEW -->
+    <!-- SECTION 2: 3D PRINTING -->
     <!-- ========================================== -->
-    <div id="page-portfolio" class="page-view hidden-page">
-        <div class="container">
-            <header class="portfolio-intro">
-                <h1>The Engineer & The Artist.</h1>
-                <p>Where robotics precision meets ceramic tradition.</p>
-            </header>
-
-            <section class="portfolio-section" style="padding: 40px 0;">
-                <h2 class="section-title">The Origin Story</h2>
-                <div class="bio-grid">
-                    <div class="bio-image">
-                        <img src="https://chop-lab.com/assets/images/maker-photo.png" alt="Thomas Carleton">
-                    </div>
-                    <div class="bio-text">
-                        <h3>Thomas Carleton</h3>
-                        <p>I am a robotics student and CAD designer applying engineering principles to the messy world of clay. Through courses like IED (Introduction to Engineering Design), I learned that the best tools are the ones built for a specific purpose.</p>
-                        <p style="margin-top: 15px;"><strong>The Spark:</strong> The Chop Lab started in the studio. My mother is a potter who struggled with generic stamps—they were too shallow, stuck to the clay, or were uncomfortable to hold. I realized I could use Fusion 360 and 3D printing to solve this.</p>
-                        <p style="margin-top: 15px;">Today, every tool is beta-tested by her before it ever makes it to the shop.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="portfolio-section" style="padding: 60px 0; margin: 0 -100vw; padding-left: 100vw; padding-right: 100vw; background-color: var(--tcl-background); border-top: 1px solid var(--tcl-border); border-bottom: 1px solid var(--tcl-border);">
-                <h2 class="section-title" style="text-align: center;">The Lab</h2>
-                <div class="bio-grid" style="background: var(--tcl-surface);">
-                    <div class="bio-text">
-                        <div style="margin-bottom:40px;">
-                            <h4 style="font-family: var(--font-primary); text-transform: uppercase; letter-spacing: 1px; color: var(--tcl-primary); font-size: 0.85rem; margin-bottom: 10px; font-weight: 700;">Fusion 360 Design</h4>
-                            <p style="font-size: 0.95rem;">We don't just "resize" images. We rebuild them using parametric modeling. This allows for rapid adjustments and mathematical precision, ensuring your logo looks exactly the way you want it.</p>
-                        </div>
-                        <div style="margin-bottom:40px;">
-                            <h4 style="font-family: var(--font-primary); text-transform: uppercase; letter-spacing: 1px; color: var(--tcl-primary); font-size: 0.85rem; margin-bottom: 10px; font-weight: 700;">Bambu Lab A1</h4>
-                            <p style="font-size: 0.95rem;">Our manufacturing engine. Chosen for its incredible speed, reliability, and precision, allowing us to create multi-colored handles that stand out in a messy studio.</p>
-                        </div>
-                        <div>
-                            <h4 style="font-family: var(--font-primary); text-transform: uppercase; letter-spacing: 1px; color: var(--tcl-primary); font-size: 0.85rem; margin-bottom: 10px; font-weight: 700;">Material Science</h4>
-                            <p style="font-size: 0.95rem;">We print exclusively in <strong>PLA Matte</strong>. Unlike glossy plastics, the matte finish releases moist clay cleanly without sticking, while offering a superior grip texture.</p>
-                        </div>
-                    </div>
-                    <div class="bio-image">
-                        <img src="https://chop-lab.com/assets/images/printer-action.png" alt="Bambu Lab A1 in action">
-                    </div>
-                </div>
-            </section>
-
-            <section class="portfolio-section" style="padding: 80px 0;">
-                <h2 class="section-title" style="text-align: center; margin-bottom: 60px;">Selected Works</h2>
-                <div class="product-grid">
-                    <div class="art-card">
-                        <img src="https://chop-lab.com/assets/images/compex-FC-chop.png" class="art-image" alt="Red Panda Custom Chop"> 
-                        <div class="art-info">
-                            <h3>The "Red Panda"</h3>
-                            <p class="desc"><strong>The Challenge:</strong> Incorporate the letters "FC" naturally into the ears of an illustration.</p>
-                            <p class="desc" style="margin-top:15px; font-style:italic; font-size: 0.85rem; color: var(--tcl-primary);">Variable-height engineering prevents clay trapping.</p>
-                        </div>
-                    </div>
-                    <div class="art-card">
-                        <img src="https://chop-lab.com/assets/images/hex-lattice-close-up.JPG" class="art-image" alt="Hex Lattice Impression">
-                        <div class="art-info">
-                            <h3>Geometric Fidelity</h3>
-                            <p class="desc"><strong>The Hex-Lattice.</strong> High-relief geometric impressions that remain crisp even through glazing.</p>
-                        </div>
-                    </div>
-                    <div class="art-card">
-                        <img src="https://chop-lab.com/assets/images/mason-close-up.JPG" class="art-image" alt="Mason Brick Impression">
-                        <div class="art-info">
-                            <h3>Architectural Masonry</h3>
-                            <p class="desc"><strong>The Mason.</strong> Precisely spaced mortar lines engineered for a staggered brickwork finish.</p>
-                        </div>
-                    </div>
-                    <div class="art-card">
-                        <img src="https://chop-lab.com/assets/images/torqe-close-up.JPG" class="art-image" alt="Torqe Spiral Impression">
-                        <div class="art-info">
-                            <h3>The Spiral Torqe</h3>
-                            <p class="desc"><strong>Torqe Profile.</strong> A continuous high-energy spiral cut designed for large-surface texturing.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <div class="gallery-footer" style="padding-bottom: 60px;">
-                <a href="#order" class="btn-launch">Start Your Project &rarr;</a>
+    <div id="page-3dprint" class="page-view hidden-page">
+        <header class="hero">
+            <div class="container">
+                <h1>Print on Demand.</h1>
+                <p>Bring your STLs to life in our lab.</p>
             </div>
-        </div>
-    </div>
+        </header>
 
-    <!-- ========================================== -->
-    <!-- CHOPS PAGE VIEW -->
-    <!-- ========================================== -->
-    <div id="page-chops" class="page-view hidden-page">
         <div class="container">
-            <header class="portfolio-intro" style="padding: 80px 0 60px 0; text-align: center;">
-                <h1 style="font-size: 4rem; margin-bottom: 20px;">The Mark of a Maker.</h1>
-                <p style="letter-spacing: 2px; text-transform: uppercase; color: var(--tcl-text-muted); font-size: 0.9rem;">We engineer stamps that press deep, release clean, and last forever.</p>
-            </header>
-
             <div class="split-section">
                 <div class="split-image">
-                    <img src="https://chop-lab.com/assets/images/simple-chop-ex.JPG" alt="Simple Chop Example">
+                    <img src="https://chop-lab.com/assets/images/printer-action.png" alt="Bambu Lab A1 Printer in Action">
                 </div>
                 <div class="split-content">
-                    <h2>01. Simple Chop</h2>
-                    <span class="price">$15.00</span>
-                    <p style="color: var(--tcl-text-muted); line-height: 1.8;">Perfect for initials, simple names, or maker's marks that rely on standard typography. We use a clean, deep-cut font optimized for high-relief clay release.</p>
+                    <h2>Rapid Prototyping</h2>
+                    <p style="color: var(--tcl-text-muted); line-height: 1.8; margin-bottom: 20px;">We use high-speed Bambu Lab A1 printers to bring your custom 3D models into reality. Whether you need a functional replacement part, a cosplay prop, or a custom tool, our lab is equipped to handle it.</p>
                     <ul class="feature-list">
-                        <li><strong>Input:</strong> Standard Text / Letters only.</li>
-                        <li><strong>Font:</strong> Sans-Serif, Serif, or Handwritten.</li>
-                        <li><strong>Best For:</strong> Signatures, Initials, Production Dates.</li>
+                        <li><strong>Max Build Volume:</strong> 256 x 256 x 256 mm</li>
+                        <li><strong>Materials:</strong> Tough PLA Matte & Durable PETG</li>
+                        <li><strong>File Types:</strong> Standard .STL uploads</li>
+                        <li><strong>Turnaround:</strong> Typically 3-5 business days</li>
                     </ul>
+                    <a href="#order?product=custom-stl" class="btn-minimal" style="margin-top: 30px;">Upload an STL</a>
                 </div>
             </div>
 
-            <div class="split-section reverse">
+            <div class="split-section reverse" style="border-top: none;">
                 <div class="split-image">
-                    <img src="https://chop-lab.com/assets/images/compex-FC-chop.png" alt="Complex Chop Illustration">
+                    <img src="https://chop-lab.com/assets/images/maker-photo.png" alt="Thomas Carleton - Lab Technician">
                 </div>
                 <div class="split-content">
-                    <h2>02. Complex Chop</h2>
-                    <span class="price">$20.00</span>
-                    <p style="color: var(--tcl-text-muted); line-height: 1.8;">For custom logos, complex illustrations, or specific studio branding. We manually convert your artwork into a 3D height map, adjusting taper angles to ensure zero clay suction.</p>
-                    <ul class="feature-list">
-                        <li><strong>Input:</strong> Image Upload (SVG, PNG, PDF).</li>
-                        <li><strong>Detail:</strong> Mathematical height-reproduction.</li>
-                        <li><strong>Best For:</strong> Logos, Icons, Intricate Line-Art.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="handle-section">
-                <h2 class="section-title">The Handle System</h2>
-                <div class="handle-diagram">
-                    <img src="https://chop-lab.com/assets/images/handle-options.png" alt="Handle Configurations">
-                </div>
-                <div class="handle-grid">
-                    <div class="handle-card">
-                        <h3>Straight Hex</h3>
-                        <p><strong>The Industrial.</strong> Engineered with a textured grip for high-pressure control on dryer clay.</p>
-                    </div>
-                    <div class="handle-card">
-                        <h3>Straight Square</h3>
-                        <p><strong>The Engineer.</strong> Allows for perfect 90-degree alignment with vessel rims or foot rings.</p>
-                    </div>
-                    <div class="handle-card">
-                        <h3>Standard / Hex</h3>
-                        <p><strong>The Hybrid.</strong> Ergonomic pear-shaped grip with an anti-roll hexagonal base.</p>
-                    </div>
-                    <div class="handle-card">
-                        <h3>Standard / Round</h3>
-                        <p><strong>The Classic.</strong> Maximum comfort for batch production and repetitive stamping.</p>
-                    </div>
-                </div>
-                <div class="gallery-footer" style="padding-bottom: 40px; border-bottom: none;">
-                    <a href="#order" class="btn-launch">Build Your Stamp &rarr;</a>
+                    <h2>The Lab Technician</h2>
+                    <p style="color: var(--tcl-text-muted); line-height: 1.8;">Hi, I'm Thomas. I'm a robotics student, CAD designer, and the technician behind The Chop Lab. What started as a project to print better pottery tools for my mom's studio has evolved into a full-scale micro-manufacturing lab.</p>
+                    <p style="color: var(--tcl-text-muted); line-height: 1.8; margin-top: 15px;">By utilizing parametric modeling and advanced FDM printing, I ensure every part—whether it's a clay stamp or a custom mechanical gear—is mathematically precise and structurally sound.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- ========================================== -->
-    <!-- ORDER PAGE VIEW -->
+    <!-- SECTION 3: Q&A / ASK AI -->
+    <!-- ========================================== -->
+    <div id="page-qa" class="page-view hidden-page">
+        <header class="info-intro">
+            <div class="container">
+                <h1>Questions?</h1>
+                <p>Consult the FAQ or query the Lab AI.</p>
+            </div>
+        </header>
+
+        <div class="container qa-container">
+            <div class="faq-list">
+                <h2 style="font-family: var(--font-heading); margin-bottom: 20px;">Frequently Asked</h2>
+                
+                <div class="faq-item">
+                    <h4>What materials do you print with?</h4>
+                    <p>For pottery tools, we exclusively use PLA Matte. It offers excellent detail, low friction (so clay doesn't stick), and a great tactile grip. For custom structural prints, we offer PETG for higher heat resistance and durability.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Are your prints food safe?</h4>
+                    <p>FDM 3D prints have microscopic layer lines that can harbor bacteria. Our tools are designed for working with raw clay, not for direct long-term contact with food or drink.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>How long does a custom chop take?</h4>
+                    <p>Usually 3 to 5 business days from the time your artwork is approved. Complex logos might require a CAD redesign which can add 1-2 days.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Can I send a massive STL file?</h4>
+                    <p>Our maximum build volume is 256 x 256 x 256 mm. If your part is larger than this, it will need to be sliced into multiple interlocking pieces before you send the STL.</p>
+                </div>
+            </div>
+
+            <div class="ai-terminal">
+                <div class="ai-header">
+                    <div><span class="ai-status"></span> TCL_Lab_Assistant v1.0</div>
+                    <div style="color: var(--tcl-text-muted);">Online</div>
+                </div>
+                <div class="ai-body" id="chatMessages">
+                    <div class="ai-message system">
+                        Welcome to The Chop Lab. I am the AI technician. Feel free to ask me anything regarding our tools, custom STL printing limits, or material specs.
+                    </div>
+                </div>
+                <div class="ai-input-area">
+                    <input type="text" id="chatInput" placeholder="Type your query here..." onkeypress="if(event.key === 'Enter') sendAiMessage()">
+                    <button onclick="sendAiMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SECTION 4: ORDER PAGE VIEW -->
     <!-- ========================================== -->
     <div id="page-order" class="page-view hidden-page">
         <div class="container order-page-content">
             <header class="order-header">
-                <h1 style="font-family: var(--font-heading); color: var(--tcl-primary); font-size: 3rem; margin-bottom: 16px;">Configure Your Tool.</h1>
-                <p style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; color: var(--tcl-text-muted);">Select a product to begin customization.</p>
+                <h1 style="font-family: var(--font-heading); color: var(--tcl-text-main); font-size: 3rem; margin-bottom: 16px;">Configure Request.</h1>
+                <p style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; color: var(--tcl-text-muted);">Select a service to begin.</p>
             </header>
 
             <form id="tcl-order-form" class="order-form">
@@ -655,20 +574,47 @@
                 <div class="divider"></div>
 
                 <div class="form-group">
-                    <label for="productSelect">Select Product</label>
+                    <label for="productSelect">Select Product / Service</label>
                     <select id="productSelect" name="productSelect" required>
                         <option value="" disabled selected>-- Choose an Item --</option>
-                        <option value="chop-simple">Custom Chop Simple - $15</option>
-                        <option value="chop-complex">Custom Chop Complex - $20</option>
-                        <option value="spinner">Trimming Spinner - $15</option>
-                        <option value="roller-4in">Texture Roller (4 inch) - $10</option>
-                        <option value="roller-10in">Texture Roller (10 inch) - $20</option>
-                        <option value="foot-ring-large">Concentric Foot Guide (L) - $18</option>
-                        <option value="foot-ring-medium">Concentric Foot Guide (M) - $15</option>
-                        <option value="foot-ring-small">Concentric Foot Guide (S) - $12</option>
+                        <optgroup label="Studio Tools">
+                            <option value="chop-simple">Custom Chop Simple - $15</option>
+                            <option value="chop-complex">Custom Chop Complex - $20</option>
+                            <option value="spinner">Trimming Spinner - $15</option>
+                            <option value="roller-4in">Texture Roller (4 inch) - $10</option>
+                            <option value="roller-10in">Texture Roller (10 inch) - $20</option>
+                            <option value="foot-ring-large">Concentric Foot Guide (L) - $18</option>
+                            <option value="foot-ring-medium">Concentric Foot Guide (M) - $15</option>
+                            <option value="foot-ring-small">Concentric Foot Guide (S) - $12</option>
+                        </optgroup>
+                        <optgroup label="3D Printing">
+                            <option value="custom-stl">Custom STL Print (Upload File)</option>
+                        </optgroup>
                     </select>
                 </div>
 
+                <!-- Custom STL Upload Section -->
+                <div id="opt-3d-print" class="dynamic-section hidden">
+                    <h3>Custom STL Print Configuration</h3>
+                    <p style="font-size: 0.85rem; color: var(--tcl-text-muted); margin-top: -20px; margin-bottom: 20px;">Pricing is calculated based on print time and material weight. We will email you a quote before starting.</p>
+                    
+                    <div class="form-group">
+                        <label>Upload STL File</label>
+                        <input type="file" id="stlUpload" name="stlUpload" accept=".stl,.obj" style="padding: 12px; border: 1px dashed var(--tcl-text-muted);">
+                        <span class="note">Max size: 256x256x256mm.</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Material Preference</label>
+                        <select name="stlMaterial">
+                            <option value="pla-matte">PLA Matte (Best for detail, low stress)</option>
+                            <option value="petg">PETG (Best for durability, heat resistance)</option>
+                            <option value="undecided">Not Sure (Recommend for me)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Pottery Tool Options -->
                 <div id="opt-chop-simple" class="dynamic-section hidden">
                     <h3>Configuration: Simple Chop</h3>
                     <div class="form-group">
@@ -681,7 +627,6 @@
                         <select name="simpleFont">
                             <option value="sans">Clean Sans-Serif</option>
                             <option value="serif">Classic Serif</option>
-                            <option value="hand">Handwritten Style</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -748,8 +693,8 @@
                 </div>
 
                 <div class="form-group" style="margin-top: 20px;">
-                    <label>Special Instructions / Comments</label>
-                    <textarea name="comments" placeholder="E.g. Rush order, specific sizing notes..."></textarea>
+                    <label>Special Instructions / Notes</label>
+                    <textarea name="comments" placeholder="Scale requirements, rush delivery requests, etc..."></textarea>
                 </div>
 
                 <button type="submit" class="btn-launch" style="width: 100%; border:none; cursor:pointer;">Submit Project Request</button>
@@ -839,7 +784,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- ADMIN PAGE VIEW -->
+    <!-- ADMIN & 404 VIEWS -->
     <!-- ========================================== -->
     <div id="page-admin" class="page-view hidden-page">
         <div id="admin-login-screen">
@@ -860,7 +805,7 @@
                 </div>
                 <div style="display: flex; gap: 16px;">
                     <button onclick="checkPass()" class="btn-minimal" style="border: 1px solid var(--tcl-border); color: var(--tcl-text-main);">Sync Data</button>
-                    <a href="#index" class="btn-minimal" style="border: 1px solid var(--tcl-border); color: var(--tcl-text-muted);">Exit Console</a>
+                    <a href="#studio" class="btn-minimal" style="border: 1px solid var(--tcl-border); color: var(--tcl-text-muted);">Exit Console</a>
                 </div>
             </div>
             
@@ -873,8 +818,7 @@
                             <th>Customer</th>
                             <th>Email Path</th>
                             <th>Product Tag</th>
-                            <th>Engineering Specs</th>
-                            <th>Handle Style</th>
+                            <th>Specs</th>
                             <th>Asset</th>
                         </tr>
                     </thead>
@@ -884,19 +828,13 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 404 PAGE VIEW -->
-    <!-- ========================================== -->
     <div id="page-404" class="page-view hidden-page">
         <div class="container" style="text-align: center; height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
             <h1 style="font-family: var(--font-heading); font-size: clamp(8rem, 20vw, 12rem); color: var(--tcl-background); margin: 0; line-height: 0.8; letter-spacing: -5px; user-select: none;">404</h1>
             <div style="margin-top: -20px; z-index: 1;">
                 <h2 style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--tcl-text-main); margin-bottom: 10px;">Scrapped Part.</h2>
-                <p style="color: var(--tcl-text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; margin-bottom: 40px;">The requested asset has been removed or does not exist in the database.</p>
-                <a href="#index" class="btn-launch">Return to Lab Floor</a>
-            </div>
-            <div style="position: absolute; bottom: 40px; font-family: 'Roboto Mono', monospace; font-size: 0.7rem; color: var(--tcl-text-muted); text-transform: uppercase; letter-spacing: 1px;">
-                Error_Code: Asset_Not_Found // Status: Rejection
+                <p style="color: var(--tcl-text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; margin-bottom: 40px;">The requested asset has been removed or does not exist.</p>
+                <a href="#studio" class="btn-launch">Return to Lab Floor</a>
             </div>
         </div>
     </div>
@@ -914,10 +852,13 @@
     <!-- ========================================== -->
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxA0tHDzsc4baNHSURGJRMFVvRpXLZMAL0Hhkezq5xC641ehY5asGkTD1X4k6uauBJF9A/exec";
+        
+        // PASTE YOUR CLOUDFLARE WORKER URL HERE:
+        const AI_WORKER_URL = ""; 
 
         // --- 1. SPA ROUTING & LAYOUT LOGIC ---
         function route() {
-            const hash = window.location.hash || '#index';
+            const hash = window.location.hash || '#studio';
             const [path, query] = hash.split('?');
             const pageId = 'page-' + path.replace('#', '');
 
@@ -1002,12 +943,14 @@
 
             const simpleSection = document.getElementById('opt-chop-simple');
             const complexSection = document.getElementById('opt-chop-complex');
+            const stlSection = document.getElementById('opt-3d-print');
             const roller4Section = document.getElementById('opt-roller-4in');
             const roller10Section = document.getElementById('opt-roller-10in');
 
             function hideAllSections() {
                 if(simpleSection) simpleSection.classList.add('hidden');
                 if(complexSection) complexSection.classList.add('hidden');
+                if(stlSection) stlSection.classList.add('hidden');
                 if(roller4Section) roller4Section.classList.add('hidden');
                 if(roller10Section) roller10Section.classList.add('hidden');
                 document.querySelectorAll('.dynamic-section input').forEach(input => input.required = false);
@@ -1017,6 +960,7 @@
                 hideAllSections();
                 if (value === 'chop-simple' && simpleSection) simpleSection.classList.remove('hidden');
                 else if (value === 'chop-complex' && complexSection) complexSection.classList.remove('hidden');
+                else if (value === 'custom-stl' && stlSection) stlSection.classList.remove('hidden');
                 else if (value === 'roller-4in' && roller4Section) roller4Section.classList.remove('hidden');
                 else if (value === 'roller-10in' && roller10Section) roller10Section.classList.remove('hidden');
             }
@@ -1036,9 +980,13 @@
                     const data = Object.fromEntries(formData.entries());
 
                     const logoInput = document.getElementById('logoUpload');
+                    const stlInput = document.getElementById('stlUpload');
                     let fileToUpload = null;
+                    
                     if (data.productSelect === 'chop-complex' && logoInput && logoInput.files.length > 0) {
                         fileToUpload = logoInput.files[0];
+                    } else if (data.productSelect === 'custom-stl' && stlInput && stlInput.files.length > 0) {
+                        fileToUpload = stlInput.files[0];
                     }
 
                     if (fileToUpload) {
@@ -1248,7 +1196,7 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = ''; 
             if (data.length === 0) {
-                 tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:40px;">Zero active projects found.</td></tr>';
+                 tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px;">Zero active projects found.</td></tr>';
                  return;
             }
             data.reverse().forEach(row => {
@@ -1267,7 +1215,6 @@
                     <td style="color: var(--tcl-text-muted);">${row[3]}</td>
                     <td><span class="status-pill">${row[4]}</span></td>
                     <td style="color:var(--tcl-text-muted); max-width: 250px;">${row[5]}</td>
-                    <td>${row[6]}</td>
                     <td>${link}</td>
                 `;
                 tbody.appendChild(tr);
@@ -1282,19 +1229,119 @@
         }
 
         // --- 6. IMAGE FALLBACK LOGIC ---
-        // Listen for image load errors and apply the broken image class
         document.addEventListener('error', function(e) {
             if (e.target.tagName && e.target.tagName.toLowerCase() === 'img') {
                 e.target.classList.add('img-broken');
             }
-        }, true); // Use capture phase
+        }, true); 
 
-        // Remove the broken class if the image successfully loads later (e.g., dynamically updated)
         document.addEventListener('load', function(e) {
             if (e.target.tagName && e.target.tagName.toLowerCase() === 'img') {
                 e.target.classList.remove('img-broken');
             }
         }, true);
+
+        // --- 7. ASK AI LOGIC ---
+        let chatHistory = [];
+        
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function renderChatMessages() {
+            const container = document.getElementById('chatMessages');
+            if (!container) return;
+            
+            let html = `<div class="ai-message system">
+                Welcome to The Chop Lab. I am the AI technician. Feel free to ask me anything regarding our tools, custom STL printing limits, or material specs.
+            </div>`;
+
+            chatHistory.forEach((msg) => {
+                if (msg.role === 'user') {
+                    html += `<div class="ai-message user">> ${msg.content}</div>`;
+                } else if (msg.role === 'assistant' || msg.role === 'system') {
+                    const parsedMarkdown = marked.parse(msg.content);
+                    html += `<div class="ai-message system markdown-body">${parsedMarkdown}</div>`;
+                } else if (msg.role === 'loading') {
+                    html += `<div class="ai-message system"><em>${msg.content}</em></div>`;
+                }
+            });
+            
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendAiMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            input.value = '';
+            
+            // Add user message to UI
+            chatHistory.push({ role: 'user', content: message, id: generateId() });
+            renderChatMessages();
+
+            // Add loading message
+            const loadingId = generateId();
+            chatHistory.push({ role: 'loading', content: 'Processing query in the lab...', id: loadingId });
+            renderChatMessages();
+            
+            const systemInstruction = "You are the AI assistant for The Chop Lab, a custom 3D printing and ceramic pottery tool shop run by Thomas Carleton. Keep answers concise, professional, and slightly technical/engineered in tone. Max print size is 256x256x256mm. Materials are PLA Matte and PETG. Turnaround is 3-5 days. Always be helpful.";
+
+            try {
+                if (!AI_WORKER_URL) {
+                    // Fallback to direct Gemini API if Cloudflare Worker URL is not set yet
+                    const apiKey = ""; 
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: message }] }],
+                            systemInstruction: { parts: [{ text: systemInstruction }] }
+                        })
+                    });
+
+                    if(!res.ok) throw new Error("API Connection Failed");
+                    const data = await res.json();
+                    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Unable to parse lab schematic.";
+                    
+                    chatHistory.pop(); // remove loading message
+                    chatHistory.push({ role: 'assistant', content: text, id: generateId() });
+                } else {
+                    // Cloudflare Worker Architecture
+                    const url = new URL(AI_WORKER_URL);
+                    url.pathname = '/ask';
+                    
+                    const timeZoneToUse = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    const clientTime = new Date().toLocaleString('en-US', { timeZone: timeZoneToUse, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' });
+
+                    const res = await fetch(url.toString(), {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: message,
+                            systemInstruction: systemInstruction,
+                            clientTime: clientTime,
+                            timeZone: timeZoneToUse
+                        })
+                    });
+
+                    if (!res.ok) throw new Error('Chat failed');
+                    const data = await res.json();
+                    
+                    chatHistory.pop(); // remove loading message
+                    chatHistory.push({ role: 'assistant', content: data.response, id: generateId() });
+                }
+            } catch (error) {
+                chatHistory.pop(); // remove loading message
+                chatHistory.push({ role: 'assistant', content: "<span style='color:red; font-weight:700;'>Connection to AI module failed. Please check your network and try again.</span>", id: generateId() });
+            }
+            renderChatMessages();
+        }
+
     </script>
 </body>
 </html>
