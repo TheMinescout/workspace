@@ -66,6 +66,8 @@ life.minescout.net/
 ├── posts/             # Individual article rendering logic organized by topic
 ├── projects/          # Standalone Web Apps (Scorecard, Beat Saber, Calculators)
 └── index.html         # Primary entry point and dynamic router
+
+```
 🧪 Minescouts Beta Program
 --------------------------
 
