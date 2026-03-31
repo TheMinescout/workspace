@@ -53,8 +53,19 @@ Designed to be both a digital resume and a public sandbox, the site is built as 
 
 ### 📂 Project Structure
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   life.minescout.net/  ├── admin/            # CMS logic, auth guards, post drafting, and request viewing  ├── archives/         # Chronological sorting and Monthly/Yearly archive generation  ├── assets/           # Core optimized resources  │   ├── css/          # Global design system (homepage.css, typography, features.css)  │   ├── includes/     # Modular HTML fragments (sidebar.html, comments.html, auth_modal.html)  │   ├── images/       # Compressed site assets, icons, and post thumbnails  │   └── js/           # Core modular logic (auth.js, loader.js, features.js, telemetry.js)  ├── pages/            # Category hubs routing (Tech Tips, Updates, Development)  ├── posts/            # Individual article rendering logic organized by topic  ├── projects/         # Standalone Web Apps (Scorecard, Beat Saber, Calculators)  └── index.html        # Primary entry point and dynamic router   `
-
+```text
+life.minescout.net/
+├── admin/             # CMS logic, auth guards, post drafting, and request viewing
+├── archives/          # Chronological sorting and Monthly/Yearly archive generation
+├── assets/            # Core optimized resources
+│   ├── css/           # Global design system (homepage.css, typography, features.css)
+│   ├── includes/      # Modular HTML fragments (sidebar.html, comments.html, auth_modal.html)
+│   ├── images/        # Compressed site assets, icons, and post thumbnails
+│   └── js/            # Core modular logic (auth.js, loader.js, features.js, telemetry.js)
+├── pages/             # Category hubs routing (Tech Tips, Updates, Development)
+├── posts/             # Individual article rendering logic organized by topic
+├── projects/          # Standalone Web Apps (Scorecard, Beat Saber, Calculators)
+└── index.html         # Primary entry point and dynamic router
 🧪 Minescouts Beta Program
 --------------------------
 
