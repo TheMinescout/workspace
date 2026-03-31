@@ -9,10 +9,6 @@
     <link rel="icon" type="image/png" href="https://chop-lab.com/assets/images/Favicon.png">
     <meta name="theme-color" content="#D26244">
     
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-
     <!-- Markdown Parser for AI Chat -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
@@ -726,13 +722,11 @@
         <div class="container" style="margin-top: 100px; min-height: 70vh; max-width: 900px;">
             <div id="auth-container" style="max-width: 450px; margin: 0 auto; padding: 60px 40px; border: 1px solid var(--tcl-border); background: var(--tcl-surface);">
                 <h2 style="font-family: var(--font-heading); font-size: 2.2rem; margin-bottom: 15px; text-align: center;">Client Portal</h2>
-                <p style="color:var(--tcl-text-muted); margin-bottom: 40px; text-align: center; font-size: 0.95rem;">Login to view project status and final engineering drafts.</p>
+                <p style="color:var(--tcl-text-muted); margin-bottom: 40px; text-align: center; font-size: 0.95rem;">Enter your email to view your project status and final engineering drafts.</p>
                 
                 <input type="email" id="loginEmail" class="portal-input" placeholder="Email Address" required>
-                <input type="password" id="loginPass" class="portal-input" placeholder="Password" required>
                 
-                <button onclick="handleLogin()" class="btn-launch" style="width: 100%; margin-top: 10px;">Log In</button>
-                <button onclick="handleSignup()" class="btn-minimal" style="margin-top: 25px; width: 100%; border: 1px solid var(--tcl-border); color: var(--tcl-text-muted);">Create New Account</button>
+                <button onclick="handleLogin()" class="btn-launch" style="width: 100%; margin-top: 10px;">View Projects</button>
             </div>
 
             <div id="dashboard-container" class="hidden">
@@ -1188,59 +1182,38 @@
             closeTextureModal();
         }
 
-        // --- FIREBASE / ACCOUNT LOGIC ---
-        let auth;
-        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
-            auth = firebase.auth();
-        } else {
-            auth = {
-                onAuthStateChanged: (cb) => { },
-                signInWithEmailAndPassword: async (email, pass) => {
-                    if(!email || !pass) throw new Error("Enter valid credentials");
-                    document.getElementById('auth-container').classList.add('hidden');
-                    document.getElementById('dashboard-container').classList.remove('hidden');
-                    document.getElementById('user-email-display').innerText = "Logged in: " + email;
-                    fetchHistory(email);
-                    showToast('Logged in successfully!');
-                },
-                createUserWithEmailAndPassword: async () => { showToast("Account created! Accessing lab records..."); },
-                signOut: async () => {
-                    document.getElementById('auth-container').classList.remove('hidden');
-                    document.getElementById('dashboard-container').classList.add('hidden');
-                    showToast('Signed out securely.');
-                }
-            };
-        }
-
-        if(auth && auth.onAuthStateChanged) {
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    document.getElementById('auth-container').classList.add('hidden');
-                    document.getElementById('dashboard-container').classList.remove('hidden');
-                    document.getElementById('user-email-display').innerText = "Logged in: " + user.email;
-                    fetchHistory(user.email);
-                } else {
-                    document.getElementById('auth-container').classList.remove('hidden');
-                    document.getElementById('dashboard-container').classList.add('hidden');
-                }
-            });
-        }
+        // --- ACCOUNT LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedEmail = localStorage.getItem('tcl_user_email');
+            if (savedEmail) {
+                document.getElementById('auth-container').classList.add('hidden');
+                document.getElementById('dashboard-container').classList.remove('hidden');
+                document.getElementById('user-email-display').innerText = "Viewing records for: " + savedEmail;
+                fetchHistory(savedEmail);
+            }
+        });
 
         function handleLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
-            auth.signInWithEmailAndPassword(email, pass).catch((error) => { showToast(error.message, "error"); });
+            const email = document.getElementById('loginEmail').value.trim();
+            if (!email || !email.includes('@')) {
+                showToast("Please enter a valid email address.", "error");
+                return;
+            }
+            localStorage.setItem('tcl_user_email', email);
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('dashboard-container').classList.remove('hidden');
+            document.getElementById('user-email-display').innerText = "Viewing records for: " + email;
+            fetchHistory(email);
+            showToast('Portal accessed successfully!');
         }
 
-        function handleSignup() {
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
-            auth.createUserWithEmailAndPassword(email, pass)
-                .then(() => { showToast("Account created! Accessing lab records..."); })
-                .catch((error) => { showToast(error.message, "error"); });
+        function handleLogout() { 
+            localStorage.removeItem('tcl_user_email');
+            document.getElementById('auth-container').classList.remove('hidden');
+            document.getElementById('dashboard-container').classList.add('hidden');
+            document.getElementById('loginEmail').value = '';
+            showToast('Signed out securely.');
         }
-
-        function handleLogout() { auth.signOut(); }
 
         async function fetchHistory(email) {
             const tbody = document.getElementById('historyTableBody');
