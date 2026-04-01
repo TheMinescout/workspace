@@ -14,7 +14,7 @@
 
     <!-- Three.js for STL Preview -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="hfttps://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
 
     <style>
         /* ==========================================================================
@@ -248,9 +248,29 @@
         th { background: var(--tcl-background); font-family: 'Roboto Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
         td { font-family: 'Roboto Mono', monospace; font-size: 0.85rem; }
 
-        /* --- Modals --- */
+        /* --- Modals & Texture Selection CSS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255,255,255,0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
         .modal-box { background-color: var(--tcl-surface); padding: 60px; border: 1px solid var(--tcl-border); text-align: center; max-width: 800px; width: 90%; position: relative; max-height: 90vh; overflow-y: auto; }
+        
+        .visual-selector {
+            border: 1px solid var(--tcl-border); border-radius: 4px; cursor: pointer; overflow: hidden;
+            display: flex; align-items: center; transition: border-color 0.3s ease; background: var(--tcl-surface);
+        }
+        .visual-selector:hover { border-color: var(--tcl-primary); }
+        .visual-selector img { width: 80px; height: 80px; object-fit: cover; border-right: 1px solid var(--tcl-border); }
+        .selector-content { padding: 0 20px; flex-grow: 1; display: flex; justify-content: space-between; align-items: center; text-align: left; }
+        .selector-title { font-weight: 700; color: var(--tcl-text-main); font-size: 0.95rem; }
+        .selector-action { font-size: 0.8rem; text-transform: uppercase; color: var(--tcl-primary); font-weight: 700; letter-spacing: 1px; }
+
+        .texture-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .texture-card { border: 1px solid var(--tcl-border); cursor: pointer; transition: all 0.2s ease; background: var(--tcl-surface); text-align: left; border-radius: 4px; overflow: hidden;}
+        .texture-card:hover { border-color: var(--tcl-primary); transform: translateY(-2px); }
+        .texture-card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid var(--tcl-border); display: block; }
+        .texture-card h3 { padding: 15px 15px 5px 15px; font-size: 1.1rem; margin: 0; font-family: var(--font-primary); font-weight: 700; }
+        .texture-card p { padding: 0 15px 15px 15px; margin: 0; font-size: 0.85rem; color: var(--tcl-text-muted); }
+
+        .detail-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .gallery-detail-img { width: 100%; height: 200px; object-fit: cover; border: 1px solid var(--tcl-border); border-radius: 4px;}
 
         /* --- Footer --- */
         footer { text-align: center; padding: 60px 20px; background: var(--tcl-background); border-top: 1px solid var(--tcl-border); color: var(--tcl-text-muted); margin-top: auto; }
@@ -285,6 +305,9 @@
             .hero h1 { font-size: 3rem; }
             .order-page-content, .split-content, .bio-text { padding: 40px 20px; }
             .ai-terminal { height: 500px; }
+            .detail-gallery { grid-template-columns: 1fr; }
+            .gallery-detail-img { height: 250px; }
+            .selector-content { padding: 0 10px; }
         }
     </style>
 </head>
@@ -296,25 +319,25 @@
     <!-- Shared Top Navigation -->
     <nav class="navbar" id="main-nav">
         <div class="container nav-flex">
-            <a href="#home" class="logo">The Chop Lab<span>.</span></a>
+            <a href="/" class="logo">The Chop Lab<span>.</span></a>
             <div class="desktop-menu">
-                <a href="#home" class="nav-link" data-target="home">Home</a>
-                <a href="#studio" class="nav-link" data-target="studio">Studio</a>
-                <a href="#3dprint" class="nav-link" data-target="3dprint">3D Print</a>
-                <a href="#qa" class="nav-link" data-target="qa">Q&A</a>
-                <a href="#order" class="nav-link" data-target="order">Order</a>
-                <a href="#account" class="nav-link" data-target="account">Account</a>
+                <a href="/" class="nav-link" data-target="home">Home</a>
+                <a href="/studio" class="nav-link" data-target="studio">Studio</a>
+                <a href="/3dprint" class="nav-link" data-target="3dprint">3D Print</a>
+                <a href="/qa" class="nav-link" data-target="qa">Q&A</a>
+                <a href="/order" class="nav-link" data-target="order">Order</a>
+                <a href="/account" class="nav-link" data-target="account">Account</a>
             </div>
         </div>
     </nav>
 
     <!-- Mobile Bottom Navigation -->
     <div class="bottom-nav">
-        <a href="#home" class="nav-link" data-target="home"><i class="material-icons">home</i><span>Home</span></a>
-        <a href="#studio" class="nav-link" data-target="studio"><i class="material-icons">category</i><span>Studio</span></a>
-        <a href="#3dprint" class="nav-link" data-target="3dprint"><i class="material-icons">print</i><span>3D Print</span></a>
-        <a href="#order" class="nav-link" data-target="order"><i class="material-icons">shopping_cart</i><span>Order</span></a>
-        <a href="#account" class="nav-link" data-target="account"><i class="material-icons">person</i><span>Account</span></a>
+        <a href="/" class="nav-link" data-target="home"><i class="material-icons">home</i><span>Home</span></a>
+        <a href="/studio" class="nav-link" data-target="studio"><i class="material-icons">category</i><span>Studio</span></a>
+        <a href="/3dprint" class="nav-link" data-target="3dprint"><i class="material-icons">print</i><span>3D Print</span></a>
+        <a href="/order" class="nav-link" data-target="order"><i class="material-icons">shopping_cart</i><span>Order</span></a>
+        <a href="/account" class="nav-link" data-target="account"><i class="material-icons">person</i><span>Account</span></a>
     </div>
 
     <!-- ========================================== -->
@@ -340,12 +363,12 @@
                     <div style="border: 1px solid var(--tcl-border); padding: 40px; text-align: center; transition: border-color 0.3s ease;">
                         <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Ceramic Studio Tools</h3>
                         <p style="color: var(--tcl-text-muted); margin-bottom: 30px;">Engineered chops, rollers, and trimming tools designed for the messy world of clay.</p>
-                        <a href="#studio" class="btn-launch">Browse Tools</a>
+                        <a href="/studio" class="btn-launch">Browse Tools</a>
                     </div>
                     <div style="border: 1px solid var(--tcl-border); padding: 40px; text-align: center; transition: border-color 0.3s ease;">
                         <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Custom 3D Printing</h3>
                         <p style="color: var(--tcl-text-muted); margin-bottom: 30px;">Send us your STL files. We print in durable PETG and high-detail PLA Matte. ($5 base + $1/hr)</p>
-                        <a href="#3dprint" class="btn-minimal" style="border: 1px solid var(--tcl-border); color: var(--tcl-text-main);">Learn More</a>
+                        <a href="/3dprint" class="btn-minimal" style="border: 1px solid var(--tcl-border); color: var(--tcl-text-main);">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -366,7 +389,7 @@
         <div class="gallery">
             <div class="container">
                 <div class="product-grid">
-                    <a href="#order?product=chop-simple" class="card-link">
+                    <a href="/order?product=chop-simple" class="card-link">
                         <div class="art-card">
                             <img src="https://chop-lab.com/assets/images/simple-chop-ex.JPG" alt="Custom Simple Chop" class="art-image">
                             <div class="art-info">
@@ -377,7 +400,7 @@
                         </div>
                     </a>
 
-                    <a href="#order?product=chop-complex" class="card-link">
+                    <a href="/order?product=chop-complex" class="card-link">
                         <div class="art-card">
                             <img src="https://chop-lab.com/assets/images/complex-chop.png" alt="Complex Chop" class="art-image">
                             <div class="art-info">
@@ -388,7 +411,7 @@
                         </div>
                     </a>
 
-                    <a href="#order?product=roller-hex" class="card-link">
+                    <a href="/order?product=roller-hex" class="card-link">
                         <div class="art-card">
                             <img src="https://chop-lab.com/assets/images/hex-lattice-croller.JPG" alt="Hex-Lattice Roller" class="art-image">
                             <div class="art-info">
@@ -399,7 +422,7 @@
                         </div>
                     </a>
 
-                    <a href="#order?product=spinner" class="card-link">
+                    <a href="/order?product=spinner" class="card-link">
                         <div class="art-card">
                             <img src="https://chop-lab.com/assets/images/trimming-spinner.png" alt="Trimming Spinner" class="art-image">
                             <div class="art-info">
@@ -439,7 +462,7 @@
                         <li><strong>Pricing:</strong> $5 base fee + $1 per hour of print time</li>
                         <li><strong>Turnaround:</strong> Typically 3-5 business days</li>
                     </ul>
-                    <a href="#order?product=custom-stl" class="btn-minimal" style="margin-top: 30px;">Upload an STL</a>
+                    <a href="/order?product=custom-stl" class="btn-minimal" style="margin-top: 30px;">Upload an STL</a>
                 </div>
             </div>
 
@@ -776,7 +799,7 @@
                 </div>
                 <div style="display: flex; gap: 16px;">
                     <button onclick="checkPass()" class="btn-minimal" style="border: 1px solid var(--tcl-border); color: var(--tcl-text-main);">Sync Data</button>
-                    <a href="#home" class="btn-minimal" style="border: 1px solid var(--tcl-border); color: var(--tcl-text-muted);">Exit Console</a>
+                    <a href="/" class="btn-minimal" style="border: 1px solid var(--tcl-border); color: var(--tcl-text-muted);">Exit Console</a>
                 </div>
             </div>
             
@@ -805,7 +828,7 @@
             <div style="margin-top: -20px; z-index: 1;">
                 <h2 style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--tcl-text-main); margin-bottom: 10px;">Scrapped Part.</h2>
                 <p style="color: var(--tcl-text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; margin-bottom: 40px;">The requested asset has been removed or does not exist.</p>
-                <a href="#home" class="btn-launch">Return to Lab Floor</a>
+                <a href="/" class="btn-launch">Return to Lab Floor</a>
             </div>
         </div>
     </div>
@@ -814,7 +837,7 @@
     <footer id="main-footer">
         <p>&copy; <span id="footer-year"></span> The Chop Lab</p>
         <div style="margin-top: 15px;">
-            <a style="color:#D26244; text-decoration:none;" href="#admin">Admin Portal</a>
+            <a style="color:#D26244; text-decoration:none;" href="/admin">Admin Portal</a>
         </div>
     </footer>
 
@@ -823,7 +846,7 @@
     <!-- ========================================== -->
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxA0tHDzsc4baNHSURGJRMFVvRpXLZMAL0Hhkezq5xC641ehY5asGkTD1X4k6uauBJF9A/exec";
-        const AI_WORKER_URL = "https://backend.tmcarleton11.workers.dev/ask";
+        const AI_WORKER_URL = "https://thomas-chat.tmcarleton11.workers.dev/";
 
         // --- TOAST NOTIFICATION SYSTEM ---
         function showToast(message, type = 'success') {
@@ -843,11 +866,14 @@
             else nav.classList.remove('scrolled');
         });
 
-        // --- SPA ROUTING (DISCRETE PAGES) ---
+        // --- SPA ROUTING (PATH-BASED) ---
         function route() {
-            let hash = window.location.hash || '#home';
-            const [path, query] = hash.split('?');
-            const pageId = 'page-' + path.replace('#', '');
+            const path = window.location.pathname;
+            const search = window.location.search; 
+            
+            // Convert path into page name (e.g., "/order" -> "order")
+            let pageName = path === '/' || path === '' ? 'home' : path.replace(/^\/|\/$/g, '');
+            const pageId = 'page-' + pageName;
 
             // Hide all pages
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden-page'));
@@ -865,10 +891,10 @@
             const nav = document.getElementById('main-nav');
             const footer = document.getElementById('main-footer');
             
-            if (path === '#admin') {
+            if (pageName === 'admin') {
                 if(nav) nav.style.display = 'none';
                 if(footer) footer.style.display = 'none';
-            } else if (path === '#404') {
+            } else if (!targetPage) { // 404 state
                 if(nav) nav.style.display = 'block';
                 if(footer) footer.style.display = 'none';
             } else {
@@ -879,14 +905,14 @@
             // Update Active Nav Link
             document.querySelectorAll('.nav-link').forEach(l => {
                 l.classList.remove('current');
-                if(l.getAttribute('data-target') === path.replace('#', '')) {
+                if(l.getAttribute('data-target') === pageName) {
                     l.classList.add('current');
                 }
             });
 
-            // Prepopulate form if needed
-            if (path === '#order' && query) {
-                const params = new URLSearchParams(query);
+            // Prepopulate form if needed based on URLSearchParams
+            if (pageName === 'order' && search) {
+                const params = new URLSearchParams(search);
                 const product = params.get('product');
                 if (product) {
                     const productSelect = document.getElementById('productSelect');
@@ -898,14 +924,28 @@
             }
             
             // Close mobile menu
-            document.querySelector('.overlay-menu').classList.remove('active');
+            const menu = document.querySelector('.overlay-menu');
+            if (menu) menu.classList.remove('active');
             const toggle = document.querySelector('.menu-toggle');
             if (toggle) toggle.innerHTML = "&#9776;";
         }
-        window.addEventListener('hashchange', route);
+
+        // Listen for back/forward buttons
+        window.addEventListener('popstate', route);
+
+        // Global Link Interceptor for SPA Navigation
+        document.addEventListener('click', (e) => {
+            const anchor = e.target.closest('a');
+            if (anchor && anchor.getAttribute('href') && anchor.getAttribute('href').startsWith('/')) {
+                e.preventDefault();
+                const targetUrl = anchor.getAttribute('href');
+                history.pushState(null, '', targetUrl);
+                route();
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
-            route();
+            route(); // Fire on load
             const yearSpan = document.getElementById('footer-year');
             if(yearSpan) yearSpan.textContent = new Date().getFullYear();
 
@@ -1380,21 +1420,27 @@
                     chatHistory.push({ role: 'assistant', content: text, id: generateId() });
                 } else {
                     const url = new URL(AI_WORKER_URL);
-                    url.pathname = '/ask';
-                    const timeZoneToUse = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                    const clientTime = new Date().toLocaleString('en-US', { timeZone: timeZoneToUse, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' });
+                    
+                    // Filter out 'loading' messages and construct payload for MINESCOUT engine
+                    const payloadMessages = chatHistory
+                        .filter(msg => msg.role === 'user' || msg.role === 'assistant')
+                        .map(msg => ({ role: msg.role, content: msg.content }));
 
                     const res = await fetch(url.toString(), {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message: message, systemInstruction: systemInstruction, clientTime: clientTime, timeZone: timeZoneToUse })
+                        body: JSON.stringify({ 
+                            messages: payloadMessages, 
+                            system_override: systemInstruction 
+                        })
                     });
 
                     if (!res.ok) throw new Error('Chat failed');
                     const data = await res.json();
                     
                     chatHistory.pop(); 
-                    chatHistory.push({ role: 'assistant', content: data.response, id: generateId() });
+                    // Update to match new worker's response property `data.content`
+                    chatHistory.push({ role: 'assistant', content: data.content, id: generateId() });
                 }
             } catch (error) {
                 chatHistory.pop(); 
