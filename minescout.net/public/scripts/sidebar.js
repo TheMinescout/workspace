@@ -32,7 +32,7 @@
     ];
 
     const AI_SECONDARY = [
-      { label: 'Enquire',      href: '/contact' },
+      { label: 'Enquire',      href: '/ai/intake', },
       { label: 'Legal',        href: '/ai/legal' },
       { label: 'Portfolio',    href: '/' },
       { label: 'Ask AI',       href: '/ask' },

@@ -34,10 +34,15 @@
     }
 
     /* FORM STYLES */
-    .form-container { background: var(--bg); max-width: 600px; margin: 0 auto; padding: 60px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border-radius: 6px; border-top: 4px solid var(--fg); }
+    .form-container { background: var(--bg); max-width: 600px; margin: 0 auto; padding: 60px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border-radius: 6px; border-top: 4px solid var(--fg); position: relative; }
     header { border-bottom: 2px solid var(--border); padding-bottom: 25px; margin-bottom: 35px; text-align: center; }
     .brand h1 { font-family: var(--serif); font-size: 2rem; line-height: 1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: -0.02em; }
     .brand p { font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+    
+    /* Back Links */
+    .nav-back { position: absolute; top: 25px; left: 30px; font-size: 0.7rem; text-decoration: none; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+    .nav-back:hover { color: var(--accent); }
+
     .intro-text { text-align: center; margin-bottom: 30px; font-size: 0.95rem; color: var(--muted); }
     .form-group { margin-bottom: 20px; }
     label { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--fg); letter-spacing: 0.1em; display: block; margin-bottom: 8px; }
@@ -47,7 +52,7 @@
     textarea { resize: vertical; min-height: 120px; }
     
     /* Button with Loading Pulse */
-    .btn { background: var(--fg); color: white; border: none; padding: 15px 20px; width: 100%; border-radius: 4px; font-family: var(--sans); font-weight: 600; cursor: pointer; transition: 0.2s; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.9rem; margin-top: 10px; }
+    .btn { background: var(--fg); color: white; border: none; padding: 15px 20px; width: 100%; border-radius: 4px; font-family: var(--sans); font-weight: 600; cursor: pointer; transition: 0.2s; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.9rem; margin-top: 10px; text-decoration: none; display: inline-block; text-align: center; }
     .btn:hover { background: var(--accent); }
     .btn.accent { background: var(--accent); color: white; }
     .btn.accent:hover { background: #b5955a; }
@@ -96,6 +101,7 @@
     @media (max-width: 600px) {
       .form-container, .plan-container { padding: 40px 25px; }
       .target-meta { grid-template-columns: 1fr; }
+      .nav-back { left: 20px; top: 15px; }
     }
   </style>
 </head>
@@ -103,6 +109,7 @@
 
   <div id="view-form" class="view-section active">
     <div class="form-container">
+      <a href="/ai" class="nav-back">← Back to Network</a>
       <header>
         <div class="brand">
           <h1>Minescout AI</h1>
@@ -174,20 +181,20 @@
       <p style="text-align: center; color: var(--fg); font-weight: 500; font-size: 1.05rem;">
         Your request has been successfully transmitted to the Minescout Edge Network.
       </p>
-      <p style="text-align: center; color: var(--muted); font-size: 0.9rem; margin-top: 15px;">
+      <p style="text-align: center; color: var(--muted); font-size: 0.9rem; margin-top: 15px; margin-bottom: 30px;">
         Check your email for your initial diagnostic PDF. A lead architect will review your request and follow up shortly.
       </p>
 
-      <footer class="no-print" style="margin-top: 40px; text-align: center;">
-        <button onclick="window.print()" class="btn" style="width: auto;">Print Receipt / Save as PDF</button>
-      </footer>
+      <div class="no-print" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+        <button onclick="window.print()" class="btn" style="width: auto; background: transparent; color: var(--fg); border: 2px solid var(--fg);">Print / Save PDF</button>
+        <a href="/ai" class="btn accent" style="width: auto;">Return to Home</a>
+      </div>
     </div>
   </div>
 
   <script>
     document.querySelectorAll('.auto-date').forEach(el => el.innerText = new Date().toLocaleDateString());
 
-    // --- API ENDPOINTS ---
     const INTAKE_WORKER_URL = "https://script.google.com/macros/s/AKfycbz50jqKq4iBAAuuDL7r1dZM8jEucfOMAWnhG6WO5WYf-qKhFiNs6gXVHQn7S7Q6-Yz1Bg/exec";
     const AUDIT_WORKER_URL = "https://backend.tmcarleton11.workers.dev/audit"; 
     const CHAT_WORKER_URL = "https://thomas-chat.tmcarleton11.workers.dev/";
@@ -363,7 +370,6 @@
     });
 
     function transmitDataAndFinish() {
-      // Fire and forget transmission. No await. Mode no-cors ignores Google redirect blocks.
       fetch(INTAKE_WORKER_URL, {
         method: "POST",
         mode: "no-cors",
@@ -371,7 +377,6 @@
         body: JSON.stringify({ ...globalPayload, findings: globalFindings })
       }).catch(e => console.error("Silent Webhook Notice:", e));
       
-      // Instantly show the receipt while Google processes it in the background
       switchView('view-receipt');
       setTimeout(() => window.print(), 800);
     }
