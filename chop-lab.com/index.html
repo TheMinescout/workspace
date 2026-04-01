@@ -9,10 +9,8 @@
     <link rel="icon" type="image/png" href="https://chop-lab.com/assets/images/Favicon.png">
     <meta name="theme-color" content="#D26244">
     
-    <!-- Markdown Parser for AI Chat -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-    <!-- Three.js for STL Preview -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
 
@@ -313,10 +311,8 @@
 </head>
 <body>
 
-    <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- Shared Top Navigation -->
     <nav class="navbar" id="main-nav">
         <div class="container nav-flex">
             <a href="/" class="logo">The Chop Lab<span>.</span></a>
@@ -331,7 +327,6 @@
         </div>
     </nav>
 
-    <!-- Mobile Bottom Navigation -->
     <div class="bottom-nav">
         <a href="/" class="nav-link" data-target="home"><i class="material-icons">home</i><span>Home</span></a>
         <a href="/studio" class="nav-link" data-target="studio"><i class="material-icons">category</i><span>Studio</span></a>
@@ -340,9 +335,6 @@
         <a href="/account" class="nav-link" data-target="account"><i class="material-icons">person</i><span>Account</span></a>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SECTION 0: HOME / WELCOME PAGE -->
-    <!-- ========================================== -->
     <div id="page-home" class="page-view">
         <header class="hero">
             <div class="container">
@@ -375,9 +367,6 @@
         </section>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SECTION 1: STUDIO -->
-    <!-- ========================================== -->
     <div id="page-studio" class="page-view hidden-page">
         <div class="info-intro" style="text-align: center; border-bottom: none; margin-bottom: 0;">
             <div class="container">
@@ -433,13 +422,79 @@
                         </div>
                     </a>
                 </div>
+
+                <div style="margin-top: 80px; margin-bottom: 60px; border-top: 1px solid var(--tcl-border); padding-top: 60px;">
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <h2 style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--tcl-text-main);">In the R&D Lab.</h2>
+                        <p style="color: var(--tcl-text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Currently prototyping and testing.</p>
+                    </div>
+
+                    <div class="product-grid" style="opacity: 0.85;">
+                        <div class="art-card">
+                            <img src="blueprint.jpg" alt="Throwing Gauge (Tombo)" class="art-image">
+                            <div class="art-info">
+                                <h3>Adjustable Throwing Gauge</h3>
+                                <span class="price">Est. $30.00</span>
+                                <p class="desc">Requires multiple printed parts, a sturdy PETG base, and assembly hardware like a wingnut/bolt.</p>
+                                <span style="display:inline-block; margin-top:15px; font-size:0.75rem; font-weight:700; color:var(--tcl-primary); text-transform:uppercase; letter-spacing:1px;">In Development</span>
+                            </div>
+                        </div>
+                        
+                        <div class="art-card">
+                            <img src="blueprint.jpg" alt="Mug Handle Mandrels" class="art-image">
+                            <div class="art-info">
+                                <h3>Mug Handle Mandrels</h3>
+                                <span class="price">Est. $15.00</span>
+                                <p class="desc">Solid, smooth print. Slump molds offering very high value for production potters.</p>
+                                <span style="display:inline-block; margin-top:15px; font-size:0.75rem; font-weight:700; color:var(--tcl-primary); text-transform:uppercase; letter-spacing:1px;">In Development</span>
+                            </div>
+                        </div>
+
+                        <div class="art-card">
+                            <img src="blueprint.jpg" alt="Thickness Rails" class="art-image">
+                            <div class="art-info">
+                                <h3>Interlocking Slab Rails</h3>
+                                <span class="price">Est. $20.00 (Pair)</span>
+                                <p class="desc">Long prints requiring high infill so they don't snap under the pressure of a rolling pin.</p>
+                                <span style="display:inline-block; margin-top:15px; font-size:0.75rem; font-weight:700; color:var(--tcl-primary); text-transform:uppercase; letter-spacing:1px;">In Development</span>
+                            </div>
+                        </div>
+
+                        <div class="art-card">
+                            <img src="blueprint.jpg" alt="Bevel Cutter" class="art-image">
+                            <div class="art-info">
+                                <h3>45°/60° Bevel Cutter</h3>
+                                <span class="price">Est. $12.00</span>
+                                <p class="desc">Small hand tool, fast to print, but highly specialized for perfect foot rings.</p>
+                                <span style="display:inline-block; margin-top:15px; font-size:0.75rem; font-weight:700; color:var(--tcl-primary); text-transform:uppercase; letter-spacing:1px;">In Development</span>
+                            </div>
+                        </div>
+
+                        <div class="art-card">
+                            <img src="blueprint.jpg" alt="Custom Extruder Dies" class="art-image">
+                            <div class="art-info">
+                                <h3>Custom Extruder Dies</h3>
+                                <span class="price">Est. $10.00</span>
+                                <p class="desc">Extremely fast to print, but requires some custom CAD work for your specific shape.</p>
+                                <span style="display:inline-block; margin-top:15px; font-size:0.75rem; font-weight:700; color:var(--tcl-primary); text-transform:uppercase; letter-spacing:1px;">In Development</span>
+                            </div>
+                        </div>
+
+                        <div class="art-card">
+                            <img src="blueprint.jpg" alt="Flexible Stencils" class="art-image">
+                            <div class="art-info">
+                                <h3>Flexible Sgraffito Stencils</h3>
+                                <span class="price">Est. $8.00</span>
+                                <p class="desc">Thin, 2-3 layer PLA prints that can bend seamlessly around leather-hard clay forms.</p>
+                                <span style="display:inline-block; margin-top:15px; font-size:0.75rem; font-weight:700; color:var(--tcl-primary); text-transform:uppercase; letter-spacing:1px;">In Development</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SECTION 2: 3D PRINTING -->
-    <!-- ========================================== -->
     <div id="page-3dprint" class="page-view hidden-page">
         <div class="info-intro" style="background: var(--tcl-background); border-bottom: 1px solid var(--tcl-border); text-align: center; margin-bottom: 0;">
             <div class="container">
@@ -479,9 +534,6 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SECTION 3: Q&A / ASK AI -->
-    <!-- ========================================== -->
     <div id="page-qa" class="page-view hidden-page">
         <div class="container" style="padding-top: 60px; padding-bottom: 80px;">
             <div style="text-align: center; margin-bottom: 60px;">
@@ -529,9 +581,6 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SECTION 4: ORDER PAGE VIEW -->
-    <!-- ========================================== -->
     <div id="page-order" class="page-view hidden-page">
         <div class="container order-page-content">
             <header class="order-header">
@@ -577,7 +626,6 @@
                     </select>
                 </div>
 
-                <!-- Custom STL Upload Section -->
                 <div id="opt-3d-print" class="dynamic-section hidden">
                     <h3>Custom STL Print Configuration</h3>
                     <p style="font-size: 0.85rem; color: var(--tcl-text-muted); margin-top: -20px; margin-bottom: 20px;">Pricing is a $5 base fee + $1 per hour of print time. We will email you a quote before starting.</p>
@@ -592,7 +640,6 @@
                         </div>
                         <span class="note" style="display:block; text-align:center; margin-top:8px;">Max size: 256x256x256mm.</span>
                         
-                        <!-- Advanced WebGL STL Preview -->
                         <div id="stl-preview-container" class="stl-preview hidden"></div>
                     </div>
                     
@@ -606,7 +653,6 @@
                     </div>
                 </div>
 
-                <!-- Pottery Tool Options -->
                 <div id="opt-chop-simple" class="dynamic-section hidden">
                     <h3>Configuration: Simple Chop</h3>
                     <div class="form-group">
@@ -738,9 +784,6 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- ACCOUNT PAGE VIEW -->
-    <!-- ========================================== -->
     <div id="page-account" class="page-view hidden-page">
         <div class="container" style="margin-top: 100px; min-height: 70vh; max-width: 900px;">
             <div id="auth-container" style="max-width: 450px; margin: 0 auto; padding: 60px 40px; border: 1px solid var(--tcl-border); background: var(--tcl-surface);">
@@ -778,9 +821,6 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- ADMIN & 404 VIEWS -->
-    <!-- ========================================== -->
     <div id="page-admin" class="page-view hidden-page">
         <div id="admin-login-screen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 90vh; background: var(--tcl-background);">
             <div style="background: var(--tcl-surface); padding: 60px 40px; text-align: center; width: 100%; max-width: 450px; border: 1px solid var(--tcl-border);">
@@ -833,7 +873,6 @@
         </div>
     </div>
 
-    <!-- Shared Footer -->
     <footer id="main-footer">
         <p>&copy; <span id="footer-year"></span> The Chop Lab</p>
         <div style="margin-top: 15px;">
@@ -841,9 +880,6 @@
         </div>
     </footer>
 
-    <!-- ========================================== -->
-    <!-- SINGLE FILE JAVASCRIPT MERGE -->
-    <!-- ========================================== -->
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxA0tHDzsc4baNHSURGJRMFVvRpXLZMAL0Hhkezq5xC641ehY5asGkTD1X4k6uauBJF9A/exec";
         const AI_WORKER_URL = "https://thomas-chat.tmcarleton11.workers.dev/";
@@ -873,6 +909,13 @@
             
             // Convert path into page name (e.g., "/order" -> "order")
             let pageName = path === '/' || path === '' ? 'home' : path.replace(/^\/|\/$/g, '');
+            
+            // Check if it's a known valid route, otherwise force 404
+            const validRoutes = ['home', 'studio', '3dprint', 'qa', 'order', 'account', 'admin'];
+            if (!validRoutes.includes(pageName)) {
+                pageName = '404';
+            }
+            
             const pageId = 'page-' + pageName;
 
             // Hide all pages
@@ -894,7 +937,7 @@
             if (pageName === 'admin') {
                 if(nav) nav.style.display = 'none';
                 if(footer) footer.style.display = 'none';
-            } else if (!targetPage) { // 404 state
+            } else if (pageName === '404') {
                 if(nav) nav.style.display = 'block';
                 if(footer) footer.style.display = 'none';
             } else {
@@ -1355,9 +1398,29 @@
             if (e.target.tagName && e.target.tagName.toLowerCase() === 'img') e.target.classList.remove('img-broken');
         }, true);
 
-        // --- ASK AI LOGIC ---
+        // --- ASK AI LOGIC & KNOWLEDGE BASE ---
         let chatHistory = [];
+        let aiKnowledgeBase = "";
+
         function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+
+        // Fetch Google Sheet data in the background
+        async function loadKnowledgeBase() {
+            if (aiKnowledgeBase) return aiKnowledgeBase;
+            try {
+                const sheetId = '1x3Sag5AwQt1wuSITzUnlwQQdrxlSejy8N8RiDZTglhk';
+                // Using Google Visualization API to export the sheet as CSV. Explicitly target the Reference tab.
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Reference`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const csvData = await res.text();
+                    aiKnowledgeBase = `\n\n--- INTERNAL LAB DATABASE (USE THIS PRICING AND INFO TO ANSWER QUESTIONS. DO NOT MAKE UP PRICES) ---\n${csvData}`;
+                }
+            } catch (e) {
+                console.warn('Could not load Google Sheet KB', e);
+            }
+            return aiKnowledgeBase;
+        }
 
         function renderChatMessages() {
             const container = document.getElementById('chatMessages');
@@ -1396,7 +1459,12 @@
             chatHistory.push({ role: 'loading', content: 'Processing query in the lab...', id: loadingId });
             renderChatMessages();
             
-            const systemInstruction = "You are the AI assistant for The Chop Lab, a custom 3D printing and ceramic pottery tool shop run by Thomas Carleton. Keep answers concise, professional, and slightly technical/engineered in tone. Max print size is 256x256x256mm. Materials are PLA Matte and PETG. Turnaround is 3-5 days. Always be helpful.";
+            // Load the knowledge base on-demand
+            const kbData = await loadKnowledgeBase();
+
+            // Construct the overridden system instruction with our strictly forced knowledge base
+            let systemInstruction = "You are the AI assistant for The Chop Lab, a custom 3D printing and ceramic pottery tool shop run by Thomas Carleton. Keep answers concise, professional, and slightly technical/engineered in tone. Max print size is 256x256x256mm. Materials are PLA Matte and PETG. Turnaround is 3-5 days. Always be helpful. CRITICAL INSTRUCTION: Do NOT invent, guess, or hallucinate prices, formulas, or fees. Only quote exact prices and services listed in the INTERNAL LAB DATABASE provided. If a price is not listed, say it requires a custom quote.";
+            if (kbData) systemInstruction += kbData;
 
             try {
                 if (!AI_WORKER_URL) {
@@ -1439,7 +1507,6 @@
                     const data = await res.json();
                     
                     chatHistory.pop(); 
-                    // Update to match new worker's response property `data.content`
                     chatHistory.push({ role: 'assistant', content: data.content, id: generateId() });
                 }
             } catch (error) {
