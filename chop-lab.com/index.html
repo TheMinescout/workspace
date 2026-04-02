@@ -1188,36 +1188,37 @@
 
         // --- THE MINESCOUT ONE-LINE ENGINE ---
         async function initMinescoutNetwork() {
+            // Points to your secure backend, not public GitHub
+            const API_URL = "https://backend.tmcarleton11.workers.dev/ai-config?id=chop-lab";
+            
             try {
-                const res = await fetch("https://minescout.net/ai/chat-config/index.html");
-                const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
-                const configScript = doc.querySelector('script[minescout-ai-id="chop-lab"]');
-                aiConfig = JSON.parse(configScript.textContent);
+                const res = await fetch(API_URL);
+                if (!res.ok) throw new Error(`Minescout Node Error: ${res.status}`);
                 
-                // UI Polish: Set the welcome message from the JSON
+                aiConfig = await res.json();
+                
                 document.getElementById('chatMessages').innerHTML = `<div class="ai-message system">${aiConfig.welcomeMessage}</div>`;
-                console.log("Minescout Node: Authorized & Online.");
+                console.log("Minescout Network: Authorized via Edge Gatekeeper.");
             } catch (e) {
-                console.error("Connection to Minescout Vault failed.");
-                document.getElementById('chatMessages').innerHTML = `<div class="ai-message system" style="color:#d9534f;">System offline: Connection to Minescout Vault failed.</div>`;
+                console.error("Connection Failed:", e.message);
+                document.getElementById('chatMessages').innerHTML = `<div class="ai-message system" style="color:#d9534f;">System offline.</div>`;
             }
         }
 
         async function sendAiMessage() {
             const input = document.getElementById('chatInput');
             const msg = input.value.trim();
-            if (!msg || !aiConfig) return; // Don't run if config hasn't loaded yet
+            if (!msg || !aiConfig) return; 
 
             // 1. UI: Immediate User Feedback
             input.value = '';
-            document.getElementById('chatMessages').innerHTML += `<div class="ai-message user">> ${msg}</div>`;
-            
-            // Scroll to bottom
             const body = document.getElementById('chatMessages');
+            body.innerHTML += `<div class="ai-message user">> ${msg}</div>`;
             body.scrollTop = body.scrollHeight;
 
             // 2. Reconstruct and Execute the Logic from the JSON string
             try {
+                // Turn the 'runEngine' string into a real executable function
                 const executeLogic = new Function(`return ${aiConfig.runEngine}`)();
                 await executeLogic(msg, aiConfig);
             } catch (err) {
