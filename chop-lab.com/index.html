@@ -143,15 +143,66 @@
             transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
         .card-link:hover .art-image { transform: scale(1.05); }
-        .art-image-wrapper { overflow: hidden; border-bottom: 1px solid var(--tcl-border); }
-        .art-image-wrapper img { border-bottom: none; }
+        .art-image-wrapper { 
+            overflow: hidden; border-bottom: 1px solid var(--tcl-border); position: relative; 
+            aspect-ratio: 1 / 1;
+        }
+        
+        /* 3D Canvas Styles */
+        .stl-canvas-container { 
+            width: 100%; height: 100%; position: absolute; top: 0; left: 0; 
+            background-color: var(--tcl-background);
+            display: none; 
+        }
+        .stl-canvas-container.active { display: block; }
+
+        /* Premium Fallback Styling */
+        .fancy-placeholder {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--tcl-background);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .fancy-placeholder-content {
+            border: 1px solid var(--tcl-primary);
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 8px;
+            background-color: var(--tcl-surface);
+            width: 75%;
+            color: var(--tcl-text-muted);
+            font-family: var(--font-primary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            line-height: 1.6;
+            box-shadow: var(--tcl-shadow-sm);
+        }
+        .fancy-placeholder-content strong {
+            color: var(--tcl-primary);
+            font-size: 0.95rem;
+            display: block;
+            margin-top: 10px;
+        }
+        
+        /* 2D Image Fallback (When .png fails) */
+        img.img-broken {
+            position: relative; background-color: var(--tcl-surface) !important; color: transparent !important;
+            min-height: 150px; min-width: 100%; display: flex; align-items: center; justify-content: center;
+            height: 100%;
+        }
+        img.img-broken::after {
+            content: attr(alt); display: flex; align-items: center; justify-content: center;
+            position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px;
+            background-color: var(--tcl-surface); color: var(--tcl-text-muted); font-family: var(--font-primary);
+            font-size: 0.9rem; text-align: center; padding: 20px; z-index: 10; box-sizing: border-box;
+            border: 1px dashed var(--tcl-border); text-transform: uppercase; letter-spacing: 1.5px; line-height: 1.4;
+        }
 
         .art-info { padding: 30px 24px; display: flex; flex-direction: column; flex-grow: 1; }
         .art-info h3 { font-family: var(--font-primary); font-size: 1.15rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 8px; }
         .price { font-family: 'Roboto Mono', monospace; font-weight: 400; color: var(--tcl-primary); font-size: 1.1rem; margin-bottom: 16px; display: inline-block;}
         .desc { font-size: 1rem; color: var(--tcl-text-muted); flex-grow: 1; line-height: 1.6; margin-bottom: 24px; }
         
-        /* New CTA inside cards */
         .card-cta {
             font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
             color: var(--tcl-primary); display: flex; align-items: center; gap: 8px;
@@ -159,19 +210,6 @@
             transition: all 0.3s ease; margin-top: auto;
         }
         .card-link:hover .card-cta { color: var(--tcl-primary-hover); transform: translateX(5px); }
-
-        /* --- Broken Image Fallback (Fancy CSS Outline) --- */
-        img.img-broken {
-            position: relative; background-color: var(--tcl-surface) !important; color: transparent !important;
-            min-height: 150px; min-width: 100%; display: block;
-        }
-        img.img-broken::after {
-            content: attr(alt); display: flex; align-items: center; justify-content: center;
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: var(--tcl-surface); color: var(--tcl-text-muted); font-family: var(--font-primary);
-            font-size: 0.9rem; text-align: center; padding: 16px; z-index: 10; box-sizing: border-box;
-            border: 1px solid var(--tcl-border); text-transform: uppercase; letter-spacing: 1px;
-        }
 
         /* --- Buttons & Animations --- */
         .btn-minimal, .btn-launch { 
@@ -197,7 +235,7 @@
         
         .split-section { display: flex; align-items: stretch; margin: 0; background: var(--tcl-surface);}
         .split-section.reverse { flex-direction: row-reverse; }
-        .split-image { flex: 1; border-right: 1px solid var(--tcl-border); }
+        .split-image { flex: 1; border-right: 1px solid var(--tcl-border); display: flex;}
         .split-section.reverse .split-image { border-right: none; border-left: 1px solid var(--tcl-border); }
         .split-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .split-content { flex: 1; padding: 80px 60px; display: flex; flex-direction: column; justify-content: center; }
@@ -274,6 +312,13 @@
         .ai-message { font-size: 0.95rem; line-height: 1.6; }
         .ai-message.user { text-align: right; color: var(--tcl-primary); font-weight: 700; font-family: 'Roboto Mono', monospace; }
         .ai-message.system { text-align: left; color: var(--tcl-text-main); border-left: 3px solid var(--tcl-primary); background: var(--tcl-background); padding: 18px; border-radius: 0 8px 8px 0; box-shadow: var(--tcl-shadow-sm); }
+        
+        /* Fix for markdown lists inside AI messages - Ensures #10+ alignment */
+        .ai-message.system ol, .ai-message.system ul { padding-left: 55px; margin: 15px 0; }
+        .ai-message.system li { margin-bottom: 10px; padding-left: 5px;}
+        .ai-message.system p { margin-bottom: 12px; }
+        .ai-message.system p:last-child { margin-bottom: 0; }
+
         .ai-input-area { display: flex; border-top: 1px solid var(--tcl-border); background: var(--tcl-surface); padding: 10px;}
         .ai-input-area input { border: 1px solid transparent; padding: 16px 20px; flex-grow: 1; font-family: var(--font-primary); font-size: 1rem; outline: none; background: var(--tcl-background); border-radius: 6px; transition: all 0.3s ease;}
         .ai-input-area input:focus { background: var(--tcl-surface); border-color: var(--tcl-primary); }
@@ -352,6 +397,12 @@
             .ai-terminal { height: 500px; }
             .detail-gallery { grid-template-columns: 1fr; }
             
+            /* Enhanced Split Section for Mobile */
+            .split-section, .split-section.reverse { flex-direction: column !important; }
+            .split-image { border-right: none !important; border-bottom: 1px solid var(--tcl-border); }
+            .split-section.reverse .split-image { border-left: none !important; }
+            .split-image img { max-height: 400px; }
+
             /* Improved Mobile Spacing for Interactions */
             .form-group input[type="text"], .form-group input[type="email"], .form-group input[type="number"], .form-group select, .form-group textarea {
                 padding: 20px; /* Larger tap targets */
@@ -453,7 +504,7 @@
                 </div>
             </div>
 
-            <!-- NEW SOCIAL PROOF SECTION -->
+            <!-- SOCIAL PROOF SECTION -->
             <div style="background: var(--tcl-surface); border-top: 1px solid var(--tcl-border); border-bottom: 1px solid var(--tcl-border); padding: 100px 0;">
                 <div class="container reveal">
                     <div style="text-align: center; margin-bottom: 60px;">
@@ -464,21 +515,6 @@
                     <div style="text-align: center; color: var(--tcl-text-muted); font-style: italic; padding: 40px; border: 1px dashed var(--tcl-border); border-radius: 12px;">
                         Awaiting reviews
                     </div>
-
-                    <!-- TEMPLATE FOR FUTURE REVIEWS
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
-                        <div class="testimonial-card">
-                            <div style="color: var(--tcl-primary); margin-bottom: 15px; font-size: 1.2rem; letter-spacing: 2px;">★★★★★</div>
-                            <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 25px; flex-grow: 1;">"This custom stamp completely changed how I sign my work. It's incredibly sharp, doesn't stick to the clay, and feels perfectly balanced in hand. Exactly what I was looking for."</p>
-                            <p style="font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--tcl-text-main);">— Sarah J., Ceramicist</p>
-                        </div>
-                        <div class="testimonial-card">
-                            <div style="color: var(--tcl-primary); margin-bottom: 15px; font-size: 1.2rem; letter-spacing: 2px;">★★★★★</div>
-                            <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 25px; flex-grow: 1;">"The throwing gauge and trimming spinner are absolute game changers. My production sets have never been more consistent and it saves my wrists on long studio days."</p>
-                            <p style="font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--tcl-text-main);">— Mark T., Studio Potter</p>
-                        </div>
-                    </div>
-                    -->
                 </div>
             </div>
 
@@ -511,121 +547,180 @@
 
         <div class="gallery">
             <div class="container">
-                <!-- UPGRADED PRODUCT CARDS -->
-                <div class="product-grid">
-                    
-                    <a href="#order?product=chop-simple" class="card-link reveal">
-                        <div class="art-card">
-                            <div class="art-image-wrapper">
-                                <img src="https://chop-lab.com/assets/images/simple-chop-ex.JPG" alt="Custom Simple Chop" class="art-image">
-                            </div>
-                            <div class="art-info">
-                                <h3>Custom Chop Simple</h3>
-                                <span class="price">$15.00</span>
-                                <p class="desc">Standard logo or initials engineered for clean impressions.</p>
-                                <div class="card-cta">Configure This Tool &rarr;</div>
-                            </div>
+                
+                <!-- CATEGORY SELECTION GRID -->
+                <div id="studio-categories" class="product-grid reveal">
+                    <div class="card-link category-link" data-category="stamping" style="cursor: pointer;">
+                        <div class="art-card" style="text-align: center; padding: 40px 20px; justify-content: center; min-height: 280px;">
+                            <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;">01.</h3>
+                            <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Chops & Textures</h4>
+                            <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Custom stamps, logos, and continuous texture rollers.</p>
                         </div>
-                    </a>
-
-                    <a href="#order?product=chop-complex" class="card-link reveal">
-                        <div class="art-card">
-                            <div class="art-image-wrapper">
-                                <img src="https://chop-lab.com/assets/images/complex-chop.png" alt="Complex Chop" class="art-image">
-                            </div>
-                            <div class="art-info">
-                                <h3>Custom Chop Complex</h3>
-                                <span class="price">$20.00</span>
-                                <p class="desc">High-fidelity detail extraction for complex branding and art.</p>
-                                <div class="card-cta">Configure This Tool &rarr;</div>
-                            </div>
+                    </div>
+                    <div class="card-link category-link" data-category="throwing" style="cursor: pointer;">
+                        <div class="art-card" style="text-align: center; padding: 40px 20px; justify-content: center; min-height: 280px;">
+                            <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;">02.</h3>
+                            <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Throwing & Trimming</h4>
+                            <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Precision gauges, ribs, and zero-friction trimming stabilizers.</p>
                         </div>
-                    </a>
-
-                    <a href="#order?product=roller-hex" class="card-link reveal">
-                        <div class="art-card">
-                            <div class="art-image-wrapper">
-                                <img src="https://chop-lab.com/assets/images/hex-lattice-croller.JPG" alt="Hex-Lattice Roller" class="art-image">
-                            </div>
-                            <div class="art-info">
-                                <h3>Texture Roller 10in</h3>
-                                <span class="price">$20.00</span>
-                                <p class="desc">Engineered honeycomb geometry for continuous slab rolling.</p>
-                                <div class="card-cta">Configure This Tool &rarr;</div>
-                            </div>
+                    </div>
+                    <div class="card-link category-link" data-category="handbuilding" style="cursor: pointer;">
+                        <div class="art-card" style="text-align: center; padding: 40px 20px; justify-content: center; min-height: 280px;">
+                            <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;">03.</h3>
+                            <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Handbuilding</h4>
+                            <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Squaring tools, slab thickness guides, and ergonomic cutters.</p>
                         </div>
-                    </a>
+                    </div>
+                </div>
 
-                    <a href="#order?product=spinner" class="card-link reveal">
-                        <div class="art-card">
-                            <div class="art-image-wrapper">
-                                <img src="https://chop-lab.com/assets/images/trimming-spinner.png" alt="Trimming Spinner" class="art-image">
+                <!-- PRODUCT CARDS (INITIALLY HIDDEN) -->
+                <div id="studio-products" class="hidden">
+                    <div style="margin-bottom: 30px; text-align: left;">
+                        <button id="btn-back-categories" class="btn-minimal" style="padding: 10px 20px; font-size: 0.75rem;">&larr; View All Categories</button>
+                    </div>
+                    <div class="product-grid" id="studio-product-grid">
+                        
+                        <a href="#order?product=chop-simple" class="card-link reveal" data-category="stamping">
+                            <div class="art-card">
+                                <div class="art-image-wrapper">
+                                    <img src="https://chop-lab.com/assets/images/simple-chop-ex.JPG" alt="Custom Simple Chop" class="art-image">
+                                </div>
+                                <div class="art-info">
+                                    <h3>Custom Chop Simple</h3>
+                                    <span class="price">$15.00</span>
+                                    <p class="desc">Standard logo or initials engineered for clean impressions.</p>
+                                    <div class="card-cta">Configure This Tool &rarr;</div>
+                                </div>
                             </div>
-                            <div class="art-info">
-                                <h3>Trimming Spinner</h3>
-                                <span class="price">$15.00</span>
-                                <p class="desc">Zero-friction ball bearing stabilizer to protect rims during trimming.</p>
-                                <div class="card-cta">Configure This Tool &rarr;</div>
-                            </div>
-                        </div>
-                    </a>
+                        </a>
 
-                    <a href="#order?product=rib-set" class="card-link reveal">
-                        <div class="art-card">
-                            <div class="art-image-wrapper">
-                                <img src="https://chop-lab.com/assets/images/rib-set.JPG" alt="Precision Rib Set" class="art-image">
+                        <a href="#order?product=chop-complex" class="card-link reveal" data-category="stamping">
+                            <div class="art-card">
+                                <div class="art-image-wrapper">
+                                    <img src="https://chop-lab.com/assets/images/compex-FC-chop.png" alt="Complex Chop" class="art-image">
+                                </div>
+                                <div class="art-info">
+                                    <h3>Custom Chop Complex</h3>
+                                    <span class="price">$20.00</span>
+                                    <p class="desc">High-fidelity detail extraction for complex branding and art.</p>
+                                    <div class="card-cta">Configure This Tool &rarr;</div>
+                                </div>
                             </div>
-                            <div class="art-info">
-                                <h3>Precision Rib Set</h3>
-                                <span class="price">$15.00</span>
-                                <p class="desc">Custom angled pottery ribs for strict profile shaping.</p>
-                                <div class="card-cta">Configure This Tool &rarr;</div>
-                            </div>
-                        </div>
-                    </a>
+                        </a>
 
-                    <a href="#order?product=origin-square" class="card-link reveal">
-                        <div class="art-card">
-                            <div class="art-image-wrapper">
-                                <img src="https://chop-lab.com/assets/images/origin-square.JPG" alt="Origin Square" class="art-image">
+                        <a href="#order?product=roller-hex" class="card-link reveal" data-category="stamping">
+                            <div class="art-card">
+                                <div class="art-image-wrapper">
+                                    <img src="https://chop-lab.com/assets/images/hex-lattice-croller.JPG" alt="Hex-Lattice Roller" class="art-image">
+                                </div>
+                                <div class="art-info">
+                                    <h3>Texture Roller 10in</h3>
+                                    <span class="price">$20.00</span>
+                                    <p class="desc">Engineered honeycomb geometry for continuous slab rolling.</p>
+                                    <div class="card-cta">Configure This Tool &rarr;</div>
+                                </div>
                             </div>
-                            <div class="art-info">
-                                <h3>Origin Square</h3>
-                                <span class="price">$12.00</span>
-                                <p class="desc">Squaring tool engineered for exact corner slab joints.</p>
-                                <div class="card-cta">Configure This Tool &rarr;</div>
-                            </div>
-                        </div>
-                    </a>
+                        </a>
 
-                    <a href="#order?product=tombo" class="card-link reveal">
-                        <div class="art-card">
-                            <div class="art-image-wrapper">
-                                <img src="https://chop-lab.com/assets/images/tombo.JPG" alt="Throwing Gauge (Tombo)" class="art-image">
+                        <a href="#order?product=spinner" class="card-link reveal" data-category="throwing">
+                            <div class="art-card">
+                                <div class="art-image-wrapper">
+                                    <img src="https://chop-lab.com/assets/files/The TCL Trimming Spinner.stl" alt="Trimming Spinner" class="art-image">
+                                </div>
+                                <div class="art-info">
+                                    <h3>Trimming Spinner</h3>
+                                    <span class="price">$15.00</span>
+                                    <p class="desc">Zero-friction ball bearing stabilizer to protect rims during trimming.</p>
+                                    <div class="card-cta">Configure This Tool &rarr;</div>
+                                </div>
                             </div>
-                            <div class="art-info">
-                                <h3>Adjustable Throwing Gauge</h3>
-                                <span class="price">$30.00</span>
-                                <p class="desc">Engineered multi-axis measurement tool for repeatable throwing.</p>
-                                <div class="card-cta">Configure This Tool &rarr;</div>
-                            </div>
-                        </div>
-                    </a>
+                        </a>
 
-                    <a href="#order?product=mandrel" class="card-link reveal">
-                        <div class="art-card">
-                            <div class="art-image-wrapper">
-                                <img src="https://chop-lab.com/assets/images/mandrel.JPG" alt="Mug Handle Mandrels" class="art-image">
+                        <a href="#order?product=rib-set" class="card-link reveal" data-category="throwing">
+                            <div class="art-card">
+                                <div class="art-image-wrapper">
+                                    <img src="https://chop-lab.com/assets/files/The TCL Trinity.stl" alt="Precision Rib Set" class="art-image">
+                                </div>
+                                <div class="art-info">
+                                    <h3>Precision Rib Set</h3>
+                                    <span class="price">$15.00</span>
+                                    <p class="desc">Custom angled pottery ribs for strict profile shaping.</p>
+                                    <div class="card-cta">Configure This Tool &rarr;</div>
+                                </div>
                             </div>
-                            <div class="art-info">
-                                <h3>Mug Handle Mandrels</h3>
-                                <span class="price">$15.00</span>
-                                <p class="desc">Parametric slump molds for repeatable production handles.</p>
-                                <div class="card-cta">Configure This Tool &rarr;</div>
-                            </div>
-                        </div>
-                    </a>
+                        </a>
 
+                        <a href="#order?product=tombo" class="card-link reveal" data-category="throwing">
+                            <div class="art-card">
+                                <div class="art-image-wrapper">
+                                    <img src="https://chop-lab.com/assets/files/Throwing Gauge.stl" alt="Adjustable Throwing Gauge" class="art-image">
+                                </div>
+                                <div class="art-info">
+                                    <h3>Adjustable Throwing Gauge</h3>
+                                    <span class="price">$30.00</span>
+                                    <p class="desc">Engineered multi-axis measurement tool for repeatable throwing.</p>
+                                    <div class="card-cta">Configure This Tool &rarr;</div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="#order?product=origin-square" class="card-link reveal" data-category="handbuilding">
+                            <div class="art-card">
+                                <div class="art-image-wrapper">
+                                    <img src="https://chop-lab.com/assets/files/The Origin Square.stl" alt="Origin Square" class="art-image">
+                                </div>
+                                <div class="art-info">
+                                    <h3>Origin Square</h3>
+                                    <span class="price">$12.00</span>
+                                    <p class="desc">Squaring tool engineered for exact corner slab joints.</p>
+                                    <div class="card-cta">Configure This Tool &rarr;</div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="#order?product=mandrel" class="card-link reveal" data-category="handbuilding">
+                            <div class="art-card">
+                                <div class="art-image-wrapper">
+                                    <img src="https://chop-lab.com/assets/files/Mug Handle Slump Mold.stl" alt="Mug Handle Mandrels" class="art-image">
+                                </div>
+                                <div class="art-info">
+                                    <h3>Mug Handle Mandrels</h3>
+                                    <span class="price">$15.00</span>
+                                    <p class="desc">Parametric slump molds for repeatable production handles.</p>
+                                    <div class="card-cta">Configure This Tool &rarr;</div>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#order?product=bevel-cutter" class="card-link reveal" data-category="handbuilding">
+                            <div class="art-card">
+                                <div class="art-image-wrapper">
+                                    <img src="https://chop-lab.com/assets/files/Bevel Cutter.stl" alt="Dual Bevel Cutter" class="art-image">
+                                </div>
+                                <div class="art-info">
+                                    <h3>Dual Bevel Cutter</h3>
+                                    <span class="price">$12.00</span>
+                                    <p class="desc">Ergonomic cutting block for precise 45° and 60° foot rings.</p>
+                                    <div class="card-cta">Configure This Tool &rarr;</div>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#order?product=slab-rails" class="card-link reveal" data-category="handbuilding">
+                            <div class="art-card">
+                                <div class="art-image-wrapper">
+                                    <img src="https://chop-lab.com/assets/files/Interlocking Slab Rails.stl" alt="Interlocking Slab Rails" class="art-image">
+                                </div>
+                                <div class="art-info">
+                                    <h3>Interlocking Slab Rails</h3>
+                                    <span class="price">$20.00</span>
+                                    <p class="desc">Thickness guides engineered for consistent slabs and tiles.</p>
+                                    <div class="card-cta">Configure This Tool &rarr;</div>
+                                </div>
+                            </div>
+                        </a>
+
+                    </div>
                 </div>
 
                 <!-- --- R&D / IN DEVELOPMENT SECTION --- -->
@@ -801,6 +896,11 @@
                             <div class="step-number">03</div>
                             <h2 class="step-title">Configuration</h2>
                         </div>
+                        
+                        <!-- Global Lab Note about Head Color -->
+                        <div class="form-group" style="background: rgba(201, 123, 99, 0.05); padding: 15px; border-left: 4px solid var(--tcl-primary); border-radius: 6px; margin-bottom: 25px;">
+                            <p style="font-size: 0.85rem; color: var(--tcl-text-muted); margin: 0; line-height: 1.5;"><strong>Lab Note:</strong> Custom stamp heads are printed in our specialized Matte White material for optimal clay release properties. We highly recommend keeping this standard configuration.</p>
+                        </div>
 
                         <!-- Measurement Unit Toggle (Dynamically Shown) -->
                         <div id="unit-toggle-section" class="form-group hidden" style="background: var(--tcl-surface); border: 1px solid var(--tcl-border); padding: 20px; border-left: 4px solid var(--tcl-primary); border-radius: 6px;">
@@ -849,17 +949,27 @@
                                 <label>Example Impression</label>
                                 <img src="https://chop-lab.com/assets/images/simple-chop-ex.JPG" alt="Simple Chop Example" style="width:120px; border:1px solid var(--tcl-border); border-radius: 6px; margin-bottom:10px; display:block; box-shadow: var(--tcl-shadow-sm);">
                             </div>
-                            <div class="form-group"><label>Letters / Text</label><input type="text" name="simpleText" placeholder="e.g. TCL"></div>
+                            <div class="form-group">
+                                <label>Letters / Text</label>
+                                <input type="text" name="simpleText" id="simpleTextInput" placeholder="e.g. TCL">
+                                <span id="simpleTextWarning" class="hidden" style="color: #d9534f; font-size: 0.8rem; margin-top: 6px; font-weight: 700;">Note: Designs with more than 3 letters have a higher chance of impression issues.</span>
+                            </div>
                             <div class="form-group">
                                 <label>Font Preference</label>
-                                <select name="simpleFont">
+                                <select name="simpleFont" id="simpleFontSelect">
                                     <option value="sans">Clean Sans-Serif</option>
                                     <option value="serif">Classic Serif</option>
+                                    <option value="handwritten">Handwritten / Script</option>
+                                    <option value="other">Other (Specify below)</option>
                                 </select>
+                            </div>
+                            <div class="form-group hidden" id="simpleFontOtherGroup">
+                                <label>Specify Font Details</label>
+                                <input type="text" name="simpleFontOther" placeholder="e.g. 'Times New Roman' or 'Bubble letters'">
                             </div>
                             <div class="form-group">
                                 <label>Preferred Handle Color</label>
-                                <input type="text" name="handleColor" placeholder="e.g. Terracotta Orange, Navy Blue (Stamp base defaults to Matte White)">
+                                <input type="text" name="handleColor" placeholder="e.g. Terracotta Orange, Navy Blue">
                             </div>
                         </div>
 
@@ -880,7 +990,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Preferred Handle Color</label>
-                                <input type="text" name="handleColorComplex" placeholder="e.g. Forest Green, Slate Grey (Stamp base defaults to Matte White)">
+                                <input type="text" name="handleColorComplex" placeholder="e.g. Forest Green, Slate Grey">
                             </div>
                         </div>
 
@@ -976,15 +1086,15 @@
 
                     </div>
 
-                    <!-- STEP 04 -->
+                    <!-- STEP 04 / NOTES -->
                     <div class="step-container">
                         <div class="step-header">
-                            <div class="step-number">04</div>
+                            <div class="step-number" id="step-notes-number">03</div>
                             <h2 class="step-title">Project Notes</h2>
                         </div>
                         <div class="form-group">
                             <label>Special Instructions</label>
-                            <textarea name="comments" placeholder="Scale requirements, preferred tool color (default is Matte White PLA), rush delivery requests, etc..."></textarea>
+                            <textarea name="comments" id="commentsBox" placeholder="Scale requirements, preferred tool color, rush delivery requests, etc..."></textarea>
                         </div>
 
                         <button type="submit" class="btn-launch" style="width: 100%; border:none; cursor:pointer; font-size: 1.05rem; padding: 20px;">
@@ -1188,7 +1298,6 @@
 
         // --- THE MINESCOUT ONE-LINE ENGINE ---
         async function initMinescoutNetwork() {
-            // Points to your secure backend, not public GitHub
             const API_URL = "https://backend.tmcarleton11.workers.dev/ai-config?id=chop-lab";
             
             try {
@@ -1214,21 +1323,161 @@
             input.value = '';
             const body = document.getElementById('chatMessages');
             body.innerHTML += `<div class="ai-message user">> ${msg}</div>`;
+            
+            // Add hourglass loading message
+            const loadingId = 'ai-loading-' + Date.now();
+            body.innerHTML += `<div class="ai-message system" id="${loadingId}"><em><i class="material-icons spin-hourglass" style="font-size: 14px; vertical-align: middle; margin-right: 8px;">hourglass_empty</i> Processing Lab Schematic...</em></div>`;
+            
             body.scrollTop = body.scrollHeight;
 
             // 2. Reconstruct and Execute the Logic from the JSON string
             try {
-                // Turn the 'runEngine' string into a real executable function
                 const executeLogic = new Function(`return ${aiConfig.runEngine}`)();
                 await executeLogic(msg, aiConfig);
             } catch (err) {
                 console.error("Engine execution error:", err);
+            } finally {
+                const indicator = document.getElementById(loadingId);
+                if (indicator) indicator.remove();
+                body.scrollTop = body.scrollHeight;
+            }
+        }
+
+        // --- SMART GALLERY 3D PREVIEW ENGINE (AUTO-DETECT STL) ---
+        async function initGalleryStls() {
+            const images = document.querySelectorAll('.art-image');
+            const matteWhite = 0xCBC6B8;
+
+            for (let img of images) {
+                const src = img.getAttribute('src');
+                if (!src || !src.toLowerCase().endsWith('.stl')) continue;
+
+                const wrapper = img.parentElement;
+                
+                let canvasContainer = wrapper.querySelector('.stl-canvas-container');
+                if (!canvasContainer) {
+                    canvasContainer = document.createElement('div');
+                    canvasContainer.className = 'stl-canvas-container';
+                    wrapper.appendChild(canvasContainer);
+                }
+
+                const stlFilename = decodeURIComponent(src.substring(src.lastIndexOf('/') + 1));
+                const localUrl = src; 
+                const backupUrl = `https://raw.githubusercontent.com/TheMinescout/workspace/refs/heads/main/chop-lab.com/assets/files/${encodeURIComponent(stlFilename)}`;
+
+                async function loadSTL(url) {
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const arrayBuffer = await res.arrayBuffer();
+                    const loader = new THREE.STLLoader();
+                    return loader.parse(arrayBuffer);
+                }
+
+                try {
+                    let geometry;
+                    try {
+                        geometry = await loadSTL(localUrl);
+                    } catch (e) {
+                        console.warn(`Local STL [${stlFilename}] missing. Trying GitHub Vault...`);
+                        geometry = await loadSTL(backupUrl);
+                    }
+
+                    if (!geometry || !geometry.attributes.position || geometry.attributes.position.count === 0) {
+                        throw new Error("Invalid or empty STL geometry");
+                    }
+
+                    const scene = new THREE.Scene();
+                    scene.background = null; 
+                    
+                    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                    const rect = wrapper.getBoundingClientRect();
+                    renderer.setSize(rect.width || 300, rect.height || 300);
+                    renderer.setPixelRatio(window.devicePixelRatio);
+                    canvasContainer.appendChild(renderer.domElement);
+
+                    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+                    camera.position.set(130, 130, 130);
+
+                    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+                    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                    dirLight.position.set(100, 200, 100);
+                    scene.add(dirLight);
+
+                    geometry.computeBoundingBox();
+                    geometry.center(); // SMART Centering
+                    
+                    const material = new THREE.MeshPhongMaterial({ 
+                        color: matteWhite, 
+                        specular: 0x222222, 
+                        shininess: 30 
+                    });
+                    const mesh = new THREE.Mesh(geometry, material);
+
+                    // Transform: Make XY Plane the Bottom (Rotate -90deg on X)
+                    mesh.rotation.x = -Math.PI / 2;
+
+                    const box = new THREE.Box3().setFromObject(mesh);
+                    const size = new THREE.Vector3();
+                    box.getSize(size);
+                    const scale = 100 / Math.max(size.x, size.y, size.z);
+                    mesh.scale.set(scale, scale, scale);
+
+                    // Place in a pivot group for clean turntable rotation
+                    const pivot = new THREE.Group();
+                    pivot.add(mesh);
+                    scene.add(pivot);
+
+                    img.style.display = 'none'; 
+                    canvasContainer.classList.add('active');
+
+                    let isVisible = false;
+                    const obs = new IntersectionObserver((entries) => { isVisible = entries[0].isIntersecting; });
+                    obs.observe(wrapper);
+
+                    camera.lookAt(0, 0, 0);
+
+                    function animate() {
+                        if (isVisible) {
+                            requestAnimationFrame(animate);
+                            pivot.rotation.y += 0.01; // Clean turntable spin
+                            renderer.render(scene, camera);
+                        } else {
+                            setTimeout(() => requestAnimationFrame(animate), 500);
+                        }
+                    }
+                    animate();
+
+                    // Handle resizing
+                    window.addEventListener('resize', () => {
+                        if (wrapper.clientWidth > 0) {
+                            renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+                        }
+                    });
+
+                } catch (err) {
+                    console.error(`Failed to load STL [${stlFilename}]:`, err);
+                    if (canvasContainer) canvasContainer.remove(); 
+                    triggerGalleryFallback(wrapper, img);
+                }
+            }
+        }
+
+        function triggerGalleryFallback(wrapper, img) {
+            const altText = (img && img.alt) ? img.alt : "3D Asset View";
+            if(img) img.style.display = 'none';
+            
+            if(!wrapper.querySelector('.fancy-placeholder')) {
+                const fallback = document.createElement('div');
+                fallback.className = 'fancy-placeholder';
+                fallback.innerHTML = `<div class="fancy-placeholder-content">Preview Unavailable<strong>${altText}</strong></div>`;
+                wrapper.appendChild(fallback);
             }
         }
 
         // --- SUBTLE SCROLL REVEAL SYSTEM ---
         document.addEventListener('DOMContentLoaded', () => {
-            initMinescoutNetwork(); // Initialize AI engine
+            initMinescoutNetwork(); 
+            initGalleryStls(); 
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -1241,6 +1490,50 @@
             document.querySelectorAll('.reveal').forEach(el => {
                 observer.observe(el);
             });
+            
+            // --- Studio Category Filtering ---
+            const categoryLinks = document.querySelectorAll('.category-link');
+            const studioCats = document.getElementById('studio-categories');
+            const studioProds = document.getElementById('studio-products');
+            const btnBackCats = document.getElementById('btn-back-categories');
+            const productCards = document.querySelectorAll('#studio-product-grid .card-link');
+
+            categoryLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const cat = link.getAttribute('data-category');
+                    studioCats.classList.add('hidden');
+                    studioProds.classList.remove('hidden');
+
+                    productCards.forEach(prod => {
+                        if (prod.getAttribute('data-category') === cat) {
+                            prod.style.display = 'block';
+                            setTimeout(() => prod.classList.add('active'), 50);
+                        } else {
+                            prod.style.display = 'none';
+                            prod.classList.remove('active');
+                        }
+                    });
+                    
+                    const studioPage = document.getElementById('page-studio');
+                    if(studioPage) {
+                        const yOffset = studioPage.getBoundingClientRect().top + window.scrollY - 100;
+                        window.scrollTo({ top: yOffset, behavior: 'smooth' });
+                    }
+                });
+            });
+
+            if (btnBackCats) {
+                btnBackCats.addEventListener('click', () => {
+                    studioProds.classList.add('hidden');
+                    studioCats.classList.remove('hidden');
+                    
+                    const studioPage = document.getElementById('page-studio');
+                    if(studioPage) {
+                        const yOffset = studioPage.getBoundingClientRect().top + window.scrollY - 100;
+                        window.scrollTo({ top: yOffset, behavior: 'smooth' });
+                    }
+                });
+            }
         });
 
         // --- TOAST NOTIFICATION SYSTEM ---
@@ -1357,7 +1650,7 @@
             }
         });
 
-        // --- DRAG & DROP + 3D PREVIEW LOGIC ---
+        // --- DRAG & DROP + 3D PREVIEW LOGIC (ORDER FORM) ---
         let stlViewerScene, stlViewerCamera, stlViewerRenderer;
         let estimatedPrintTimeHours = 0; 
 
@@ -1410,24 +1703,26 @@
                 stlViewerScene = new THREE.Scene();
                 stlViewerScene.background = new THREE.Color(0xF5EFE6);
                 stlViewerCamera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-                stlViewerCamera.position.set(100, 100, 100);
+                stlViewerCamera.position.set(130, 130, 130);
                 
                 stlViewerRenderer = new THREE.WebGLRenderer({ antialias: true });
                 stlViewerRenderer.setSize(container.clientWidth, container.clientHeight);
                 
-                const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
+                const ambientLight = new THREE.AmbientLight(0x404040, 2.0);
                 stlViewerScene.add(ambientLight);
-                const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
-                directionalLight.position.set(1, 1, 1);
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+                directionalLight.position.set(100, 200, 100);
                 stlViewerScene.add(directionalLight);
             } else {
                 const objectsToRemove = [];
                 stlViewerScene.children.forEach(c => {
-                    if (c.type === 'Mesh') objectsToRemove.push(c);
+                    if (c.type === 'Group') objectsToRemove.push(c); // Cleanup pivot groups
                 });
                 objectsToRemove.forEach(c => {
-                    c.geometry.dispose();
-                    c.material.dispose();
+                    c.children.forEach(child => {
+                        if(child.geometry) child.geometry.dispose();
+                        if(child.material) child.material.dispose();
+                    });
                     stlViewerScene.remove(c);
                 });
             }
@@ -1443,33 +1738,35 @@
                     const mesh = new THREE.Mesh(geometry, material);
                     
                     geometry.computeBoundingBox();
-                    const boundingBox = geometry.boundingBox;
                     const center = new THREE.Vector3();
-                    boundingBox.getCenter(center);
+                    geometry.boundingBox.getCenter(center);
                     mesh.position.sub(center);
 
+                    // Transform: XY Plane is bottom (Z-up in CAD -> Y-up in Three.js)
+                    mesh.rotation.x = -Math.PI / 2;
+
                     const size = new THREE.Vector3();
-                    boundingBox.getSize(size);
+                    geometry.boundingBox.getSize(size);
                     const maxDim = Math.max(size.x, size.y, size.z);
                     const scale = 100 / maxDim;
                     mesh.scale.set(scale, scale, scale);
 
-                    const boundingBoxVolume = size.x * size.y * size.z; 
-                    const estimatedMaterialVolume = boundingBoxVolume * 0.20; 
-                    const printTimeSeconds = estimatedMaterialVolume / 20; 
-                    estimatedPrintTimeHours = printTimeSeconds / 3600;
+                    // Pivot for clean rotation
+                    const pivot = new THREE.Group();
+                    pivot.add(mesh);
+                    stlViewerScene.add(pivot);
+
+                    estimatedPrintTimeHours = ((size.x * size.y * size.z) * 0.20 / 20) / 3600;
                     
                     if (typeof window.updateSummaryCard === 'function') {
                         window.updateSummaryCard();
                     }
 
-                    stlViewerScene.add(mesh);
-                    stlViewerCamera.lookAt(stlViewerScene.position);
+                    stlViewerCamera.lookAt(0, 0, 0);
                     
                     function animate() {
                         requestAnimationFrame(animate);
-                        mesh.rotation.z += 0.005;
-                        mesh.rotation.y += 0.01;
+                        pivot.rotation.y += 0.01;
                         stlViewerRenderer.render(stlViewerScene, stlViewerCamera);
                     }
                     animate();
@@ -1486,6 +1783,7 @@
             const productSelect = document.getElementById('productSelect');
             const form = document.getElementById('tcl-order-form');
             const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+            const commentsBox = document.getElementById('commentsBox');
 
             setupDropZone('stl-drop-zone', 'stlUpload', true);
             setupDropZone('logo-drop-zone', 'logoUpload', false);
@@ -1503,12 +1801,55 @@
             
             const step3Wrapper = document.getElementById('step-3-wrapper');
             const unitToggleSection = document.getElementById('unit-toggle-section');
+            const notesStepNumber = document.getElementById('step-notes-number');
 
             const sumEmpty = document.getElementById('summary-empty');
             const sumDetails = document.getElementById('summary-details');
             const sumName = document.getElementById('sum-name');
             const sumPrice = document.getElementById('sum-price');
             const sumTotal = document.getElementById('sum-total');
+
+            let isRushRequested = false;
+
+            // Simple font other input logic
+            const simpleFontSelect = document.getElementById('simpleFontSelect');
+            const simpleFontOtherGroup = document.getElementById('simpleFontOtherGroup');
+            if (simpleFontSelect && simpleFontOtherGroup) {
+                simpleFontSelect.addEventListener('change', (e) => {
+                    if (e.target.value === 'other') {
+                        simpleFontOtherGroup.classList.remove('hidden');
+                    } else {
+                        simpleFontOtherGroup.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Simple text warning length logic
+            const simpleTextInput = document.getElementById('simpleTextInput');
+            const simpleTextWarning = document.getElementById('simpleTextWarning');
+            if (simpleTextInput && simpleTextWarning) {
+                simpleTextInput.addEventListener('input', (e) => {
+                    if (e.target.value.length > 3) {
+                        simpleTextWarning.classList.remove('hidden');
+                    } else {
+                        simpleTextWarning.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Detect Rush Delivery
+            if (commentsBox) {
+                commentsBox.addEventListener('input', (e) => {
+                    const text = e.target.value.toLowerCase();
+                    const rushKeywords = ['rush', 'asap', 'fast', 'urgent', 'hurry', 'expedite'];
+                    const previousRushState = isRushRequested;
+                    isRushRequested = rushKeywords.some(kw => text.includes(kw));
+
+                    if (isRushRequested !== previousRushState) {
+                        updateSummaryCard();
+                    }
+                });
+            }
 
             function hideAllSections() {
                 if(simpleSection) simpleSection.classList.add('hidden');
@@ -1533,6 +1874,9 @@
                 
                 if (value) {
                     if (step3Wrapper) step3Wrapper.classList.remove('hidden');
+                    if (notesStepNumber) notesStepNumber.textContent = '04';
+                } else {
+                    if (notesStepNumber) notesStepNumber.textContent = '03';
                 }
 
                 if (['mandrel', 'extruder-dies'].includes(value) && unitToggleSection) {
@@ -1564,21 +1908,43 @@
 
                 sumName.textContent = name;
                 
+                let baseCostNum = parseFloat(price);
+                let totalCostNum = isNaN(baseCostNum) ? 0 : baseCostNum;
+
                 if (productSelect.value === 'custom-stl') {
                     if (estimatedPrintTimeHours > 0) {
                         const baseFee = 5.00;
-                        const addedTimeCost = estimatedPrintTimeHours * 1.00; 
-                        const totalCost = baseFee + addedTimeCost;
+                        const addedTimeCost = estimatedPrintTimeHours * 1.00;
+                        totalCostNum = baseFee + addedTimeCost;
                         
-                        sumPrice.innerHTML = `$5.00 Base <br><span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ ~$${addedTimeCost.toFixed(2)} Est. Print Time (${estimatedPrintTimeHours.toFixed(1)} hrs)</span>`;
-                        sumTotal.textContent = `~$${totalCost.toFixed(2)}`;
+                        let displayHtml = `$5.00 Base <br><span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ ~$${addedTimeCost.toFixed(2)} Est. Print Time (${estimatedPrintTimeHours.toFixed(1)} hrs)</span>`;
+                        if (isRushRequested) {
+                            totalCostNum += 10;
+                            displayHtml += `<br><span style="font-size:0.8rem; color:#d9534f; font-weight:bold;">+ $10.00 Rush Priority</span>`;
+                        }
+                        
+                        sumPrice.innerHTML = displayHtml;
+                        sumTotal.textContent = `~$${totalCostNum.toFixed(2)}`;
                     } else {
-                        sumPrice.textContent = "$5.00 Base (Upload STL for estimate)";
+                        let text = "$5.00 Base (Upload STL for estimate)";
+                        if(isRushRequested) text += "<br><span style='color:#d9534f; font-size:0.8rem; font-weight:bold;'>+ $10.00 Rush Priority</span>";
+                        sumPrice.innerHTML = text;
                         sumTotal.textContent = "TBD";
                     }
                 } else {
-                    sumPrice.textContent = price.includes('$') ? price : `$${price}`;
-                    sumTotal.textContent = price.includes('$') ? price : `$${price}`;
+                    if (isRushRequested) {
+                        totalCostNum += 10;
+                        let displayHtml = `$${baseCostNum.toFixed(2)} Base <br><span style="font-size:0.8rem; color:#d9534f; font-weight:bold;">+ $10.00 Rush Priority</span>`;
+                        sumPrice.innerHTML = displayHtml;
+                    } else {
+                        sumPrice.textContent = price.includes('$') ? price : `$${price}`;
+                    }
+
+                    if (!isNaN(totalCostNum) && totalCostNum > 0) {
+                        sumTotal.textContent = `$${totalCostNum.toFixed(2)}`;
+                    } else {
+                        sumTotal.textContent = price.includes('$') ? price : `$${price}`;
+                    }
                 }
 
                 sumEmpty.classList.add('hidden');
@@ -1616,9 +1982,11 @@
                     let specString = "Standard Specifications";
                     
                     if (data.productSelect === 'chop-simple') {
-                        specString = `Text: ${data.simpleText || 'N/A'}, Font: ${data.simpleFont}, Color: ${data.handleColor}`;
+                        let selectedFont = data.simpleFont;
+                        if (selectedFont === 'other') selectedFont = data.simpleFontOther || 'Other (Not Specified)';
+                        specString = `Text: ${data.simpleText || 'N/A'}, Font: ${selectedFont}, Color: ${data.handleColor || 'Standard'}`;
                     } else if (data.productSelect === 'chop-complex') {
-                        specString = `Color: ${data.handleColorComplex}`;
+                        specString = `Color: ${data.handleColorComplex || 'Standard'}`;
                     } else if (data.productSelect === 'roller-4in') {
                         specString = `Texture: ${data.rollerTexture4in || 'Pending Selection'}`;
                     } else if (data.productSelect === 'roller-10in') {
@@ -1637,6 +2005,10 @@
                         specString = `Diameter: ${data.dieDiameter || '?'}${u}, Desired Shape: ${data.dieShape || 'Not Specified (Check Notes)'}`;
                     }
                     
+                    if (isRushRequested) {
+                        specString += " | RUSH PRIORITY (+ $10.00)";
+                    }
+
                     data.specs = specString;
 
                     const logoInput = document.getElementById('logoUpload');
@@ -1871,10 +2243,14 @@
             });
         }
 
-        // --- IMAGE FALLBACK LOGIC ---
+        // --- IMAGE FALLBACK LOGIC (PNG-CENTRIC) ---
         document.addEventListener('error', function(e) {
             if (e.target.tagName && e.target.tagName.toLowerCase() === 'img') {
                 const img = e.target;
+                
+                // Ignore STL auto-loads so they don't get the CSS image broken outline
+                if (img.src && img.src.toLowerCase().endsWith('.stl')) return;
+
                 if (!img.dataset.fallbackAttempted) {
                     img.dataset.fallbackAttempted = "true";
                     const filename = img.src.substring(img.src.lastIndexOf('/') + 1);
