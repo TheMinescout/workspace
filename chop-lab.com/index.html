@@ -572,15 +572,13 @@
                         </div>
                     </div>
                     
-                    <!-- FUTURE CATEGORY: STORAGE & ORGANIZATION (Uncomment when R&D is complete)
                     <div class="card-link category-link" data-category="storage" style="cursor: pointer;">
                         <div class="art-card" style="text-align: center; padding: 40px 20px; justify-content: center; min-height: 280px;">
                             <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;">04.</h3>
                             <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Storage & Organization</h4>
-                            <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Sponge holders, tool racks, and modular studio storage.</p>
+                            <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Breathable, custom-fit baskets and lab organizers.</p>
                         </div>
                     </div>
-                    -->
                 </div>
 
                 <!-- PRODUCT CARDS (INITIALLY HIDDEN) -->
@@ -730,21 +728,19 @@
                             </div>
                         </a>
 
-                        <!-- FUTURE STORAGE ITEMS (Uncomment and configure order links when R&D is complete)
-                        <a href="#order?product=sponge-holder" class="card-link reveal" data-category="storage">
+                        <a href="#order?product=sponge-basket" class="card-link reveal" data-category="storage">
                             <div class="art-card">
                                 <div class="art-image-wrapper">
-                                    <img src="https://chop-lab.com/assets/images/sponge-holder.JPG" alt="Sponge Holder" class="art-image">
+                                    <img src="https://chop-lab.com/assets/files/Sponge-Basket.stl" alt="Sponge Basket" class="art-image">
                                 </div>
                                 <div class="art-info">
-                                    <h3>Sponge Holder / Tool Organizer</h3>
+                                    <h3>Sponge Basket</h3>
                                     <span class="price">$15.00</span>
-                                    <p class="desc">Modular, breathable storage to keep your tools dry and accessible at the wheel.</p>
+                                    <p class="desc">Shallow, breathable hex-lattice storage to let your sponges drain right into the bucket.</p>
                                     <div class="card-cta">Configure This Tool &rarr;</div>
                                 </div>
                             </div>
                         </a>
-                        -->
 
                     </div>
                 </div>
@@ -765,18 +761,6 @@
                                 <h3>Flexible Sgraffito Stencils</h3>
                                 <span class="price">Est. $8.00</span>
                                 <p class="desc">Ultra-thin prints that bend seamlessly around curved mugs/bowls to guide intricate scratching patterns.</p>
-                                <span style="display:inline-block; margin-top:auto; font-size:0.75rem; font-weight:700; color:var(--tcl-primary); text-transform:uppercase; letter-spacing:1px; padding-top: 20px; border-top: 1px solid var(--tcl-border);">In Development</span>
-                            </div>
-                        </div>
-                        
-                        <div class="art-card" style="box-shadow: none;">
-                            <div class="art-image-wrapper">
-                                <img src="https://chop-lab.com/assets/images/storage-proto.JPG" alt="Sponge Holders & Organizers" class="art-image">
-                            </div>
-                            <div class="art-info">
-                                <h3>Sponge Holders & Tool Organizers</h3>
-                                <span class="price">Est. $15.00</span>
-                                <p class="desc">Modular, breathable storage solutions designed to keep your pottery tools and sponges dry and accessible at the wheel.</p>
                                 <span style="display:inline-block; margin-top:auto; font-size:0.75rem; font-weight:700; color:var(--tcl-primary); text-transform:uppercase; letter-spacing:1px; padding-top: 20px; border-top: 1px solid var(--tcl-border);">In Development</span>
                             </div>
                         </div>
@@ -920,6 +904,7 @@
                                     <option value="slab-rails" data-price="20.00" data-name="Interlocking Slab Rails">Interlocking Slab Thickness Rails (Pair) - $20.00</option>
                                     <option value="bevel-cutter" data-price="12.00" data-name="Dual Bevel Cutter">Dual Bevel Cutter (45°/60°) - $12.00</option>
                                     <option value="extruder-dies" data-price="10.00" data-name="Custom Extruder Dies">Custom Extruder Dies - $10.00</option>
+                                    <option value="sponge-basket" data-price="15.00" data-name="Sponge Basket">Sponge Basket - $15.00</option>
                                 </optgroup>
                                 <optgroup label="3D Printing">
                                     <option value="custom-stl" data-price="5.00 Base" data-name="Custom STL Print">Custom STL Print - $5.00 Base</option>
@@ -1119,6 +1104,19 @@
                                 <label>Desired Shape / Profile</label>
                                 <input type="text" name="dieShape" placeholder="e.g. 15mm Hexagon, Fluted Oval, etc.">
                                 <span style="font-size: 0.8rem; color: var(--tcl-text-muted); margin-top: 6px;">Describe the shape, or email us a sketch after ordering!</span>
+                            </div>
+                        </div>
+
+                        <div id="opt-sponge-basket" class="dynamic-section hidden">
+                            <p style="font-size: 0.9rem; color: var(--tcl-text-muted); margin-bottom: 25px;">Engineered to hang perfectly on standard pottery water buckets.</p>
+                            <div class="form-group">
+                                <label>Bucket Rim Width (<span class="unit-display">mm</span>)</label>
+                                <input type="number" name="basketRimWidth" placeholder="e.g. 9" step="0.1">
+                                <span style="font-size: 0.8rem; color: var(--tcl-text-muted); margin-top: 6px;">Measure the thickness of your water bucket's top lip. Leave blank for standard 9mm.</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Color Preference</label>
+                                <input type="text" name="basketColor" placeholder="e.g. Matte Black, Slate Grey">
                             </div>
                         </div>
 
@@ -1836,6 +1834,7 @@
             const slabRailsSection = document.getElementById('opt-slab-rails');
             const bevelCutterSection = document.getElementById('opt-bevel-cutter');
             const extruderDiesSection = document.getElementById('opt-extruder-dies');
+            const spongeBasketSection = document.getElementById('opt-sponge-basket');
             
             const step3Wrapper = document.getElementById('step-3-wrapper');
             const unitToggleSection = document.getElementById('unit-toggle-section');
@@ -1900,6 +1899,7 @@
                 if(slabRailsSection) slabRailsSection.classList.add('hidden');
                 if(bevelCutterSection) bevelCutterSection.classList.add('hidden');
                 if(extruderDiesSection) extruderDiesSection.classList.add('hidden');
+                if(spongeBasketSection) spongeBasketSection.classList.add('hidden');
                 if(unitToggleSection) unitToggleSection.classList.add('hidden');
                 
                 if(step3Wrapper) step3Wrapper.classList.add('hidden');
@@ -1917,7 +1917,7 @@
                     if (notesStepNumber) notesStepNumber.textContent = '03';
                 }
 
-                if (['mandrel', 'extruder-dies'].includes(value) && unitToggleSection) {
+                if (['mandrel', 'extruder-dies', 'sponge-basket'].includes(value) && unitToggleSection) {
                     unitToggleSection.classList.remove('hidden');
                 }
 
@@ -1931,6 +1931,7 @@
                 else if (value === 'slab-rails' && slabRailsSection) slabRailsSection.classList.remove('hidden');
                 else if (value === 'bevel-cutter' && bevelCutterSection) bevelCutterSection.classList.remove('hidden');
                 else if (value === 'extruder-dies' && extruderDiesSection) extruderDiesSection.classList.remove('hidden');
+                else if (value === 'sponge-basket' && spongeBasketSection) spongeBasketSection.classList.remove('hidden');
             }
 
             function updateSummaryCard() {
@@ -2041,6 +2042,8 @@
                         specString = `Tool Type: Dual 45°/60° Block`;
                     } else if (data.productSelect === 'extruder-dies') {
                         specString = `Diameter: ${data.dieDiameter || '?'}${u}, Desired Shape: ${data.dieShape || 'Not Specified (Check Notes)'}`;
+                    } else if (data.productSelect === 'sponge-basket') {
+                        specString = `Rim Width: ${data.basketRimWidth || '9'}${u}, Color: ${data.basketColor || 'Standard'}`;
                     }
                     
                     if (isRushRequested) {
