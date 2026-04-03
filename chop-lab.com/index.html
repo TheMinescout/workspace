@@ -892,19 +892,19 @@
                             <select id="productSelect" name="productSelect" required>
                                 <option value="" disabled selected>-- Choose a Tool to Configure --</option>
                                 <optgroup label="Studio Tools">
-                                    <option value="chop-simple" data-price="15.00" data-name="Custom Chop Simple">Custom Chop Simple - $15.00</option>
-                                    <option value="chop-complex" data-price="20.00" data-name="Custom Chop Complex">Custom Chop Complex - $20.00</option>
-                                    <option value="spinner" data-price="15.00" data-name="Trimming Spinner">Trimming Spinner - $15.00</option>
-                                    <option value="rib-set" data-price="15.00" data-name="Precision Rib Set">Precision Rib Set - $15.00</option>
-                                    <option value="origin-square" data-price="12.00" data-name="Origin Square">Origin Square - $12.00</option>
-                                    <option value="roller-10in" data-price="20.00" data-name="Texture Roller 10in">Texture Roller 10in - $20.00</option>
-                                    <option value="roller-4in" data-price="10.00" data-name="Texture Roller 4in">Texture Roller 4in - $10.00</option>
-                                    <option value="tombo" data-price="30.00" data-name="Adjustable Throwing Gauge">Adjustable Throwing Gauge - $30.00</option>
-                                    <option value="mandrel" data-price="15.00" data-name="Mug Handle Mandrels">Mug Handle Mandrels - $15.00</option>
-                                    <option value="slab-rails" data-price="20.00" data-name="Interlocking Slab Rails">Interlocking Slab Thickness Rails (Pair) - $20.00</option>
-                                    <option value="bevel-cutter" data-price="12.00" data-name="Dual Bevel Cutter">Dual Bevel Cutter (45°/60°) - $12.00</option>
+                                    <option value="chop-simple" data-price="15.00" data-name="Custom Chop Simple" data-image="https://chop-lab.com/assets/images/simple-chop-ex.JPG">Custom Chop Simple - $15.00</option>
+                                    <option value="chop-complex" data-price="20.00" data-name="Custom Chop Complex" data-image="https://chop-lab.com/assets/images/compex-FC-chop.png">Custom Chop Complex - $20.00</option>
+                                    <option value="spinner" data-price="15.00" data-name="Trimming Spinner" data-image="https://chop-lab.com/assets/files/The TCL Trimming Spinner.stl">Trimming Spinner - $15.00</option>
+                                    <option value="rib-set" data-price="15.00" data-name="Precision Rib Set" data-image="https://chop-lab.com/assets/files/The TCL Trinity.stl">Precision Rib Set - $15.00</option>
+                                    <option value="origin-square" data-price="12.00" data-name="Origin Square" data-image="https://chop-lab.com/assets/files/The Origin Square.stl">Origin Square - $12.00</option>
+                                    <option value="roller-10in" data-price="20.00" data-name="Texture Roller 10in" data-image="https://chop-lab.com/assets/images/hex-lattice-croller.JPG">Texture Roller 10in - $20.00</option>
+                                    <option value="roller-4in" data-price="10.00" data-name="Texture Roller 4in" data-image="https://chop-lab.com/assets/images/mason-roller.JPG">Texture Roller 4in - $10.00</option>
+                                    <option value="tombo" data-price="30.00" data-name="Adjustable Throwing Gauge" data-image="https://chop-lab.com/assets/files/Throwing Gauge.stl">Adjustable Throwing Gauge - $30.00</option>
+                                    <option value="mandrel" data-price="15.00" data-name="Mug Handle Mandrels" data-image="https://chop-lab.com/assets/files/Mug Handle Slump Mold.stl">Mug Handle Mandrels - $15.00</option>
+                                    <option value="slab-rails" data-price="20.00" data-name="Interlocking Slab Rails" data-image="https://chop-lab.com/assets/files/Interlocking Slab Rails.stl">Interlocking Slab Thickness Rails (Pair) - $20.00</option>
+                                    <option value="bevel-cutter" data-price="12.00" data-name="Dual Bevel Cutter" data-image="https://chop-lab.com/assets/files/Bevel Cutter.stl">Dual Bevel Cutter (45°/60°) - $12.00</option>
                                     <option value="extruder-dies" data-price="10.00" data-name="Custom Extruder Dies">Custom Extruder Dies - $10.00</option>
-                                    <option value="sponge-basket" data-price="15.00" data-name="Sponge Basket">Sponge Basket - $15.00</option>
+                                    <option value="sponge-basket" data-price="15.00" data-name="Sponge Basket" data-image="https://chop-lab.com/assets/files/Sponge-Basket.stl">Sponge Basket - $15.00</option>
                                 </optgroup>
                                 <optgroup label="3D Printing">
                                     <option value="custom-stl" data-price="5.00 Base" data-name="Custom STL Print">Custom STL Print - $5.00 Base</option>
@@ -1169,6 +1169,14 @@
                                 <span id="sum-total">$0.00</span>
                             </div>
                             
+                            <!-- DYNAMIC PREVIEW IMAGE/STL SECTION -->
+                            <div id="summary-preview-section" style="display: none; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--tcl-border);">
+                                <span style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--tcl-text-muted); letter-spacing: 1px; margin-bottom: 10px; display: block;">Tool Preview</span>
+                                <div class="art-image-wrapper" id="summary-preview-wrapper" style="border-radius: 8px; border: 1px solid var(--tcl-border); aspect-ratio: 1/1; position: relative; background: var(--tcl-background);">
+                                    <img id="summary-preview-img" src="" alt="Tool Preview" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                            </div>
+
                             <p style="font-size: 0.8rem; color: var(--tcl-text-muted); margin-top: 25px; line-height: 1.6; text-align: center; border-radius: 4px; background: rgba(201, 123, 99, 0.05); padding: 12px; border: 1px solid rgba(201, 123, 99, 0.1);">
                                 Payment is not collected today. We will email a final invoice once CAD engineering is approved.
                             </p>
@@ -1847,6 +1855,7 @@
             const sumTotal = document.getElementById('sum-total');
 
             let isRushRequested = false;
+            let summaryStlScene, summaryStlRenderer, summaryStlReqId, summaryResizeObs;
 
             // Simple font other input logic
             const simpleFontSelect = document.getElementById('simpleFontSelect');
@@ -1988,6 +1997,126 @@
 
                 sumEmpty.classList.add('hidden');
                 sumDetails.classList.remove('hidden');
+
+                // DYNAMIC PREVIEW LOGIC
+                const imageUrl = selectedOption.getAttribute('data-image');
+                const previewSection = document.getElementById('summary-preview-section');
+                const previewImg = document.getElementById('summary-preview-img');
+                const previewWrapper = document.getElementById('summary-preview-wrapper');
+
+                if (imageUrl && productSelect.value !== 'custom-stl') {
+                    previewSection.style.display = 'block';
+                    loadSummaryPreview(imageUrl, previewImg, previewWrapper);
+                } else {
+                    previewSection.style.display = 'none';
+                }
+            }
+
+            async function loadSummaryPreview(src, img, wrapper) {
+                // Cleanup previous 3D canvas
+                const oldCanvas = wrapper.querySelector('.stl-canvas-container');
+                if (oldCanvas) oldCanvas.remove();
+                if (summaryStlReqId) cancelAnimationFrame(summaryStlReqId);
+                if (summaryResizeObs) {
+                    summaryResizeObs.disconnect();
+                    summaryResizeObs = null;
+                }
+                if (summaryStlRenderer) {
+                    summaryStlRenderer.dispose();
+                    summaryStlRenderer = null;
+                }
+
+                img.src = src;
+                img.style.display = 'block';
+
+                if (!src.toLowerCase().endsWith('.stl')) {
+                    return; // Regular image, stop here
+                }
+
+                // Render STL dynamically
+                const canvasContainer = document.createElement('div');
+                canvasContainer.className = 'stl-canvas-container active';
+                wrapper.appendChild(canvasContainer);
+
+                const stlFilename = decodeURIComponent(src.substring(src.lastIndexOf('/') + 1));
+                const backupUrl = `https://raw.githubusercontent.com/TheMinescout/workspace/refs/heads/main/chop-lab.com/assets/files/${encodeURIComponent(stlFilename)}`;
+
+                async function loadSTL(url) {
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const arrayBuffer = await res.arrayBuffer();
+                    const loader = new THREE.STLLoader();
+                    return loader.parse(arrayBuffer);
+                }
+
+                try {
+                    let geometry;
+                    try { geometry = await loadSTL(src); }
+                    catch (e) { geometry = await loadSTL(backupUrl); }
+
+                    if (!geometry || !geometry.attributes.position) throw new Error("Invalid STL");
+
+                    const scene = new THREE.Scene();
+                    summaryStlScene = scene;
+                    scene.background = null; 
+
+                    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                    summaryStlRenderer = renderer;
+                    const rect = wrapper.getBoundingClientRect();
+                    renderer.setSize(rect.width || 250, rect.height || 250);
+                    renderer.setPixelRatio(window.devicePixelRatio);
+                    canvasContainer.appendChild(renderer.domElement);
+
+                    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+                    camera.position.set(130, 130, 130);
+
+                    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+                    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                    dirLight.position.set(100, 200, 100);
+                    scene.add(dirLight);
+
+                    geometry.computeBoundingBox();
+                    geometry.center();
+
+                    const material = new THREE.MeshPhongMaterial({ color: 0xCBC6B8, specular: 0x222222, shininess: 30 });
+                    const mesh = new THREE.Mesh(geometry, material);
+                    mesh.rotation.x = -Math.PI / 2;
+
+                    const box = new THREE.Box3().setFromObject(mesh);
+                    const size = new THREE.Vector3();
+                    box.getSize(size);
+                    const scale = 100 / Math.max(size.x, size.y, size.z);
+                    mesh.scale.set(scale, scale, scale);
+
+                    const pivot = new THREE.Group();
+                    pivot.add(mesh);
+                    scene.add(pivot);
+
+                    img.style.display = 'none';
+                    camera.lookAt(0, 0, 0);
+
+                    function animate() {
+                        summaryStlReqId = requestAnimationFrame(animate);
+                        pivot.rotation.y += 0.01;
+                        renderer.render(scene, camera);
+                    }
+                    animate();
+
+                    // Ensure renderer stays matched to summary card width
+                    summaryResizeObs = new ResizeObserver(entries => {
+                        for(let entry of entries) {
+                            if(entry.contentRect.width > 0 && summaryStlRenderer) {
+                                summaryStlRenderer.setSize(entry.contentRect.width, entry.contentRect.height);
+                            }
+                        }
+                    });
+                    summaryResizeObs.observe(wrapper);
+
+                } catch (err) {
+                    console.error(`Preview load failed:`, err);
+                    if (canvasContainer) canvasContainer.remove();
+                    img.style.display = 'block'; 
+                }
             }
 
             window.updateSummaryCard = updateSummaryCard;
