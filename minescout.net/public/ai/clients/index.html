@@ -13,12 +13,11 @@
     .clients-wrap { max-width: 640px; }
     .clients-intro { font-size: 0.88rem; color: var(--muted); line-height: 1.8; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.5s ease 0.2s forwards; }
 
-    /* Updated Status Bar for Scarcity */
+    /* Status bar - Professional Alert */
     .status-bar { background: #fff8e8; border: 1px solid #f5e0a0; border-radius: 6px; padding: 1rem 1.25rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.85rem; opacity: 0; animation: fadeUp 0.5s ease 0.25s forwards; }
     .status-dot-alert { width: 8px; height: 8px; background: #c9922a; border-radius: 50%; flex-shrink: 0; animation: pulse 2s ease infinite; }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(1.3)} }
     .status-text { font-size: 0.75rem; color: #926b1f; line-height: 1.5; }
-    .status-text strong { color: var(--fg); }
 
     /* Client cards */
     .client-card {
@@ -41,9 +40,9 @@
     .client-detail-val { font-size: 0.78rem; color: var(--fg); font-weight: 500; }
     .client-note { font-size: 0.75rem; color: var(--muted); line-height: 1.7; border-top: 1px solid var(--border); padding-top: 1rem; }
 
-    /* Foundation section */
-    .foundation-header { font-family: var(--serif); font-size: 0.9rem; font-style: italic; color: var(--muted); margin-top: 4rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; }
-    .foundation-header::after { content: ''; flex-grow: 1; height: 1px; background: var(--border); }
+    /* Section Headings */
+    .section-divider { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-top: 3.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    .section-divider::after { content: ''; flex-grow: 1; height: 1px; background: var(--border); }
 
     .view-link { display: inline-block; margin-top: 1rem; font-size: 0.75rem; font-weight: 600; color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--border); transition: border-color 0.2s; }
     .view-link:hover { border-color: var(--fg); }
@@ -59,19 +58,21 @@
   <main class="main main--page">
     <div class="page-content clients-wrap">
       <p class="page-label">Minescout AI</p>
-      <h1 class="page-title">Infrastructure Pipeline</h1>
-      <p class="clients-intro">Minescout AI integrates autonomous intelligence into local business systems. We are currently accepting applications for our <strong>Q2 Charter Partner</strong> program—a high-intensity technical upgrade for three selected businesses.</p>
+      <h1 class="page-title">Client Work</h1>
+      <p class="clients-intro">Minescout AI deploys high-performance digital infrastructure. Below are our current <strong>Active Network Nodes</strong>. We are currently accepting applications for three inaugural <strong>Q2 Charter Partners</strong>.</p>
 
       <div class="status-bar">
         <div class="status-dot-alert"></div>
-        <div class="status-text"><strong>Charter Program: 0/3 Slots Filled.</strong> We are currently reviewing technical audits for inaugural Q2 partners. Priority is given to businesses with high-traffic e-commerce needs.</div>
+        <div class="status-text"><strong>Commercial Pipeline: 0/3 Charter Slots Filled.</strong> We are prioritizing businesses in Sammamish and the Greater Eastside for our Q2 technical architecture upgrades.</div>
       </div>
+
+      <div class="section-divider">Production Nodes</div>
 
       <div class="client-card" style="--d:0.3s;">
         <div class="client-card-header">
           <div>
             <div class="client-name">The Chop Lab</div>
-            <div class="client-type">Micro-Manufacturing & Robotics</div>
+            <div class="client-type">Manufacturing & Robotics Automation</div>
           </div>
           <span class="client-status status-live">Live</span>
         </div>
@@ -82,68 +83,96 @@
               <div class="client-detail-val">E-Commerce Automation</div>
             </div>
             <div>
-              <div class="client-detail-label">Industry</div>
-              <div class="client-detail-val">Pottery & 3D Fabrication</div>
-            </div>
-            <div>
-              <div class="client-detail-label">Architecture</div>
-              <div class="client-detail-val">Llama-3 RAG, STL Render-Engine</div>
-            </div>
-            <div>
               <div class="client-detail-label">Deployment</div>
               <div class="client-detail-val">April 2026</div>
             </div>
+            <div>
+              <div class="client-detail-label">Architecture</div>
+              <div class="client-detail-val">Llama-3 RAG, STL Engine</div>
+            </div>
+            <div>
+              <div class="client-detail-label">Performance</div>
+              <div class="client-detail-val">0.4s Edge Latency</div>
+            </div>
           </div>
-          <p class="client-note">A full-stack infrastructure deployment. Minescout integrated a custom-trained AI technician capable of providing instant pricing from a live technical database and managing complex custom 3D print requests.
+          <p class="client-note">An advanced integration of robotics and automated sales. Features a custom AI technician capable of providing instant quotes from a technical database and managing 3D fabrication requests.
           <br><a href="https://chop-lab.com" class="view-link" target="_blank">Analyze Live Integration &rarr;</a></p>
         </div>
       </div>
 
+      <div class="section-divider">Edge Infrastructure Nodes</div>
+
       <div class="client-card" style="--d:0.4s;">
         <div class="client-card-header">
           <div>
-            <div class="client-name">Smith &amp; Cole Law</div>
-            <div class="client-type">Professional Services &mdash; Architecture Demo</div>
+            <div class="client-name">Handmade by Jayme</div>
+            <div class="client-type">Artisanal Goods & Lifestyle</div>
           </div>
-          <span class="client-status status-demo">Internal Demo</span>
+          <span class="client-status status-live">Live</span>
+        </div>
+        <div class="client-card-body">
+          <div class="client-detail-grid">
+            <div>
+              <div class="client-detail-label">Deployment</div>
+              <div class="client-detail-val">March 2026</div>
+            </div>
+            <div>
+              <div class="client-detail-label">Solution</div>
+              <div class="client-detail-val">Organic Modern Architecture</div>
+            </div>
+          </div>
+          <p class="client-note">A complete serverless edge migration. We transformed a legacy site into a high-performance visual experience featuring dynamic gallery rendering and sub-second mobile load times.
+          <br><a href="https://jaymecarleton.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
+        </div>
+      </div>
+
+      <div class="client-card" style="--d:0.45s;">
+        <div class="client-card-header">
+          <div>
+            <div class="client-name">Fern Carleton Studio</div>
+            <div class="client-type">Fine Arts & Visual Media</div>
+          </div>
+          <span class="client-status status-live">Live</span>
+        </div>
+        <div class="client-card-body">
+          <div class="client-detail-grid">
+            <div>
+              <div class="client-detail-label">Deployment</div>
+              <div class="client-detail-val">March 2026</div>
+            </div>
+            <div>
+              <div class="client-detail-label">Solution</div>
+              <div class="client-detail-val">Multi-Tenant Serverless Engine</div>
+            </div>
+          </div>
+          <p class="client-note">Designed for high-fidelity visual archiving without sacrificing backend speed. This node utilizes our multi-tenant engine to ensure rapid asset delivery globally.
+          <br><a href="https://ferncarleton.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
+        </div>
+      </div>
+
+      <div class="section-divider">Demonstration Nodes</div>
+
+      <div class="client-card" style="--d:0.5s;">
+        <div class="client-card-header">
+          <div>
+            <div class="client-name">Smith &amp; Cole Law</div>
+            <div class="client-type">Professional Services Demo</div>
+          </div>
+          <span class="client-status status-demo">Internal Node</span>
         </div>
         <div class="client-card-body">
           <div class="client-detail-grid">
             <div>
               <div class="client-detail-label">Objective</div>
-              <div class="client-detail-val">24/7 Lead Qualification</div>
+              <div class="client-detail-val">Lead Triage & Qualification</div>
             </div>
             <div>
               <div class="client-detail-label">Industry</div>
               <div class="client-detail-val">Legal Consulting</div>
             </div>
           </div>
-          <p class="client-note">Demonstrating autonomous lead triage for professional service firms. The agent scrapes live DOM data to answer intake questions and capture qualified leads without human intervention.
-          <br><a href="/ai/demo" class="view-link">Launch AI Demo &rarr;</a></p>
-        </div>
-      </div>
-
-      <div class="foundation-header">Foundation Nodes (Legacy)</div>
-
-      <div class="client-card" style="--d:0.5s; border-style: dashed; background: var(--light);">
-        <div class="client-card-header">
-          <div class="client-name" style="font-size: 0.9rem;">Jayme Carleton</div>
-          <span class="client-status" style="background: #eee;">Static Port</span>
-        </div>
-        <div class="client-card-body" style="padding: 0.75rem 1.5rem 1.25rem 1.5rem;">
-          <p class="client-note" style="border: none; padding: 0;">Serverless edge migration focusing on high-fidelity gallery rendering and sub-second mobile performance.
-          <br><a href="https://jaymecarleton.com" class="view-link" target="_blank">View Site &rarr;</a></p>
-        </div>
-      </div>
-
-      <div class="client-card" style="--d:0.55s; border-style: dashed; background: var(--light);">
-        <div class="client-card-header">
-          <div class="client-name" style="font-size: 0.9rem;">Fern Carleton Studio</div>
-          <span class="client-status" style="background: #eee;">Static Port</span>
-        </div>
-        <div class="client-card-body" style="padding: 0.75rem 1.5rem 1.25rem 1.5rem;">
-          <p class="client-note" style="border: none; padding: 0;">High-performance portfolio architecture designed for low-latency visual archives on the Cloudflare network.
-          <br><a href="https://ferncarleton.com" class="view-link" target="_blank">View Site &rarr;</a></p>
+          <p class="client-note">A demonstration of how Minescout AI can capture and qualify professional service leads 24/7.
+          <br><a href="/ai/demo" class="view-link">Test AI Agent &rarr;</a></p>
         </div>
       </div>
 
