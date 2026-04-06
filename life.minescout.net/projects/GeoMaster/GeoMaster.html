@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoMaster Pro</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Phosphor Icons for modern UI icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom map styles */
+        .leaflet-container { background-color: #cbd5e1; font-family: 'Inter', sans-serif; }
+        .leaflet-interactive { transition: fill-opacity 0.2s, stroke-width 0.2s; }
+        .leaflet-interactive:hover { fill-opacity: 0.9 !important; }
+        
+        /* Utility classes */
+        .hidden { display: none !important; }
+        
+        /* Animations */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+            50% { transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+
+        /* Custom Scrollbar for Textarea */
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-track { background: transparent; }
+        textarea::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-100 p-4 md:p-6 lg:p-8 text-slate-900 relative selection:bg-blue-200">
+
+    <!-- SVG Pattern for Incorrect Guesses -->
+    <svg width="0" height="0" class="absolute pointer-events-none">
+        <defs>
+            <pattern id="stripes" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                <rect width="8" height="8" fill="rgba(239, 68, 68, 0.1)" />
+                <line x1="0" y1="0" x2="0" y2="8" stroke="#ef4444" stroke-width="3" />
+            </pattern>
+        </defs>
+    </svg>
+
+    <div class="max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-6 lg:gap-8">
+        
+        <!-- SIDEBAR -->
+        <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
+            
+            <!-- Branding & Controls -->
+            <div class="bg-white rounded-3xl shadow-lg shadow-slate-200/50 border border-slate-200 overflow-hidden">
+                <div class="p-6 bg-gradient-to-br from-blue-600 to-blue-800 text-white flex items-center justify-between">
+                    <h3 class="text-2xl font-black tracking-tight flex items-center gap-2">
+                        <i class="ph-fill ph-globe-hemisphere-west text-3xl text-blue-200"></i>
+                        GeoMaster
+                    </h3>
+                    <span class="text-[10px] bg-white/20 px-2.5 py-1 rounded-full uppercase tracking-widest font-bold backdrop-blur-sm">Pro</span>
+                </div>
+                
+                <div class="p-6 space-y-6">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-end">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Target Locations</label>
+                            <span class="text-[10px] text-slate-400 font-medium">1 per line</span>
+                        </div>
+                        <div class="relative">
+                            <textarea id="rawInput" class="w-full rounded-2xl border-2 border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-blue-500 focus:bg-white focus:ring-0 transition-colors font-medium min-h-[140px] resize-none shadow-inner" placeholder="E.g.&#10;Azerbaijan&#10;Tokyo&#10;Grand Canyon"></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <button id="btn-quiz" class="flex flex-col items-center justify-center gap-1 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition-all shadow-md shadow-blue-600/20 py-3 disabled:opacity-50 disabled:pointer-events-none">
+                                <i class="ph-bold ph-target text-xl"></i>
+                                <span class="text-xs font-bold uppercase tracking-wide">Quiz Mode</span>
+                            </button>
+                            <button id="btn-learn" class="flex flex-col items-center justify-center gap-1 rounded-2xl bg-slate-100 text-slate-700 hover:bg-slate-200 active:scale-95 transition-all py-3 disabled:opacity-50 disabled:pointer-events-none border border-slate-200">
+                                <i class="ph-bold ph-book-open text-xl"></i>
+                                <span class="text-xs font-bold uppercase tracking-wide">Learn Mode</span>
+                            </button>
+                        </div>
+                        
+                        <button id="btn-clear" class="w-full mt-2 flex items-center justify-center gap-2 py-2 text-xs font-bold text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                            <i class="ph-bold ph-trash"></i> Reset List
+                        </button>
+                    </div>
+
+                    <hr class="border-slate-100" />
+
+                    <!-- Settings Toggles -->
+                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors" id="btn-autonext-container">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-bold text-slate-700">Auto-Advance</span>
+                            <span class="text-[10px] text-slate-500 font-medium">Skip manually clicking 'Next'</span>
+                        </div>
+                        <div id="btn-autonext" class="w-12 h-6 rounded-full transition-colors duration-300 relative bg-blue-600 shadow-inner">
+                            <div id="autonext-pill" class="absolute top-1 left-7 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Score Panel -->
+            <div class="bg-slate-900 text-white p-6 rounded-3xl flex justify-between items-center shadow-xl shadow-slate-900/10 border border-slate-800 relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 text-blue-500/10">
+                    <i class="ph-fill ph-trophy text-9xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <p class="text-[10px] text-blue-300 uppercase font-bold tracking-widest mb-1">Session Accuracy</p>
+                    <p id="accuracy-score" class="text-4xl font-black tabular-nums">0%</p>
+                </div>
+                <div id="accuracy-grade" class="relative z-10 w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center text-3xl font-black border-[3px] border-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.5)] rotate-3">
+                    -
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- MAP AREA -->
+        <div class="lg:col-span-8 xl:col-span-9 bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden flex flex-col min-h-[600px] lg:min-h-0 lg:h-[calc(100vh-4rem)] relative">
+            
+            <!-- Map Header -->
+            <div class="px-6 py-4 border-b border-slate-100 bg-white/90 backdrop-blur z-[400] relative flex justify-between items-center shrink-0">
+                <div class="flex flex-col">
+                    <span id="header-status" class="text-[10px] font-black text-blue-600 uppercase tracking-widest flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                        Map Explorer
+                    </span>
+                    <span id="header-title" class="text-xl font-black text-slate-800 truncate max-w-[300px] md:max-w-md">
+                        Enter list & select mode
+                    </span>
+                </div>
+
+                <div id="strikes-container" class="flex flex-col items-end gap-1.5 hidden">
+                    <div class="flex gap-1.5" id="strikes-dots">
+                        <!-- Filled by JS -->
+                    </div>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Strikes Left</span>
+                </div>
+            </div>
+
+            <!-- Map Container -->
+            <div class="flex-1 relative z-0">
+                <div id="map" class="w-full h-full absolute inset-0 z-0 bg-[#e2e8f0]"></div>
+                
+                <!-- Loading Overlay -->
+                <div id="loading-overlay" class="absolute inset-0 z-[1000] bg-slate-900/80 backdrop-blur-md flex flex-col items-center justify-center text-white hidden transition-opacity duration-300">
+                    <div class="relative w-20 h-20 mb-6">
+                        <div class="absolute inset-0 border-4 border-slate-700 rounded-full"></div>
+                        <div class="absolute inset-0 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
+                        <i class="ph-bold ph-globe absolute inset-0 flex items-center justify-center text-2xl text-blue-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-black tracking-tight mb-2">Preparing Map Data</h2>
+                    <p id="loading-msg" class="text-blue-300 font-medium text-sm animate-pulse">Locating targets...</p>
+                    
+                    <div class="w-64 h-2 bg-slate-800 rounded-full mt-6 overflow-hidden border border-slate-700">
+                        <div id="loading-progress" class="h-full bg-blue-500 transition-all duration-300 w-0"></div>
+                    </div>
+                </div>
+
+                <!-- Missing Locations Notification -->
+                <div id="missing-locations-toast" class="absolute top-4 right-4 z-[1000] bg-red-500 text-white px-4 py-3 rounded-xl shadow-lg font-medium text-sm hidden max-w-sm flex items-start gap-3 animate-pop border border-red-400">
+                    <i class="ph-fill ph-warning-circle text-xl shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold mb-1">Could not find some locations:</p>
+                        <p id="missing-locations-text" class="text-red-100 text-xs leading-relaxed"></p>
+                        <button onclick="document.getElementById('missing-locations-toast').classList.add('hidden')" class="text-xs underline mt-2 text-white/80 hover:text-white">Dismiss</button>
+                    </div>
+                </div>
+
+                <!-- Heads Up Display (HUD) -->
+                <div id="seterra-header" class="absolute top-4 left-4 right-4 flex justify-between items-start z-[500] pointer-events-none hidden">
+                    <!-- Progress & Score -->
+                    <div class="bg-slate-900/90 backdrop-blur border border-white/10 text-white px-5 py-2.5 rounded-2xl flex items-center gap-5 shadow-xl animate-pop origin-top-left pointer-events-auto">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-bold text-blue-400 uppercase tracking-widest mb-0.5">Progress</span>
+                            <span class="text-lg font-black tabular-nums leading-none"><span id="hud-progress">0</span> <span class="text-slate-500 text-sm">/</span> <span id="hud-total" class="text-slate-400 text-sm">0</span></span>
+                        </div>
+                        <div class="w-[1px] h-8 bg-white/10"></div>
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-0.5">Score</span>
+                            <span class="text-lg font-black tabular-nums leading-none" id="hud-score">0%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Current Target -->
+                    <div class="absolute left-1/2 -translate-x-1/2 text-center pointer-events-auto" id="hud-target-container">
+                        <div class="flex flex-col items-center animate-pop origin-top">
+                            <span class="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-1.5 drop-shadow-md bg-white/50 px-2 py-0.5 rounded backdrop-blur-sm" id="hud-verb">
+                                Click on
+                            </span>
+                            <div class="bg-blue-600 px-6 py-2.5 rounded-2xl shadow-[0_6px_0_#1e3a8a] border-2 border-blue-400 hover:-translate-y-1 hover:shadow-[0_8px_0_#1e3a8a] transition-all cursor-default">
+                                <span class="text-2xl font-black tracking-tight text-white drop-shadow-sm" id="hud-target-name">Target</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Timer -->
+                    <div class="bg-slate-900/90 backdrop-blur border border-white/10 text-white px-5 py-2.5 rounded-2xl shadow-xl flex items-center gap-3 animate-pop origin-top-right pointer-events-auto">
+                        <i class="ph-bold ph-timer text-blue-400 text-xl"></i>
+                        <div class="flex flex-col items-end w-12">
+                            <span class="text-lg font-black tabular-nums leading-none" id="hud-timer">00:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Correct Feedback Overlay -->
+                <div id="feedback-overlay" class="absolute inset-0 z-[600] pointer-events-none flex items-center justify-center bg-white/10 backdrop-blur-[2px] hidden transition-opacity">
+                    <div id="feedback-text" class="text-5xl md:text-7xl font-black text-white drop-shadow-[0_0_30px_rgba(0,0,0,0.5)] transform transition-all duration-300 scale-0 opacity-0 flex flex-col items-center text-center gap-4">
+                        <!-- Content inserted via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Prompt / Action Bar -->
+            <div id="footer-prompt" class="px-6 py-5 bg-white border-t border-slate-100 flex justify-center items-center z-[400] relative shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] min-h-[90px]">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Default Location Template ---
+        const DEFAULT_LOCATIONS = "Brazil\nGermany\nJapan\nEgypt\nAustralia\nCanada";
+
+        // --- State Variables ---
+        const STORAGE_KEY = "geomaster-pro-v2";
+        let places = [];
+        let quizSequence = [];
+        let round = 0;
+        let attempts = 0;
+        let wrongGuessesThisRound = [];
+        let missedClicks = []; // Track actual map background clicks per round
+        let completedHighlights = {};
+        let gameState = "setup"; // "setup" | "playing" | "reveal" | "learning"
+        let time = 0;
+        let autoNext = true;
+        
+        let mapInstance = null;
+        let mapLayers = [];
+        let timerInterval = null;
+        let autoNextTimeout = null;
+        let lastFramedRound = -1;
+
+        // --- DOM Elements ---
+        const rawInputEl = document.getElementById('rawInput');
+        const btnQuiz = document.getElementById('btn-quiz');
+        const btnLearn = document.getElementById('btn-learn');
+        const btnClear = document.getElementById('btn-clear');
+        const toggleAutoNext = document.getElementById('btn-autonext-container');
+        const btnAutoNext = document.getElementById('btn-autonext');
+        const autonextPill = document.getElementById('autonext-pill');
+        
+        const accuracyScoreEl = document.getElementById('accuracy-score');
+        const accuracyGradeEl = document.getElementById('accuracy-grade');
+        
+        const headerStatusEl = document.getElementById('header-status');
+        const headerTitleEl = document.getElementById('header-title');
+        const strikesContainer = document.getElementById('strikes-container');
+        const strikesDots = document.getElementById('strikes-dots');
+        
+        const mapContainer = document.getElementById('map');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const loadingMsgEl = document.getElementById('loading-msg');
+        const loadingProgress = document.getElementById('loading-progress');
+        
+        const seterraHeader = document.getElementById('seterra-header');
+        const hudProgress = document.getElementById('hud-progress');
+        const hudTotal = document.getElementById('hud-total');
+        const hudScore = document.getElementById('hud-score');
+        const hudTimer = document.getElementById('hud-timer');
+        const hudVerb = document.getElementById('hud-verb');
+        const hudTargetName = document.getElementById('hud-target-name');
+        const hudTargetContainer = document.getElementById('hud-target-container');
+        
+        const feedbackOverlay = document.getElementById('feedback-overlay');
+        const feedbackText = document.getElementById('feedback-text');
+        const footerPrompt = document.getElementById('footer-prompt');
+        
+        const missingLocationsToast = document.getElementById('missing-locations-toast');
+        const missingLocationsText = document.getElementById('missing-locations-text');
+
+        // --- Utilities ---
+        function shuffleArray(array) {
+            const newArr = [...array];
+            for (let i = newArr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+            }
+            return newArr;
+        }
+
+        function formatTime(s) {
+            const mins = Math.floor(s / 60);
+            const secs = s % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Initialization ---
+        function init() {
+            // Setup Textarea default
+            if (!rawInputEl.value.trim()) {
+                rawInputEl.value = DEFAULT_LOCATIONS;
+            }
+
+            // Init Map with minimal UI
+            mapInstance = L.map(mapContainer, { 
+                center: [20, 0], 
+                zoom: 2, 
+                minZoom: 2, 
+                worldCopyJump: true, 
+                zoomControl: false,
+                maxBounds: [[-90, -180], [90, 180]]
+            });
+            
+            // Modern base map (Voyager)
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', { 
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 10
+            }).addTo(mapInstance);
+            
+            // Map Click Handler for Strikes
+            mapInstance.on('click', (e) => {
+                if (gameState === "playing") {
+                    // Clicked on the map background (not a target feature)
+                    submitGuess(null, e.latlng);
+                }
+            });
+            
+            // Event Listeners
+            btnQuiz.addEventListener('click', () => prepareGame("playing"));
+            btnLearn.addEventListener('click', () => prepareGame("learning"));
+            btnClear.addEventListener('click', clearSession);
+            toggleAutoNext.addEventListener('click', () => {
+                autoNext = !autoNext;
+                updateUI();
+            });
+
+            updateUI();
+        }
+
+        // --- Core Logic ---
+        async function prepareGame(mode) {
+            const rawLines = rawInputEl.value.split("\n").map(s => s.trim()).filter(Boolean);
+            if (rawLines.length === 0) return;
+
+            // Reset Game State entirely
+            gameState = "setup";
+            time = 0;
+            completedHighlights = {};
+            wrongGuessesThisRound = [];
+            missedClicks = [];
+            lastFramedRound = -1;
+            
+            // Show Loading
+            loadingOverlay.classList.remove('hidden');
+            missingLocationsToast.classList.add('hidden');
+            
+            const results = [];
+            const notFound = [];
+            
+            // We need a unique array to avoid fetching duplicates
+            const uniqueLines = [...new Set(rawLines)];
+
+            for (let i = 0; i < uniqueLines.length; i++) {
+                const targetName = uniqueLines[i];
+                loadingMsgEl.innerText = `Searching for: ${targetName}`;
+                loadingProgress.style.width = `${((i) / uniqueLines.length) * 100}%`;
+                
+                try {
+                    // Nominatim requires specific formatting and usage limits (1s delay).
+                    const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(targetName)}&polygon_geojson=1&polygon_threshold=0.01`;
+                    
+                    const res = await fetch(url, {
+                        headers: { 'Accept-Language': 'en-US,en;q=0.9' }
+                    });
+                    
+                    if (!res.ok) throw new Error("Network error");
+                    
+                    const data = await res.json();
+                    const f = data?.[0];
+                    
+                    if (f) {
+                        results.push({
+                            name: targetName,
+                            displayName: f.display_name,
+                            lat: Number(f.lat),
+                            lon: Number(f.lon),
+                            bbox: f.boundingbox.map(Number),
+                            geojson: f.geojson,
+                            isCity: ['city', 'town', 'village', 'point'].includes(f.type || f.addresstype || "")
+                        });
+                    } else {
+                        notFound.push(targetName);
+                    }
+                    
+                    // Crucial: 1000ms delay to respect Nominatim Terms of Service and prevent IP bans.
+                    if (i < uniqueLines.length - 1) {
+                        await new Promise(r => setTimeout(r, 1000));
+                    }
+                } catch (e) {
+                    console.error("Geocoding failed for", targetName, e);
+                    notFound.push(targetName);
+                }
+            }
+            
+            loadingProgress.style.width = '100%';
+            await new Promise(r => setTimeout(r, 400)); // Brief pause at 100%
+            
+            places = results;
+            quizSequence = mode === "playing" ? shuffleArray([...results]) : [...results];
+            round = 0;
+            attempts = 0;
+            
+            loadingOverlay.classList.add('hidden');
+            
+            if (notFound.length > 0) {
+                missingLocationsText.innerText = notFound.join(", ");
+                missingLocationsToast.classList.remove('hidden');
+                // Auto hide after 8s
+                setTimeout(() => missingLocationsToast.classList.add('hidden'), 8000);
+            }
+
+            if (results.length > 0) {
+                gameState = mode;
+                startTimer();
+            } else {
+                gameState = "setup";
+            }
+            
+            updateUI();
+        }
+
+        function submitGuess(guessedName, mapClickLatLng = null) {
+            const current = quizSequence[round];
+            if (gameState !== "playing" || !current) return;
+
+            // Handle Map Background Click or Wrong Feature Click
+            if (guessedName !== current.name) {
+                if (attempts < 2) {
+                    attempts++;
+                    if (guessedName) {
+                        // Clicked another target feature
+                        if (!wrongGuessesThisRound.includes(guessedName)) {
+                            wrongGuessesThisRound.push(guessedName);
+                        }
+                    } else if (mapClickLatLng) {
+                        // Clicked map background
+                        missedClicks.push(mapClickLatLng);
+                    }
+                } else {
+                    // Strike out! 3rd failed attempt
+                    if (mapClickLatLng) missedClicks.push(mapClickLatLng);
+                    completedHighlights[current.name] = { color: '#ef4444', borderColor: '#b91c1c', attemptsUsed: 3 };
+                    gameState = "reveal";
+                }
+            } else {
+                // Correct Guess!
+                const finalAttempts = attempts + 1;
+                let color, borderColor;
+                
+                if (finalAttempts === 1) {
+                    color = '#10b981'; // Emerald 500
+                    borderColor = '#047857'; // Emerald 700
+                } else if (finalAttempts === 2) {
+                    color = '#f59e0b'; // Amber 500
+                    borderColor = '#b45309'; // Amber 700
+                } else {
+                    color = '#f97316'; // Orange 500
+                    borderColor = '#c2410c'; // Orange 700
+                }
+                
+                completedHighlights[current.name] = { color, borderColor, attemptsUsed: finalAttempts };
+                gameState = "reveal";
+            }
+            
+            updateUI();
+        }
+
+        function handleNext() {
+            clearTimeout(autoNextTimeout);
+            
+            // Clean up state for next round
+            attempts = 0;
+            wrongGuessesThisRound = [];
+            missedClicks = [];
+            
+            if (round < quizSequence.length - 1) {
+                round++;
+                gameState = gameState === "learning" ? "learning" : "playing";
+            } else {
+                round = quizSequence.length;
+            }
+            
+            updateUI();
+        }
+
+        function startReview() {
+            const mistakes = places.filter(p => completedHighlights[p.name] && completedHighlights[p.name].attemptsUsed > 1);
+            if(mistakes.length === 0) return;
+
+            quizSequence = shuffleArray([...mistakes]);
+            round = 0;
+            attempts = 0;
+            wrongGuessesThisRound = [];
+            missedClicks = [];
+            gameState = "playing";
+            lastFramedRound = -1;
+            
+            // Clear highlights for the reviewing items
+            mistakes.forEach(m => delete completedHighlights[m.name]);
+            
+            startTimer();
+            updateUI();
+        }
+
+        function clearSession() {
+            places = [];
+            quizSequence = [];
+            round = 0;
+            gameState = "setup";
+            completedHighlights = {};
+            wrongGuessesThisRound = [];
+            missedClicks = [];
+            attempts = 0;
+            time = 0;
+            lastFramedRound = -1;
+            rawInputEl.value = "";
+            stopTimer();
+            updateUI();
+        }
+
+        function startTimer() {
+            stopTimer();
+            if (gameState === "playing") {
+                timerInterval = setInterval(() => {
+                    time++;
+                    hudTimer.innerText = formatTime(time);
+                }, 1000);
+            }
+        }
+
+        function stopTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+        }
+
+        // --- Render UI ---
+        function updateUI(fullRender = true) {
+            const current = quizSequence[round];
+            const isFinished = quizSequence.length > 0 && round >= quizSequence.length;
+            
+            // Math for Scoring
+            const completedCount = Object.keys(completedHighlights).length;
+            // Scoring System: 1st try = 100, 2nd try = 60, 3rd try = 30, Fail = 0
+            const totalEarnedPoints = Object.values(completedHighlights).reduce((acc, curr) => {
+                return acc + (curr.attemptsUsed === 1 ? 100 : curr.attemptsUsed === 2 ? 60 : curr.attemptsUsed === 3 ? 30 : 0);
+            }, 0);
+            const totalPossiblePointsSoFar = completedCount * 100;
+            const avgScore = completedCount > 0 ? Math.round((totalEarnedPoints / totalPossiblePointsSoFar) * 100) : 0;
+
+            // Update Sidebar Controls
+            const isSetup = gameState === "setup";
+            btnQuiz.disabled = !isSetup;
+            btnLearn.disabled = !isSetup;
+            rawInputEl.disabled = !isSetup;
+            if(!isSetup) rawInputEl.classList.add('opacity-50', 'bg-slate-100');
+            else rawInputEl.classList.remove('opacity-50', 'bg-slate-100');
+
+            // Auto Next Toggle Visual
+            if (autoNext) {
+                btnAutoNext.classList.replace('bg-slate-300', 'bg-blue-600');
+                autonextPill.classList.replace('left-1', 'left-7');
+            } else {
+                btnAutoNext.classList.replace('bg-blue-600', 'bg-slate-300');
+                autonextPill.classList.replace('left-7', 'left-1');
+            }
+
+            // Score Panel
+            accuracyScoreEl.innerText = `${avgScore}%`;
+            if(completedCount === 0) accuracyGradeEl.innerText = '-';
+            else if(avgScore >= 90) accuracyGradeEl.innerText = 'S';
+            else if(avgScore >= 80) accuracyGradeEl.innerText = 'A';
+            else if(avgScore >= 70) accuracyGradeEl.innerText = 'B';
+            else if(avgScore >= 60) accuracyGradeEl.innerText = 'C';
+            else accuracyGradeEl.innerText = 'F';
+            
+            accuracyGradeEl.className = `relative z-10 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl font-black border-[3px] shadow-[0_0_20px_rgba(0,0,0,0.2)] rotate-3 transition-colors ${
+                completedCount === 0 ? 'bg-slate-700 border-slate-600 text-slate-400' :
+                avgScore >= 90 ? 'bg-purple-500 border-purple-400 text-white shadow-purple-500/50' : 
+                avgScore >= 80 ? 'bg-blue-500 border-blue-400 text-white shadow-blue-500/50' :
+                avgScore >= 70 ? 'bg-emerald-500 border-emerald-400 text-white shadow-emerald-500/50' :
+                avgScore >= 60 ? 'bg-amber-500 border-amber-400 text-white shadow-amber-500/50' :
+                'bg-red-500 border-red-400 text-white shadow-red-500/50'
+            }`;
+
+            // Top Header (above map)
+            headerStatusEl.innerHTML = gameState === "learning" ? '<i class="ph-bold ph-book-open"></i> Study Session' : '<span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span> Target Identification';
+            headerTitleEl.innerText = isSetup ? "Waiting for list..." : isFinished ? "Session Complete!" : current ? current.name : "";
+
+            // Sidebar Strikes Header
+            if (gameState === "playing" && !isFinished) {
+                strikesContainer.classList.remove('hidden');
+                let dotsHtml = '';
+                for (let i = 0; i < 3; i++) {
+                    const active = i < (3 - attempts);
+                    dotsHtml += `<div class="w-3.5 h-3.5 rounded-full transition-all duration-300 ${active ? 'bg-blue-500 shadow-[inset_0_-2px_0_rgba(0,0,0,0.2)]' : 'bg-slate-200 border border-slate-300'}"></div>`;
+                }
+                strikesDots.innerHTML = dotsHtml;
+            } else {
+                strikesContainer.classList.add('hidden');
+            }
+
+            // Map HUD (Seterra style)
+            if (!isSetup) {
+                seterraHeader.classList.remove('hidden');
+                hudProgress.innerText = completedCount;
+                hudTotal.innerText = quizSequence.length;
+                hudScore.innerText = `${avgScore}%`;
+                hudTimer.innerText = formatTime(time);
+                
+                if (!isFinished && current) {
+                    hudTargetContainer.classList.remove('hidden');
+                    hudVerb.innerText = gameState === "learning" ? "Study Area" : "Find & Click";
+                    hudTargetName.innerText = current.name;
+                    hudTargetContainer.firstElementChild.classList.remove('animate-pop');
+                    // Retrigger animation
+                    void hudTargetContainer.offsetWidth; 
+                    hudTargetContainer.firstElementChild.classList.add('animate-pop');
+                } else {
+                    hudTargetContainer.classList.add('hidden');
+                }
+            } else {
+                seterraHeader.classList.add('hidden');
+            }
+
+            // Feedback Overlay Animations
+            if (gameState === "reveal" && current && completedHighlights[current.name]) {
+                const att = completedHighlights[current.name].attemptsUsed;
+                feedbackOverlay.classList.remove('hidden');
+                
+                let icon, text, colorClass;
+                if(att === 1) { icon = 'ph-target'; text = 'PERFECT!'; colorClass = 'text-emerald-400'; }
+                else if (att === 2) { icon = 'ph-thumbs-up'; text = 'NICE RECOVERY'; colorClass = 'text-amber-400'; }
+                else if (att === 3) { icon = 'ph-check-circle'; text = 'GOT IT'; colorClass = 'text-orange-400'; }
+                else { icon = 'ph-x-circle'; text = 'STRIKE OUT'; colorClass = 'text-red-500'; }
+
+                feedbackText.innerHTML = `
+                    <i class="ph-fill ${icon} text-7xl ${colorClass} mb-2 shadow-black drop-shadow-lg"></i>
+                    <span class="tracking-tight">${text}</span>
+                `;
+                
+                // Trigger CSS scale animation
+                feedbackText.classList.remove('scale-0', 'opacity-0');
+                feedbackText.classList.add('scale-100', 'opacity-100');
+            } else {
+                feedbackOverlay.classList.add('hidden');
+                feedbackText.classList.add('scale-0', 'opacity-0');
+                feedbackText.classList.remove('scale-100', 'opacity-100');
+            }
+
+            // Footer Action Bar
+            const btnBase = "inline-flex items-center justify-center rounded-2xl text-base font-black transition-all active:scale-95 px-8 py-3.5 shadow-md ";
+            let footerHtml = '';
+            
+            if (gameState === "playing" && !isFinished) {
+                if (attempts === 0) {
+                    footerHtml = `<div class="text-slate-500 font-bold tracking-widest uppercase text-sm animate-pulse flex items-center gap-2"><i class="ph-bold ph-mouse-left text-lg"></i> Select location on map</div>`;
+                } else if (attempts === 1) {
+                    footerHtml = `<div class="text-amber-600 font-bold tracking-widest uppercase text-sm flex items-center gap-2 animate-bounce"><i class="ph-fill ph-warning-circle text-lg"></i> Incorrect. 2 attempts left.</div>`;
+                } else {
+                    footerHtml = `<div class="text-red-600 font-bold tracking-widest uppercase text-sm flex items-center gap-2"><i class="ph-fill ph-warning text-lg"></i> Last chance! Find the target.</div>`;
+                }
+            } else if (gameState === "reveal" || gameState === "learning") {
+                if (!isFinished) {
+                    const btnText = round < quizSequence.length - 1 ? "Next Challenge <i class='ph-bold ph-arrow-right ml-2'></i>" : "Finish Quiz <i class='ph-bold ph-flag-checkered ml-2'></i>";
+                    footerHtml = `<button onclick="handleNextWrapper()" class="${btnBase} w-full max-w-sm bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/30 border-b-4 border-blue-800">${btnText}</button>`;
+                }
+            } else if (isFinished) {
+                const mistakes = places.filter(p => completedHighlights[p.name]?.attemptsUsed > 1);
+                const reviewBtn = mistakes.length > 0 ? 
+                    `<button onclick="startReviewWrapper()" class="${btnBase} w-full sm:w-auto bg-amber-500 text-white hover:bg-amber-600 shadow-amber-500/30 border-b-4 border-amber-700"><i class="ph-bold ph-arrows-clockwise mr-2"></i> Review Mistakes (${mistakes.length})</button>` : '';
+                
+                footerHtml = `
+                    <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                        ${reviewBtn}
+                        <button onclick="clearSessionWrapper()" class="${btnBase} w-full sm:w-auto bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 border-b-4 border-b-slate-300"><i class="ph-bold ph-plus mr-2"></i> New Set</button>
+                    </div>`;
+            } else {
+                footerHtml = `<div class="text-slate-400 font-bold uppercase tracking-widest text-xs flex items-center gap-2"><i class="ph-bold ph-info"></i> Enter target list to start</div>`;
+            }
+            
+            footerPrompt.innerHTML = footerHtml;
+
+            // Handle Auto-Advance Timing
+            if (gameState === "reveal" && autoNext && !isFinished) {
+                clearTimeout(autoNextTimeout);
+                autoNextTimeout = setTimeout(() => handleNext(), 1800); // 1.8s gives time to see feedback
+            }
+            
+            // Timer Control
+            if (gameState !== "playing") stopTimer();
+            else if (gameState === "playing" && !timerInterval) startTimer();
+
+            // Render Leaflet
+            if (fullRender) renderMap();
+        }
+
+        // --- Render Map Elements ---
+        function renderMap() {
+            if (!mapInstance || typeof L === 'undefined') return;
+            const current = quizSequence[round];
+            const isFinished = quizSequence.length > 0 && round >= quizSequence.length;
+
+            // Clear previous interactive layers
+            mapLayers.forEach(layer => mapInstance.removeLayer(layer));
+            mapLayers = [];
+
+            // Calculate overall bounds to keep focus tight
+            let playZoneBounds = null;
+            if (places.length > 0) {
+                playZoneBounds = L.latLngBounds([]);
+                places.forEach(p => {
+                    if (p.bbox) {
+                        playZoneBounds.extend([p.bbox[0], p.bbox[2]]); // lat/lon
+                        playZoneBounds.extend([p.bbox[1], p.bbox[3]]);
+                    }
+                });
+            }
+
+            // Handle Camera/Zoom logic & Bounds Locking
+            if (isSetupPhase()) {
+                // Remove map locks so user can pan freely before start
+                mapInstance.setMaxBounds([[-90, -180], [90, 180]]);
+                mapInstance.setMinZoom(2);
+            } else if (playZoneBounds && playZoneBounds.isValid()) {
+                // Lock the view so users cannot zoom out to the whole globe unnecessarily
+                const paddedPlayZone = playZoneBounds.pad(0.3); // Add padding for bounds lock
+                mapInstance.setMaxBounds(paddedPlayZone);
+                const minZ = mapInstance.getBoundsZoom(paddedPlayZone);
+                mapInstance.setMinZoom(minZ > 0 ? minZ : 2);
+            }
+
+            if (isFinished) {
+                mapContainer.style.cursor = "default";
+                if (playZoneBounds && playZoneBounds.isValid()) {
+                    mapInstance.fitBounds(playZoneBounds.pad(0.1), { animate: true, duration: 1.5 });
+                }
+                lastFramedRound = -1;
+            } else if (gameState === "playing") {
+                mapContainer.style.cursor = "crosshair";
+                // Only reframe bounds if moving to a new round from a zoomed-in reveal state
+                if (playZoneBounds && playZoneBounds.isValid() && lastFramedRound !== round) {
+                    mapInstance.fitBounds(playZoneBounds.pad(0.1), { animate: true, duration: 1.2 });
+                    lastFramedRound = round;
+                }
+            } else if ((gameState === "reveal" || gameState === "learning") && current) {
+                lastFramedRound = -1;
+                mapContainer.style.cursor = "default";
+                
+                // Zoom closely into the current target smoothly
+                if (current.bbox) {
+                    const bounds = L.latLngBounds([current.bbox[0], current.bbox[2]], [current.bbox[1], current.bbox[3]]);
+                    const padded = bounds.pad(0.15); // Add 15% padding
+                    mapInstance.fitBounds(padded, { animate: true, duration: 1.2 });
+                } else {
+                    mapInstance.setView([current.lat, current.lon], 6, { animate: true, duration: 1.2 });
+                }
+            }
+
+            // Apply a dimming mask over the world if actively playing
+            if (!isSetupPhase()) {
+                const mask = L.rectangle([[-90, -180], [90, 180]], {
+                    color: 'transparent', fillColor: '#334155', fillOpacity: 0.35, interactive: false
+                }).addTo(mapInstance);
+                mapLayers.push(mask);
+            }
+
+            // Draw Missed Clicks (Red X markers)
+            missedClicks.forEach(latlng => {
+                const marker = L.circleMarker(latlng, {
+                    radius: 6, color: '#991b1b', fillColor: '#ef4444', fillOpacity: 1, weight: 2, interactive: false
+                }).addTo(mapInstance);
+                mapLayers.push(marker);
+            });
+
+            // Draw Target Features
+            places.forEach(p => {
+                const isDone = !!completedHighlights[p.name];
+                const isWrongThisRound = wrongGuessesThisRound.includes(p.name);
+                const isCurrentLearning = gameState === "learning" && current && p.name === current.name;
+                const isCurrentReveal = gameState === "reveal" && current && p.name === current.name;
+                
+                const data = completedHighlights[p.name];
+                
+                let style;
+                if (isDone) {
+                    // Confirmed answered feature
+                    style = { color: data.borderColor, fillColor: data.color, fillOpacity: 0.85, weight: 2.5 };
+                } else if (isCurrentLearning || isCurrentReveal) {
+                    // Actively showing the correct answer
+                    style = { color: '#2563eb', fillColor: '#60a5fa', fillOpacity: 0.7, weight: 3, dashArray: '5, 5', className: 'animate-pulse' }; 
+                } else if (isWrongThisRound) {
+                    // Clicked wrong feature during this round
+                    style = { color: '#ef4444', fillColor: 'url(#stripes)', fillOpacity: 1, weight: 2 };
+                } else {
+                    // Unanswered feature waiting to be clicked
+                    if (p.isCity) {
+                        // Point features (cities) need to be visible dots
+                        style = { color: '#334155', fillColor: '#ffffff', fillOpacity: 1, weight: 2.5 };
+                    } else {
+                        // Polygons (countries/states) subtle highlight
+                        style = { color: '#ffffff', fillColor: '#ffffff', fillOpacity: 0.25, weight: 1.5 };
+                    }
+                }
+
+                // Interaction logic: only clickable if it's playing, not done, and not already clicked wrong this round
+                const isClickable = gameState === "playing" && !isDone && !isWrongThisRound;
+
+                let layer;
+                if (p.isCity) {
+                    layer = L.circleMarker([p.lat, p.lon], { 
+                        ...style, 
+                        radius: isDone || isWrongThisRound || isCurrentLearning || isCurrentReveal ? 10 : 8, 
+                        interactive: isClickable 
+                    });
+                } else if (p.geojson) {
+                    layer = L.geoJSON(p.geojson, { 
+                        style: () => style,
+                        interactive: isClickable 
+                    });
+                }
+
+                if (layer) {
+                    if (isClickable) {
+                        // Add hover effects manually for better UX
+                        layer.on('mouseover', (e) => {
+                            if(p.isCity) layer.setRadius(12);
+                            layer.setStyle({ weight: 4 });
+                        });
+                        layer.on('mouseout', (e) => {
+                            if(p.isCity) layer.setRadius(8);
+                            layer.setStyle({ weight: style.weight });
+                        });
+                        
+                        layer.on('click', (e) => {
+                            L.DomEvent.stopPropagation(e); // Prevent map background click
+                            submitGuess(p.name);
+                        });
+                    }
+                    layer.addTo(mapInstance);
+                    mapLayers.push(layer);
+                    
+                    // Bring active target to front
+                    if (isCurrentLearning || isCurrentReveal) {
+                        if(layer.bringToFront) layer.bringToFront();
+                    }
+                }
+            });
+        }
+
+        function isSetupPhase() {
+            return gameState === "setup";
+        }
+
+        // Global wrappers for innerHTML onclick handlers
+        window.handleNextWrapper = () => handleNext();
+        window.startReviewWrapper = () => startReview();
+        window.clearSessionWrapper = () => clearSession();
+
+        // Run Init
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
