@@ -22,27 +22,45 @@
         
         /* Custom map styles */
         .leaflet-container { background-color: #cbd5e1; font-family: 'Inter', sans-serif; }
-        .leaflet-interactive { transition: fill-opacity 0.2s, stroke-width 0.2s; }
+        .leaflet-interactive { transition: fill-opacity 0.15s, stroke-width 0.15s; }
         .leaflet-interactive:hover { fill-opacity: 0.9 !important; }
+        
+        /* Map Labels (Tooltips) */
+        .leaflet-tooltip.map-label {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            font-weight: 900;
+            font-size: 11px;
+            color: #0f172a;
+            /* White text stroke for readability over map colors */
+            text-shadow: 
+                -1.5px -1.5px 0 rgba(255,255,255,0.9),  
+                 1.5px -1.5px 0 rgba(255,255,255,0.9),
+                -1.5px  1.5px 0 rgba(255,255,255,0.9),
+                 1.5px  1.5px 0 rgba(255,255,255,0.9);
+            padding: 0;
+            margin: 0;
+        }
+        /* Hide default tooltip arrow */
+        .leaflet-tooltip-top:before,
+        .leaflet-tooltip-bottom:before,
+        .leaflet-tooltip-left:before,
+        .leaflet-tooltip-right:before {
+            display: none !important;
+        }
         
         /* Utility classes */
         .hidden { display: none !important; }
         
         /* Animations */
         @keyframes popIn {
-            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
-            50% { transform: scale(1.05); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
         }
-        .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-pop { animation: popIn 0.2s ease-out forwards; }
 
-        /* Custom Scrollbar for Textarea & Fact Box */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
@@ -109,19 +127,6 @@
                             <i class="ph-bold ph-trash"></i> Reset List
                         </button>
                     </div>
-
-                    <hr class="border-slate-100" />
-
-                    <!-- Settings Toggles -->
-                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors" id="btn-autonext-container">
-                        <div class="flex flex-col">
-                            <span class="text-sm font-bold text-slate-700">Auto-Advance</span>
-                            <span class="text-[10px] text-slate-500 font-medium">Skip manually clicking 'Next'</span>
-                        </div>
-                        <div id="btn-autonext" class="w-12 h-6 rounded-full transition-colors duration-300 relative bg-blue-600 shadow-inner">
-                            <div id="autonext-pill" class="absolute top-1 left-7 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -144,28 +149,8 @@
         <!-- MAP AREA -->
         <div class="lg:col-span-8 xl:col-span-9 bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden flex flex-col min-h-[600px] lg:min-h-0 lg:h-[calc(100vh-4rem)] relative">
             
-            <!-- Map Header -->
-            <div class="px-6 py-4 border-b border-slate-100 bg-white/90 backdrop-blur z-[400] relative flex justify-between items-center shrink-0">
-                <div class="flex flex-col">
-                    <span id="header-status" class="text-[10px] font-black text-blue-600 uppercase tracking-widest flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-                        Map Explorer
-                    </span>
-                    <span id="header-title" class="text-xl font-black text-slate-800 truncate max-w-[300px] md:max-w-md">
-                        Enter list & select mode
-                    </span>
-                </div>
-
-                <div id="strikes-container" class="flex flex-col items-end gap-1.5 hidden">
-                    <div class="flex gap-1.5" id="strikes-dots">
-                        <!-- Filled by JS -->
-                    </div>
-                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Strikes Left</span>
-                </div>
-            </div>
-
             <!-- Map Container -->
-            <div class="flex-1 relative z-0 overflow-hidden">
+            <div class="flex-1 relative z-0 overflow-hidden rounded-t-3xl">
                 <div id="map" class="w-full h-full absolute inset-0 z-0 bg-[#e2e8f0]"></div>
                 
                 <!-- Loading Overlay -->
@@ -184,7 +169,7 @@
                 </div>
 
                 <!-- Missing Locations Notification -->
-                <div id="missing-locations-toast" class="absolute top-4 right-4 z-[1000] bg-red-500 text-white px-4 py-3 rounded-xl shadow-lg font-medium text-sm hidden max-w-sm flex items-start gap-3 border border-red-400">
+                <div id="missing-locations-toast" class="absolute top-20 right-4 z-[1000] bg-red-500 text-white px-4 py-3 rounded-xl shadow-lg font-medium text-sm hidden max-w-sm flex items-start gap-3 border border-red-400">
                     <i class="ph-fill ph-warning-circle text-xl shrink-0 mt-0.5"></i>
                     <div>
                         <p class="font-bold mb-1">Could not find some locations:</p>
@@ -193,61 +178,31 @@
                     </div>
                 </div>
 
-                <!-- Fact Box (Wikipedia) -->
-                <div id="fact-box" class="absolute bottom-4 left-4 z-[500] bg-white/95 backdrop-blur border border-slate-200 p-5 rounded-2xl shadow-xl max-w-[320px] hidden transition-all">
-                    <div class="flex items-center justify-between mb-2 border-b border-slate-100 pb-2">
-                        <h4 class="text-[10px] font-black text-blue-600 uppercase tracking-widest flex items-center gap-1.5"><i class="ph-fill ph-info"></i> Quick Fact</h4>
-                        <span id="fact-title" class="text-[10px] font-bold text-slate-400 uppercase"></span>
-                    </div>
-                    <p id="fact-text" class="text-sm text-slate-700 leading-relaxed max-h-32 overflow-y-auto pr-2">Loading...</p>
-                </div>
-
-                <!-- Heads Up Display (HUD) -->
-                <div id="seterra-header" class="absolute top-4 left-4 right-4 flex justify-between items-start z-[500] pointer-events-none hidden">
+                <!-- Unified HUD Bar (Seterra Style) -->
+                <div id="seterra-header" class="absolute top-4 left-1/2 -translate-x-1/2 flex items-stretch z-[500] pointer-events-auto hidden shadow-xl rounded-full bg-slate-900/95 backdrop-blur-sm border border-slate-700 overflow-hidden h-14 w-[90%] max-w-2xl animate-pop">
                     <!-- Progress & Score -->
-                    <div class="bg-slate-900/90 backdrop-blur border border-white/10 text-white px-5 py-2.5 rounded-2xl flex items-center gap-5 shadow-xl origin-top-left pointer-events-auto">
-                        <div class="flex flex-col">
-                            <span class="text-[9px] font-bold text-blue-400 uppercase tracking-widest mb-0.5">Progress</span>
-                            <span class="text-lg font-black tabular-nums leading-none"><span id="hud-progress">0</span> <span class="text-slate-500 text-sm">/</span> <span id="hud-total" class="text-slate-400 text-sm">0</span></span>
-                        </div>
-                        <div class="w-[1px] h-8 bg-white/10"></div>
-                        <div class="flex flex-col">
-                            <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-0.5">Score</span>
-                            <span class="text-lg font-black tabular-nums leading-none" id="hud-score">0%</span>
-                        </div>
+                    <div class="px-5 flex items-center gap-4 bg-slate-800/60 border-r border-slate-700">
+                        <span class="text-sm font-black text-white tabular-nums"><span id="hud-progress">0</span><span class="text-slate-500 mx-1">/</span><span id="hud-total" class="text-slate-400">0</span></span>
+                        <span class="text-sm font-black text-emerald-400 tabular-nums w-10 text-right" id="hud-score">0%</span>
                     </div>
                     
                     <!-- Current Target -->
-                    <div class="absolute left-1/2 -translate-x-1/2 text-center pointer-events-auto" id="hud-target-container">
-                        <div class="flex flex-col items-center origin-top">
-                            <span class="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-1.5 drop-shadow-md bg-white/50 px-2 py-0.5 rounded backdrop-blur-sm" id="hud-verb">
-                                Click on
-                            </span>
-                            <div class="bg-blue-600 px-6 py-2.5 rounded-2xl shadow-[0_6px_0_#1e3a8a] border-2 border-blue-400 hover:-translate-y-1 hover:shadow-[0_8px_0_#1e3a8a] transition-all cursor-default">
-                                <span class="text-2xl font-black tracking-tight text-white drop-shadow-sm" id="hud-target-name">Target</span>
-                            </div>
-                        </div>
+                    <div class="px-4 flex-1 flex items-center justify-center">
+                        <span class="text-slate-400 text-[10px] font-black uppercase tracking-widest mr-3 shrink-0" id="hud-verb">Click on</span>
+                        <span class="text-xl font-black text-white tracking-tight truncate" id="hud-target-name">Target</span>
                     </div>
                     
                     <!-- Timer -->
-                    <div class="bg-slate-900/90 backdrop-blur border border-white/10 text-white px-5 py-2.5 rounded-2xl shadow-xl flex items-center gap-3 origin-top-right pointer-events-auto">
-                        <i class="ph-bold ph-timer text-blue-400 text-xl"></i>
-                        <div class="flex flex-col items-end w-12">
-                            <span class="text-lg font-black tabular-nums leading-none" id="hud-timer">00:00</span>
-                        </div>
+                    <div class="px-5 flex items-center gap-2 bg-slate-800/60 border-l border-slate-700">
+                        <i class="ph-bold ph-timer text-blue-400 text-lg"></i>
+                        <span class="text-sm font-black text-white tabular-nums" id="hud-timer">00:00</span>
                     </div>
                 </div>
 
-                <!-- Correct Feedback Overlay -->
-                <div id="feedback-overlay" class="absolute inset-0 z-[600] pointer-events-none flex items-center justify-center bg-white/10 backdrop-blur-[2px] hidden transition-opacity">
-                    <div id="feedback-text" class="text-5xl md:text-7xl font-black text-white drop-shadow-[0_0_30px_rgba(0,0,0,0.5)] transform transition-all duration-300 scale-0 opacity-0 flex flex-col items-center text-center gap-4">
-                        <!-- Content inserted via JS -->
-                    </div>
-                </div>
             </div>
 
             <!-- Footer Prompt / Action Bar -->
-            <div id="footer-prompt" class="px-6 py-5 bg-white border-t border-slate-100 flex justify-center items-center z-[400] relative shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] min-h-[90px]">
+            <div id="footer-prompt" class="px-6 py-4 bg-white border-t border-slate-100 flex justify-between items-center z-[400] relative shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] min-h-[72px]">
                 <!-- Filled by JS -->
             </div>
         </div>
@@ -270,20 +225,18 @@
         let wrongGuessesThisRound = [];
         let missedClicks = []; 
         let completedHighlights = {};
-        let gameState = "setup"; // "setup" | "playing" | "reveal" | "learning"
+        let gameState = "setup"; // "setup" | "playing" | "learning"
         let time = 0;
-        let autoNext = true;
         let hintUsedThisRound = false;
+        let isWaitingForNext = false; // Lock interactions during 3-strike penalty reveal
         
         let mapInstance = null;
         let mapLayers = [];
         let timerInterval = null;
-        let autoNextTimeout = null;
         let lastFramedRound = -1;
 
         // Load caches
         let geoCache = JSON.parse(localStorage.getItem('geomaster-cache-v3')) || {};
-        let wikiCache = JSON.parse(localStorage.getItem('geomaster-wiki-v1')) || {};
         let highScores = JSON.parse(localStorage.getItem('geomaster-scores-v1')) || {};
 
         // Audio Context
@@ -294,27 +247,15 @@
         const btnQuiz = document.getElementById('btn-quiz');
         const btnLearn = document.getElementById('btn-learn');
         const btnClear = document.getElementById('btn-clear');
-        const toggleAutoNext = document.getElementById('btn-autonext-container');
-        const btnAutoNext = document.getElementById('btn-autonext');
-        const autonextPill = document.getElementById('autonext-pill');
         
         const accuracyScoreEl = document.getElementById('accuracy-score');
         const accuracyGradeEl = document.getElementById('accuracy-grade');
-        
-        const headerStatusEl = document.getElementById('header-status');
-        const headerTitleEl = document.getElementById('header-title');
-        const strikesContainer = document.getElementById('strikes-container');
-        const strikesDots = document.getElementById('strikes-dots');
         
         const mapContainer = document.getElementById('map');
         const loadingOverlay = document.getElementById('loading-overlay');
         const loadingMsgEl = document.getElementById('loading-msg');
         const loadingProgress = document.getElementById('loading-progress');
         
-        const factBox = document.getElementById('fact-box');
-        const factTitle = document.getElementById('fact-title');
-        const factText = document.getElementById('fact-text');
-
         const seterraHeader = document.getElementById('seterra-header');
         const hudProgress = document.getElementById('hud-progress');
         const hudTotal = document.getElementById('hud-total');
@@ -322,12 +263,8 @@
         const hudTimer = document.getElementById('hud-timer');
         const hudVerb = document.getElementById('hud-verb');
         const hudTargetName = document.getElementById('hud-target-name');
-        const hudTargetContainer = document.getElementById('hud-target-container');
         
-        const feedbackOverlay = document.getElementById('feedback-overlay');
-        const feedbackText = document.getElementById('feedback-text');
         const footerPrompt = document.getElementById('footer-prompt');
-        
         const missingLocationsToast = document.getElementById('missing-locations-toast');
         const missingLocationsText = document.getElementById('missing-locations-text');
 
@@ -349,7 +286,6 @@
 
         function loadPreset(key) {
             rawInputEl.value = PRESETS[key] || "";
-            // Add a brief highlight to the textarea
             rawInputEl.classList.add('bg-blue-50');
             setTimeout(() => rawInputEl.classList.remove('bg-blue-50'), 300);
         }
@@ -367,8 +303,8 @@
                 const gainNode = audioCtx.createGain();
                 osc.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
-
                 const now = audioCtx.currentTime;
+
                 if (type === 'correct') {
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(523.25, now); // C5
@@ -387,19 +323,6 @@
             } catch (e) { console.warn("Audio error", e); }
         }
 
-        // --- Data Fetching ---
-        async function fetchWikiFact(targetName) {
-            if (wikiCache[targetName]) return wikiCache[targetName];
-            try {
-                const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(targetName)}`);
-                const data = await res.json();
-                const text = data.extract || "No quick facts found for this location.";
-                wikiCache[targetName] = text;
-                localStorage.setItem('geomaster-wiki-v1', JSON.stringify(wikiCache));
-                return text;
-            } catch (e) { return "Could not load facts at this time."; }
-        }
-
         // --- Initialization ---
         function init() {
             if (!rawInputEl.value.trim()) {
@@ -408,11 +331,12 @@
 
             mapInstance = L.map(mapContainer, { 
                 center: [20, 0], zoom: 2, minZoom: 2, worldCopyJump: true, zoomControl: false,
-                maxBounds: [[-90, -180], [90, 180]]
+                maxBounds: [[-90, -180], [90, 180]],
+                wheelPxPerZoomLevel: 120 // slightly smoother zoom
             });
             
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', { 
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                attribution: '&copy; OSM &copy; CARTO',
                 subdomains: 'abcd', maxZoom: 10
             }).addTo(mapInstance);
             
@@ -423,10 +347,6 @@
             btnQuiz.addEventListener('click', () => prepareGame("playing"));
             btnLearn.addEventListener('click', () => prepareGame("learning"));
             btnClear.addEventListener('click', clearSession);
-            toggleAutoNext.addEventListener('click', () => {
-                autoNext = !autoNext;
-                updateUI();
-            });
 
             updateUI();
         }
@@ -443,11 +363,11 @@
             wrongGuessesThisRound = [];
             missedClicks = [];
             hintUsedThisRound = false;
+            isWaitingForNext = false;
             lastFramedRound = -1;
             
             loadingOverlay.classList.remove('hidden');
             missingLocationsToast.classList.add('hidden');
-            factBox.classList.add('hidden');
             
             const results = [];
             const notFound = [];
@@ -480,7 +400,6 @@
                     if (f) {
                         const featureData = {
                             name: targetName,
-                            displayName: f.display_name,
                             lat: Number(f.lat),
                             lon: Number(f.lon),
                             bbox: f.boundingbox.map(Number),
@@ -491,14 +410,12 @@
                         geoCache[targetName] = featureData;
                     } else {
                         notFound.push(targetName);
-                        geoCache[targetName] = "NOT_FOUND"; // cache misses too
+                        geoCache[targetName] = "NOT_FOUND";
                     }
                     localStorage.setItem('geomaster-cache-v3', JSON.stringify(geoCache));
                     
-                    // Respect 1s delay only when actively hitting API
-                    if (i < uniqueLines.length - 1) {
-                        await new Promise(r => setTimeout(r, 1000));
-                    }
+                    // Respect delay when hitting API
+                    if (i < uniqueLines.length - 1) await new Promise(r => setTimeout(r, 1000));
                 } catch (e) {
                     console.error("Geocoding failed for", targetName, e);
                     notFound.push(targetName);
@@ -532,28 +449,24 @@
         }
 
         function useHint() {
-            if (hintUsedThisRound || gameState !== "playing") return;
+            if (hintUsedThisRound || gameState !== "playing" || isWaitingForNext) return;
             hintUsedThisRound = true;
             
-            // Penalty: using a hint costs an attempt (if you haven't already struck out)
-            if (attempts < 2) {
-                attempts++;
-            }
+            if (attempts < 2) attempts++; // Costs an attempt
             
-            // Zoom camera to region
             const current = quizSequence[round];
             if (current && current.bbox) {
                 const bounds = L.latLngBounds([current.bbox[0], current.bbox[2]], [current.bbox[1], current.bbox[3]]);
-                // Pad by 2.0 to show general region but not give it away immediately
                 mapInstance.fitBounds(bounds.pad(1.8), { animate: true, duration: 1.5 });
-                lastFramedRound = round; // Prevent auto-zoom from overriding it
+                lastFramedRound = round; // Prevent auto-zoom from immediately overriding it
             }
             updateUI();
         }
 
         function submitGuess(guessedName, mapClickLatLng = null) {
+            if (gameState !== "playing" || isWaitingForNext) return;
             const current = quizSequence[round];
-            if (gameState !== "playing" || !current) return;
+            if (!current) return;
 
             if (guessedName !== current.name) {
                 playSound('wrong');
@@ -564,39 +477,48 @@
                     } else if (mapClickLatLng) {
                         missedClicks.push(mapClickLatLng);
                     }
+                    updateUI(); // Instantly update strikes visually
                 } else {
+                    // 3 Strikes - Failed
                     if (mapClickLatLng) missedClicks.push(mapClickLatLng);
-                    completedHighlights[current.name] = { color: '#ef4444', borderColor: '#b91c1c', attemptsUsed: 3 };
-                    gameState = "reveal";
+                    completedHighlights[current.name] = { color: '#ef4444', borderColor: '#b91c1c', attemptsUsed: 4 };
+                    
+                    isWaitingForNext = true;
+                    updateUI(); // Renders the correct answer in RED
+                    
+                    // Pause so the player can see the correct answer they missed
+                    setTimeout(() => {
+                        isWaitingForNext = false;
+                        round++;
+                        attempts = 0;
+                        wrongGuessesThisRound = [];
+                        missedClicks = [];
+                        hintUsedThisRound = false;
+                        updateUI();
+                    }, 1500);
                 }
             } else {
+                // Correct Guess - Instant Advance!
                 playSound('correct');
                 const finalAttempts = attempts + 1;
+                
+                // Scoring Colors
                 let color, borderColor;
-                if (finalAttempts === 1) { color = '#10b981'; borderColor = '#047857'; }
-                else if (finalAttempts === 2) { color = '#f59e0b'; borderColor = '#b45309'; }
-                else { color = '#f97316'; borderColor = '#c2410c'; }
+                if (finalAttempts === 1) { color = '#ffffff'; borderColor = '#94a3b8'; }      // White
+                else if (finalAttempts === 2) { color = '#fef08a'; borderColor = '#ca8a04'; } // Yellow
+                else { color = '#f97316'; borderColor = '#c2410c'; }                          // Orange
                 
                 completedHighlights[current.name] = { color, borderColor, attemptsUsed: finalAttempts };
-                gameState = "reveal";
-            }
-            updateUI();
-        }
-
-        function handleNext() {
-            clearTimeout(autoNextTimeout);
-            attempts = 0;
-            wrongGuessesThisRound = [];
-            missedClicks = [];
-            hintUsedThisRound = false;
-            
-            if (round < quizSequence.length - 1) {
+                
                 round++;
-                gameState = gameState === "learning" ? "learning" : "playing";
-            } else {
-                round = quizSequence.length;
+                attempts = 0;
+                wrongGuessesThisRound = [];
+                missedClicks = [];
+                hintUsedThisRound = false;
+                
+                // Immediately render the next round, which applies the permanent tooltip to the completed item
+                updateUI();
             }
-            updateUI();
         }
 
         function startReview() {
@@ -609,6 +531,7 @@
             wrongGuessesThisRound = [];
             missedClicks = [];
             hintUsedThisRound = false;
+            isWaitingForNext = false;
             gameState = "playing";
             lastFramedRound = -1;
             
@@ -629,8 +552,8 @@
             time = 0;
             lastFramedRound = -1;
             hintUsedThisRound = false;
+            isWaitingForNext = false;
             rawInputEl.value = "";
-            factBox.classList.add('hidden');
             stopTimer();
             updateUI();
         }
@@ -649,28 +572,12 @@
             if (timerInterval) clearInterval(timerInterval);
         }
 
-        async function showFact(targetName) {
-            factBox.classList.remove('hidden');
-            factBox.classList.remove('animate-pop');
-            void factBox.offsetWidth; // trigger reflow
-            factBox.classList.add('animate-pop');
-            
-            factTitle.innerText = targetName;
-            factText.innerText = "Loading fact...";
-            
-            const fact = await fetchWikiFact(targetName);
-            // Check if we are still showing the same fact
-            if (factTitle.innerText === targetName) {
-                factText.innerText = fact;
-            }
-        }
-
         // --- Render UI ---
         function updateUI(fullRender = true) {
             const current = quizSequence[round];
             const isFinished = quizSequence.length > 0 && round >= quizSequence.length;
             
-            // Scoring
+            // Scoring Math: 1st=100, 2nd=60, 3rd=30, Fail=0
             const completedCount = Object.keys(completedHighlights).length;
             const totalEarnedPoints = Object.values(completedHighlights).reduce((acc, curr) => acc + (curr.attemptsUsed === 1 ? 100 : curr.attemptsUsed === 2 ? 60 : curr.attemptsUsed === 3 ? 30 : 0), 0);
             const totalPossiblePointsSoFar = completedCount * 100;
@@ -683,21 +590,12 @@
             if(!isSetup) rawInputEl.classList.add('opacity-50', 'bg-slate-100');
             else rawInputEl.classList.remove('opacity-50', 'bg-slate-100');
 
-            if (autoNext) {
-                btnAutoNext.classList.replace('bg-slate-300', 'bg-blue-600');
-                autonextPill.classList.replace('left-1', 'left-7');
-            } else {
-                btnAutoNext.classList.replace('bg-blue-600', 'bg-slate-300');
-                autonextPill.classList.replace('left-7', 'left-1');
-            }
-
-            // High Scores Logic (Calculate when finished)
+            // High Scores Logic
             let isNewBest = false;
             let bestScoreStr = "-";
             if (isFinished && places.length > 0) {
                 const listKey = places.map(p => p.name).sort().join(',').substring(0, 100);
                 let best = highScores[listKey];
-                
                 if (!best || avgScore > best.score || (avgScore === best.score && time < best.time)) {
                     best = { score: avgScore, time: time };
                     highScores[listKey] = best;
@@ -707,7 +605,7 @@
                 bestScoreStr = `Best: ${best.score}% in ${formatTime(best.time)}`;
             }
 
-            // Score Panel
+            // Score Panel in Sidebar
             accuracyScoreEl.innerText = `${avgScore}%`;
             if(completedCount === 0) accuracyGradeEl.innerText = '-';
             else if(avgScore >= 90) accuracyGradeEl.innerText = 'S';
@@ -725,21 +623,7 @@
                 'bg-red-500 border-red-400 text-white shadow-red-500/50'
             }`;
 
-            headerStatusEl.innerHTML = gameState === "learning" ? '<i class="ph-bold ph-book-open"></i> Study Session' : '<span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span> Target Identification';
-            headerTitleEl.innerText = isSetup ? "Waiting for list..." : isFinished ? "Session Complete!" : current ? current.name : "";
-
-            if (gameState === "playing" && !isFinished) {
-                strikesContainer.classList.remove('hidden');
-                let dotsHtml = '';
-                for (let i = 0; i < 3; i++) {
-                    const active = i < (3 - attempts);
-                    dotsHtml += `<div class="w-3.5 h-3.5 rounded-full transition-all duration-300 ${active ? 'bg-blue-500 shadow-[inset_0_-2px_0_rgba(0,0,0,0.2)]' : 'bg-slate-200 border border-slate-300'}"></div>`;
-                }
-                strikesDots.innerHTML = dotsHtml;
-            } else {
-                strikesContainer.classList.add('hidden');
-            }
-
+            // Map HUD Top Bar
             if (!isSetup) {
                 seterraHeader.classList.remove('hidden');
                 hudProgress.innerText = completedCount;
@@ -748,100 +632,70 @@
                 hudTimer.innerText = formatTime(time);
                 
                 if (!isFinished && current) {
-                    hudTargetContainer.classList.remove('hidden');
-                    hudVerb.innerText = gameState === "learning" ? "Study Area" : "Find & Click";
+                    hudVerb.innerText = gameState === "learning" ? "Study Area" : "Click on";
                     hudTargetName.innerText = current.name;
-                    hudTargetContainer.firstElementChild.classList.remove('animate-pop');
-                    void hudTargetContainer.offsetWidth; 
-                    hudTargetContainer.firstElementChild.classList.add('animate-pop');
-                } else {
-                    hudTargetContainer.classList.add('hidden');
+                    // Trigger text animation
+                    hudTargetName.classList.remove('animate-pop');
+                    void hudTargetName.offsetWidth; 
+                    hudTargetName.classList.add('animate-pop');
+                } else if (isFinished) {
+                    hudVerb.innerText = "Quiz";
+                    hudTargetName.innerText = "Complete!";
                 }
             } else {
                 seterraHeader.classList.add('hidden');
             }
 
-            // Fact Box visibility
-            if ((gameState === "reveal" || gameState === "learning") && current) {
-                showFact(current.name);
-            } else {
-                factBox.classList.add('hidden');
-            }
-
-            if (gameState === "reveal" && current && completedHighlights[current.name]) {
-                const att = completedHighlights[current.name].attemptsUsed;
-                feedbackOverlay.classList.remove('hidden');
-                
-                let icon, text, colorClass;
-                if(att === 1) { icon = 'ph-target'; text = 'PERFECT!'; colorClass = 'text-emerald-400'; }
-                else if (att === 2) { icon = 'ph-thumbs-up'; text = 'NICE RECOVERY'; colorClass = 'text-amber-400'; }
-                else if (att === 3) { icon = 'ph-check-circle'; text = 'GOT IT'; colorClass = 'text-orange-400'; }
-                else { icon = 'ph-x-circle'; text = 'STRIKE OUT'; colorClass = 'text-red-500'; }
-
-                feedbackText.innerHTML = `
-                    <i class="ph-fill ${icon} text-7xl ${colorClass} mb-2 shadow-black drop-shadow-lg"></i>
-                    <span class="tracking-tight">${text}</span>
-                `;
-                feedbackText.classList.remove('scale-0', 'opacity-0');
-                feedbackText.classList.add('scale-100', 'opacity-100');
-            } else {
-                feedbackOverlay.classList.add('hidden');
-                feedbackText.classList.add('scale-0', 'opacity-0');
-                feedbackText.classList.remove('scale-100', 'opacity-100');
-            }
-
-            // Footer Action Bar
-            const btnBase = "inline-flex items-center justify-center rounded-2xl text-base font-black transition-all active:scale-95 px-8 py-3.5 shadow-md shrink-0 ";
+            // Action Footer
+            const btnBase = "inline-flex items-center justify-center rounded-2xl text-sm font-black transition-all active:scale-95 px-6 py-3 shadow-sm shrink-0 ";
             let footerHtml = '';
             
             if (gameState === "playing" && !isFinished) {
-                const hintBtn = hintUsedThisRound ? 
-                    `<button disabled class="${btnBase} bg-slate-200 text-slate-400 shadow-none border border-slate-300 ml-auto cursor-not-allowed"><i class="ph-bold ph-magnifying-glass mr-2"></i> Hint Used</button>` :
-                    `<button onclick="useHintWrapper()" class="${btnBase} bg-amber-100 text-amber-700 hover:bg-amber-200 shadow-none border border-amber-300 ml-auto"><i class="ph-bold ph-magnifying-glass mr-2"></i> Use Hint</button>`;
+                // Strike dots
+                let dotsHtml = `<div class="flex gap-1.5 mr-4">`;
+                for (let i = 0; i < 3; i++) {
+                    const active = i < (3 - attempts);
+                    dotsHtml += `<div class="w-3 h-3 rounded-full transition-all duration-300 ${active ? 'bg-blue-500' : 'bg-slate-200'}"></div>`;
+                }
+                dotsHtml += `</div>`;
 
-                if (attempts === 0) {
-                    footerHtml = `<div class="flex items-center w-full max-w-2xl"><div class="text-slate-500 font-bold tracking-widest uppercase text-sm animate-pulse flex items-center gap-2"><i class="ph-bold ph-mouse-left text-lg"></i> Select location on map</div>${hintBtn}</div>`;
-                } else if (attempts === 1) {
-                    footerHtml = `<div class="flex items-center w-full max-w-2xl"><div class="text-amber-600 font-bold tracking-widest uppercase text-sm flex items-center gap-2 animate-bounce"><i class="ph-fill ph-warning-circle text-lg"></i> Incorrect. 2 attempts left.</div>${hintBtn}</div>`;
+                const hintBtn = hintUsedThisRound ? 
+                    `<button disabled class="${btnBase} bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed"><i class="ph-bold ph-magnifying-glass mr-2"></i> Hint</button>` :
+                    `<button onclick="useHintWrapper()" class="${btnBase} bg-amber-100 text-amber-700 hover:bg-amber-200 border border-amber-300"><i class="ph-bold ph-magnifying-glass mr-2"></i> Hint</button>`;
+
+                if (isWaitingForNext) {
+                    footerHtml = `<div class="flex items-center w-full"><div class="text-red-600 font-bold uppercase text-xs flex items-center gap-2"><i class="ph-fill ph-x-circle text-lg"></i> Correct location shown above. Moving on...</div></div>`;
                 } else {
-                    footerHtml = `<div class="flex items-center w-full max-w-2xl"><div class="text-red-600 font-bold tracking-widest uppercase text-sm flex items-center gap-2"><i class="ph-fill ph-warning text-lg"></i> Last chance! Find the target.</div>${hintBtn}</div>`;
+                    footerHtml = `<div class="flex items-center justify-between w-full"><div class="flex items-center">${dotsHtml}<div class="text-slate-500 font-bold tracking-widest uppercase text-xs hidden sm:block">Find target</div></div>${hintBtn}</div>`;
                 }
-            } else if (gameState === "reveal" || gameState === "learning") {
-                if (!isFinished) {
-                    const btnText = round < quizSequence.length - 1 ? "Next Challenge <i class='ph-bold ph-arrow-right ml-2'></i>" : "Finish Quiz <i class='ph-bold ph-flag-checkered ml-2'></i>";
-                    footerHtml = `<button onclick="handleNextWrapper()" class="${btnBase} w-full max-w-sm bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/30 border-b-4 border-blue-800">${btnText}</button>`;
-                }
+
+            } else if (gameState === "learning" && !isFinished) {
+                 footerHtml = `<button onclick="handleNextWrapper()" class="${btnBase} w-full max-w-sm bg-blue-600 text-white hover:bg-blue-700 mx-auto">Next Target <i class='ph-bold ph-arrow-right ml-2'></i></button>`;
             } else if (isFinished) {
                 const mistakes = places.filter(p => completedHighlights[p.name]?.attemptsUsed > 1);
                 const reviewBtn = mistakes.length > 0 ? 
-                    `<button onclick="startReviewWrapper()" class="${btnBase} w-full sm:w-auto bg-amber-500 text-white hover:bg-amber-600 shadow-amber-500/30 border-b-4 border-amber-700"><i class="ph-bold ph-arrows-clockwise mr-2"></i> Review Mistakes (${mistakes.length})</button>` : '';
+                    `<button onclick="startReviewWrapper()" class="${btnBase} bg-amber-500 text-white hover:bg-amber-600 w-full sm:w-auto"><i class="ph-bold ph-arrows-clockwise mr-2"></i> Review Mistakes (${mistakes.length})</button>` : '';
                 
-                const scoreBadge = isNewBest ? 
-                    `<div class="absolute -top-3 -right-2 bg-pink-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider animate-bounce shadow-md">New Best!</div>` : '';
+                const scoreBadge = isNewBest ? `<div class="absolute -top-3 -right-2 bg-pink-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider animate-bounce shadow-md">New Best!</div>` : '';
 
                 footerHtml = `
-                    <div class="flex flex-col sm:flex-row gap-4 w-full justify-center items-center">
+                    <div class="flex flex-col sm:flex-row gap-3 w-full justify-center items-center">
                         <div class="hidden md:flex flex-col items-end mr-4 relative">
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">List Records</span>
-                            <span class="text-sm font-bold text-slate-700">${bestScoreStr}</span>
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">List Records</span>
+                            <span class="text-xs font-bold text-slate-700">${bestScoreStr}</span>
                             ${scoreBadge}
                         </div>
                         ${reviewBtn}
-                        <button onclick="clearSessionWrapper()" class="${btnBase} w-full sm:w-auto bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 border-b-4 border-b-slate-300"><i class="ph-bold ph-plus mr-2"></i> New Set</button>
+                        <button onclick="clearSessionWrapper()" class="${btnBase} bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 w-full sm:w-auto"><i class="ph-bold ph-plus mr-2"></i> New Set</button>
                     </div>`;
             } else {
-                footerHtml = `<div class="text-slate-400 font-bold uppercase tracking-widest text-xs flex items-center gap-2"><i class="ph-bold ph-info"></i> Enter target list to start</div>`;
+                footerHtml = `<div class="text-slate-400 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 w-full justify-center"><i class="ph-bold ph-info"></i> Enter target list to start</div>`;
             }
             
             footerPrompt.innerHTML = footerHtml;
 
-            if (gameState === "reveal" && autoNext && !isFinished) {
-                clearTimeout(autoNextTimeout);
-                autoNextTimeout = setTimeout(() => handleNext(), 2500); // 2.5s gives time to read fact
-            }
-            
             if (gameState !== "playing") stopTimer();
-            else if (gameState === "playing" && !timerInterval) startTimer();
+            else if (gameState === "playing" && !timerInterval && !isFinished) startTimer();
 
             if (fullRender) renderMap();
         }
@@ -866,6 +720,7 @@
                 });
             }
 
+            // Manage camera and bounds
             if (isSetupPhase()) {
                 mapInstance.setMaxBounds([[-90, -180], [90, 180]]);
                 mapInstance.setMinZoom(2);
@@ -878,20 +733,18 @@
 
             if (isFinished) {
                 mapContainer.style.cursor = "default";
-                if (playZoneBounds && playZoneBounds.isValid()) {
+                if (playZoneBounds && playZoneBounds.isValid() && lastFramedRound !== 'finished') {
                     mapInstance.fitBounds(playZoneBounds.pad(0.1), { animate: true, duration: 1.5 });
+                    lastFramedRound = 'finished';
                 }
-                lastFramedRound = -1;
             } else if (gameState === "playing") {
                 mapContainer.style.cursor = "crosshair";
-                if (playZoneBounds && playZoneBounds.isValid() && lastFramedRound !== round) {
+                if (playZoneBounds && playZoneBounds.isValid() && lastFramedRound === -1) {
                     mapInstance.fitBounds(playZoneBounds.pad(0.1), { animate: true, duration: 1.2 });
-                    lastFramedRound = round;
+                    lastFramedRound = 'playing_initial';
                 }
-            } else if ((gameState === "reveal" || gameState === "learning") && current) {
-                lastFramedRound = -1;
+            } else if (gameState === "learning" && current) {
                 mapContainer.style.cursor = "default";
-                
                 if (current.bbox) {
                     const bounds = L.latLngBounds([current.bbox[0], current.bbox[2]], [current.bbox[1], current.bbox[3]]);
                     mapInstance.fitBounds(bounds.pad(0.15), { animate: true, duration: 1.2 });
@@ -900,50 +753,59 @@
                 }
             }
 
+            // Darken world map slightly
             if (!isSetupPhase()) {
                 const mask = L.rectangle([[-90, -180], [90, 180]], {
-                    color: 'transparent', fillColor: '#334155', fillOpacity: 0.35, interactive: false
+                    color: 'transparent', fillColor: '#334155', fillOpacity: 0.25, interactive: false
                 }).addTo(mapInstance);
                 mapLayers.push(mask);
             }
 
+            // Draw Missed Clicks (Red X markers)
             missedClicks.forEach(latlng => {
                 const marker = L.circleMarker(latlng, {
-                    radius: 6, color: '#991b1b', fillColor: '#ef4444', fillOpacity: 1, weight: 2, interactive: false
+                    radius: 5, color: '#991b1b', fillColor: '#ef4444', fillOpacity: 1, weight: 2, interactive: false
                 }).addTo(mapInstance);
                 mapLayers.push(marker);
             });
 
+            // Draw Targets
             places.forEach(p => {
                 const isDone = !!completedHighlights[p.name];
                 const isWrongThisRound = wrongGuessesThisRound.includes(p.name);
+                
+                // If it's the target and we are waiting after 3 strikes, pulse it red
+                const isCurrentFailedReveal = isWaitingForNext && current && p.name === current.name;
                 const isCurrentLearning = gameState === "learning" && current && p.name === current.name;
-                const isCurrentReveal = gameState === "reveal" && current && p.name === current.name;
                 
                 const data = completedHighlights[p.name];
-                
                 let style;
+                
                 if (isDone) {
-                    style = { color: data.borderColor, fillColor: data.color, fillOpacity: 0.85, weight: 2.5 };
-                } else if (isCurrentLearning || isCurrentReveal) {
+                    style = { color: data.borderColor, fillColor: data.color, fillOpacity: 0.9, weight: 2 };
+                } else if (isCurrentFailedReveal) {
+                    style = { color: '#7f1d1d', fillColor: '#ef4444', fillOpacity: 0.9, weight: 3, className: 'animate-pulse' };
+                } else if (isCurrentLearning) {
                     style = { color: '#2563eb', fillColor: '#60a5fa', fillOpacity: 0.7, weight: 3, dashArray: '5, 5', className: 'animate-pulse' }; 
                 } else if (isWrongThisRound) {
                     style = { color: '#ef4444', fillColor: 'url(#stripes)', fillOpacity: 1, weight: 2 };
                 } else {
                     if (p.isCity) {
-                        style = { color: '#334155', fillColor: '#ffffff', fillOpacity: 1, weight: 2.5 };
+                        // Un-guessed Dot: White outer ring with dark center
+                        style = { color: '#ffffff', fillColor: '#1e293b', fillOpacity: 1, weight: 3 };
                     } else {
-                        style = { color: '#ffffff', fillColor: '#ffffff', fillOpacity: 0.25, weight: 1.5 };
+                        // Un-guessed Polygon: Very subtle
+                        style = { color: '#ffffff', fillColor: '#ffffff', fillOpacity: 0.1, weight: 1.5 };
                     }
                 }
 
-                const isClickable = gameState === "playing" && !isDone && !isWrongThisRound;
+                const isClickable = gameState === "playing" && !isDone && !isWrongThisRound && !isWaitingForNext;
 
                 let layer;
                 if (p.isCity) {
                     layer = L.circleMarker([p.lat, p.lon], { 
                         ...style, 
-                        radius: isDone || isWrongThisRound || isCurrentLearning || isCurrentReveal ? 10 : 8, 
+                        radius: isDone || isWrongThisRound || isCurrentFailedReveal ? 7 : 5, 
                         interactive: isClickable 
                     });
                 } else if (p.geojson) {
@@ -956,22 +818,34 @@
                 if (layer) {
                     if (isClickable) {
                         layer.on('mouseover', () => {
-                            if(p.isCity) layer.setRadius(12);
+                            if(p.isCity) layer.setRadius(9);
                             layer.setStyle({ weight: 4 });
                         });
                         layer.on('mouseout', () => {
-                            if(p.isCity) layer.setRadius(8);
+                            if(p.isCity) layer.setRadius(5);
                             layer.setStyle({ weight: style.weight });
                         });
                         layer.on('click', (e) => {
                             L.DomEvent.stopPropagation(e);
-                            submitGuess(p.name);
+                            if (gameState === "learning") handleNext();
+                            else submitGuess(p.name);
                         });
                     }
+                    
+                    // Attach permanent label if completed
+                    if (isDone || isCurrentFailedReveal) {
+                        layer.bindTooltip(p.name, {
+                            permanent: true,
+                            direction: p.isCity ? 'right' : 'center',
+                            className: 'map-label',
+                            offset: p.isCity ? [8, 0] : [0, 0]
+                        });
+                    }
+
                     layer.addTo(mapInstance);
                     mapLayers.push(layer);
                     
-                    if (isCurrentLearning || isCurrentReveal) {
+                    if (isCurrentLearning || isCurrentFailedReveal || isDone) {
                         if(layer.bringToFront) layer.bringToFront();
                     }
                 }
