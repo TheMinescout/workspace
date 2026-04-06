@@ -42,10 +42,10 @@
         }
         .animate-float { animation: float 3s ease-in-out infinite; }
 
-        /* Custom Scrollbar for Textarea */
-        textarea::-webkit-scrollbar { width: 8px; }
-        textarea::-webkit-scrollbar-track { background: transparent; }
-        textarea::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+        /* Custom Scrollbar for Textarea & Fact Box */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen bg-slate-100 p-4 md:p-6 lg:p-8 text-slate-900 relative selection:bg-blue-200">
@@ -81,6 +81,15 @@
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Target Locations</label>
                             <span class="text-[10px] text-slate-400 font-medium">1 per line</span>
                         </div>
+                        
+                        <!-- Presets -->
+                        <div class="flex gap-2 overflow-x-auto pb-1" id="preset-buttons">
+                            <button onclick="loadPreset('Caribbean')" class="shrink-0 text-[10px] font-bold uppercase tracking-wide bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🏝️ Caribbean</button>
+                            <button onclick="loadPreset('Central America')" class="shrink-0 text-[10px] font-bold uppercase tracking-wide bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🌎 Central Am.</button>
+                            <button onclick="loadPreset('South America')" class="shrink-0 text-[10px] font-bold uppercase tracking-wide bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🏔️ South Am.</button>
+                            <button onclick="loadPreset('Full Quiz')" class="shrink-0 text-[10px] font-bold uppercase tracking-wide bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">💯 Full Quiz</button>
+                        </div>
+
                         <div class="relative">
                             <textarea id="rawInput" class="w-full rounded-2xl border-2 border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-blue-500 focus:bg-white focus:ring-0 transition-colors font-medium min-h-[140px] resize-none shadow-inner" placeholder="E.g.&#10;Azerbaijan&#10;Tokyo&#10;Grand Canyon"></textarea>
                         </div>
@@ -125,7 +134,7 @@
                     <p class="text-[10px] text-blue-300 uppercase font-bold tracking-widest mb-1">Session Accuracy</p>
                     <p id="accuracy-score" class="text-4xl font-black tabular-nums">0%</p>
                 </div>
-                <div id="accuracy-grade" class="relative z-10 w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center text-3xl font-black border-[3px] border-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.5)] rotate-3">
+                <div id="accuracy-grade" class="relative z-10 w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center text-3xl font-black border-[3px] border-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.5)] rotate-3 transition-colors duration-500">
                     -
                 </div>
             </div>
@@ -156,7 +165,7 @@
             </div>
 
             <!-- Map Container -->
-            <div class="flex-1 relative z-0">
+            <div class="flex-1 relative z-0 overflow-hidden">
                 <div id="map" class="w-full h-full absolute inset-0 z-0 bg-[#e2e8f0]"></div>
                 
                 <!-- Loading Overlay -->
@@ -175,7 +184,7 @@
                 </div>
 
                 <!-- Missing Locations Notification -->
-                <div id="missing-locations-toast" class="absolute top-4 right-4 z-[1000] bg-red-500 text-white px-4 py-3 rounded-xl shadow-lg font-medium text-sm hidden max-w-sm flex items-start gap-3 animate-pop border border-red-400">
+                <div id="missing-locations-toast" class="absolute top-4 right-4 z-[1000] bg-red-500 text-white px-4 py-3 rounded-xl shadow-lg font-medium text-sm hidden max-w-sm flex items-start gap-3 border border-red-400">
                     <i class="ph-fill ph-warning-circle text-xl shrink-0 mt-0.5"></i>
                     <div>
                         <p class="font-bold mb-1">Could not find some locations:</p>
@@ -184,10 +193,19 @@
                     </div>
                 </div>
 
+                <!-- Fact Box (Wikipedia) -->
+                <div id="fact-box" class="absolute bottom-4 left-4 z-[500] bg-white/95 backdrop-blur border border-slate-200 p-5 rounded-2xl shadow-xl max-w-[320px] hidden transition-all">
+                    <div class="flex items-center justify-between mb-2 border-b border-slate-100 pb-2">
+                        <h4 class="text-[10px] font-black text-blue-600 uppercase tracking-widest flex items-center gap-1.5"><i class="ph-fill ph-info"></i> Quick Fact</h4>
+                        <span id="fact-title" class="text-[10px] font-bold text-slate-400 uppercase"></span>
+                    </div>
+                    <p id="fact-text" class="text-sm text-slate-700 leading-relaxed max-h-32 overflow-y-auto pr-2">Loading...</p>
+                </div>
+
                 <!-- Heads Up Display (HUD) -->
                 <div id="seterra-header" class="absolute top-4 left-4 right-4 flex justify-between items-start z-[500] pointer-events-none hidden">
                     <!-- Progress & Score -->
-                    <div class="bg-slate-900/90 backdrop-blur border border-white/10 text-white px-5 py-2.5 rounded-2xl flex items-center gap-5 shadow-xl animate-pop origin-top-left pointer-events-auto">
+                    <div class="bg-slate-900/90 backdrop-blur border border-white/10 text-white px-5 py-2.5 rounded-2xl flex items-center gap-5 shadow-xl origin-top-left pointer-events-auto">
                         <div class="flex flex-col">
                             <span class="text-[9px] font-bold text-blue-400 uppercase tracking-widest mb-0.5">Progress</span>
                             <span class="text-lg font-black tabular-nums leading-none"><span id="hud-progress">0</span> <span class="text-slate-500 text-sm">/</span> <span id="hud-total" class="text-slate-400 text-sm">0</span></span>
@@ -201,7 +219,7 @@
                     
                     <!-- Current Target -->
                     <div class="absolute left-1/2 -translate-x-1/2 text-center pointer-events-auto" id="hud-target-container">
-                        <div class="flex flex-col items-center animate-pop origin-top">
+                        <div class="flex flex-col items-center origin-top">
                             <span class="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-1.5 drop-shadow-md bg-white/50 px-2 py-0.5 rounded backdrop-blur-sm" id="hud-verb">
                                 Click on
                             </span>
@@ -212,7 +230,7 @@
                     </div>
                     
                     <!-- Timer -->
-                    <div class="bg-slate-900/90 backdrop-blur border border-white/10 text-white px-5 py-2.5 rounded-2xl shadow-xl flex items-center gap-3 animate-pop origin-top-right pointer-events-auto">
+                    <div class="bg-slate-900/90 backdrop-blur border border-white/10 text-white px-5 py-2.5 rounded-2xl shadow-xl flex items-center gap-3 origin-top-right pointer-events-auto">
                         <i class="ph-bold ph-timer text-blue-400 text-xl"></i>
                         <div class="flex flex-col items-end w-12">
                             <span class="text-lg font-black tabular-nums leading-none" id="hud-timer">00:00</span>
@@ -236,27 +254,40 @@
     </div>
 
     <script>
-        // --- Default Location Template ---
-        const DEFAULT_LOCATIONS = "Brazil\nGermany\nJapan\nEgypt\nAustralia\nCanada";
+        // --- Pre-made Presets ---
+        const PRESETS = {
+            "Caribbean": "Antigua and Barbuda\nBahamas\nBarbados\nCuba\nDominica\nDominican Republic\nGrenada\nHaiti\nJamaica\nPuerto Rico\nSaint Kitts and Nevis\nSaint Lucia\nSt. Vincent and Grenadines\nTrinidad and Tobago",
+            "Central America": "Belize\nCosta Rica\nEl Salvador\nGuatemala\nHonduras\nMexico\nNicaragua\nPanama",
+            "South America": "Argentina\nBolivia\nBrazil\nChile\nColombia\nEcuador\nFrench Guiana\nGuyana\nParaguay\nPeru\nSuriname\nUruguay\nVenezuela",
+            "Full Quiz": "Antigua and Barbuda\nBahamas\nBarbados\nCuba\nDominica\nDominican Republic\nGrenada\nHaiti\nJamaica\nPuerto Rico\nSaint Kitts and Nevis\nSaint Lucia\nSt. Vincent and Grenadines\nTrinidad and Tobago\nArgentina\nChile\nEl Salvador\nHonduras\nParaguay\nVenezuela\nBelize\nColombia\nFrench Guiana\nMexico\nPeru\nBolivia\nCosta Rica\nGuatemala\nNicaragua\nSuriname\nBrazil\nEcuador\nGuyana\nPanama\nUruguay"
+        };
 
-        // --- State Variables ---
-        const STORAGE_KEY = "geomaster-pro-v2";
+        // --- State Variables & Storage ---
         let places = [];
         let quizSequence = [];
         let round = 0;
         let attempts = 0;
         let wrongGuessesThisRound = [];
-        let missedClicks = []; // Track actual map background clicks per round
+        let missedClicks = []; 
         let completedHighlights = {};
         let gameState = "setup"; // "setup" | "playing" | "reveal" | "learning"
         let time = 0;
         let autoNext = true;
+        let hintUsedThisRound = false;
         
         let mapInstance = null;
         let mapLayers = [];
         let timerInterval = null;
         let autoNextTimeout = null;
         let lastFramedRound = -1;
+
+        // Load caches
+        let geoCache = JSON.parse(localStorage.getItem('geomaster-cache-v3')) || {};
+        let wikiCache = JSON.parse(localStorage.getItem('geomaster-wiki-v1')) || {};
+        let highScores = JSON.parse(localStorage.getItem('geomaster-scores-v1')) || {};
+
+        // Audio Context
+        let audioCtx = null;
 
         // --- DOM Elements ---
         const rawInputEl = document.getElementById('rawInput');
@@ -280,6 +311,10 @@
         const loadingMsgEl = document.getElementById('loading-msg');
         const loadingProgress = document.getElementById('loading-progress');
         
+        const factBox = document.getElementById('fact-box');
+        const factTitle = document.getElementById('fact-title');
+        const factText = document.getElementById('fact-text');
+
         const seterraHeader = document.getElementById('seterra-header');
         const hudProgress = document.getElementById('hud-progress');
         const hudTotal = document.getElementById('hud-total');
@@ -312,39 +347,79 @@
             return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
+        function loadPreset(key) {
+            rawInputEl.value = PRESETS[key] || "";
+            // Add a brief highlight to the textarea
+            rawInputEl.classList.add('bg-blue-50');
+            setTimeout(() => rawInputEl.classList.remove('bg-blue-50'), 300);
+        }
+
+        // --- Sound System ---
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playSound(type) {
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.1); // C6
+                    gainNode.gain.setValueAtTime(0.3, now);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now); osc.stop(now + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+                    gainNode.gain.setValueAtTime(0.2, now);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now); osc.stop(now + 0.3);
+                }
+            } catch (e) { console.warn("Audio error", e); }
+        }
+
+        // --- Data Fetching ---
+        async function fetchWikiFact(targetName) {
+            if (wikiCache[targetName]) return wikiCache[targetName];
+            try {
+                const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(targetName)}`);
+                const data = await res.json();
+                const text = data.extract || "No quick facts found for this location.";
+                wikiCache[targetName] = text;
+                localStorage.setItem('geomaster-wiki-v1', JSON.stringify(wikiCache));
+                return text;
+            } catch (e) { return "Could not load facts at this time."; }
+        }
+
         // --- Initialization ---
         function init() {
-            // Setup Textarea default
             if (!rawInputEl.value.trim()) {
-                rawInputEl.value = DEFAULT_LOCATIONS;
+                loadPreset('Caribbean');
             }
 
-            // Init Map with minimal UI
             mapInstance = L.map(mapContainer, { 
-                center: [20, 0], 
-                zoom: 2, 
-                minZoom: 2, 
-                worldCopyJump: true, 
-                zoomControl: false,
+                center: [20, 0], zoom: 2, minZoom: 2, worldCopyJump: true, zoomControl: false,
                 maxBounds: [[-90, -180], [90, 180]]
             });
             
-            // Modern base map (Voyager)
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', { 
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                subdomains: 'abcd',
-                maxZoom: 10
+                subdomains: 'abcd', maxZoom: 10
             }).addTo(mapInstance);
             
-            // Map Click Handler for Strikes
             mapInstance.on('click', (e) => {
-                if (gameState === "playing") {
-                    // Clicked on the map background (not a target feature)
-                    submitGuess(null, e.latlng);
-                }
+                if (gameState === "playing") submitGuess(null, e.latlng);
             });
             
-            // Event Listeners
             btnQuiz.addEventListener('click', () => prepareGame("playing"));
             btnLearn.addEventListener('click', () => prepareGame("learning"));
             btnClear.addEventListener('click', clearSession);
@@ -358,25 +433,24 @@
 
         // --- Core Logic ---
         async function prepareGame(mode) {
+            initAudio(); // Initialize audio on first user click
             const rawLines = rawInputEl.value.split("\n").map(s => s.trim()).filter(Boolean);
             if (rawLines.length === 0) return;
 
-            // Reset Game State entirely
             gameState = "setup";
             time = 0;
             completedHighlights = {};
             wrongGuessesThisRound = [];
             missedClicks = [];
+            hintUsedThisRound = false;
             lastFramedRound = -1;
             
-            // Show Loading
             loadingOverlay.classList.remove('hidden');
             missingLocationsToast.classList.add('hidden');
+            factBox.classList.add('hidden');
             
             const results = [];
             const notFound = [];
-            
-            // We need a unique array to avoid fetching duplicates
             const uniqueLines = [...new Set(rawLines)];
 
             for (let i = 0; i < uniqueLines.length; i++) {
@@ -384,21 +458,27 @@
                 loadingMsgEl.innerText = `Searching for: ${targetName}`;
                 loadingProgress.style.width = `${((i) / uniqueLines.length) * 100}%`;
                 
+                // Fast path: use cache
+                if (geoCache[targetName]) {
+                    if (geoCache[targetName] !== "NOT_FOUND") {
+                        results.push(geoCache[targetName]);
+                    } else {
+                        notFound.push(targetName);
+                    }
+                    continue; // Skip API delay
+                }
+
+                // Slow path: fetch from API
                 try {
-                    // Nominatim requires specific formatting and usage limits (1s delay).
                     const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(targetName)}&polygon_geojson=1&polygon_threshold=0.01`;
-                    
-                    const res = await fetch(url, {
-                        headers: { 'Accept-Language': 'en-US,en;q=0.9' }
-                    });
+                    const res = await fetch(url, { headers: { 'Accept-Language': 'en-US,en;q=0.9' }});
                     
                     if (!res.ok) throw new Error("Network error");
-                    
                     const data = await res.json();
                     const f = data?.[0];
                     
                     if (f) {
-                        results.push({
+                        const featureData = {
                             name: targetName,
                             displayName: f.display_name,
                             lat: Number(f.lat),
@@ -406,12 +486,16 @@
                             bbox: f.boundingbox.map(Number),
                             geojson: f.geojson,
                             isCity: ['city', 'town', 'village', 'point'].includes(f.type || f.addresstype || "")
-                        });
+                        };
+                        results.push(featureData);
+                        geoCache[targetName] = featureData;
                     } else {
                         notFound.push(targetName);
+                        geoCache[targetName] = "NOT_FOUND"; // cache misses too
                     }
+                    localStorage.setItem('geomaster-cache-v3', JSON.stringify(geoCache));
                     
-                    // Crucial: 1000ms delay to respect Nominatim Terms of Service and prevent IP bans.
+                    // Respect 1s delay only when actively hitting API
                     if (i < uniqueLines.length - 1) {
                         await new Promise(r => setTimeout(r, 1000));
                     }
@@ -422,7 +506,7 @@
             }
             
             loadingProgress.style.width = '100%';
-            await new Promise(r => setTimeout(r, 400)); // Brief pause at 100%
+            await new Promise(r => setTimeout(r, 400));
             
             places = results;
             quizSequence = mode === "playing" ? shuffleArray([...results]) : [...results];
@@ -434,7 +518,6 @@
             if (notFound.length > 0) {
                 missingLocationsText.innerText = notFound.join(", ");
                 missingLocationsToast.classList.remove('hidden');
-                // Auto hide after 8s
                 setTimeout(() => missingLocationsToast.classList.add('hidden'), 8000);
             }
 
@@ -448,59 +531,64 @@
             updateUI();
         }
 
+        function useHint() {
+            if (hintUsedThisRound || gameState !== "playing") return;
+            hintUsedThisRound = true;
+            
+            // Penalty: using a hint costs an attempt (if you haven't already struck out)
+            if (attempts < 2) {
+                attempts++;
+            }
+            
+            // Zoom camera to region
+            const current = quizSequence[round];
+            if (current && current.bbox) {
+                const bounds = L.latLngBounds([current.bbox[0], current.bbox[2]], [current.bbox[1], current.bbox[3]]);
+                // Pad by 2.0 to show general region but not give it away immediately
+                mapInstance.fitBounds(bounds.pad(1.8), { animate: true, duration: 1.5 });
+                lastFramedRound = round; // Prevent auto-zoom from overriding it
+            }
+            updateUI();
+        }
+
         function submitGuess(guessedName, mapClickLatLng = null) {
             const current = quizSequence[round];
             if (gameState !== "playing" || !current) return;
 
-            // Handle Map Background Click or Wrong Feature Click
             if (guessedName !== current.name) {
+                playSound('wrong');
                 if (attempts < 2) {
                     attempts++;
                     if (guessedName) {
-                        // Clicked another target feature
-                        if (!wrongGuessesThisRound.includes(guessedName)) {
-                            wrongGuessesThisRound.push(guessedName);
-                        }
+                        if (!wrongGuessesThisRound.includes(guessedName)) wrongGuessesThisRound.push(guessedName);
                     } else if (mapClickLatLng) {
-                        // Clicked map background
                         missedClicks.push(mapClickLatLng);
                     }
                 } else {
-                    // Strike out! 3rd failed attempt
                     if (mapClickLatLng) missedClicks.push(mapClickLatLng);
                     completedHighlights[current.name] = { color: '#ef4444', borderColor: '#b91c1c', attemptsUsed: 3 };
                     gameState = "reveal";
                 }
             } else {
-                // Correct Guess!
+                playSound('correct');
                 const finalAttempts = attempts + 1;
                 let color, borderColor;
-                
-                if (finalAttempts === 1) {
-                    color = '#10b981'; // Emerald 500
-                    borderColor = '#047857'; // Emerald 700
-                } else if (finalAttempts === 2) {
-                    color = '#f59e0b'; // Amber 500
-                    borderColor = '#b45309'; // Amber 700
-                } else {
-                    color = '#f97316'; // Orange 500
-                    borderColor = '#c2410c'; // Orange 700
-                }
+                if (finalAttempts === 1) { color = '#10b981'; borderColor = '#047857'; }
+                else if (finalAttempts === 2) { color = '#f59e0b'; borderColor = '#b45309'; }
+                else { color = '#f97316'; borderColor = '#c2410c'; }
                 
                 completedHighlights[current.name] = { color, borderColor, attemptsUsed: finalAttempts };
                 gameState = "reveal";
             }
-            
             updateUI();
         }
 
         function handleNext() {
             clearTimeout(autoNextTimeout);
-            
-            // Clean up state for next round
             attempts = 0;
             wrongGuessesThisRound = [];
             missedClicks = [];
+            hintUsedThisRound = false;
             
             if (round < quizSequence.length - 1) {
                 round++;
@@ -508,7 +596,6 @@
             } else {
                 round = quizSequence.length;
             }
-            
             updateUI();
         }
 
@@ -521,12 +608,11 @@
             attempts = 0;
             wrongGuessesThisRound = [];
             missedClicks = [];
+            hintUsedThisRound = false;
             gameState = "playing";
             lastFramedRound = -1;
             
-            // Clear highlights for the reviewing items
             mistakes.forEach(m => delete completedHighlights[m.name]);
-            
             startTimer();
             updateUI();
         }
@@ -542,7 +628,9 @@
             attempts = 0;
             time = 0;
             lastFramedRound = -1;
+            hintUsedThisRound = false;
             rawInputEl.value = "";
+            factBox.classList.add('hidden');
             stopTimer();
             updateUI();
         }
@@ -561,21 +649,33 @@
             if (timerInterval) clearInterval(timerInterval);
         }
 
+        async function showFact(targetName) {
+            factBox.classList.remove('hidden');
+            factBox.classList.remove('animate-pop');
+            void factBox.offsetWidth; // trigger reflow
+            factBox.classList.add('animate-pop');
+            
+            factTitle.innerText = targetName;
+            factText.innerText = "Loading fact...";
+            
+            const fact = await fetchWikiFact(targetName);
+            // Check if we are still showing the same fact
+            if (factTitle.innerText === targetName) {
+                factText.innerText = fact;
+            }
+        }
+
         // --- Render UI ---
         function updateUI(fullRender = true) {
             const current = quizSequence[round];
             const isFinished = quizSequence.length > 0 && round >= quizSequence.length;
             
-            // Math for Scoring
+            // Scoring
             const completedCount = Object.keys(completedHighlights).length;
-            // Scoring System: 1st try = 100, 2nd try = 60, 3rd try = 30, Fail = 0
-            const totalEarnedPoints = Object.values(completedHighlights).reduce((acc, curr) => {
-                return acc + (curr.attemptsUsed === 1 ? 100 : curr.attemptsUsed === 2 ? 60 : curr.attemptsUsed === 3 ? 30 : 0);
-            }, 0);
+            const totalEarnedPoints = Object.values(completedHighlights).reduce((acc, curr) => acc + (curr.attemptsUsed === 1 ? 100 : curr.attemptsUsed === 2 ? 60 : curr.attemptsUsed === 3 ? 30 : 0), 0);
             const totalPossiblePointsSoFar = completedCount * 100;
             const avgScore = completedCount > 0 ? Math.round((totalEarnedPoints / totalPossiblePointsSoFar) * 100) : 0;
 
-            // Update Sidebar Controls
             const isSetup = gameState === "setup";
             btnQuiz.disabled = !isSetup;
             btnLearn.disabled = !isSetup;
@@ -583,13 +683,28 @@
             if(!isSetup) rawInputEl.classList.add('opacity-50', 'bg-slate-100');
             else rawInputEl.classList.remove('opacity-50', 'bg-slate-100');
 
-            // Auto Next Toggle Visual
             if (autoNext) {
                 btnAutoNext.classList.replace('bg-slate-300', 'bg-blue-600');
                 autonextPill.classList.replace('left-1', 'left-7');
             } else {
                 btnAutoNext.classList.replace('bg-blue-600', 'bg-slate-300');
                 autonextPill.classList.replace('left-7', 'left-1');
+            }
+
+            // High Scores Logic (Calculate when finished)
+            let isNewBest = false;
+            let bestScoreStr = "-";
+            if (isFinished && places.length > 0) {
+                const listKey = places.map(p => p.name).sort().join(',').substring(0, 100);
+                let best = highScores[listKey];
+                
+                if (!best || avgScore > best.score || (avgScore === best.score && time < best.time)) {
+                    best = { score: avgScore, time: time };
+                    highScores[listKey] = best;
+                    localStorage.setItem('geomaster-scores-v1', JSON.stringify(highScores));
+                    isNewBest = true;
+                }
+                bestScoreStr = `Best: ${best.score}% in ${formatTime(best.time)}`;
             }
 
             // Score Panel
@@ -601,7 +716,7 @@
             else if(avgScore >= 60) accuracyGradeEl.innerText = 'C';
             else accuracyGradeEl.innerText = 'F';
             
-            accuracyGradeEl.className = `relative z-10 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl font-black border-[3px] shadow-[0_0_20px_rgba(0,0,0,0.2)] rotate-3 transition-colors ${
+            accuracyGradeEl.className = `relative z-10 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl font-black border-[3px] shadow-[0_0_20px_rgba(0,0,0,0.2)] rotate-3 transition-colors duration-500 ${
                 completedCount === 0 ? 'bg-slate-700 border-slate-600 text-slate-400' :
                 avgScore >= 90 ? 'bg-purple-500 border-purple-400 text-white shadow-purple-500/50' : 
                 avgScore >= 80 ? 'bg-blue-500 border-blue-400 text-white shadow-blue-500/50' :
@@ -610,11 +725,9 @@
                 'bg-red-500 border-red-400 text-white shadow-red-500/50'
             }`;
 
-            // Top Header (above map)
             headerStatusEl.innerHTML = gameState === "learning" ? '<i class="ph-bold ph-book-open"></i> Study Session' : '<span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span> Target Identification';
             headerTitleEl.innerText = isSetup ? "Waiting for list..." : isFinished ? "Session Complete!" : current ? current.name : "";
 
-            // Sidebar Strikes Header
             if (gameState === "playing" && !isFinished) {
                 strikesContainer.classList.remove('hidden');
                 let dotsHtml = '';
@@ -627,7 +740,6 @@
                 strikesContainer.classList.add('hidden');
             }
 
-            // Map HUD (Seterra style)
             if (!isSetup) {
                 seterraHeader.classList.remove('hidden');
                 hudProgress.innerText = completedCount;
@@ -640,7 +752,6 @@
                     hudVerb.innerText = gameState === "learning" ? "Study Area" : "Find & Click";
                     hudTargetName.innerText = current.name;
                     hudTargetContainer.firstElementChild.classList.remove('animate-pop');
-                    // Retrigger animation
                     void hudTargetContainer.offsetWidth; 
                     hudTargetContainer.firstElementChild.classList.add('animate-pop');
                 } else {
@@ -650,7 +761,13 @@
                 seterraHeader.classList.add('hidden');
             }
 
-            // Feedback Overlay Animations
+            // Fact Box visibility
+            if ((gameState === "reveal" || gameState === "learning") && current) {
+                showFact(current.name);
+            } else {
+                factBox.classList.add('hidden');
+            }
+
             if (gameState === "reveal" && current && completedHighlights[current.name]) {
                 const att = completedHighlights[current.name].attemptsUsed;
                 feedbackOverlay.classList.remove('hidden');
@@ -665,8 +782,6 @@
                     <i class="ph-fill ${icon} text-7xl ${colorClass} mb-2 shadow-black drop-shadow-lg"></i>
                     <span class="tracking-tight">${text}</span>
                 `;
-                
-                // Trigger CSS scale animation
                 feedbackText.classList.remove('scale-0', 'opacity-0');
                 feedbackText.classList.add('scale-100', 'opacity-100');
             } else {
@@ -676,16 +791,20 @@
             }
 
             // Footer Action Bar
-            const btnBase = "inline-flex items-center justify-center rounded-2xl text-base font-black transition-all active:scale-95 px-8 py-3.5 shadow-md ";
+            const btnBase = "inline-flex items-center justify-center rounded-2xl text-base font-black transition-all active:scale-95 px-8 py-3.5 shadow-md shrink-0 ";
             let footerHtml = '';
             
             if (gameState === "playing" && !isFinished) {
+                const hintBtn = hintUsedThisRound ? 
+                    `<button disabled class="${btnBase} bg-slate-200 text-slate-400 shadow-none border border-slate-300 ml-auto cursor-not-allowed"><i class="ph-bold ph-magnifying-glass mr-2"></i> Hint Used</button>` :
+                    `<button onclick="useHintWrapper()" class="${btnBase} bg-amber-100 text-amber-700 hover:bg-amber-200 shadow-none border border-amber-300 ml-auto"><i class="ph-bold ph-magnifying-glass mr-2"></i> Use Hint</button>`;
+
                 if (attempts === 0) {
-                    footerHtml = `<div class="text-slate-500 font-bold tracking-widest uppercase text-sm animate-pulse flex items-center gap-2"><i class="ph-bold ph-mouse-left text-lg"></i> Select location on map</div>`;
+                    footerHtml = `<div class="flex items-center w-full max-w-2xl"><div class="text-slate-500 font-bold tracking-widest uppercase text-sm animate-pulse flex items-center gap-2"><i class="ph-bold ph-mouse-left text-lg"></i> Select location on map</div>${hintBtn}</div>`;
                 } else if (attempts === 1) {
-                    footerHtml = `<div class="text-amber-600 font-bold tracking-widest uppercase text-sm flex items-center gap-2 animate-bounce"><i class="ph-fill ph-warning-circle text-lg"></i> Incorrect. 2 attempts left.</div>`;
+                    footerHtml = `<div class="flex items-center w-full max-w-2xl"><div class="text-amber-600 font-bold tracking-widest uppercase text-sm flex items-center gap-2 animate-bounce"><i class="ph-fill ph-warning-circle text-lg"></i> Incorrect. 2 attempts left.</div>${hintBtn}</div>`;
                 } else {
-                    footerHtml = `<div class="text-red-600 font-bold tracking-widest uppercase text-sm flex items-center gap-2"><i class="ph-fill ph-warning text-lg"></i> Last chance! Find the target.</div>`;
+                    footerHtml = `<div class="flex items-center w-full max-w-2xl"><div class="text-red-600 font-bold tracking-widest uppercase text-sm flex items-center gap-2"><i class="ph-fill ph-warning text-lg"></i> Last chance! Find the target.</div>${hintBtn}</div>`;
                 }
             } else if (gameState === "reveal" || gameState === "learning") {
                 if (!isFinished) {
@@ -697,8 +816,16 @@
                 const reviewBtn = mistakes.length > 0 ? 
                     `<button onclick="startReviewWrapper()" class="${btnBase} w-full sm:w-auto bg-amber-500 text-white hover:bg-amber-600 shadow-amber-500/30 border-b-4 border-amber-700"><i class="ph-bold ph-arrows-clockwise mr-2"></i> Review Mistakes (${mistakes.length})</button>` : '';
                 
+                const scoreBadge = isNewBest ? 
+                    `<div class="absolute -top-3 -right-2 bg-pink-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider animate-bounce shadow-md">New Best!</div>` : '';
+
                 footerHtml = `
-                    <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                    <div class="flex flex-col sm:flex-row gap-4 w-full justify-center items-center">
+                        <div class="hidden md:flex flex-col items-end mr-4 relative">
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">List Records</span>
+                            <span class="text-sm font-bold text-slate-700">${bestScoreStr}</span>
+                            ${scoreBadge}
+                        </div>
                         ${reviewBtn}
                         <button onclick="clearSessionWrapper()" class="${btnBase} w-full sm:w-auto bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 border-b-4 border-b-slate-300"><i class="ph-bold ph-plus mr-2"></i> New Set</button>
                     </div>`;
@@ -708,17 +835,14 @@
             
             footerPrompt.innerHTML = footerHtml;
 
-            // Handle Auto-Advance Timing
             if (gameState === "reveal" && autoNext && !isFinished) {
                 clearTimeout(autoNextTimeout);
-                autoNextTimeout = setTimeout(() => handleNext(), 1800); // 1.8s gives time to see feedback
+                autoNextTimeout = setTimeout(() => handleNext(), 2500); // 2.5s gives time to read fact
             }
             
-            // Timer Control
             if (gameState !== "playing") stopTimer();
             else if (gameState === "playing" && !timerInterval) startTimer();
 
-            // Render Leaflet
             if (fullRender) renderMap();
         }
 
@@ -728,30 +852,25 @@
             const current = quizSequence[round];
             const isFinished = quizSequence.length > 0 && round >= quizSequence.length;
 
-            // Clear previous interactive layers
             mapLayers.forEach(layer => mapInstance.removeLayer(layer));
             mapLayers = [];
 
-            // Calculate overall bounds to keep focus tight
             let playZoneBounds = null;
             if (places.length > 0) {
                 playZoneBounds = L.latLngBounds([]);
                 places.forEach(p => {
                     if (p.bbox) {
-                        playZoneBounds.extend([p.bbox[0], p.bbox[2]]); // lat/lon
+                        playZoneBounds.extend([p.bbox[0], p.bbox[2]]);
                         playZoneBounds.extend([p.bbox[1], p.bbox[3]]);
                     }
                 });
             }
 
-            // Handle Camera/Zoom logic & Bounds Locking
             if (isSetupPhase()) {
-                // Remove map locks so user can pan freely before start
                 mapInstance.setMaxBounds([[-90, -180], [90, 180]]);
                 mapInstance.setMinZoom(2);
             } else if (playZoneBounds && playZoneBounds.isValid()) {
-                // Lock the view so users cannot zoom out to the whole globe unnecessarily
-                const paddedPlayZone = playZoneBounds.pad(0.3); // Add padding for bounds lock
+                const paddedPlayZone = playZoneBounds.pad(0.3);
                 mapInstance.setMaxBounds(paddedPlayZone);
                 const minZ = mapInstance.getBoundsZoom(paddedPlayZone);
                 mapInstance.setMinZoom(minZ > 0 ? minZ : 2);
@@ -765,7 +884,6 @@
                 lastFramedRound = -1;
             } else if (gameState === "playing") {
                 mapContainer.style.cursor = "crosshair";
-                // Only reframe bounds if moving to a new round from a zoomed-in reveal state
                 if (playZoneBounds && playZoneBounds.isValid() && lastFramedRound !== round) {
                     mapInstance.fitBounds(playZoneBounds.pad(0.1), { animate: true, duration: 1.2 });
                     lastFramedRound = round;
@@ -774,17 +892,14 @@
                 lastFramedRound = -1;
                 mapContainer.style.cursor = "default";
                 
-                // Zoom closely into the current target smoothly
                 if (current.bbox) {
                     const bounds = L.latLngBounds([current.bbox[0], current.bbox[2]], [current.bbox[1], current.bbox[3]]);
-                    const padded = bounds.pad(0.15); // Add 15% padding
-                    mapInstance.fitBounds(padded, { animate: true, duration: 1.2 });
+                    mapInstance.fitBounds(bounds.pad(0.15), { animate: true, duration: 1.2 });
                 } else {
                     mapInstance.setView([current.lat, current.lon], 6, { animate: true, duration: 1.2 });
                 }
             }
 
-            // Apply a dimming mask over the world if actively playing
             if (!isSetupPhase()) {
                 const mask = L.rectangle([[-90, -180], [90, 180]], {
                     color: 'transparent', fillColor: '#334155', fillOpacity: 0.35, interactive: false
@@ -792,7 +907,6 @@
                 mapLayers.push(mask);
             }
 
-            // Draw Missed Clicks (Red X markers)
             missedClicks.forEach(latlng => {
                 const marker = L.circleMarker(latlng, {
                     radius: 6, color: '#991b1b', fillColor: '#ef4444', fillOpacity: 1, weight: 2, interactive: false
@@ -800,7 +914,6 @@
                 mapLayers.push(marker);
             });
 
-            // Draw Target Features
             places.forEach(p => {
                 const isDone = !!completedHighlights[p.name];
                 const isWrongThisRound = wrongGuessesThisRound.includes(p.name);
@@ -811,26 +924,19 @@
                 
                 let style;
                 if (isDone) {
-                    // Confirmed answered feature
                     style = { color: data.borderColor, fillColor: data.color, fillOpacity: 0.85, weight: 2.5 };
                 } else if (isCurrentLearning || isCurrentReveal) {
-                    // Actively showing the correct answer
                     style = { color: '#2563eb', fillColor: '#60a5fa', fillOpacity: 0.7, weight: 3, dashArray: '5, 5', className: 'animate-pulse' }; 
                 } else if (isWrongThisRound) {
-                    // Clicked wrong feature during this round
                     style = { color: '#ef4444', fillColor: 'url(#stripes)', fillOpacity: 1, weight: 2 };
                 } else {
-                    // Unanswered feature waiting to be clicked
                     if (p.isCity) {
-                        // Point features (cities) need to be visible dots
                         style = { color: '#334155', fillColor: '#ffffff', fillOpacity: 1, weight: 2.5 };
                     } else {
-                        // Polygons (countries/states) subtle highlight
                         style = { color: '#ffffff', fillColor: '#ffffff', fillOpacity: 0.25, weight: 1.5 };
                     }
                 }
 
-                // Interaction logic: only clickable if it's playing, not done, and not already clicked wrong this round
                 const isClickable = gameState === "playing" && !isDone && !isWrongThisRound;
 
                 let layer;
@@ -849,25 +955,22 @@
 
                 if (layer) {
                     if (isClickable) {
-                        // Add hover effects manually for better UX
-                        layer.on('mouseover', (e) => {
+                        layer.on('mouseover', () => {
                             if(p.isCity) layer.setRadius(12);
                             layer.setStyle({ weight: 4 });
                         });
-                        layer.on('mouseout', (e) => {
+                        layer.on('mouseout', () => {
                             if(p.isCity) layer.setRadius(8);
                             layer.setStyle({ weight: style.weight });
                         });
-                        
                         layer.on('click', (e) => {
-                            L.DomEvent.stopPropagation(e); // Prevent map background click
+                            L.DomEvent.stopPropagation(e);
                             submitGuess(p.name);
                         });
                     }
                     layer.addTo(mapInstance);
                     mapLayers.push(layer);
                     
-                    // Bring active target to front
                     if (isCurrentLearning || isCurrentReveal) {
                         if(layer.bringToFront) layer.bringToFront();
                     }
@@ -879,12 +982,11 @@
             return gameState === "setup";
         }
 
-        // Global wrappers for innerHTML onclick handlers
         window.handleNextWrapper = () => handleNext();
         window.startReviewWrapper = () => startReview();
         window.clearSessionWrapper = () => clearSession();
+        window.useHintWrapper = () => useHint();
 
-        // Run Init
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
