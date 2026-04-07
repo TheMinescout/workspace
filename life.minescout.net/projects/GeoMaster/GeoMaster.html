@@ -78,13 +78,13 @@
         </defs>
     </svg>
 
-    <div class="max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-6 lg:gap-8">
+    <div class="max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-6 lg:gap-8 lg:h-[calc(100vh-4rem)]">
         
-        <!-- SIDEBAR -->
-        <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
+        <!-- SIDEBAR (Inputs & Controls) -->
+        <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6 h-full overflow-y-auto pb-4 lg:pb-0">
             
-            <!-- Branding & Controls -->
-            <div class="bg-white rounded-3xl shadow-lg shadow-slate-200/50 border border-slate-200 overflow-hidden">
+            <div class="bg-white rounded-3xl shadow-lg shadow-slate-200/50 border border-slate-200 overflow-hidden shrink-0">
+                <!-- Branding -->
                 <div class="p-6 bg-gradient-to-br from-blue-600 to-blue-800 text-white flex items-center justify-between">
                     <h3 class="text-2xl font-black tracking-tight flex items-center gap-2">
                         <i class="ph-fill ph-globe-hemisphere-west text-3xl text-blue-200"></i>
@@ -109,7 +109,7 @@
                         </div>
 
                         <div class="relative">
-                            <textarea id="rawInput" class="w-full rounded-2xl border-2 border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-blue-500 focus:bg-white focus:ring-0 transition-colors font-medium min-h-[140px] resize-none shadow-inner" placeholder="E.g.&#10;Azerbaijan&#10;Tokyo&#10;Grand Canyon"></textarea>
+                            <textarea id="rawInput" class="w-full rounded-2xl border-2 border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-blue-500 focus:bg-white focus:ring-0 transition-colors font-medium min-h-[160px] resize-none shadow-inner" placeholder="E.g.&#10;Azerbaijan&#10;Tokyo&#10;Grand Canyon"></textarea>
                         </div>
                         
                         <div class="grid grid-cols-2 gap-3 pt-2">
@@ -127,83 +127,118 @@
                             <i class="ph-bold ph-trash"></i> Reset List
                         </button>
                     </div>
-                </div>
-            </div>
 
-            <!-- Score Panel -->
-            <div class="bg-slate-900 text-white p-6 rounded-3xl flex justify-between items-center shadow-xl shadow-slate-900/10 border border-slate-800 relative overflow-hidden">
-                <div class="absolute -right-4 -top-4 text-blue-500/10">
-                    <i class="ph-fill ph-trophy text-9xl"></i>
-                </div>
-                <div class="relative z-10">
-                    <p class="text-[10px] text-blue-300 uppercase font-bold tracking-widest mb-1">Session Accuracy</p>
-                    <p id="accuracy-score" class="text-4xl font-black tabular-nums">0%</p>
-                </div>
-                <div id="accuracy-grade" class="relative z-10 w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center text-3xl font-black border-[3px] border-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.5)] rotate-3 transition-colors duration-500">
-                    -
+                    <hr class="border-slate-100" />
+
+                    <!-- Settings Toggle -->
+                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors" id="btn-autonext-container">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-bold text-slate-700">Auto-Advance</span>
+                            <span class="text-[10px] text-slate-500 font-medium">Skip manually clicking 'Next'</span>
+                        </div>
+                        <div id="btn-autonext" class="w-12 h-6 rounded-full transition-colors duration-300 relative bg-blue-600 shadow-inner shrink-0 ml-2">
+                            <div id="autonext-pill" class="absolute top-1 left-7 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
         </div>
 
-        <!-- MAP AREA -->
-        <div class="lg:col-span-8 xl:col-span-9 bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden flex flex-col min-h-[600px] lg:min-h-0 lg:h-[calc(100vh-4rem)] relative">
+        <!-- MAIN AREA (Performance Bar + Map) -->
+        <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-5 h-full min-h-[700px] lg:min-h-0">
             
-            <!-- Map Container -->
-            <div class="flex-1 relative z-0 overflow-hidden rounded-t-3xl">
-                <div id="map" class="w-full h-full absolute inset-0 z-0 bg-[#e2e8f0]"></div>
+            <!-- THE PERFORMANCE BAR (Always above the map) -->
+            <div class="bg-slate-900 text-white px-6 py-4 rounded-3xl shadow-lg border border-slate-800 shrink-0 relative overflow-hidden transition-all duration-300 min-h-[5.5rem] flex items-center justify-center">
                 
-                <!-- Loading Overlay -->
-                <div id="loading-overlay" class="absolute inset-0 z-[1000] bg-slate-900/80 backdrop-blur-md flex flex-col items-center justify-center text-white hidden transition-opacity duration-300">
-                    <div class="relative w-20 h-20 mb-6">
-                        <div class="absolute inset-0 border-4 border-slate-700 rounded-full"></div>
-                        <div class="absolute inset-0 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
-                        <i class="ph-bold ph-globe absolute inset-0 flex items-center justify-center text-2xl text-blue-400"></i>
+                <!-- Background Icon Deco -->
+                <i class="ph-fill ph-trophy absolute -right-2 -top-6 text-8xl text-white/5 pointer-events-none"></i>
+
+                <!-- STATE 1: SETUP / REVIEW (Accuracy & Grade) -->
+                <div id="perf-overview" class="flex items-center justify-between w-full z-10">
+                    <div class="flex items-center gap-5">
+                        <div id="accuracy-grade" class="w-14 h-14 bg-slate-800 rounded-xl flex items-center justify-center text-3xl font-black text-slate-500 border-2 border-slate-700 rotate-3 transition-colors duration-500 shadow-inner">-</div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest mb-0.5">Session Accuracy</span>
+                            <span id="accuracy-score" class="text-3xl font-black text-white tabular-nums leading-none">0%</span>
+                        </div>
                     </div>
-                    <h2 class="text-2xl font-black tracking-tight mb-2">Preparing Map Data</h2>
-                    <p id="loading-msg" class="text-blue-300 font-medium text-sm animate-pulse">Locating targets...</p>
-                    
-                    <div class="w-64 h-2 bg-slate-800 rounded-full mt-6 overflow-hidden border border-slate-700">
-                        <div id="loading-progress" class="h-full bg-blue-500 transition-all duration-300 w-0"></div>
+                    <div class="flex flex-col items-end text-right hidden sm:flex">
+                        <span id="header-status" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5 flex items-center gap-1.5"><i class="ph-bold ph-map-pin"></i> Map Explorer</span>
+                        <span id="header-title" class="text-lg font-black text-white truncate max-w-[200px] md:max-w-xs">Enter list & select mode</span>
                     </div>
                 </div>
 
-                <!-- Missing Locations Notification -->
-                <div id="missing-locations-toast" class="absolute top-20 right-4 z-[1000] bg-red-500 text-white px-4 py-3 rounded-xl shadow-lg font-medium text-sm hidden max-w-sm flex items-start gap-3 border border-red-400">
-                    <i class="ph-fill ph-warning-circle text-xl shrink-0 mt-0.5"></i>
-                    <div>
-                        <p class="font-bold mb-1">Could not find some locations:</p>
-                        <p id="missing-locations-text" class="text-red-100 text-xs leading-relaxed"></p>
-                        <button onclick="document.getElementById('missing-locations-toast').classList.add('hidden')" class="text-xs underline mt-2 text-white/80 hover:text-white">Dismiss</button>
-                    </div>
-                </div>
-
-                <!-- Unified HUD Bar (Seterra Style) -->
-                <div id="seterra-header" class="absolute top-4 left-1/2 -translate-x-1/2 flex items-stretch z-[500] pointer-events-auto hidden shadow-xl rounded-full bg-slate-900/95 backdrop-blur-sm border border-slate-700 overflow-hidden h-14 w-[90%] max-w-2xl animate-pop">
+                <!-- STATE 2: GAMEPLAY HUD (Replaces old floating bar) -->
+                <div id="perf-gameplay" class="hidden flex items-center justify-between w-full z-10">
                     <!-- Progress & Score -->
-                    <div class="px-5 flex items-center gap-4 bg-slate-800/60 border-r border-slate-700">
-                        <span class="text-sm font-black text-white tabular-nums"><span id="hud-progress">0</span><span class="text-slate-500 mx-1">/</span><span id="hud-total" class="text-slate-400">0</span></span>
-                        <span class="text-sm font-black text-emerald-400 tabular-nums w-10 text-right" id="hud-score">0%</span>
+                    <div class="flex items-center gap-4 sm:gap-6">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Progress</span>
+                            <span class="text-xl font-black text-white tabular-nums leading-none"><span id="hud-progress">0</span><span class="text-slate-500 text-sm mx-1">/</span><span id="hud-total" class="text-slate-400 text-sm">0</span></span>
+                        </div>
+                        <div class="w-[1px] h-8 bg-slate-700 hidden sm:block"></div>
+                        <div class="flex flex-col hidden sm:flex">
+                            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-0.5">Score</span>
+                            <span id="hud-score" class="text-xl font-black text-white tabular-nums leading-none">0%</span>
+                        </div>
                     </div>
                     
-                    <!-- Current Target -->
-                    <div class="px-4 flex-1 flex items-center justify-center">
-                        <span class="text-slate-400 text-[10px] font-black uppercase tracking-widest mr-3 shrink-0" id="hud-verb">Click on</span>
-                        <span class="text-xl font-black text-white tracking-tight truncate" id="hud-target-name">Target</span>
+                    <!-- Target (Center absolute for perfect symmetry) -->
+                    <div class="absolute left-1/2 -translate-x-1/2 flex flex-col items-center w-full max-w-[180px] sm:max-w-[250px]">
+                        <span id="hud-verb" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1 text-center w-full truncate">Click on</span>
+                        <div class="bg-blue-600 px-4 sm:px-6 py-1.5 rounded-xl shadow-[0_4px_0_#1e3a8a] border border-blue-400 w-full text-center">
+                            <span id="hud-target-name" class="text-lg sm:text-xl font-black text-white tracking-tight truncate block w-full">Target</span>
+                        </div>
                     </div>
                     
                     <!-- Timer -->
-                    <div class="px-5 flex items-center gap-2 bg-slate-800/60 border-l border-slate-700">
-                        <i class="ph-bold ph-timer text-blue-400 text-lg"></i>
-                        <span class="text-sm font-black text-white tabular-nums" id="hud-timer">00:00</span>
+                    <div class="flex flex-col items-end">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 hidden sm:block">Timer</span>
+                        <div class="flex items-center gap-1.5 text-blue-400 bg-slate-800 sm:bg-transparent px-3 py-1 sm:p-0 rounded-lg border border-slate-700 sm:border-none">
+                            <i class="ph-bold ph-timer text-lg"></i>
+                            <span id="hud-timer" class="text-xl font-black text-white tabular-nums leading-none">00:00</span>
+                        </div>
                     </div>
                 </div>
 
             </div>
 
-            <!-- Footer Prompt / Action Bar -->
-            <div id="footer-prompt" class="px-6 py-4 bg-white border-t border-slate-100 flex justify-between items-center z-[400] relative shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] min-h-[72px]">
-                <!-- Filled by JS -->
+            <!-- MAP CONTAINER -->
+            <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden flex flex-col flex-1 relative min-h-[400px]">
+                
+                <div class="flex-1 relative z-0 overflow-hidden">
+                    <div id="map" class="w-full h-full absolute inset-0 z-0 bg-[#e2e8f0]"></div>
+                    
+                    <!-- Loading Overlay -->
+                    <div id="loading-overlay" class="absolute inset-0 z-[1000] bg-slate-900/80 backdrop-blur-md flex flex-col items-center justify-center text-white hidden transition-opacity duration-300">
+                        <div class="relative w-20 h-20 mb-6">
+                            <div class="absolute inset-0 border-4 border-slate-700 rounded-full"></div>
+                            <div class="absolute inset-0 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
+                            <i class="ph-bold ph-globe absolute inset-0 flex items-center justify-center text-2xl text-blue-400"></i>
+                        </div>
+                        <h2 class="text-2xl font-black tracking-tight mb-2">Preparing Map Data</h2>
+                        <p id="loading-msg" class="text-blue-300 font-medium text-sm animate-pulse">Locating targets...</p>
+                        <div class="w-64 h-2 bg-slate-800 rounded-full mt-6 overflow-hidden border border-slate-700">
+                            <div id="loading-progress" class="h-full bg-blue-500 transition-all duration-300 w-0"></div>
+                        </div>
+                    </div>
+
+                    <!-- Missing Locations Notification -->
+                    <div id="missing-locations-toast" class="absolute top-4 right-4 z-[1000] bg-red-500 text-white px-4 py-3 rounded-xl shadow-lg font-medium text-sm hidden max-w-sm flex items-start gap-3 border border-red-400">
+                        <i class="ph-fill ph-warning-circle text-xl shrink-0 mt-0.5"></i>
+                        <div>
+                            <p class="font-bold mb-1">Could not find some locations:</p>
+                            <p id="missing-locations-text" class="text-red-100 text-xs leading-relaxed"></p>
+                            <button onclick="document.getElementById('missing-locations-toast').classList.add('hidden')" class="text-xs underline mt-2 text-white/80 hover:text-white">Dismiss</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Prompt / Action Bar -->
+                <div id="footer-prompt" class="px-6 py-4 bg-white border-t border-slate-100 flex justify-between items-center z-[400] relative shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] min-h-[72px]">
+                    <!-- Filled by JS -->
+                </div>
             </div>
         </div>
     </div>
@@ -228,7 +263,7 @@
         let gameState = "setup"; // "setup" | "playing" | "learning"
         let time = 0;
         let hintUsedThisRound = false;
-        let isWaitingForNext = false; // Lock interactions during 3-strike penalty reveal
+        let isWaitingForNext = false; 
         
         let mapInstance = null;
         let mapLayers = [];
@@ -247,16 +282,22 @@
         const btnQuiz = document.getElementById('btn-quiz');
         const btnLearn = document.getElementById('btn-learn');
         const btnClear = document.getElementById('btn-clear');
+        const toggleAutoNext = document.getElementById('btn-autonext-container');
+        const btnAutoNext = document.getElementById('btn-autonext');
+        const autonextPill = document.getElementById('autonext-pill');
         
+        const perfOverview = document.getElementById('perf-overview');
+        const perfGameplay = document.getElementById('perf-gameplay');
         const accuracyScoreEl = document.getElementById('accuracy-score');
         const accuracyGradeEl = document.getElementById('accuracy-grade');
+        const headerStatusEl = document.getElementById('header-status');
+        const headerTitleEl = document.getElementById('header-title');
         
         const mapContainer = document.getElementById('map');
         const loadingOverlay = document.getElementById('loading-overlay');
         const loadingMsgEl = document.getElementById('loading-msg');
         const loadingProgress = document.getElementById('loading-progress');
         
-        const seterraHeader = document.getElementById('seterra-header');
         const hudProgress = document.getElementById('hud-progress');
         const hudTotal = document.getElementById('hud-total');
         const hudScore = document.getElementById('hud-score');
@@ -267,6 +308,8 @@
         const footerPrompt = document.getElementById('footer-prompt');
         const missingLocationsToast = document.getElementById('missing-locations-toast');
         const missingLocationsText = document.getElementById('missing-locations-text');
+
+        let autoNext = true;
 
         // --- Utilities ---
         function shuffleArray(array) {
@@ -347,6 +390,10 @@
             btnQuiz.addEventListener('click', () => prepareGame("playing"));
             btnLearn.addEventListener('click', () => prepareGame("learning"));
             btnClear.addEventListener('click', clearSession);
+            toggleAutoNext.addEventListener('click', () => {
+                autoNext = !autoNext;
+                updateUI();
+            });
 
             updateUI();
         }
@@ -477,16 +524,15 @@
                     } else if (mapClickLatLng) {
                         missedClicks.push(mapClickLatLng);
                     }
-                    updateUI(); // Instantly update strikes visually
+                    updateUI(); 
                 } else {
                     // 3 Strikes - Failed
                     if (mapClickLatLng) missedClicks.push(mapClickLatLng);
                     completedHighlights[current.name] = { color: '#ef4444', borderColor: '#b91c1c', attemptsUsed: 4 };
                     
                     isWaitingForNext = true;
-                    updateUI(); // Renders the correct answer in RED
+                    updateUI(); 
                     
-                    // Pause so the player can see the correct answer they missed
                     setTimeout(() => {
                         isWaitingForNext = false;
                         round++;
@@ -498,11 +544,10 @@
                     }, 1500);
                 }
             } else {
-                // Correct Guess - Instant Advance!
+                // Correct Guess - Instant Advance
                 playSound('correct');
                 const finalAttempts = attempts + 1;
                 
-                // Scoring Colors
                 let color, borderColor;
                 if (finalAttempts === 1) { color = '#ffffff'; borderColor = '#94a3b8'; }      // White
                 else if (finalAttempts === 2) { color = '#fef08a'; borderColor = '#ca8a04'; } // Yellow
@@ -516,9 +561,22 @@
                 missedClicks = [];
                 hintUsedThisRound = false;
                 
-                // Immediately render the next round, which applies the permanent tooltip to the completed item
                 updateUI();
             }
+        }
+
+        function handleNext() {
+            attempts = 0;
+            wrongGuessesThisRound = [];
+            missedClicks = [];
+            hintUsedThisRound = false;
+            
+            if (round < quizSequence.length - 1) {
+                round++;
+            } else {
+                round = quizSequence.length;
+            }
+            updateUI();
         }
 
         function startReview() {
@@ -577,7 +635,7 @@
             const current = quizSequence[round];
             const isFinished = quizSequence.length > 0 && round >= quizSequence.length;
             
-            // Scoring Math: 1st=100, 2nd=60, 3rd=30, Fail=0
+            // Scoring Math
             const completedCount = Object.keys(completedHighlights).length;
             const totalEarnedPoints = Object.values(completedHighlights).reduce((acc, curr) => acc + (curr.attemptsUsed === 1 ? 100 : curr.attemptsUsed === 2 ? 60 : curr.attemptsUsed === 3 ? 30 : 0), 0);
             const totalPossiblePointsSoFar = completedCount * 100;
@@ -589,6 +647,14 @@
             rawInputEl.disabled = !isSetup;
             if(!isSetup) rawInputEl.classList.add('opacity-50', 'bg-slate-100');
             else rawInputEl.classList.remove('opacity-50', 'bg-slate-100');
+
+            if (autoNext) {
+                btnAutoNext.classList.replace('bg-slate-300', 'bg-blue-600');
+                autonextPill.classList.replace('left-1', 'left-7');
+            } else {
+                btnAutoNext.classList.replace('bg-blue-600', 'bg-slate-300');
+                autonextPill.classList.replace('left-7', 'left-1');
+            }
 
             // High Scores Logic
             let isNewBest = false;
@@ -605,45 +671,53 @@
                 bestScoreStr = `Best: ${best.score}% in ${formatTime(best.time)}`;
             }
 
-            // Score Panel in Sidebar
-            accuracyScoreEl.innerText = `${avgScore}%`;
-            if(completedCount === 0) accuracyGradeEl.innerText = '-';
-            else if(avgScore >= 90) accuracyGradeEl.innerText = 'S';
-            else if(avgScore >= 80) accuracyGradeEl.innerText = 'A';
-            else if(avgScore >= 70) accuracyGradeEl.innerText = 'B';
-            else if(avgScore >= 60) accuracyGradeEl.innerText = 'C';
-            else accuracyGradeEl.innerText = 'F';
-            
-            accuracyGradeEl.className = `relative z-10 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl font-black border-[3px] shadow-[0_0_20px_rgba(0,0,0,0.2)] rotate-3 transition-colors duration-500 ${
-                completedCount === 0 ? 'bg-slate-700 border-slate-600 text-slate-400' :
-                avgScore >= 90 ? 'bg-purple-500 border-purple-400 text-white shadow-purple-500/50' : 
-                avgScore >= 80 ? 'bg-blue-500 border-blue-400 text-white shadow-blue-500/50' :
-                avgScore >= 70 ? 'bg-emerald-500 border-emerald-400 text-white shadow-emerald-500/50' :
-                avgScore >= 60 ? 'bg-amber-500 border-amber-400 text-white shadow-amber-500/50' :
-                'bg-red-500 border-red-400 text-white shadow-red-500/50'
-            }`;
-
-            // Map HUD Top Bar
-            if (!isSetup) {
-                seterraHeader.classList.remove('hidden');
+            // Top Bar State Toggle
+            if (!isSetup && !isFinished) {
+                // Show HUD
+                perfOverview.classList.add('hidden');
+                perfGameplay.classList.remove('hidden');
+                
                 hudProgress.innerText = completedCount;
                 hudTotal.innerText = quizSequence.length;
                 hudScore.innerText = `${avgScore}%`;
                 hudTimer.innerText = formatTime(time);
                 
-                if (!isFinished && current) {
+                if (current) {
                     hudVerb.innerText = gameState === "learning" ? "Study Area" : "Click on";
                     hudTargetName.innerText = current.name;
-                    // Trigger text animation
                     hudTargetName.classList.remove('animate-pop');
                     void hudTargetName.offsetWidth; 
                     hudTargetName.classList.add('animate-pop');
-                } else if (isFinished) {
-                    hudVerb.innerText = "Quiz";
-                    hudTargetName.innerText = "Complete!";
                 }
             } else {
-                seterraHeader.classList.add('hidden');
+                // Show Overview (Accuracy & Grade)
+                perfGameplay.classList.add('hidden');
+                perfOverview.classList.remove('hidden');
+                
+                accuracyScoreEl.innerText = `${avgScore}%`;
+                if(completedCount === 0) accuracyGradeEl.innerText = '-';
+                else if(avgScore >= 90) accuracyGradeEl.innerText = 'S';
+                else if(avgScore >= 80) accuracyGradeEl.innerText = 'A';
+                else if(avgScore >= 70) accuracyGradeEl.innerText = 'B';
+                else if(avgScore >= 60) accuracyGradeEl.innerText = 'C';
+                else accuracyGradeEl.innerText = 'F';
+                
+                accuracyGradeEl.className = `w-14 h-14 rounded-xl flex items-center justify-center text-3xl font-black border-2 rotate-3 transition-colors duration-500 shadow-inner ${
+                    completedCount === 0 ? 'bg-slate-800 border-slate-700 text-slate-500' :
+                    avgScore >= 90 ? 'bg-purple-500 border-purple-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]' : 
+                    avgScore >= 80 ? 'bg-blue-500 border-blue-400 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]' :
+                    avgScore >= 70 ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)]' :
+                    avgScore >= 60 ? 'bg-amber-500 border-amber-400 text-white shadow-[0_0_15px_rgba(245,158,11,0.4)]' :
+                    'bg-red-500 border-red-400 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]'
+                }`;
+
+                if (isFinished) {
+                    headerStatusEl.innerHTML = `<i class="ph-bold ph-flag-checkered"></i> Quiz Finished`;
+                    headerTitleEl.innerText = "Session Complete!";
+                } else {
+                    headerStatusEl.innerHTML = `<i class="ph-bold ph-map-pin"></i> Map Explorer`;
+                    headerTitleEl.innerText = "Enter list & select mode";
+                }
             }
 
             // Action Footer
@@ -651,7 +725,6 @@
             let footerHtml = '';
             
             if (gameState === "playing" && !isFinished) {
-                // Strike dots
                 let dotsHtml = `<div class="flex gap-1.5 mr-4">`;
                 for (let i = 0; i < 3; i++) {
                     const active = i < (3 - attempts);
@@ -660,8 +733,8 @@
                 dotsHtml += `</div>`;
 
                 const hintBtn = hintUsedThisRound ? 
-                    `<button disabled class="${btnBase} bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed"><i class="ph-bold ph-magnifying-glass mr-2"></i> Hint</button>` :
-                    `<button onclick="useHintWrapper()" class="${btnBase} bg-amber-100 text-amber-700 hover:bg-amber-200 border border-amber-300"><i class="ph-bold ph-magnifying-glass mr-2"></i> Hint</button>`;
+                    `<button disabled class="${btnBase} bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed ml-auto"><i class="ph-bold ph-magnifying-glass mr-2"></i> Hint</button>` :
+                    `<button onclick="useHintWrapper()" class="${btnBase} bg-amber-100 text-amber-700 hover:bg-amber-200 border border-amber-300 ml-auto"><i class="ph-bold ph-magnifying-glass mr-2"></i> Hint</button>`;
 
                 if (isWaitingForNext) {
                     footerHtml = `<div class="flex items-center w-full"><div class="text-red-600 font-bold uppercase text-xs flex items-center gap-2"><i class="ph-fill ph-x-circle text-lg"></i> Correct location shown above. Moving on...</div></div>`;
@@ -670,7 +743,12 @@
                 }
 
             } else if (gameState === "learning" && !isFinished) {
-                 footerHtml = `<button onclick="handleNextWrapper()" class="${btnBase} w-full max-w-sm bg-blue-600 text-white hover:bg-blue-700 mx-auto">Next Target <i class='ph-bold ph-arrow-right ml-2'></i></button>`;
+                // If Auto-advance is off in learning mode, let them click next
+                 if (!autoNext) {
+                     footerHtml = `<button onclick="handleNextWrapper()" class="${btnBase} w-full max-w-sm bg-blue-600 text-white hover:bg-blue-700 mx-auto">Next Target <i class='ph-bold ph-arrow-right ml-2'></i></button>`;
+                 } else {
+                     footerHtml = `<div class="flex items-center justify-center w-full"><span class="text-slate-400 font-bold tracking-widest uppercase text-xs animate-pulse">Click target to advance</span></div>`;
+                 }
             } else if (isFinished) {
                 const mistakes = places.filter(p => completedHighlights[p.name]?.attemptsUsed > 1);
                 const reviewBtn = mistakes.length > 0 ? 
@@ -761,7 +839,7 @@
                 mapLayers.push(mask);
             }
 
-            // Draw Missed Clicks (Red X markers)
+            // Draw Missed Clicks
             missedClicks.forEach(latlng => {
                 const marker = L.circleMarker(latlng, {
                     radius: 5, color: '#991b1b', fillColor: '#ef4444', fillOpacity: 1, weight: 2, interactive: false
@@ -774,7 +852,6 @@
                 const isDone = !!completedHighlights[p.name];
                 const isWrongThisRound = wrongGuessesThisRound.includes(p.name);
                 
-                // If it's the target and we are waiting after 3 strikes, pulse it red
                 const isCurrentFailedReveal = isWaitingForNext && current && p.name === current.name;
                 const isCurrentLearning = gameState === "learning" && current && p.name === current.name;
                 
@@ -791,10 +868,8 @@
                     style = { color: '#ef4444', fillColor: 'url(#stripes)', fillOpacity: 1, weight: 2 };
                 } else {
                     if (p.isCity) {
-                        // Un-guessed Dot: White outer ring with dark center
                         style = { color: '#ffffff', fillColor: '#1e293b', fillOpacity: 1, weight: 3 };
                     } else {
-                        // Un-guessed Polygon: Very subtle
                         style = { color: '#ffffff', fillColor: '#ffffff', fillOpacity: 0.1, weight: 1.5 };
                     }
                 }
@@ -827,12 +902,14 @@
                         });
                         layer.on('click', (e) => {
                             L.DomEvent.stopPropagation(e);
-                            if (gameState === "learning") handleNext();
-                            else submitGuess(p.name);
+                            if (gameState === "learning") {
+                                if(autoNext) handleNext();
+                            } else {
+                                submitGuess(p.name);
+                            }
                         });
                     }
                     
-                    // Attach permanent label if completed
                     if (isDone || isCurrentFailedReveal) {
                         layer.bindTooltip(p.name, {
                             permanent: true,
