@@ -96,13 +96,13 @@
                         <p>We sat down with TheMinescouter to talk about the development process behind the tool.</p>
 
                         <div class="interview-q">Q: What was the primary inspiration behind GeoMaster Pro?</div>
-                        <div class="interview-a">A: I was studying for a geography test on a very specific subset of Central American and Caribbean regions, and none of the popular quiz sites had a dedicated mode for it. I realized that if I could hook up a text box to a geocoding API, I could generate a quiz for literally anything on the planet. That was the lightbulb moment.</div>
+                        <div class="interview-a">A: I originally needed a way to practice for my history tests. There are plenty of geography games out there, but I specifically wanted the ability to fully customize the locations I was being tested on, rather than being stuck with pre-made lists.</div>
 
-                        <div class="interview-q">Q: What was the biggest technical hurdle you faced?</div>
-                        <div class="interview-a">A: Definitely handling the GeoJSON data from OpenStreetMap. A single country can have hundreds of complex border coordinates. Drawing those polygons dynamically on a Leaflet map without freezing the browser required some careful optimization. Plus, ensuring the map viewport perfectly framed the bounding box of the active target took quite a bit of math!</div>
+                        <div class="interview-q">Q: What was the biggest technical hurdle you faced while building it?</div>
+                        <div class="interview-a">A: The biggest challenge was calculating the map zoom and framing. I had to take the bounding box data from the OpenStreetMap API, convert it into Leaflet coordinate bounds, and apply a visual buffer (padding) so the clickable GeoJSON polygons wouldn't be cut off at the edges of the screen. Getting the camera to smoothly track the collection of polygons took some trial and error.</div>
 
-                        <div class="interview-q">Q: Any plans for future updates?</div>
-                        <div class="interview-a">A: I'd love to add a multiplayer mode where two people can race to find the same list of locations on a shared seed. But for now, the single-player performance tracking is working beautifully.</div>
+                        <div class="interview-q">Q: Do you have any exciting plans for future updates or new features?</div>
+                        <div class="interview-a">A: Coming very soon, I'm hoping to add built-in presets for every single continent, making it even easier to jump right into a game without having to type out your own lists!</div>
 
                         <div class="official-version-box">
                             <h2>🌍 Ready to test your knowledge?</h2>
