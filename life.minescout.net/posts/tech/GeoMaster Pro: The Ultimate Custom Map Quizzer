@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>GeoMaster Pro: The Ultimate Custom Map Quizzer - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/assests/css/homepage.css">
+    <link rel="stylesheet" href="/assests/css/AI-ASSISTANT.css">
+    <link rel="icon" type="image/png" href="/assests/images/favicon.png">
+    
+    <style>
+        .comparison-section { margin-bottom: 40px; }
+        .ai-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .ai-card h3 { margin-top: 0; color: #5a8a5a; }
+        .ai-link { display: inline-block; margin-top: 10px; font-weight: bold; color: #4285F4; text-decoration: none; }
+        .review-text { background-color: #f9f9f9; border-left: 4px solid #5a8a5a; padding: 15px; margin-top: 15px; color: #333; line-height: 1.6; }
+        .prompt-box { background-color: #f4f4f4; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 0.9rem; border: 1px solid #ccc; margin-bottom: 30px; white-space: pre-wrap; line-height: 1.5; color: #444; }
+        .github-btn { display: inline-block; background-color: #DD8566; color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 20px; transition: 0.2s; }
+        .github-btn:hover { background-color: #c07055; transform: translateY(-2px); }
+        .official-version-box { background-color: #fff; border: 2px solid #DD8566; border-radius: 8px; padding: 20px; margin: 40px 0; }
+        .official-version-box h2 { color: #DD8566; margin-top: 0; }
+        .post-image-full { width: 100%; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        
+        /* Added for the Interview Section */
+        .interview-q { font-weight: bold; color: #DD8566; margin-top: 20px; margin-bottom: 5px; }
+        .interview-a { margin-bottom: 20px; padding-left: 15px; border-left: 2px solid #eee; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container"><a href="/login.html" id="login-link">Login</a></div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="/index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Tech Tips</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <a href="/account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            
+            <main class="post-main" data-post-id="geomaster-pro-release">
+                
+                <a href="/pages/tech-tips.html" class="back-link">« Back to Tech Tips</a>
+
+                <article class="post-full">
+                    <h1>GeoMaster Pro: The Ultimate Custom Map Quizzer</h1>
+                    <p class="post-meta">Posted on 4/7/26 by TheMinescouter</p>
+
+                    <div class="post-content">
+                        <p>Have you ever wanted to study a specific region of the globe, but found that standard geography apps only offer pre-packaged quizzes? That frustration is exactly what led to the creation of <strong>GeoMaster Pro</strong>. </p>
+                        
+                        <p>Instead of being locked into "World Capitals" or "US States", GeoMaster Pro lets you paste in absolutely <em>any</em> list of locations—cities, countries, or regions—and instantly generates an interactive, sleek, map-based quiz right in your browser.</p>
+
+                        <h2>The Tech Stack</h2>
+                        <div class="prompt-box">Built entirely as a single-file HTML application, GeoMaster Pro leverages Tailwind CSS for its modern UI, Leaflet.js for interactive map rendering, and the OpenStreetMap Nominatim API to dynamically fetch and draw geographical boundaries on the fly.</div>
+
+                        <hr>
+
+                        <h2>Core Features</h2>
+
+                        <div class="ai-card">
+                            <h3>Dynamic Play Modes</h3>
+                            <p>GeoMaster Pro comes with two distinct ways to interact with your data:</p>
+                            <ul>
+                                <li><strong>Quiz Mode:</strong> A timed, scored challenge where you must click the correct location on a blank map. You get three strikes per location, with dynamic coloring based on your performance.</li>
+                                <li><strong>Learn Mode:</strong> A guided tour of your custom list. The map automatically pans and highlights each target area, helping you build spatial memory before you take the quiz.</li>
+                            </ul>
+                        </div>
+
+                        <div class="ai-card">
+                            <h3>Intelligent UI & Scoring</h3>
+                            <p>The app features a "Performance Bar" that tracks your session accuracy in real-time, assigning you a final grade (S, A, B, C, or F) upon completion. It also includes local browser caching, meaning if you query the same locations tomorrow, the map will load instantly without waiting on the API.</p>
+                            
+                            <div class="review-text">
+                                <strong>Minescout's Official Review:</strong><br>
+                                "GeoMaster Pro is incredibly responsive. The way the map seamlessly zooms to fit whatever custom bounding boxes the API returns feels like magic. The addition of the 'Auto-Advance' toggle and the visual hint system (where the map slightly zooms toward the target) are massive quality-of-life improvements. The only downside is relying on the free OpenStreetMap API, which can occasionally be slow if you input a massive list of 50+ obscure towns all at once."
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <h2>Developer Interview</h2>
+                        <p>We sat down with TheMinescouter to talk about the development process behind the tool.</p>
+
+                        <div class="interview-q">Q: What was the primary inspiration behind GeoMaster Pro?</div>
+                        <div class="interview-a">A: I was studying for a geography test on a very specific subset of Central American and Caribbean regions, and none of the popular quiz sites had a dedicated mode for it. I realized that if I could hook up a text box to a geocoding API, I could generate a quiz for literally anything on the planet. That was the lightbulb moment.</div>
+
+                        <div class="interview-q">Q: What was the biggest technical hurdle you faced?</div>
+                        <div class="interview-a">A: Definitely handling the GeoJSON data from OpenStreetMap. A single country can have hundreds of complex border coordinates. Drawing those polygons dynamically on a Leaflet map without freezing the browser required some careful optimization. Plus, ensuring the map viewport perfectly framed the bounding box of the active target took quite a bit of math!</div>
+
+                        <div class="interview-q">Q: Any plans for future updates?</div>
+                        <div class="interview-a">A: I'd love to add a multiplayer mode where two people can race to find the same list of locations on a shared seed. But for now, the single-player performance tracking is working beautifully.</div>
+
+                        <div class="official-version-box">
+                            <h2>🌍 Ready to test your knowledge?</h2>
+                            <p>You can try out the pre-loaded presets (like the Full Caribbean or South America quizzes) or type in your own hometowns, favorite vacation spots, or study guides.</p>
+                            
+                            <div style="text-align: center;">
+                                <a href="/projects/GeoMaster/GeoMaster.html" class="github-btn" target="_blank">Launch GeoMaster Pro</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </article>
+                
+            </main>
+
+            <aside id="sidebar">
+                <div id="sidebar-container"></div>
+            </aside>
+
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <script type="module" src="/assests/js/auth.js"></script>
+    <script type="module" src="/assests/js/homepage.js"></script>
+    <script src="/assests/js/loader.js"></script>
+
+</body>
+</html>
+<p hidden>GeoMaster Pro is a custom geography quiz and learning tool featuring interactive maps, dynamic scoring, and the ability to turn any list of locations into a playable game instantly.</p>
