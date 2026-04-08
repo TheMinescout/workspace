@@ -8,67 +8,73 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Leaflet CSS & JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Swapped from unpkg to jsDelivr (School WiFi Fix) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Phosphor Icons for modern UI icons -->
+    <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; }
         
-        /* Custom map styles */
-        .leaflet-container { background-color: #cbd5e1; font-family: 'Inter', sans-serif; }
+        /* Ensure map is actually visible */
+        #map { 
+            width: 100%; 
+            height: 100%; 
+            background-color: #cbd5e1; 
+            min-height: 400px;
+        }
+
+        .leaflet-container { font-family: 'Inter', sans-serif; }
         .leaflet-interactive { transition: fill-opacity 0.15s, stroke-width 0.15s; }
-        .leaflet-interactive:hover { fill-opacity: 0.9 !important; }
         
-        /* Map Labels (Tooltips) */
+        /* Map Labels */
         .leaflet-tooltip.map-label {
-            background: transparent;
-            border: none;
-            box-shadow: none;
-            font-weight: 900;
-            font-size: 11px;
-            color: #0f172a;
-            /* White text stroke for readability over map colors */
-            text-shadow: 
-                -1.5px -1.5px 0 rgba(255,255,255,0.9),  
-                 1.5px -1.5px 0 rgba(255,255,255,0.9),
-                -1.5px  1.5px 0 rgba(255,255,255,0.9),
-                 1.5px  1.5px 0 rgba(255,255,255,0.9);
-            padding: 0;
-            margin: 0;
+            background: transparent; border: none; box-shadow: none;
+            font-weight: 900; font-size: 11px; color: #0f172a;
+            text-shadow: -1.5px -1.5px 0 #fff, 1.5px -1.5px 0 #fff, -1.5px 1.5px 0 #fff, 1.5px 1.5px 0 #fff;
+            padding: 0; margin: 0; pointer-events: none;
         }
-        /* Hide default tooltip arrow */
-        .leaflet-tooltip-top:before,
-        .leaflet-tooltip-bottom:before,
-        .leaflet-tooltip-left:before,
-        .leaflet-tooltip-right:before {
-            display: none !important;
-        }
+        .leaflet-tooltip-top:before, .leaflet-tooltip-bottom:before, 
+        .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { display: none !important; }
         
-        /* Utility classes */
         .hidden { display: none !important; }
         
-        /* Animations */
         @keyframes popIn {
             0% { opacity: 0; transform: scale(0.95); }
             100% { opacity: 1; transform: scale(1); }
         }
         .animate-pop { animation: popIn 0.2s ease-out forwards; }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+
+        /* Slider Styles */
+        .toggle-dot { transition: all 0.2s ease-in-out; }
+        input:checked ~ .toggle-dot { transform: translateX(100%); }
+        input:checked ~ .toggle-bg { background-color: #2563eb; }
     </style>
 </head>
 <body class="min-h-screen bg-slate-100 p-4 md:p-6 lg:p-8 text-slate-900 relative selection:bg-blue-200">
 
-    <!-- SVG Pattern for Incorrect Guesses -->
+    <!-- FIXED OVERLAY -->
+    <div id="loading-overlay" class="fixed inset-0 z-[9999] bg-slate-900/95 backdrop-blur-md flex flex-col items-center justify-center text-white hidden">
+        <div class="relative w-24 h-24 mb-6">
+            <div class="absolute inset-0 border-4 border-slate-700 rounded-full"></div>
+            <div class="absolute inset-0 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
+            <i class="ph-bold ph-globe absolute inset-0 flex items-center justify-center text-3xl text-blue-400"></i>
+        </div>
+        <h2 class="text-2xl font-black mb-2">Syncing Locations</h2>
+        <p id="loading-msg" class="text-blue-300 font-medium text-sm animate-pulse">Connecting to OpenStreetMap...</p>
+        <div class="w-64 h-2 bg-slate-800 rounded-full mt-6 overflow-hidden border border-slate-700">
+            <div id="loading-progress" class="h-full bg-blue-500 transition-all duration-300 w-0"></div>
+        </div>
+    </div>
+
     <svg width="0" height="0" class="absolute pointer-events-none">
         <defs>
             <pattern id="stripes" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
@@ -78,13 +84,11 @@
         </defs>
     </svg>
 
-    <div class="max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-6 lg:gap-8 lg:h-[calc(100vh-4rem)]">
+    <div class="max-w-[1440px] mx-auto grid lg:grid-cols-12 gap-6 lg:gap-8 h-full">
         
-        <!-- SIDEBAR (Inputs & Controls) -->
-        <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6 h-full overflow-y-auto pb-4 lg:pb-0">
-            
-            <div class="bg-white rounded-3xl shadow-lg shadow-slate-200/50 border border-slate-200 overflow-hidden shrink-0">
-                <!-- Branding -->
+        <!-- SIDEBAR -->
+        <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6 h-full overflow-y-auto">
+            <div class="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden shrink-0">
                 <div class="p-6 bg-gradient-to-br from-blue-600 to-blue-800 text-white flex items-center justify-between">
                     <h3 class="text-2xl font-black tracking-tight flex items-center gap-2">
                         <i class="ph-fill ph-globe-hemisphere-west text-3xl text-blue-200"></i>
@@ -95,848 +99,476 @@
                 
                 <div class="p-6 space-y-6">
                     <div class="space-y-3">
-                        <div class="flex justify-between items-end">
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-widest">Target Locations</label>
-                            <span class="text-[10px] text-slate-400 font-medium">1 per line</span>
-                        </div>
-                        
-                        <!-- Presets -->
-                        <div class="flex gap-2 overflow-x-auto pb-1" id="preset-buttons">
-                            <button onclick="loadPreset('Caribbean')" class="shrink-0 text-[10px] font-bold uppercase tracking-wide bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🏝️ Caribbean</button>
-                            <button onclick="loadPreset('Central America')" class="shrink-0 text-[10px] font-bold uppercase tracking-wide bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🌎 Central Am.</button>
-                            <button onclick="loadPreset('South America')" class="shrink-0 text-[10px] font-bold uppercase tracking-wide bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🏔️ South Am.</button>
-                            <button onclick="loadPreset('Full Quiz')" class="shrink-0 text-[10px] font-bold uppercase tracking-wide bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">💯 Full Quiz</button>
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Study Sets</label>
+                        <div class="flex gap-2 overflow-x-auto pb-1">
+                            <button onclick="window.loadPreset('Caribbean')" class="shrink-0 text-[10px] font-bold uppercase bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🏝️ Caribbean</button>
+                            <button onclick="window.loadPreset('Central America')" class="shrink-0 text-[10px] font-bold uppercase bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🌎 Central Am.</button>
+                            <button onclick="window.loadPreset('South America')" class="shrink-0 text-[10px] font-bold uppercase bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🏔️ South Am.</button>
                         </div>
 
-                        <div class="relative">
-                            <textarea id="rawInput" class="w-full rounded-2xl border-2 border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-blue-500 focus:bg-white focus:ring-0 transition-colors font-medium min-h-[160px] resize-none shadow-inner" placeholder="E.g.&#10;Azerbaijan&#10;Tokyo&#10;Grand Canyon"></textarea>
-                        </div>
+                        <textarea id="rawInput" class="w-full rounded-2xl border-2 border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-blue-500 focus:bg-white focus:ring-0 transition-colors font-medium min-h-[160px] resize-none shadow-inner" placeholder="1 location per line..."></textarea>
                         
                         <div class="grid grid-cols-2 gap-3 pt-2">
-                            <button id="btn-quiz" class="flex flex-col items-center justify-center gap-1 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition-all shadow-md shadow-blue-600/20 py-3 disabled:opacity-50 disabled:pointer-events-none">
+                            <button onclick="window.prepareGame('playing')" class="flex flex-col items-center justify-center gap-1 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition-all shadow-md py-3 cursor-pointer">
                                 <i class="ph-bold ph-target text-xl"></i>
                                 <span class="text-xs font-bold uppercase tracking-wide">Quiz Mode</span>
                             </button>
-                            <button id="btn-learn" class="flex flex-col items-center justify-center gap-1 rounded-2xl bg-slate-100 text-slate-700 hover:bg-slate-200 active:scale-95 transition-all py-3 disabled:opacity-50 disabled:pointer-events-none border border-slate-200">
+                            <button onclick="window.prepareGame('learning')" class="flex flex-col items-center justify-center gap-1 rounded-2xl bg-slate-100 text-slate-700 hover:bg-slate-200 active:scale-95 transition-all py-3 border border-slate-200 cursor-pointer">
                                 <i class="ph-bold ph-book-open text-xl"></i>
                                 <span class="text-xs font-bold uppercase tracking-wide">Learn Mode</span>
                             </button>
                         </div>
                         
-                        <button id="btn-clear" class="w-full mt-2 flex items-center justify-center gap-2 py-2 text-xs font-bold text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                        <button onclick="window.clearSession()" class="w-full mt-2 flex items-center justify-center gap-2 py-2 text-xs font-bold text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors cursor-pointer">
                             <i class="ph-bold ph-trash"></i> Reset List
                         </button>
                     </div>
 
                     <hr class="border-slate-100" />
 
-                    <!-- Settings Toggle -->
-                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors" id="btn-autonext-container">
+                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200">
                         <div class="flex flex-col">
                             <span class="text-sm font-bold text-slate-700">Auto-Advance</span>
-                            <span class="text-[10px] text-slate-500 font-medium">Skip manually clicking 'Next'</span>
+                            <span class="text-[10px] text-slate-500 font-medium">Auto-next on correct</span>
                         </div>
-                        <div id="btn-autonext" class="w-12 h-6 rounded-full transition-colors duration-300 relative bg-blue-600 shadow-inner shrink-0 ml-2">
-                            <div id="autonext-pill" class="absolute top-1 left-7 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm"></div>
-                        </div>
+                        <label class="flex items-center cursor-pointer">
+                            <div class="relative">
+                                <input type="checkbox" id="autoNextToggle" class="sr-only" checked onchange="window.toggleAutoNextFunc(this.checked)">
+                                <div class="toggle-bg block bg-slate-300 w-12 h-6 rounded-full"></div>
+                                <div class="toggle-dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition shadow-sm"></div>
+                            </div>
+                        </label>
                     </div>
                 </div>
             </div>
-            
         </div>
 
-        <!-- MAIN AREA (Performance Bar + Map) -->
-        <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-5 h-full min-h-[700px] lg:min-h-0">
+        <!-- MAIN AREA -->
+        <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-5 h-full relative">
             
-            <!-- THE PERFORMANCE BAR (Always above the map) -->
-            <div class="bg-slate-900 text-white px-6 py-4 rounded-3xl shadow-lg border border-slate-800 shrink-0 relative overflow-hidden transition-all duration-300 min-h-[5.5rem] flex items-center justify-center">
-                
-                <!-- Background Icon Deco -->
+            <!-- PERFORMANCE BAR -->
+            <div class="bg-slate-900 text-white px-6 py-4 rounded-3xl shadow-lg border border-slate-800 shrink-0 relative overflow-hidden min-h-[5.5rem] flex items-center justify-center z-[1000]">
                 <i class="ph-fill ph-trophy absolute -right-2 -top-6 text-8xl text-white/5 pointer-events-none"></i>
 
-                <!-- STATE 1: SETUP / REVIEW (Accuracy & Grade) -->
-                <div id="perf-overview" class="flex items-center justify-between w-full z-10">
+                <div id="perf-overview" class="flex items-center justify-between w-full">
                     <div class="flex items-center gap-5">
-                        <div id="accuracy-grade" class="w-14 h-14 bg-slate-800 rounded-xl flex items-center justify-center text-3xl font-black text-slate-500 border-2 border-slate-700 rotate-3 transition-colors duration-500 shadow-inner">-</div>
+                        <div id="accuracy-grade" class="w-14 h-14 bg-slate-800 rounded-xl flex items-center justify-center text-3xl font-black text-slate-500 border-2 border-slate-700 rotate-3 shadow-inner">-</div>
                         <div class="flex flex-col">
-                            <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest mb-0.5">Session Accuracy</span>
-                            <span id="accuracy-score" class="text-3xl font-black text-white tabular-nums leading-none">0%</span>
+                            <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest mb-0.5">Accuracy</span>
+                            <span id="accuracy-score" class="text-3xl font-black text-white leading-none">0%</span>
                         </div>
                     </div>
                     <div class="flex flex-col items-end text-right hidden sm:flex">
-                        <span id="header-status" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5 flex items-center gap-1.5"><i class="ph-bold ph-map-pin"></i> Map Explorer</span>
-                        <span id="header-title" class="text-lg font-black text-white truncate max-w-[200px] md:max-w-xs">Enter list & select mode</span>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase mb-0.5">Ready to Start</span>
+                        <span id="header-title-display" class="text-lg font-black text-white">Select Region</span>
                     </div>
                 </div>
 
-                <!-- STATE 2: GAMEPLAY HUD (Replaces old floating bar) -->
-                <div id="perf-gameplay" class="hidden flex items-center justify-between w-full z-10">
-                    <!-- Progress & Score -->
-                    <div class="flex items-center gap-4 sm:gap-6">
+                <div id="perf-gameplay" class="hidden flex items-center justify-between w-full">
+                    <div class="flex items-center gap-6">
                         <div class="flex flex-col">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Progress</span>
-                            <span class="text-xl font-black text-white tabular-nums leading-none"><span id="hud-progress">0</span><span class="text-slate-500 text-sm mx-1">/</span><span id="hud-total" class="text-slate-400 text-sm">0</span></span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Progress</span>
+                            <span class="text-xl font-black text-white leading-none"><span id="hud-progress">0</span><span class="text-slate-500 text-sm mx-1">/</span><span id="hud-total">0</span></span>
                         </div>
-                        <div class="w-[1px] h-8 bg-slate-700 hidden sm:block"></div>
                         <div class="flex flex-col hidden sm:flex">
-                            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-0.5">Score</span>
-                            <span id="hud-score" class="text-xl font-black text-white tabular-nums leading-none">0%</span>
+                            <span class="text-[10px] font-bold text-emerald-400 uppercase mb-0.5">Score</span>
+                            <span id="hud-score" class="text-xl font-black text-white leading-none">0%</span>
                         </div>
                     </div>
                     
-                    <!-- Target (Center absolute for perfect symmetry) -->
-                    <div class="absolute left-1/2 -translate-x-1/2 flex flex-col items-center w-full max-w-[180px] sm:max-w-[250px]">
-                        <span id="hud-verb" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1 text-center w-full truncate">Click on</span>
+                    <div class="absolute left-1/2 -translate-x-1/2 flex flex-col items-center w-full max-w-[200px] sm:max-w-[300px]">
+                        <span id="hud-verb" class="text-[10px] text-slate-400 font-bold uppercase mb-1">Click on</span>
                         <div class="bg-blue-600 px-4 sm:px-6 py-1.5 rounded-xl shadow-[0_4px_0_#1e3a8a] border border-blue-400 w-full text-center">
                             <span id="hud-target-name" class="text-lg sm:text-xl font-black text-white tracking-tight truncate block w-full">Target</span>
                         </div>
                     </div>
                     
-                    <!-- Timer -->
                     <div class="flex flex-col items-end">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 hidden sm:block">Timer</span>
-                        <div class="flex items-center gap-1.5 text-blue-400 bg-slate-800 sm:bg-transparent px-3 py-1 sm:p-0 rounded-lg border border-slate-700 sm:border-none">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Timer</span>
+                        <div class="flex items-center gap-1.5 text-blue-400">
                             <i class="ph-bold ph-timer text-lg"></i>
-                            <span id="hud-timer" class="text-xl font-black text-white tabular-nums leading-none">00:00</span>
+                            <span id="hud-timer" class="text-xl font-black text-white tabular-nums">00:00</span>
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <!-- MAP CONTAINER -->
-            <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden flex flex-col flex-1 relative min-h-[400px]">
-                
-                <div class="flex-1 relative z-0 overflow-hidden">
-                    <div id="map" class="w-full h-full absolute inset-0 z-0 bg-[#e2e8f0]"></div>
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 flex flex-col flex-1 relative overflow-hidden">
+                <div class="flex-1 relative z-0">
+                    <div id="map"></div>
                     
-                    <!-- Loading Overlay -->
-                    <div id="loading-overlay" class="absolute inset-0 z-[1000] bg-slate-900/80 backdrop-blur-md flex flex-col items-center justify-center text-white hidden transition-opacity duration-300">
-                        <div class="relative w-20 h-20 mb-6">
-                            <div class="absolute inset-0 border-4 border-slate-700 rounded-full"></div>
-                            <div class="absolute inset-0 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
-                            <i class="ph-bold ph-globe absolute inset-0 flex items-center justify-center text-2xl text-blue-400"></i>
-                        </div>
-                        <h2 class="text-2xl font-black tracking-tight mb-2">Preparing Map Data</h2>
-                        <p id="loading-msg" class="text-blue-300 font-medium text-sm animate-pulse">Locating targets...</p>
-                        <div class="w-64 h-2 bg-slate-800 rounded-full mt-6 overflow-hidden border border-slate-700">
-                            <div id="loading-progress" class="h-full bg-blue-500 transition-all duration-300 w-0"></div>
-                        </div>
-                    </div>
-
-                    <!-- Missing Locations Notification -->
-                    <div id="missing-locations-toast" class="absolute top-4 right-4 z-[1000] bg-red-500 text-white px-4 py-3 rounded-xl shadow-lg font-medium text-sm hidden max-w-sm flex items-start gap-3 border border-red-400">
-                        <i class="ph-fill ph-warning-circle text-xl shrink-0 mt-0.5"></i>
-                        <div>
-                            <p class="font-bold mb-1">Could not find some locations:</p>
-                            <p id="missing-locations-text" class="text-red-100 text-xs leading-relaxed"></p>
-                            <button onclick="document.getElementById('missing-locations-toast').classList.add('hidden')" class="text-xs underline mt-2 text-white/80 hover:text-white">Dismiss</button>
-                        </div>
+                    <!-- Wiki Fact -->
+                    <div id="fact-box" class="absolute bottom-4 left-4 z-[1000] bg-white/95 backdrop-blur border border-slate-200 p-4 rounded-2xl shadow-xl max-w-[300px] hidden animate-pop">
+                        <h4 class="text-[10px] font-black text-blue-600 uppercase mb-1 border-b pb-1" id="fact-title">Location</h4>
+                        <p id="fact-text" class="text-xs text-slate-700 leading-relaxed max-h-24 overflow-y-auto">Summarizing...</p>
                     </div>
                 </div>
 
-                <!-- Footer Prompt / Action Bar -->
-                <div id="footer-prompt" class="px-6 py-4 bg-white border-t border-slate-100 flex justify-between items-center z-[400] relative shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.02)] min-h-[72px]">
-                    <!-- Filled by JS -->
+                <div id="footer-prompt" class="px-6 py-4 bg-white border-t border-slate-100 flex justify-between items-center z-[1000] min-h-[72px]">
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- Pre-made Presets ---
-        const PRESETS = {
+        // Use Global window scope for handlers
+        window.PRESETS = {
             "Caribbean": "Antigua and Barbuda\nBahamas\nBarbados\nCuba\nDominica\nDominican Republic\nGrenada\nHaiti\nJamaica\nPuerto Rico\nSaint Kitts and Nevis\nSaint Lucia\nSt. Vincent and Grenadines\nTrinidad and Tobago",
             "Central America": "Belize\nCosta Rica\nEl Salvador\nGuatemala\nHonduras\nMexico\nNicaragua\nPanama",
-            "South America": "Argentina\nBolivia\nBrazil\nChile\nColombia\nEcuador\nFrench Guiana\nGuyana\nParaguay\nPeru\nSuriname\nUruguay\nVenezuela",
-            "Full Quiz": "Antigua and Barbuda\nBahamas\nBarbados\nCuba\nDominica\nDominican Republic\nGrenada\nHaiti\nJamaica\nPuerto Rico\nSaint Kitts and Nevis\nSaint Lucia\nSt. Vincent and Grenadines\nTrinidad and Tobago\nArgentina\nChile\nEl Salvador\nHonduras\nParaguay\nVenezuela\nBelize\nColombia\nFrench Guiana\nMexico\nPeru\nBolivia\nCosta Rica\nGuatemala\nNicaragua\nSuriname\nBrazil\nEcuador\nGuyana\nPanama\nUruguay"
+            "South America": "Argentina\nBolivia\nBrazil\nChile\nColombia\nEcuador\nFrench Guiana\nGuyana\nParaguay\nPeru\nSuriname\nUruguay\nVenezuela"
         };
 
-        // --- State Variables & Storage ---
-        let places = [];
-        let quizSequence = [];
-        let round = 0;
-        let attempts = 0;
-        let wrongGuessesThisRound = [];
-        let missedClicks = []; 
-        let completedHighlights = {};
-        let gameState = "setup"; // "setup" | "playing" | "learning"
-        let time = 0;
-        let hintUsedThisRound = false;
-        let isWaitingForNext = false; 
-        
-        let mapInstance = null;
-        let mapLayers = [];
-        let timerInterval = null;
-        let lastFramedRound = -1;
-
-        // Load caches
-        let geoCache = JSON.parse(localStorage.getItem('geomaster-cache-v3')) || {};
+        let places = [], quizSequence = [], round = 0, attempts = 0, wrongGuessesThisRound = [], missedClicks = [], completedHighlights = {};
+        let gameState = "setup", time = 0, hintUsedThisRound = false, isWaitingForNext = false, autoNext = true;
+        let mapInstance = null, mapLayers = [], timerInterval = null, lastFramedRound = -1;
+        let geoCache = JSON.parse(localStorage.getItem('geomaster-cache-osm-v2')) || {};
+        let wikiCache = JSON.parse(localStorage.getItem('geomaster-wiki-v1')) || {};
         let highScores = JSON.parse(localStorage.getItem('geomaster-scores-v1')) || {};
-
-        // Audio Context
         let audioCtx = null;
 
-        // --- DOM Elements ---
         const rawInputEl = document.getElementById('rawInput');
-        const btnQuiz = document.getElementById('btn-quiz');
-        const btnLearn = document.getElementById('btn-learn');
-        const btnClear = document.getElementById('btn-clear');
-        const toggleAutoNext = document.getElementById('btn-autonext-container');
-        const btnAutoNext = document.getElementById('btn-autonext');
-        const autonextPill = document.getElementById('autonext-pill');
-        
-        const perfOverview = document.getElementById('perf-overview');
-        const perfGameplay = document.getElementById('perf-gameplay');
-        const accuracyScoreEl = document.getElementById('accuracy-score');
-        const accuracyGradeEl = document.getElementById('accuracy-grade');
-        const headerStatusEl = document.getElementById('header-status');
-        const headerTitleEl = document.getElementById('header-title');
-        
-        const mapContainer = document.getElementById('map');
         const loadingOverlay = document.getElementById('loading-overlay');
         const loadingMsgEl = document.getElementById('loading-msg');
         const loadingProgress = document.getElementById('loading-progress');
-        
-        const hudProgress = document.getElementById('hud-progress');
-        const hudTotal = document.getElementById('hud-total');
-        const hudScore = document.getElementById('hud-score');
-        const hudTimer = document.getElementById('hud-timer');
-        const hudVerb = document.getElementById('hud-verb');
-        const hudTargetName = document.getElementById('hud-target-name');
-        
-        const footerPrompt = document.getElementById('footer-prompt');
-        const missingLocationsToast = document.getElementById('missing-locations-toast');
-        const missingLocationsText = document.getElementById('missing-locations-text');
+        const factBox = document.getElementById('fact-box');
+        const factTitle = document.getElementById('fact-title');
+        const factText = document.getElementById('fact-text');
 
-        let autoNext = true;
-
-        // --- Utilities ---
-        function shuffleArray(array) {
+        window.shuffleArray = (array) => {
             const newArr = [...array];
             for (let i = newArr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
             }
             return newArr;
-        }
+        };
 
-        function formatTime(s) {
+        window.formatTime = (s) => {
             const mins = Math.floor(s / 60);
             const secs = s % 60;
             return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
+        };
 
-        function loadPreset(key) {
-            rawInputEl.value = PRESETS[key] || "";
+        window.loadPreset = (key) => {
+            rawInputEl.value = window.PRESETS[key] || "";
             rawInputEl.classList.add('bg-blue-50');
             setTimeout(() => rawInputEl.classList.remove('bg-blue-50'), 300);
-        }
+        };
 
-        // --- Sound System ---
-        function initAudio() {
+        window.toggleAutoNextFunc = (val) => {
+            autoNext = val;
+            window.updateUI(false);
+        };
+
+        window.playSound = (type) => {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-        }
-
-        function playSound(type) {
-            if (!audioCtx) return;
             try {
-                const osc = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                osc.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
+                const osc = audioCtx.createOscillator(), gainNode = audioCtx.createGain();
+                osc.connect(gainNode); gainNode.connect(audioCtx.destination);
                 const now = audioCtx.currentTime;
-
                 if (type === 'correct') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(523.25, now); // C5
-                    osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.1); // C6
-                    gainNode.gain.setValueAtTime(0.3, now);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                    osc.start(now); osc.stop(now + 0.3);
-                } else if (type === 'wrong') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(150, now);
-                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
-                    gainNode.gain.setValueAtTime(0.2, now);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                    osc.start(now); osc.stop(now + 0.3);
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now); osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.1);
+                    gainNode.gain.setValueAtTime(0.3, now); gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                } else {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+                    gainNode.gain.setValueAtTime(0.2, now); gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                 }
-            } catch (e) { console.warn("Audio error", e); }
+                osc.start(now); osc.stop(now + 0.3);
+            } catch (e) {}
+        };
+
+        window.fetchWikiFact = async (targetName) => {
+            if (wikiCache[targetName]) return wikiCache[targetName];
+            try {
+                const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(targetName)}`);
+                const data = await res.json();
+                const text = data.extract || "No summary available.";
+                wikiCache[targetName] = text;
+                localStorage.setItem('geomaster-wiki-v1', JSON.stringify(wikiCache));
+                return text;
+            } catch (e) { return "Summary restricted."; }
+        };
+
+        function addReliableTileLayer() {
+            const sources = [
+                {
+                    // Carto Light - NO LABELS (Preferred study style)
+                    url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
+                    options: { attribution: '&copy; CARTO', subdomains: 'abcd', maxZoom: 20 }
+                },
+                {
+                    // OpenStreetMap Standard (Unlabeled fallback not easily available, using standard)
+                    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    options: { attribution: '&copy; OpenStreetMap contributors', maxZoom: 19 }
+                },
+                {
+                    // ArcGIS Gray Base
+                    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+                    options: { attribution: '&copy; Esri', maxZoom: 19 }
+                }
+            ];
+
+            let index = 0;
+            const trySource = () => {
+                if (index >= sources.length) return;
+                const src = sources[index];
+                const layer = L.tileLayer(src.url, src.options);
+                let failed = false;
+                layer.on('tileerror', () => {
+                    if (!failed) {
+                        failed = true;
+                        mapInstance.removeLayer(layer);
+                        index++;
+                        trySource();
+                    }
+                });
+                layer.addTo(mapInstance);
+            };
+            trySource();
         }
 
-        // --- Initialization ---
         function init() {
-            if (!rawInputEl.value.trim()) {
-                loadPreset('Caribbean');
-            }
+            if (typeof L === 'undefined') { setTimeout(init, 200); return; }
+            if (mapInstance) return;
+            if (!rawInputEl.value.trim()) window.loadPreset('Caribbean');
 
-            mapInstance = L.map(mapContainer, { 
-                center: [20, 0], zoom: 2, minZoom: 2, worldCopyJump: true, zoomControl: false,
-                maxBounds: [[-90, -180], [90, 180]],
-                wheelPxPerZoomLevel: 120 // slightly smoother zoom
+            mapInstance = L.map('map', { 
+                center: [15, -70], zoom: 3, minZoom: 2, worldCopyJump: true, zoomControl: false,
+                maxBounds: [[-90, -180], [90, 180]]
             });
             
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', { 
-                attribution: '&copy; OSM &copy; CARTO',
-                subdomains: 'abcd', maxZoom: 10
-            }).addTo(mapInstance);
+            addReliableTileLayer();
             
-            mapInstance.on('click', (e) => {
-                if (gameState === "playing") submitGuess(null, e.latlng);
-            });
-            
-            btnQuiz.addEventListener('click', () => prepareGame("playing"));
-            btnLearn.addEventListener('click', () => prepareGame("learning"));
-            btnClear.addEventListener('click', clearSession);
-            toggleAutoNext.addEventListener('click', () => {
-                autoNext = !autoNext;
-                updateUI();
-            });
+            mapInstance.on('click', (e) => { if (gameState === "playing") window.submitGuess(null, e.latlng); });
+            window.updateUI();
 
-            updateUI();
+            // Sizing Failsafes
+            setTimeout(() => mapInstance.invalidateSize(), 100);
+            setTimeout(() => mapInstance.invalidateSize(), 600);
+            new ResizeObserver(() => { if (mapInstance) mapInstance.invalidateSize(); }).observe(document.getElementById('map'));
         }
 
-        // --- Core Logic ---
-        async function prepareGame(mode) {
-            initAudio(); // Initialize audio on first user click
+        window.prepareGame = async (mode) => {
             const rawLines = rawInputEl.value.split("\n").map(s => s.trim()).filter(Boolean);
             if (rawLines.length === 0) return;
 
-            gameState = "setup";
-            time = 0;
-            completedHighlights = {};
-            wrongGuessesThisRound = [];
-            missedClicks = [];
-            hintUsedThisRound = false;
-            isWaitingForNext = false;
-            lastFramedRound = -1;
-            
             loadingOverlay.classList.remove('hidden');
-            missingLocationsToast.classList.add('hidden');
+            gameState = "setup"; factBox.classList.add('hidden');
+            time = 0; completedHighlights = {}; wrongGuessesThisRound = []; missedClicks = []; hintUsedThisRound = false; isWaitingForNext = false; lastFramedRound = -1;
             
-            const results = [];
-            const notFound = [];
-            const uniqueLines = [...new Set(rawLines)];
+            const results = [], notFound = [], uniqueLines = [...new Set(rawLines)];
 
             for (let i = 0; i < uniqueLines.length; i++) {
                 const targetName = uniqueLines[i];
-                loadingMsgEl.innerText = `Searching for: ${targetName}`;
-                loadingProgress.style.width = `${((i) / uniqueLines.length) * 100}%`;
+                loadingMsgEl.innerText = `Searching: ${targetName}`;
+                loadingProgress.style.width = `${(i / uniqueLines.length) * 100}%`;
                 
-                // Fast path: use cache
-                if (geoCache[targetName]) {
-                    if (geoCache[targetName] !== "NOT_FOUND") {
-                        results.push(geoCache[targetName]);
-                    } else {
-                        notFound.push(targetName);
-                    }
-                    continue; // Skip API delay
+                if (geoCache[targetName] && geoCache[targetName] !== "NOT_FOUND") {
+                    results.push(geoCache[targetName]); continue;
                 }
 
-                // Slow path: fetch from API
                 try {
-                    const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(targetName)}&polygon_geojson=1&polygon_threshold=0.01`;
-                    const res = await fetch(url, { headers: { 'Accept-Language': 'en-US,en;q=0.9' }});
-                    
-                    if (!res.ok) throw new Error("Network error");
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 6000); 
+                    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(targetName)}&polygon_geojson=1&polygon_threshold=0.01`, { signal: controller.signal });
+                    clearTimeout(timeoutId);
                     const data = await res.json();
                     const f = data?.[0];
-                    
                     if (f) {
-                        const featureData = {
-                            name: targetName,
-                            lat: Number(f.lat),
-                            lon: Number(f.lon),
-                            bbox: f.boundingbox.map(Number),
-                            geojson: f.geojson,
-                            isCity: ['city', 'town', 'village', 'point'].includes(f.type || f.addresstype || "")
-                        };
-                        results.push(featureData);
-                        geoCache[targetName] = featureData;
-                    } else {
-                        notFound.push(targetName);
-                        geoCache[targetName] = "NOT_FOUND";
-                    }
-                    localStorage.setItem('geomaster-cache-v3', JSON.stringify(geoCache));
-                    
-                    // Respect delay when hitting API
+                        const fd = { name: targetName, lat: Number(f.lat), lon: Number(f.lon), bbox: f.boundingbox.map(Number), geojson: f.geojson, isCity: ['city', 'town', 'village', 'point'].includes(f.type || f.addresstype || "") };
+                        results.push(fd); geoCache[targetName] = fd;
+                    } else { notFound.push(targetName); geoCache[targetName] = "NOT_FOUND"; }
+                    localStorage.setItem('geomaster-cache-osm-v2', JSON.stringify(geoCache));
                     if (i < uniqueLines.length - 1) await new Promise(r => setTimeout(r, 1000));
-                } catch (e) {
-                    console.error("Geocoding failed for", targetName, e);
-                    notFound.push(targetName);
-                }
+                } catch (e) { notFound.push(targetName); }
             }
-            
-            loadingProgress.style.width = '100%';
-            await new Promise(r => setTimeout(r, 400));
-            
-            places = results;
-            quizSequence = mode === "playing" ? shuffleArray([...results]) : [...results];
-            round = 0;
-            attempts = 0;
             
             loadingOverlay.classList.add('hidden');
-            
-            if (notFound.length > 0) {
-                missingLocationsText.innerText = notFound.join(", ");
-                missingLocationsToast.classList.remove('hidden');
-                setTimeout(() => missingLocationsToast.classList.add('hidden'), 8000);
-            }
+            places = results;
+            quizSequence = mode === "playing" ? window.shuffleArray([...results]) : [...results];
+            round = 0; if (results.length > 0) { gameState = mode; window.startTimer(); }
+            window.updateUI();
+        };
 
-            if (results.length > 0) {
-                gameState = mode;
-                startTimer();
-            } else {
-                gameState = "setup";
-            }
-            
-            updateUI();
-        }
-
-        function useHint() {
-            if (hintUsedThisRound || gameState !== "playing" || isWaitingForNext) return;
-            hintUsedThisRound = true;
-            
-            if (attempts < 2) attempts++; // Costs an attempt
-            
-            const current = quizSequence[round];
-            if (current && current.bbox) {
-                const bounds = L.latLngBounds([current.bbox[0], current.bbox[2]], [current.bbox[1], current.bbox[3]]);
-                mapInstance.fitBounds(bounds.pad(1.8), { animate: true, duration: 1.5 });
-                lastFramedRound = round; // Prevent auto-zoom from immediately overriding it
-            }
-            updateUI();
-        }
-
-        function submitGuess(guessedName, mapClickLatLng = null) {
+        window.submitGuess = async (guessedName, mapClickLatLng = null) => {
             if (gameState !== "playing" || isWaitingForNext) return;
             const current = quizSequence[round];
             if (!current) return;
 
             if (guessedName !== current.name) {
-                playSound('wrong');
+                window.playSound('wrong');
                 if (attempts < 2) {
                     attempts++;
-                    if (guessedName) {
-                        if (!wrongGuessesThisRound.includes(guessedName)) wrongGuessesThisRound.push(guessedName);
-                    } else if (mapClickLatLng) {
-                        missedClicks.push(mapClickLatLng);
-                    }
-                    updateUI(); 
+                    if (guessedName && !wrongGuessesThisRound.includes(guessedName)) wrongGuessesThisRound.push(guessedName);
+                    else if (mapClickLatLng) missedClicks.push(mapClickLatLng);
+                    window.updateUI(); 
                 } else {
-                    // 3 Strikes - Failed
                     if (mapClickLatLng) missedClicks.push(mapClickLatLng);
                     completedHighlights[current.name] = { color: '#ef4444', borderColor: '#b91c1c', attemptsUsed: 4 };
-                    
-                    isWaitingForNext = true;
-                    updateUI(); 
-                    
-                    setTimeout(() => {
-                        isWaitingForNext = false;
-                        round++;
-                        attempts = 0;
-                        wrongGuessesThisRound = [];
-                        missedClicks = [];
-                        hintUsedThisRound = false;
-                        updateUI();
-                    }, 1500);
+                    isWaitingForNext = true; window.updateUI(); 
+                    setTimeout(() => { isWaitingForNext = false; round++; attempts = 0; wrongGuessesThisRound = []; missedClicks = []; window.updateUI(); }, 1500);
                 }
             } else {
-                // Correct Guess - Instant Advance
-                playSound('correct');
+                window.playSound('correct');
                 const finalAttempts = attempts + 1;
-                
                 let color, borderColor;
-                if (finalAttempts === 1) { color = '#ffffff'; borderColor = '#94a3b8'; }      // White
-                else if (finalAttempts === 2) { color = '#fef08a'; borderColor = '#ca8a04'; } // Yellow
-                else { color = '#f97316'; borderColor = '#c2410c'; }                          // Orange
+                if (finalAttempts === 1) { color = '#ffffff'; borderColor = '#94a3b8'; }
+                else if (finalAttempts === 2) { color = '#fef08a'; borderColor = '#ca8a04'; } 
+                else { color = '#f97316'; borderColor = '#c2410c'; }
+                completedHighlights[current.name] = { color: '#ffffff', fillColor: color, borderColor: borderColor, attemptsUsed: finalAttempts };
                 
-                completedHighlights[current.name] = { color, borderColor, attemptsUsed: finalAttempts };
-                
-                round++;
-                attempts = 0;
-                wrongGuessesThisRound = [];
-                missedClicks = [];
-                hintUsedThisRound = false;
-                
-                updateUI();
+                factBox.classList.remove('hidden'); factTitle.innerText = current.name; factText.innerText = "Loading summary...";
+                const summary = await window.fetchWikiFact(current.name);
+                if (factTitle.innerText === current.name) factText.innerText = summary;
+
+                round++; attempts = 0; wrongGuessesThisRound = []; missedClicks = []; hintUsedThisRound = false; window.updateUI();
             }
-        }
+        };
 
-        function handleNext() {
-            attempts = 0;
-            wrongGuessesThisRound = [];
-            missedClicks = [];
-            hintUsedThisRound = false;
-            
-            if (round < quizSequence.length - 1) {
-                round++;
-            } else {
-                round = quizSequence.length;
-            }
-            updateUI();
-        }
-
-        function startReview() {
-            const mistakes = places.filter(p => completedHighlights[p.name] && completedHighlights[p.name].attemptsUsed > 1);
-            if(mistakes.length === 0) return;
-
-            quizSequence = shuffleArray([...mistakes]);
-            round = 0;
-            attempts = 0;
-            wrongGuessesThisRound = [];
-            missedClicks = [];
-            hintUsedThisRound = false;
-            isWaitingForNext = false;
-            gameState = "playing";
-            lastFramedRound = -1;
-            
-            mistakes.forEach(m => delete completedHighlights[m.name]);
-            startTimer();
-            updateUI();
-        }
-
-        function clearSession() {
-            places = [];
-            quizSequence = [];
-            round = 0;
-            gameState = "setup";
-            completedHighlights = {};
-            wrongGuessesThisRound = [];
-            missedClicks = [];
-            attempts = 0;
-            time = 0;
-            lastFramedRound = -1;
-            hintUsedThisRound = false;
-            isWaitingForNext = false;
-            rawInputEl.value = "";
-            stopTimer();
-            updateUI();
-        }
-
-        function startTimer() {
-            stopTimer();
-            if (gameState === "playing") {
-                timerInterval = setInterval(() => {
-                    time++;
-                    hudTimer.innerText = formatTime(time);
-                }, 1000);
-            }
-        }
-
-        function stopTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-        }
-
-        // --- Render UI ---
-        function updateUI(fullRender = true) {
+        window.useHint = () => {
+            if (hintUsedThisRound || gameState !== "playing") return;
+            hintUsedThisRound = true; if (attempts < 2) attempts++;
             const current = quizSequence[round];
-            const isFinished = quizSequence.length > 0 && round >= quizSequence.length;
-            
-            // Scoring Math
+            if (current && current.bbox) {
+                const bounds = L.latLngBounds([current.bbox[0], current.bbox[2]], [current.bbox[1], current.bbox[3]]);
+                mapInstance.fitBounds(bounds.pad(2.0), { animate: true, duration: 1.5 });
+                lastFramedRound = round;
+            }
+            window.updateUI();
+        };
+
+        window.handleNext = () => {
+            attempts = 0; wrongGuessesThisRound = []; missedClicks = [];
+            if (round < quizSequence.length - 1) round++;
+            else round = quizSequence.length;
+            window.updateUI();
+        };
+
+        window.startReview = () => {
+            const mistakes = places.filter(p => completedHighlights[p.name] && completedHighlights[p.name].attemptsUsed > 1);
+            quizSequence = window.shuffleArray([...mistakes]);
+            round = 0; attempts = 0; wrongGuessesThisRound = []; missedClicks = []; gameState = "playing"; lastFramedRound = -1;
+            mistakes.forEach(m => delete completedHighlights[m.name]);
+            window.startTimer(); window.updateUI();
+        };
+
+        window.clearSession = () => {
+            places = []; quizSequence = []; round = 0; gameState = "setup"; completedHighlights = {};
+            wrongGuessesThisRound = []; missedClicks = []; attempts = 0; time = 0; rawInputEl.value = "";
+            factBox.classList.add('hidden'); window.stopTimer(); window.updateUI();
+        };
+
+        window.startTimer = () => { window.stopTimer(); if (gameState === "playing") timerInterval = setInterval(() => { time++; document.getElementById('hud-timer').innerText = window.formatTime(time); }, 1000); };
+        window.stopTimer = () => { if (timerInterval) clearInterval(timerInterval); };
+
+        window.updateUI = (fullRender = true) => {
+            const current = quizSequence[round], isFinished = quizSequence.length > 0 && round >= quizSequence.length;
             const completedCount = Object.keys(completedHighlights).length;
             const totalEarnedPoints = Object.values(completedHighlights).reduce((acc, curr) => acc + (curr.attemptsUsed === 1 ? 100 : curr.attemptsUsed === 2 ? 60 : curr.attemptsUsed === 3 ? 30 : 0), 0);
-            const totalPossiblePointsSoFar = completedCount * 100;
-            const avgScore = completedCount > 0 ? Math.round((totalEarnedPoints / totalPossiblePointsSoFar) * 100) : 0;
+            const avgScore = completedCount > 0 ? Math.round((totalEarnedPoints / (completedCount * 100)) * 100) : 0;
 
-            const isSetup = gameState === "setup";
-            btnQuiz.disabled = !isSetup;
-            btnLearn.disabled = !isSetup;
-            rawInputEl.disabled = !isSetup;
-            if(!isSetup) rawInputEl.classList.add('opacity-50', 'bg-slate-100');
-            else rawInputEl.classList.remove('opacity-50', 'bg-slate-100');
+            rawInputEl.disabled = gameState !== "setup";
 
-            if (autoNext) {
-                btnAutoNext.classList.replace('bg-slate-300', 'bg-blue-600');
-                autonextPill.classList.replace('left-1', 'left-7');
-            } else {
-                btnAutoNext.classList.replace('bg-blue-600', 'bg-slate-300');
-                autonextPill.classList.replace('left-7', 'left-1');
-            }
-
-            // High Scores Logic
-            let isNewBest = false;
-            let bestScoreStr = "-";
-            if (isFinished && places.length > 0) {
-                const listKey = places.map(p => p.name).sort().join(',').substring(0, 100);
-                let best = highScores[listKey];
-                if (!best || avgScore > best.score || (avgScore === best.score && time < best.time)) {
-                    best = { score: avgScore, time: time };
-                    highScores[listKey] = best;
-                    localStorage.setItem('geomaster-scores-v1', JSON.stringify(highScores));
-                    isNewBest = true;
-                }
-                bestScoreStr = `Best: ${best.score}% in ${formatTime(best.time)}`;
-            }
-
-            // Top Bar State Toggle
-            if (!isSetup && !isFinished) {
-                // Show HUD
-                perfOverview.classList.add('hidden');
-                perfGameplay.classList.remove('hidden');
-                
-                hudProgress.innerText = completedCount;
-                hudTotal.innerText = quizSequence.length;
-                hudScore.innerText = `${avgScore}%`;
-                hudTimer.innerText = formatTime(time);
-                
-                if (current) {
-                    hudVerb.innerText = gameState === "learning" ? "Study Area" : "Click on";
-                    hudTargetName.innerText = current.name;
-                    hudTargetName.classList.remove('animate-pop');
-                    void hudTargetName.offsetWidth; 
-                    hudTargetName.classList.add('animate-pop');
+            if (gameState !== "setup" && !isFinished) {
+                document.getElementById('perf-overview').classList.add('hidden'); 
+                document.getElementById('perf-gameplay').classList.remove('hidden');
+                document.getElementById('hud-progress').innerText = completedCount; 
+                document.getElementById('hud-total').innerText = quizSequence.length;
+                document.getElementById('hud-score').innerText = `${avgScore}%`;
+                if (current) { 
+                    document.getElementById('hud-verb').innerText = gameState === "learning" ? "Study" : "Click on"; 
+                    document.getElementById('hud-target-name').innerText = current.name; 
                 }
             } else {
-                // Show Overview (Accuracy & Grade)
-                perfGameplay.classList.add('hidden');
-                perfOverview.classList.remove('hidden');
-                
-                accuracyScoreEl.innerText = `${avgScore}%`;
-                if(completedCount === 0) accuracyGradeEl.innerText = '-';
-                else if(avgScore >= 90) accuracyGradeEl.innerText = 'S';
-                else if(avgScore >= 80) accuracyGradeEl.innerText = 'A';
-                else if(avgScore >= 70) accuracyGradeEl.innerText = 'B';
-                else if(avgScore >= 60) accuracyGradeEl.innerText = 'C';
-                else accuracyGradeEl.innerText = 'F';
-                
-                accuracyGradeEl.className = `w-14 h-14 rounded-xl flex items-center justify-center text-3xl font-black border-2 rotate-3 transition-colors duration-500 shadow-inner ${
-                    completedCount === 0 ? 'bg-slate-800 border-slate-700 text-slate-500' :
-                    avgScore >= 90 ? 'bg-purple-500 border-purple-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]' : 
-                    avgScore >= 80 ? 'bg-blue-500 border-blue-400 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]' :
-                    avgScore >= 70 ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)]' :
-                    avgScore >= 60 ? 'bg-amber-500 border-amber-400 text-white shadow-[0_0_15px_rgba(245,158,11,0.4)]' :
-                    'bg-red-500 border-red-400 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]'
-                }`;
-
-                if (isFinished) {
-                    headerStatusEl.innerHTML = `<i class="ph-bold ph-flag-checkered"></i> Quiz Finished`;
-                    headerTitleEl.innerText = "Session Complete!";
-                } else {
-                    headerStatusEl.innerHTML = `<i class="ph-bold ph-map-pin"></i> Map Explorer`;
-                    headerTitleEl.innerText = "Enter list & select mode";
-                }
+                document.getElementById('perf-gameplay').classList.add('hidden'); 
+                document.getElementById('perf-overview').classList.remove('hidden');
+                document.getElementById('accuracy-score').innerText = `${avgScore}%`;
+                const gradeEl = document.getElementById('accuracy-grade');
+                if(completedCount === 0) gradeEl.innerText = '-';
+                else if(avgScore >= 90) gradeEl.innerText = 'S';
+                else if(avgScore >= 80) gradeEl.innerText = 'A';
+                else if(avgScore >= 70) gradeEl.innerText = 'B';
+                else gradeEl.innerText = 'F';
             }
 
-            // Action Footer
-            const btnBase = "inline-flex items-center justify-center rounded-2xl text-sm font-black transition-all active:scale-95 px-6 py-3 shadow-sm shrink-0 ";
+            const btnBase = "inline-flex items-center justify-center rounded-2xl text-sm font-black transition-all active:scale-95 px-6 py-3 shadow-sm ";
             let footerHtml = '';
-            
             if (gameState === "playing" && !isFinished) {
                 let dotsHtml = `<div class="flex gap-1.5 mr-4">`;
-                for (let i = 0; i < 3; i++) {
-                    const active = i < (3 - attempts);
-                    dotsHtml += `<div class="w-3 h-3 rounded-full transition-all duration-300 ${active ? 'bg-blue-500' : 'bg-slate-200'}"></div>`;
-                }
+                for (let i = 0; i < 3; i++) dotsHtml += `<div class="w-3 h-3 rounded-full transition-all ${i < (3 - attempts) ? 'bg-blue-500' : 'bg-slate-200'}"></div>`;
                 dotsHtml += `</div>`;
-
-                const hintBtn = hintUsedThisRound ? 
-                    `<button disabled class="${btnBase} bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed ml-auto"><i class="ph-bold ph-magnifying-glass mr-2"></i> Hint</button>` :
-                    `<button onclick="useHintWrapper()" class="${btnBase} bg-amber-100 text-amber-700 hover:bg-amber-200 border border-amber-300 ml-auto"><i class="ph-bold ph-magnifying-glass mr-2"></i> Hint</button>`;
-
-                if (isWaitingForNext) {
-                    footerHtml = `<div class="flex items-center w-full"><div class="text-red-600 font-bold uppercase text-xs flex items-center gap-2"><i class="ph-fill ph-x-circle text-lg"></i> Correct location shown above. Moving on...</div></div>`;
-                } else {
-                    footerHtml = `<div class="flex items-center justify-between w-full"><div class="flex items-center">${dotsHtml}<div class="text-slate-500 font-bold tracking-widest uppercase text-xs hidden sm:block">Find target</div></div>${hintBtn}</div>`;
-                }
-
+                const hintBtn = `<button onclick="window.useHint()" class="${btnBase} ${hintUsedThisRound ? 'bg-slate-100 text-slate-400 border cursor-not-allowed' : 'bg-amber-100 text-amber-700 border border-amber-300'} ml-auto" ${hintUsedThisRound ? 'disabled' : ''}>Hint</button>`;
+                if (isWaitingForNext) footerHtml = `<div class="text-red-600 font-bold uppercase text-xs">Target revealed...</div>`;
+                else footerHtml = `<div class="flex items-center justify-between w-full"><div class="flex items-center">${dotsHtml}<div class="text-slate-500 font-bold uppercase text-xs hidden sm:block">Find target</div></div>${hintBtn}</div>`;
             } else if (gameState === "learning" && !isFinished) {
-                // If Auto-advance is off in learning mode, let them click next
-                 if (!autoNext) {
-                     footerHtml = `<button onclick="handleNextWrapper()" class="${btnBase} w-full max-w-sm bg-blue-600 text-white hover:bg-blue-700 mx-auto">Next Target <i class='ph-bold ph-arrow-right ml-2'></i></button>`;
-                 } else {
-                     footerHtml = `<div class="flex items-center justify-center w-full"><span class="text-slate-400 font-bold tracking-widest uppercase text-xs animate-pulse">Click target to advance</span></div>`;
-                 }
+                footerHtml = autoNext ? `<div class="text-slate-400 font-bold uppercase text-xs w-full text-center animate-pulse">Click region to advance</div>` : `<button onclick="window.handleNext()" class="${btnBase} bg-blue-600 text-white mx-auto">Next Target</button>`;
             } else if (isFinished) {
-                const mistakes = places.filter(p => completedHighlights[p.name]?.attemptsUsed > 1);
-                const reviewBtn = mistakes.length > 0 ? 
-                    `<button onclick="startReviewWrapper()" class="${btnBase} bg-amber-500 text-white hover:bg-amber-600 w-full sm:w-auto"><i class="ph-bold ph-arrows-clockwise mr-2"></i> Review Mistakes (${mistakes.length})</button>` : '';
-                
-                const scoreBadge = isNewBest ? `<div class="absolute -top-3 -right-2 bg-pink-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider animate-bounce shadow-md">New Best!</div>` : '';
-
-                footerHtml = `
-                    <div class="flex flex-col sm:flex-row gap-3 w-full justify-center items-center">
-                        <div class="hidden md:flex flex-col items-end mr-4 relative">
-                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">List Records</span>
-                            <span class="text-xs font-bold text-slate-700">${bestScoreStr}</span>
-                            ${scoreBadge}
-                        </div>
-                        ${reviewBtn}
-                        <button onclick="clearSessionWrapper()" class="${btnBase} bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 w-full sm:w-auto"><i class="ph-bold ph-plus mr-2"></i> New Set</button>
-                    </div>`;
-            } else {
-                footerHtml = `<div class="text-slate-400 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 w-full justify-center"><i class="ph-bold ph-info"></i> Enter target list to start</div>`;
-            }
+                footerHtml = `<div class="flex gap-3 w-full justify-center items-center"><button onclick="window.startReview()" class="${btnBase} bg-amber-500 text-white">Review Mistakes</button><button onclick="window.clearSession()" class="${btnBase} bg-white border border-slate-300 text-slate-700">New Set</button></div>`;
+            } else footerHtml = `<div class="text-slate-400 font-bold uppercase tracking-widest text-[10px] w-full text-center">Select Region to Start</div>`;
             
-            footerPrompt.innerHTML = footerHtml;
+            document.getElementById('footer-prompt').innerHTML = footerHtml;
+            if (fullRender) window.renderMap();
+        };
 
-            if (gameState !== "playing") stopTimer();
-            else if (gameState === "playing" && !timerInterval && !isFinished) startTimer();
-
-            if (fullRender) renderMap();
-        }
-
-        // --- Render Map Elements ---
-        function renderMap() {
+        window.renderMap = () => {
             if (!mapInstance || typeof L === 'undefined') return;
-            const current = quizSequence[round];
-            const isFinished = quizSequence.length > 0 && round >= quizSequence.length;
+            const current = quizSequence[round], isFinished = round >= quizSequence.length;
+            mapLayers.forEach(l => mapInstance.removeLayer(l)); mapLayers = [];
 
-            mapLayers.forEach(layer => mapInstance.removeLayer(layer));
-            mapLayers = [];
-
-            let playZoneBounds = null;
+            let playBounds = null;
             if (places.length > 0) {
-                playZoneBounds = L.latLngBounds([]);
-                places.forEach(p => {
-                    if (p.bbox) {
-                        playZoneBounds.extend([p.bbox[0], p.bbox[2]]);
-                        playZoneBounds.extend([p.bbox[1], p.bbox[3]]);
-                    }
-                });
+                playBounds = L.latLngBounds([]);
+                places.forEach(p => { if (p.bbox) { playBounds.extend([p.bbox[0], p.bbox[2]]); playBounds.extend([p.bbox[1], p.bbox[3]]); } });
             }
 
-            // Manage camera and bounds
-            if (isSetupPhase()) {
-                mapInstance.setMaxBounds([[-90, -180], [90, 180]]);
-                mapInstance.setMinZoom(2);
-            } else if (playZoneBounds && playZoneBounds.isValid()) {
-                const paddedPlayZone = playZoneBounds.pad(0.3);
-                mapInstance.setMaxBounds(paddedPlayZone);
-                const minZ = mapInstance.getBoundsZoom(paddedPlayZone);
-                mapInstance.setMinZoom(minZ > 0 ? minZ : 2);
+            if (gameState === "setup") { mapInstance.setMaxBounds([[-90, -180], [90, 180]]); mapInstance.setMinZoom(2); }
+            else if (playBounds && playBounds.isValid()) {
+                const pb = playBounds.pad(0.3); mapInstance.setMaxBounds(pb);
+                mapInstance.setMinZoom(Math.max(mapInstance.getBoundsZoom(pb), 2));
             }
 
-            if (isFinished) {
-                mapContainer.style.cursor = "default";
-                if (playZoneBounds && playZoneBounds.isValid() && lastFramedRound !== 'finished') {
-                    mapInstance.fitBounds(playZoneBounds.pad(0.1), { animate: true, duration: 1.5 });
-                    lastFramedRound = 'finished';
-                }
-            } else if (gameState === "playing") {
-                mapContainer.style.cursor = "crosshair";
-                if (playZoneBounds && playZoneBounds.isValid() && lastFramedRound === -1) {
-                    mapInstance.fitBounds(playZoneBounds.pad(0.1), { animate: true, duration: 1.2 });
-                    lastFramedRound = 'playing_initial';
-                }
-            } else if (gameState === "learning" && current) {
-                mapContainer.style.cursor = "default";
-                if (current.bbox) {
-                    const bounds = L.latLngBounds([current.bbox[0], current.bbox[2]], [current.bbox[1], current.bbox[3]]);
-                    mapInstance.fitBounds(bounds.pad(0.15), { animate: true, duration: 1.2 });
-                } else {
-                    mapInstance.setView([current.lat, current.lon], 6, { animate: true, duration: 1.2 });
-                }
+            if (isFinished && playBounds && lastFramedRound !== 'fin') { mapInstance.fitBounds(playBounds.pad(0.1), { animate: true }); lastFramedRound = 'fin'; }
+            else if (gameState === "playing" && playBounds && lastFramedRound === -1) { mapInstance.fitBounds(playBounds.pad(0.1), { animate: true }); lastFramedRound = 'init'; }
+            else if (gameState === "learning" && current) {
+                if (current.bbox) mapInstance.fitBounds(L.latLngBounds([current.bbox[0], current.bbox[2]], [current.bbox[1], current.bbox[3]]).pad(0.15), { animate: true });
+                else mapInstance.setView([current.lat, current.lon], 6, { animate: true });
             }
 
-            // Darken world map slightly
-            if (!isSetupPhase()) {
-                const mask = L.rectangle([[-90, -180], [90, 180]], {
-                    color: 'transparent', fillColor: '#334155', fillOpacity: 0.25, interactive: false
-                }).addTo(mapInstance);
-                mapLayers.push(mask);
-            }
+            if (gameState !== "setup") L.rectangle([[-90, -180], [90, 180]], { color: 'transparent', fillColor: '#334155', fillOpacity: 0.25, interactive: false }).addTo(mapInstance).on('add', (e)=>mapLayers.push(e.target));
 
-            // Draw Missed Clicks
-            missedClicks.forEach(latlng => {
-                const marker = L.circleMarker(latlng, {
-                    radius: 5, color: '#991b1b', fillColor: '#ef4444', fillOpacity: 1, weight: 2, interactive: false
-                }).addTo(mapInstance);
-                mapLayers.push(marker);
-            });
+            missedClicks.forEach(ll => L.circleMarker(ll, { radius: 5, color: '#991b1b', fillColor: '#ef4444', fillOpacity: 1, weight: 2, interactive: false }).addTo(mapInstance).on('add', (e)=>mapLayers.push(e.target)));
 
-            // Draw Targets
             places.forEach(p => {
-                const isDone = !!completedHighlights[p.name];
-                const isWrongThisRound = wrongGuessesThisRound.includes(p.name);
-                
-                const isCurrentFailedReveal = isWaitingForNext && current && p.name === current.name;
-                const isCurrentLearning = gameState === "learning" && current && p.name === current.name;
-                
+                const isDone = !!completedHighlights[p.name], isWrong = wrongGuessesThisRound.includes(p.name);
+                const isFailRev = isWaitingForNext && current && p.name === current.name;
+                const isLearn = gameState === "learning" && current && p.name === current.name;
                 const data = completedHighlights[p.name];
                 let style;
-                
-                if (isDone) {
-                    style = { color: data.borderColor, fillColor: data.color, fillOpacity: 0.9, weight: 2 };
-                } else if (isCurrentFailedReveal) {
-                    style = { color: '#7f1d1d', fillColor: '#ef4444', fillOpacity: 0.9, weight: 3, className: 'animate-pulse' };
-                } else if (isCurrentLearning) {
-                    style = { color: '#2563eb', fillColor: '#60a5fa', fillOpacity: 0.7, weight: 3, dashArray: '5, 5', className: 'animate-pulse' }; 
-                } else if (isWrongThisRound) {
-                    style = { color: '#ef4444', fillColor: 'url(#stripes)', fillOpacity: 1, weight: 2 };
-                } else {
-                    if (p.isCity) {
-                        style = { color: '#ffffff', fillColor: '#1e293b', fillOpacity: 1, weight: 3 };
-                    } else {
-                        style = { color: '#ffffff', fillColor: '#ffffff', fillOpacity: 0.1, weight: 1.5 };
-                    }
-                }
+                if (isDone) style = { color: data.borderColor, fillColor: data.fillColor, fillOpacity: 0.9, weight: 2 };
+                else if (isFailRev) style = { color: '#7f1d1d', fillColor: '#ef4444', fillOpacity: 0.9, weight: 3, className: 'animate-pulse' };
+                else if (isLearn) style = { color: '#2563eb', fillColor: '#60a5fa', fillOpacity: 0.7, weight: 3, dashArray: '5, 5', className: 'animate-pulse' };
+                else if (isWrong) style = { color: '#ef4444', fillColor: 'url(#stripes)', fillOpacity: 1, weight: 2 };
+                else if (p.isCity) style = { color: '#ffffff', fillColor: '#1e293b', fillOpacity: 1, weight: 3 };
+                else style = { color: '#ffffff', fillColor: '#ffffff', fillOpacity: 0.1, weight: 1.5 };
 
-                const isClickable = gameState === "playing" && !isDone && !isWrongThisRound && !isWaitingForNext;
-
+                const clickable = gameState === "playing" && !isDone && !isWrong && !isWaitingForNext;
                 let layer;
-                if (p.isCity) {
-                    layer = L.circleMarker([p.lat, p.lon], { 
-                        ...style, 
-                        radius: isDone || isWrongThisRound || isCurrentFailedReveal ? 7 : 5, 
-                        interactive: isClickable 
-                    });
-                } else if (p.geojson) {
-                    layer = L.geoJSON(p.geojson, { 
-                        style: () => style,
-                        interactive: isClickable 
-                    });
-                }
+                if (p.isCity) layer = L.circleMarker([p.lat, p.lon], { ...style, radius: isDone || isWrong || isFailRev ? 7 : 5, interactive: clickable });
+                else if (p.geojson) layer = L.geoJSON(p.geojson, { style: () => style, interactive: clickable });
 
                 if (layer) {
-                    if (isClickable) {
-                        layer.on('mouseover', () => {
-                            if(p.isCity) layer.setRadius(9);
-                            layer.setStyle({ weight: 4 });
-                        });
-                        layer.on('mouseout', () => {
-                            if(p.isCity) layer.setRadius(5);
-                            layer.setStyle({ weight: style.weight });
-                        });
-                        layer.on('click', (e) => {
-                            L.DomEvent.stopPropagation(e);
-                            if (gameState === "learning") {
-                                if(autoNext) handleNext();
-                            } else {
-                                submitGuess(p.name);
-                            }
-                        });
+                    if (clickable) {
+                        layer.on('mouseover', () => { if(p.isCity) layer.setRadius(9); layer.setStyle({ weight: 4 }); });
+                        layer.on('mouseout', () => { if(p.isCity) layer.setRadius(5); layer.setStyle({ weight: style.weight }); });
+                        layer.on('click', (e) => { L.DomEvent.stopPropagation(e); if(gameState === "learning") { if(autoNext) window.handleNext(); } else window.submitGuess(p.name); });
                     }
-                    
-                    if (isDone || isCurrentFailedReveal) {
-                        layer.bindTooltip(p.name, {
-                            permanent: true,
-                            direction: p.isCity ? 'right' : 'center',
-                            className: 'map-label',
-                            offset: p.isCity ? [8, 0] : [0, 0]
-                        });
-                    }
-
-                    layer.addTo(mapInstance);
-                    mapLayers.push(layer);
-                    
-                    if (isCurrentLearning || isCurrentFailedReveal || isDone) {
-                        if(layer.bringToFront) layer.bringToFront();
-                    }
+                    if (isDone || isFailRev) layer.bindTooltip(p.name, { permanent: true, direction: p.isCity ? 'right' : 'center', className: 'map-label', offset: p.isCity ? [8, 0] : [0, 0] });
+                    layer.addTo(mapInstance); mapLayers.push(layer);
+                    if (isLearn || isFailRev || isDone) if(layer.bringToFront) layer.bringToFront();
                 }
             });
-        }
-
-        function isSetupPhase() {
-            return gameState === "setup";
-        }
-
-        window.handleNextWrapper = () => handleNext();
-        window.startReviewWrapper = () => startReview();
-        window.clearSessionWrapper = () => clearSession();
-        window.useHintWrapper = () => useHint();
+        };
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
