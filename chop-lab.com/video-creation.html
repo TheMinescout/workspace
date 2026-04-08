@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chop Lab | Email Engine</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+    body { font-family: 'Montserrat', sans-serif; background-color: #0f0f0f; color: #ffffff; display: flex; justify-content: center; padding: 40px 20px; margin: 0; }
+    .dashboard { background: #1a1a1a; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); width: 100%; max-width: 600px; border: 1px solid #333; }
+    h1 { text-align: center; text-transform: uppercase; font-weight: 900; margin-bottom: 5px; }
+    p.subtitle { text-align: center; color: #888; font-size: 0.9em; margin-bottom: 20px; }
+    
+    /* Tabs */
+    .tabs { display: flex; gap: 10px; margin-bottom: 30px; background: #000; padding: 5px; border-radius: 8px; border: 1px solid #333; }
+    .tab-btn { flex: 1; padding: 12px; background: transparent; color: #888; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.85em; text-transform: uppercase; }
+    .tab-btn.active { background: #333; color: #fff; }
+    
+    label { display: block; margin-top: 20px; font-weight: 700; font-size: 0.85em; text-transform: uppercase; color: #aaa; }
+    input[type="text"], input[type="email"], textarea { width: 100%; padding: 14px; margin-top: 8px; background: #0f0f0f; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 0.9em; box-sizing: border-box; font-family: 'Montserrat', sans-serif;}
+    textarea { resize: vertical; min-height: 120px; }
+    input[type="file"] { display: none; }
+    
+    .file-upload-btn { display: block; width: 100%; padding: 20px 14px; margin-top: 8px; background: #0f0f0f; border: 2px dashed #444; border-radius: 8px; color: #aaa; text-align: center; cursor: pointer; transition: 0.3s; font-weight: 700; box-sizing: border-box; }
+    .file-upload-btn:hover { border-color: #fff; color: #fff; }
+    
+    .preview-container { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+    .preview-box { width: calc(33.333% - 7px); aspect-ratio: 1; background-color: #000; border-radius: 8px; background-size: cover; background-position: center; border: 2px solid transparent; cursor: crosshair; position: relative; overflow: hidden; }
+    .badge { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; pointer-events: none; z-index: 10; }
+    .target-dot { position: absolute; width: 14px; height: 14px; background-color: #ff0055; border: 2px solid white; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; box-shadow: 0 0 5px rgba(0,0,0,0.8); z-index: 5; }
+    
+    .instruction { font-size: 0.75em; color: #ff0055; text-align: center; margin-top: 8px; font-weight: bold; display: none; }
+    .music-badge { display: none; margin-top: 10px; padding: 10px; background: #1e3a23; border: 1px solid #4caf50; color: #4caf50; border-radius: 6px; text-align: center; font-size: 0.85em; font-weight: bold; }
+    .hidden { display: none !important; }
+    .script-group { margin-top: 15px; padding-left: 10px; border-left: 3px solid #4caf50; display: flex; flex-direction: column; gap: 8px; }
+    
+    button { width: 100%; padding: 16px; margin-top: 25px; background: #ffffff; color: #000000; border: none; border-radius: 8px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+    button:hover { background: #e0e0e0; transform: translateY(-2px); }
+    button:disabled { background: #333; color: #666; cursor: not-allowed; }
+    .btn-green { background: #4caf50; color: white; }
+    .btn-blue { background: #2196F3; color: white; }
+    
+    #status-box { margin-top: 25px; padding: 15px; border-radius: 8px; text-align: center; display: none; word-wrap: break-word;}
+    .status-loading { background: #333; display: block !important; }
+    .status-success { background: #1e3a23; color: #4caf50; border: 1px solid #4caf50; display: block !important; }
+    .status-error { background: #3a1e1e; color: #f44336; border: 1px solid #f44336; display: block !important; }
+
+    /* Chat / Interview Styles */
+    .chat-box { background: #0f0f0f; border: 1px solid #333; border-radius: 8px; padding: 15px; height: 300px; overflow-y: auto; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
+    .msg { padding: 10px 14px; border-radius: 8px; max-width: 80%; font-size: 0.9em; line-height: 1.4; }
+    .msg.ai { background: #222; align-self: flex-start; border-bottom-left-radius: 2px; }
+    .msg.user { background: #4caf50; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .chat-input-row { display: flex; gap: 10px; }
+    .chat-input-row input { margin-top: 0; }
+    .chat-input-row button { width: auto; margin-top: 0; padding: 0 25px; }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard">
+    <h1>Email Engine</h1>
+    <p class="subtitle">Draft and Dispatch Your Studio Updates</p>
+
+    <!-- MODE TABS -->
+    <div class="tabs">
+      <button id="tab-video" class="tab-btn active">🎥 Video Campaign</button>
+      <button id="tab-interview" class="tab-btn">✍️ AI Interview Draft</button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW 1: VIDEO CAMPAIGN (Dynamic Shotstack) -->
+    <!-- ========================================== -->
+    <div id="view-video">
+      <div id="phase-1">
+        <label>1. Campaign Subject Line</label>
+        <input type="text" id="subject" placeholder="e.g., The Matte Black Collection is Live!" required>
+
+        <label>Optional: Extra Details / Call to Action</label>
+        <input type="text" id="context" placeholder="e.g., 'Link to shop in the email below'">
+
+        <label>2. Upload Media (Unlimited Photos + MP3)</label>
+        <label for="file-upload" class="file-upload-btn">Click to browse files...</label>
+        <input id="file-upload" type="file" multiple accept="image/*, audio/*" />
+        
+        <div id="music-detected" class="music-badge">🎵 Custom background music auto-detected!</div>
+        
+        <div class="instruction" id="dot-instruction">Click on a photo to set the POV focus target 🎯</div>
+        <div class="preview-container" id="preview-grid"></div>
+
+        <button id="btn-draft">Generate Video Script</button>
+      </div>
+
+      <div id="phase-2" class="hidden">
+        <label>3. Review Video Script</label>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+          <input type="text" id="ai-command" placeholder="AI Command (e.g., 'Make it funnier')">
+          <button id="btn-ai-edit" style="width: auto; margin-top: 8px; padding: 14px; background: #333; color: #fff; flex-shrink: 0;">✨ Apply</button>
+        </div>
+        <div class="script-group" id="dynamic-script-group">
+          <!-- Dynamic script inputs will appear here based on image count -->
+        </div>
+
+        <label style="margin-top: 25px;">4. Voice Actor</label>
+        <select id="voice-style" style="width: 100%; padding: 14px; margin-top: 8px; background: #0f0f0f; border: 1px solid #444; border-radius: 8px; color: #fff; font-family: 'Montserrat', sans-serif;">
+          <option value="en_uk_001" selected>UK Male 1 (British)</option>
+          <option value="en_us_002">Jessie (Energetic Female)</option>
+          <option value="en_us_001">Female 1 (Standard)</option>
+          <option value="en_us_009">Male 3 (Storyteller)</option>
+        </select>
+
+        <label style="margin-top: 25px;">5. Email Body (Optional Text below video)</label>
+        <textarea id="video-email-body" placeholder="Write a short message to go along with your video..."></textarea>
+
+        <button id="btn-render" class="btn-blue">Render Video & Prepare Email</button>
+      </div>
+
+      <div id="phase-3" class="hidden" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #333;">
+        <h3 style="margin-top:0; text-align:center;">🚀 Ready to Dispatch</h3>
+        <p style="font-size: 0.85em; color: #aaa; text-align: center; margin-bottom: 20px;">Your video is rendering and attached to your campaign.</p>
+        <button id="btn-send-video-email" class="btn-green">Send to All Subscribers Now</button>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW 2: AI INTERVIEW EMAIL DRAFT           -->
+    <!-- ========================================== -->
+    <div id="view-interview" class="hidden">
+      <div id="interview-phase">
+        <label>AI Studio Assistant</label>
+        <p style="font-size: 0.85em; color: #aaa;">Answer a few questions about what you're working on, and I'll draft a perfect email for your subscribers.</p>
+        
+        <div class="chat-box" id="chat-history">
+          <div class="msg ai">Hi! What's the main update or story you want to share with your audience today?</div>
+        </div>
+        
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="Type your answer...">
+          <button id="btn-send-chat" class="btn-blue">Send</button>
+        </div>
+
+        <button id="btn-finish-interview" style="background: transparent; border: 1px solid #4caf50; color: #4caf50; margin-top: 15px;">Skip to Draft Email Now</button>
+      </div>
+
+      <div id="draft-phase" class="hidden">
+        <label>Final Email Draft</label>
+        <input type="text" id="interview-subject" placeholder="Subject Line">
+        <textarea id="interview-body" style="min-height: 200px;" placeholder="Email body will appear here..."></textarea>
+        
+        <button id="btn-send-text-email" class="btn-green">Send to All Subscribers Now</button>
+        <button id="btn-restart-interview" style="background: transparent; color: #aaa; font-size: 0.8em; margin-top: 10px; padding: 10px;">Start Over</button>
+      </div>
+    </div>
+
+    <div id="status-box"></div>
+  </div>
+
+  <script>
+    const CLOUDFLARE_WORKER_URL = "https://video-intake-engine.tmcarleton11.workers.dev/";
+    
+    // --- TAB LOGIC ---
+    const tabVideo = document.getElementById('tab-video');
+    const tabInterview = document.getElementById('tab-interview');
+    const viewVideo = document.getElementById('view-video');
+    const viewInterview = document.getElementById('view-interview');
+
+    tabVideo.addEventListener('click', () => {
+      tabVideo.classList.add('active'); tabInterview.classList.remove('active');
+      viewVideo.classList.remove('hidden'); viewInterview.classList.add('hidden');
+    });
+
+    tabInterview.addEventListener('click', () => {
+      tabInterview.classList.add('active'); tabVideo.classList.remove('active');
+      viewInterview.classList.remove('hidden'); viewVideo.classList.add('hidden');
+    });
+
+    // ==========================================
+    // LOGIC: VIDEO CAMPAIGN (Dynamic)
+    // ==========================================
+    let imageDatabase = []; 
+    let customMusicBase64 = null; 
+    let draggedIndex = null;
+
+    const processImage = (file) => new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvasHigh = document.createElement('canvas');
+          let wHigh = img.width, hHigh = img.height;
+          const maxHigh = 1080;
+          if (wHigh > hHigh && wHigh > maxHigh) { hHigh *= maxHigh / wHigh; wHigh = maxHigh; }
+          else if (hHigh > maxHigh) { wHigh *= maxHigh / hHigh; hHigh = maxHigh; }
+          canvasHigh.width = wHigh; canvasHigh.height = hHigh;
+          canvasHigh.getContext('2d').drawImage(img, 0, 0, wHigh, hHigh);
+          const highRes = canvasHigh.toDataURL('image/jpeg', 0.8);
+
+          const canvasLow = document.createElement('canvas');
+          let wLow = img.width, hLow = img.height;
+          const maxLow = 320;
+          if (wLow > hLow && wLow > maxLow) { hLow *= maxLow / wLow; wLow = maxLow; }
+          else if (hLow > maxLow) { wLow *= maxLow / hLow; hLow = maxLow; }
+          canvasLow.width = wLow; canvasLow.height = hLow;
+          canvasLow.getContext('2d').drawImage(img, 0, 0, wLow, hLow);
+          const lowRes = canvasLow.toDataURL('image/jpeg', 0.5);
+
+          resolve({ highRes, lowRes });
+        };
+      };
+    });
+
+    const audioToBase64 = (file) => new Promise((resolve) => {
+      const reader = new FileReader(); reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+    });
+
+    // Accept UNLIMITED images (capped at 10 to prevent browser crash)
+    document.getElementById('file-upload').addEventListener('change', async (e) => {
+      const allFiles = Array.from(e.target.files);
+      const imageFiles = allFiles.filter(f => f.type.startsWith('image/')).slice(0, 10); 
+      const audioFile = allFiles.find(f => f.type.startsWith('audio/'));
+
+      if(imageFiles.length === 0) return;
+      document.getElementById('btn-draft').innerText = "Optimizing assets...";
+      
+      const dualResImages = await Promise.all(imageFiles.map(f => processImage(f)));
+      
+      imageDatabase = dualResImages.map(img => ({ 
+        base64: img.highRes, 
+        visionBase64: img.lowRes, 
+        x: 50, y: 50 
+      }));
+      
+      if (audioFile) {
+        customMusicBase64 = await audioToBase64(audioFile);
+        document.getElementById('music-detected').style.display = 'block';
+      }
+
+      document.getElementById('dot-instruction').style.display = 'block';
+      renderPreviews();
+      document.getElementById('btn-draft').innerText = "Generate Video Script";
+    });
+
+    function renderPreviews() {
+      const grid = document.getElementById('preview-grid');
+      grid.innerHTML = '';
+      imageDatabase.forEach((item, index) => {
+        const box = document.createElement('div');
+        box.className = 'preview-box';
+        box.style.backgroundImage = `url(${item.base64})`;
+        box.draggable = true;
+        
+        box.innerHTML = `<span class="badge">${index + 1}</span>`;
+        
+        if (item.x !== undefined && item.y !== undefined) {
+          const dot = document.createElement('div');
+          dot.className = 'target-dot';
+          dot.style.left = `${item.x}%`; dot.style.top = `${item.y}%`;
+          box.appendChild(dot);
+        }
+
+        box.addEventListener('dragstart', () => draggedIndex = index);
+        box.addEventListener('dragover', (e) => { e.preventDefault(); box.classList.add('drag-over'); });
+        box.addEventListener('dragleave', () => box.classList.remove('drag-over'));
+        box.addEventListener('drop', () => {
+          const temp = imageDatabase[draggedIndex];
+          imageDatabase[draggedIndex] = imageDatabase[index];
+          imageDatabase[index] = temp;
+          renderPreviews();
+        });
+
+        box.addEventListener('click', (e) => {
+          const rect = box.getBoundingClientRect();
+          const clickX = ((e.clientX - rect.left) / rect.width) * 100;
+          const clickY = ((e.clientY - rect.top) / rect.height) * 100;
+          imageDatabase[index].x = Math.max(0, Math.min(100, clickX));
+          imageDatabase[index].y = Math.max(0, Math.min(100, clickY));
+          renderPreviews();
+        });
+
+        grid.appendChild(box);
+      });
+    }
+
+    function buildDynamicScriptUI(scripts) {
+      const container = document.getElementById('dynamic-script-group');
+      container.innerHTML = '';
+      scripts.forEach((line, i) => {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = `script-${i}`;
+        input.value = line;
+        input.placeholder = `Slide ${i + 1} Text`;
+        container.appendChild(input);
+      });
+    }
+
+    document.getElementById('btn-draft').addEventListener('click', async () => {
+      const subject = document.getElementById('subject').value;
+      const contextInput = document.getElementById('context').value;
+      
+      if (!subject || imageDatabase.length === 0) return alert("Add title and images.");
+      const btn = document.getElementById('btn-draft');
+      btn.disabled = true; btn.innerText = "Analyzing all images... (~15s)";
+
+      try {
+        const response = await fetch(CLOUDFLARE_WORKER_URL, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          // Worker needs updating to handle dynamic length scripts
+          body: JSON.stringify({ action: "draft_dynamic_script", subject: subject, context: contextInput, images: imageDatabase })
+        });
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error(data.error || "Unknown Server Error");
+
+        if (data.script) {
+          buildDynamicScriptUI(data.script);
+          document.getElementById('phase-1').classList.add('hidden');
+          document.getElementById('phase-2').classList.remove('hidden');
+        }
+      } catch (err) {
+        alert("AI Error: " + err.message);
+        btn.disabled = false;
+        btn.innerText = "Generate Video Script";
+      }
+    });
+
+    document.getElementById('btn-render').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-render');
+      const statusBox = document.getElementById('status-box');
+      
+      // Gather dynamic scripts
+      const scripts = [];
+      const scriptInputs = document.getElementById('dynamic-script-group').querySelectorAll('input');
+      scriptInputs.forEach(input => scripts.push(input.value));
+
+      btn.disabled = true; btn.innerText = "Rendering via Shotstack...";
+      statusBox.className = "status-loading"; statusBox.innerHTML = "Uploading assets and compiling video sequence...";
+
+      try {
+        const response = await fetch(CLOUDFLARE_WORKER_URL, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            action: "render_shotstack", // Switching action to point to new Shotstack logic
+            subject: document.getElementById('subject').value, 
+            images: imageDatabase, 
+            script: scripts, 
+            music: customMusicBase64, 
+            voice: document.getElementById('voice-style').value 
+          })
+        });
+        const result = await response.json();
+        if (response.ok) {
+          statusBox.className = "status-success";
+          const renderUrl = result.url || (result.data ? result.data.url : null);
+          
+          statusBox.innerHTML = `
+            Video generation initiated successfully.<br>
+            <a href="${renderUrl}" target="_blank" style="display:inline-block; margin-top:10px;">Check Render Status</a>
+          `;
+          
+          // Show Final Email Phase
+          document.getElementById('phase-2').classList.add('hidden');
+          document.getElementById('phase-3').classList.remove('hidden');
+
+        } else { throw new Error(result.error || "Render Failed"); }
+      } catch (error) { 
+        statusBox.className = "status-error"; statusBox.innerHTML = `Error: ${error.message}`; btn.disabled = false; 
+      }
+    });
+
+    document.getElementById('btn-send-video-email').addEventListener('click', async () => {
+       const btn = document.getElementById('btn-send-video-email');
+       btn.disabled = true; btn.innerText = "Dispatching Emails...";
+       
+       try {
+         const response = await fetch(CLOUDFLARE_WORKER_URL, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+              action: "send_immediate_campaign", 
+              subject: document.getElementById('subject').value,
+              body: document.getElementById('video-email-body').value,
+              hasVideo: true
+            })
+          });
+          if (response.ok) {
+            btn.innerText = "✅ Campaign Sent Successfully!";
+            btn.style.background = "#1e3a23";
+          } else { throw new Error("Dispatch failed"); }
+       } catch(e) {
+          alert(e.message);
+          btn.disabled = false; btn.innerText = "Send to All Subscribers Now";
+       }
+    });
+
+    // ==========================================
+    // LOGIC: AI INTERVIEW (Text Email)
+    // ==========================================
+    let interviewMessages = [{ role: 'assistant', content: "Hi! What's the main update or story you want to share with your audience today?" }];
+    let questionCount = 1;
+
+    function renderChat() {
+      const box = document.getElementById('chat-history');
+      box.innerHTML = '';
+      interviewMessages.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = `msg ${msg.role === 'user' ? 'user' : 'ai'}`;
+        div.innerText = msg.content;
+        box.appendChild(div);
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+
+    document.getElementById('btn-send-chat').addEventListener('click', async () => {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      // Add user message
+      interviewMessages.push({ role: 'user', content: text });
+      input.value = '';
+      renderChat();
+      
+      const btn = document.getElementById('btn-send-chat');
+      btn.disabled = true; btn.innerText = "...";
+
+      // If we hit 10 questions, force the draft
+      if (questionCount >= 10) {
+         generateInterviewDraft();
+         return;
+      }
+
+      try {
+        const response = await fetch(CLOUDFLARE_WORKER_URL, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "interview_chat", history: interviewMessages })
+        });
+        const data = await response.json();
+        
+        if (data.reply) {
+          interviewMessages.push({ role: 'assistant', content: data.reply });
+          questionCount++;
+          renderChat();
+        }
+      } catch (err) {
+        interviewMessages.push({ role: 'assistant', content: "Sorry, I had a connection hiccup. Let's draft what we have so far!" });
+        renderChat();
+      } finally {
+        btn.disabled = false; btn.innerText = "Send";
+      }
+    });
+
+    document.getElementById('btn-finish-interview').addEventListener('click', generateInterviewDraft);
+
+    async function generateInterviewDraft() {
+      const btn = document.getElementById('btn-finish-interview');
+      btn.disabled = true; btn.innerText = "Drafting Email...";
+      
+      try {
+        const response = await fetch(CLOUDFLARE_WORKER_URL, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "draft_interview_email", history: interviewMessages })
+        });
+        const data = await response.json();
+        
+        if (data.subject && data.body) {
+          document.getElementById('interview-subject').value = data.subject;
+          document.getElementById('interview-body').value = data.body;
+          document.getElementById('interview-phase').classList.add('hidden');
+          document.getElementById('draft-phase').classList.remove('hidden');
+        } else {
+           throw new Error("Failed to parse draft");
+        }
+      } catch (e) {
+        alert("Failed to generate draft. Ensure backend is updated.");
+        btn.disabled = false; btn.innerText = "Skip to Draft Email Now";
+      }
+    }
+
+    document.getElementById('btn-send-text-email').addEventListener('click', async () => {
+       const btn = document.getElementById('btn-send-text-email');
+       btn.disabled = true; btn.innerText = "Dispatching...";
+       
+       try {
+         const response = await fetch(CLOUDFLARE_WORKER_URL, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+              action: "send_immediate_campaign", 
+              subject: document.getElementById('interview-subject').value,
+              body: document.getElementById('interview-body').value,
+              hasVideo: false
+            })
+          });
+          if (response.ok) {
+            btn.innerText = "✅ Sent Successfully!";
+            btn.style.background = "#1e3a23";
+          } else { throw new Error("Dispatch failed"); }
+       } catch(e) {
+          alert(e.message);
+          btn.disabled = false; btn.innerText = "Send to All Subscribers Now";
+       }
+    });
+
+    document.getElementById('btn-restart-interview').addEventListener('click', () => {
+      interviewMessages = [{ role: 'assistant', content: "Hi! What's the main update or story you want to share with your audience today?" }];
+      questionCount = 1;
+      renderChat();
+      document.getElementById('interview-phase').classList.remove('hidden');
+      document.getElementById('draft-phase').classList.add('hidden');
+      document.getElementById('btn-finish-interview').disabled = false;
+      document.getElementById('btn-finish-interview').innerText = "Skip to Draft Email Now";
+    });
+
+    // Enter key submits chat
+    document.getElementById('chat-input').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') document.getElementById('btn-send-chat').click();
+    });
+  </script>
+</body>
+</html>

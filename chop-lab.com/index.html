@@ -313,7 +313,7 @@
         .ai-message.user { text-align: right; color: var(--tcl-primary); font-weight: 700; font-family: 'Roboto Mono', monospace; }
         .ai-message.system { text-align: left; color: var(--tcl-text-main); border-left: 3px solid var(--tcl-primary); background: var(--tcl-background); padding: 18px; border-radius: 0 8px 8px 0; box-shadow: var(--tcl-shadow-sm); }
         
-        /* Fix for markdown lists inside AI messages - Ensures #10+ alignment */
+        /* Fix for markdown lists inside AI messages */
         .ai-message.system ol, .ai-message.system ul { padding-left: 55px; margin: 15px 0; }
         .ai-message.system li { margin-bottom: 10px; padding-left: 5px;}
         .ai-message.system p { margin-bottom: 12px; }
@@ -358,12 +358,104 @@
         .detail-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .gallery-detail-img { width: 100%; height: 220px; object-fit: cover; border: 1px solid var(--tcl-border); border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);}
 
-        /* --- Testimonial Specific --- */
-        .testimonial-card {
-            background: var(--tcl-surface); padding: 40px; border-radius: 12px; 
-            border: 1px solid var(--tcl-border); box-shadow: var(--tcl-shadow-sm);
-            display: flex; flex-direction: column;
+        /* --- Weekly Drop Widget --- */
+        .weekly-drop-widget {
+            margin-top: 24px;
+            background: var(--tcl-surface);
+            border: 1px solid var(--tcl-border);
+            border-radius: 12px;
+            padding: 32px 28px;
+            box-shadow: var(--tcl-shadow-sm);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
+        .weekly-drop-widget::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--tcl-primary), #e8a890, var(--tcl-primary));
+        }
+        .weekly-drop-widget .drop-eyebrow {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: var(--tcl-primary);
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .weekly-drop-widget h4 {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            color: var(--tcl-text-main);
+            margin-bottom: 8px;
+            font-style: italic;
+            font-weight: 600;
+        }
+        .weekly-drop-widget p {
+            font-size: 0.88rem;
+            color: var(--tcl-text-muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .weekly-drop-widget input[type="email"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--tcl-border);
+            background: var(--tcl-background);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            color: var(--tcl-text-main);
+            font-family: var(--font-primary);
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .weekly-drop-widget input[type="email"]:focus {
+            outline: none;
+            border-color: var(--tcl-primary);
+            box-shadow: 0 0 0 3px rgba(201, 123, 99, 0.1);
+        }
+        /* Override the global valid/invalid rules inside the widget */
+        .weekly-drop-widget input[type="email"]:not(:placeholder-shown):valid { border-color: var(--tcl-accent-green); }
+        .weekly-drop-widget input[type="email"]:not(:placeholder-shown):invalid { border-color: var(--tcl-border); }
+        .weekly-drop-widget .btn-drop {
+            width: 100%;
+            padding: 14px 20px;
+            background: var(--tcl-primary);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-family: var(--font-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 4px 10px rgba(201, 123, 99, 0.15);
+        }
+        .weekly-drop-widget .btn-drop:hover:not(:disabled) {
+            background: var(--tcl-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(201, 123, 99, 0.25);
+        }
+        .weekly-drop-widget .btn-drop:disabled { opacity: 0.6; cursor: not-allowed; }
+        .weekly-drop-widget .drop-success {
+            display: none;
+            padding: 16px;
+            background: rgba(119, 184, 71, 0.08);
+            border: 1px solid rgba(119, 184, 71, 0.3);
+            border-radius: 6px;
+            color: #4a7a25;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-top: 4px;
+        }
+        .weekly-drop-widget .drop-success strong { display: block; margin-bottom: 4px; }
 
         /* --- Footer --- */
         footer { text-align: center; padding: 80px 20px; background: #2B2B2B; color: #D8C3A5; margin-top: auto; }
@@ -403,13 +495,16 @@
             .split-section.reverse .split-image { border-left: none !important; }
             .split-image img { max-height: 400px; }
 
-            /* Improved Mobile Spacing for Interactions */
+            /* Improved Mobile Spacing */
             .form-group input[type="text"], .form-group input[type="email"], .form-group input[type="number"], .form-group select, .form-group textarea {
-                padding: 20px; /* Larger tap targets */
+                padding: 20px;
                 font-size: 1.05rem;
             }
-            .btn-launch, .btn-minimal { padding: 20px 24px; width: 100%; } /* Wider, taller buttons on mobile */
+            .btn-launch, .btn-minimal { padding: 20px 24px; width: 100%; }
             .step-container { margin-bottom: 50px; }
+            
+            /* Weekly drop stacks nicely on mobile already */
+            .weekly-drop-widget { margin-top: 20px; }
         }
     </style>
 </head>
@@ -474,7 +569,7 @@
                     </div>
                 </div>
 
-                <!-- UPGRADED PHASE 2: RESULTS IN CLAY PROCESS -->
+                <!-- FROM CAD TO CLAY PROCESS -->
                 <div class="reveal" style="text-align: center; margin-bottom: 60px; margin-top: 120px;">
                     <h2 class="section-title" style="margin-bottom: 16px; font-style: italic;">From CAD to Clay.</h2>
                     <p style="color: var(--tcl-text-muted); font-size: 1.15rem;">See how digital engineering translates into handmade ceramics.</p>
@@ -571,7 +666,6 @@
                             <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Squaring tools, slab thickness guides, and ergonomic cutters.</p>
                         </div>
                     </div>
-                    
                     <div class="card-link category-link" data-category="storage" style="cursor: pointer;">
                         <div class="art-card" style="text-align: center; padding: 40px 20px; justify-content: center; min-height: 280px;">
                             <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;">04.</h3>
@@ -588,6 +682,7 @@
                     </div>
                     <div class="product-grid" id="studio-product-grid">
                         
+                        <!-- FIX: roller-hex card now correctly links to roller-10in to match the select option value -->
                         <a href="#order?product=chop-simple" class="card-link reveal" data-category="stamping">
                             <div class="art-card">
                                 <div class="art-image-wrapper">
@@ -616,7 +711,8 @@
                             </div>
                         </a>
 
-                        <a href="#order?product=roller-hex" class="card-link reveal" data-category="stamping">
+                        <!-- FIX: was href="#order?product=roller-hex" — corrected to roller-10in -->
+                        <a href="#order?product=roller-10in" class="card-link reveal" data-category="stamping">
                             <div class="art-card">
                                 <div class="art-image-wrapper">
                                     <img src="https://chop-lab.com/assets/images/hex-lattice-croller.JPG" alt="Hex-Lattice Roller" class="art-image">
@@ -745,7 +841,7 @@
                     </div>
                 </div>
 
-                <!-- --- R&D / IN DEVELOPMENT SECTION --- -->
+                <!-- R&D / IN DEVELOPMENT SECTION -->
                 <div class="reveal" style="margin-top: 80px; margin-bottom: 60px; border-top: 1px solid var(--tcl-border); padding-top: 60px;">
                     <div style="text-align: center; margin-bottom: 40px;">
                         <h2 style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--tcl-text-main); font-style: italic;">In the R&D Lab.</h2>
@@ -792,7 +888,7 @@
                     <p style="color: var(--tcl-text-muted); line-height: 1.8; margin-bottom: 20px;">We use high-speed Bambu Lab A1 printers to bring your custom 3D models into reality. Whether you need a functional replacement part, a cosplay prop, or a custom tool, our lab is equipped to handle it.</p>
                     <ul class="feature-list">
                         <li><strong>Max Build Volume:</strong> 256 x 256 x 256 mm</li>
-                        <li><strong>Materials:</strong> Tough PLA Matte & Durable PETG</li>
+                        <li><strong>Materials:</strong> Tough PLA Matte &amp; Durable PETG</li>
                         <li><strong>Pricing:</strong> $5 base fee + $1 per hour of print time</li>
                         <li><strong>Turnaround:</strong> Typically 3-5 business days</li>
                     </ul>
@@ -833,7 +929,7 @@
                     </div>
                 </div>
 
-                <!-- --- THE MINESCOUT SHELL --- -->
+                <!-- THE MINESCOUT SHELL -->
                 <div class="ai-terminal">
                     <div class="ai-header">
                         <div><span class="ai-status"></span> TCL_LAB_SYSTEM // MINESCOUT AI</div>
@@ -852,7 +948,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- SECTION 4: ORDER PAGE VIEW (PHASE 3) -->
+    <!-- SECTION 4: ORDER PAGE VIEW -->
     <!-- ========================================== -->
     <div id="page-order" class="page-view hidden-page">
         <div class="container order-page-content reveal">
@@ -946,7 +1042,7 @@
                                 <label>Upload STL File</label>
                                 <div id="stl-drop-zone" class="drop-zone">
                                     <i class="material-icons">cloud_upload</i>
-                                    <span class="drop-text">Drag & drop your .stl file here, or click to browse</span>
+                                    <span class="drop-text">Drag &amp; drop your .stl file here, or click to browse</span>
                                     <span class="file-details"></span>
                                     <input type="file" id="stlUpload" name="stlUpload" accept=".stl,.obj" hidden>
                                 </div>
@@ -1005,7 +1101,7 @@
                                 <label>Upload Logo File</label>
                                 <div id="logo-drop-zone" class="drop-zone">
                                     <i class="material-icons">image</i>
-                                    <span class="drop-text">Drag & drop your logo here, or click to browse</span>
+                                    <span class="drop-text">Drag &amp; drop your logo here, or click to browse</span>
                                     <span class="file-details"></span>
                                     <input type="file" id="logoUpload" name="logoUpload" accept="image/*,.svg,.pdf" hidden>
                                 </div>
@@ -1140,7 +1236,7 @@
 
                 </div>
 
-                <!-- RIGHT COLUMN: STICKY SUMMARY CARD -->
+                <!-- RIGHT COLUMN: STICKY SUMMARY CARD + WEEKLY DROP -->
                 <div class="order-summary-column">
                     <div class="summary-card">
                         <h3>Project Estimate</h3>
@@ -1180,6 +1276,24 @@
                             <p style="font-size: 0.8rem; color: var(--tcl-text-muted); margin-top: 25px; line-height: 1.6; text-align: center; border-radius: 4px; background: rgba(201, 123, 99, 0.05); padding: 12px; border: 1px solid rgba(201, 123, 99, 0.1);">
                                 Payment is not collected today. We will email a final invoice once CAD engineering is approved.
                             </p>
+                        </div>
+                    </div>
+
+                    <!-- WEEKLY DROP WIDGET — styled to match TCL aesthetic -->
+                    <div class="weekly-drop-widget">
+                        <span class="drop-eyebrow">The Lab Newsletter</span>
+                        <h4>Weekly Drop ☕</h4>
+                        <p>Get a behind-the-scenes video of our process every Monday morning — straight from the lab floor.</p>
+
+                        <input type="email" id="weekly-sub-email" placeholder="Enter your email" autocomplete="email">
+
+                        <button class="btn-drop" id="btn-weekly-sub" onclick="submitWeeklySubscription()">
+                            Join the List
+                        </button>
+
+                        <div id="drop-success" class="drop-success">
+                            <strong>You're in. See you Monday. ☕</strong>
+                            Check your inbox for a confirmation.
                         </div>
                     </div>
                 </div>
@@ -1247,7 +1361,7 @@
 
                 <p id="user-email-display" style="color:var(--tcl-text-muted); margin-bottom: 30px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">Retrieving lab records...</p>
 
-                <div style="overflow-x:auto; background: var(--tcl-surface); border: 1px solid var(--tcl-border); border-radius: 8px; box-shadow: 0 4px 15 rgba(0,0,0,0.02);">
+                <div style="overflow-x:auto; background: var(--tcl-surface); border: 1px solid var(--tcl-border); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
                     <table style="width:100%; border-collapse:collapse;">
                         <thead>
                             <tr style="border-bottom: 1px solid var(--tcl-border); text-align: left;">
@@ -1273,7 +1387,7 @@
             <div style="background: var(--tcl-surface); padding: 60px 40px; text-align: center; width: 100%; max-width: 450px; border: 1px solid var(--tcl-border); border-radius: 8px; box-shadow: var(--tcl-shadow-md);">
                 <h2 style="font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 10px; color: var(--tcl-text-main); font-style: italic;">The Lab Console</h2>
                 <p style="font-size: 0.85rem; color: var(--tcl-text-muted); margin-bottom: 35px; text-transform: uppercase; letter-spacing: 2px;">Authorization Required</p>
-                <input type="password" id="adminPass" placeholder="Access Code" style="margin-bottom:20px; width:100%; padding:16px; border:1px solid var(--tcl-border); font-family: 'Roboto Mono', monospace;">
+                <input type="password" id="adminPass" placeholder="Access Code" style="margin-bottom:20px; width:100%; padding:16px; border:1px solid var(--tcl-border); font-family: 'Roboto Mono', monospace; border-radius: 6px;">
                 <button onclick="checkPass()" class="btn-launch" id="adminAuthBtn" style="width:100%;">Initialize Session</button>
             </div>
         </div>
@@ -1332,10 +1446,11 @@
     </footer>
 
     <!-- ========================================== -->
-    <!-- SINGLE FILE JAVASCRIPT MERGE -->
+    <!-- SINGLE FILE JAVASCRIPT -->
     <!-- ========================================== -->
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxA0tHDzsc4baNHSURGJRMFVvRpXLZMAL0Hhkezq5xC641ehY5asGkTD1X4k6uauBJF9A/exec";
+        const WEEKLY_DROP_URL = "https://video-intake-engine.tmcarleton11.workers.dev/";
         
         // --- MASTER CONFIGURATION STORE ---
         let aiConfig = null;
@@ -1363,18 +1478,15 @@
             const msg = input.value.trim();
             if (!msg || !aiConfig) return; 
 
-            // 1. UI: Immediate User Feedback
             input.value = '';
             const body = document.getElementById('chatMessages');
             body.innerHTML += `<div class="ai-message user">> ${msg}</div>`;
             
-            // Add hourglass loading message
             const loadingId = 'ai-loading-' + Date.now();
             body.innerHTML += `<div class="ai-message system" id="${loadingId}"><em><i class="material-icons spin-hourglass" style="font-size: 14px; vertical-align: middle; margin-right: 8px;">hourglass_empty</i> Processing Lab Schematic...</em></div>`;
             
             body.scrollTop = body.scrollHeight;
 
-            // 2. Reconstruct and Execute the Logic from the JSON string
             try {
                 const executeLogic = new Function(`return ${aiConfig.runEngine}`)();
                 await executeLogic(msg, aiConfig);
@@ -1384,6 +1496,44 @@
                 const indicator = document.getElementById(loadingId);
                 if (indicator) indicator.remove();
                 body.scrollTop = body.scrollHeight;
+            }
+        }
+
+        // --- WEEKLY DROP SUBSCRIPTION ---
+        async function submitWeeklySubscription() {
+            const emailInput = document.getElementById('weekly-sub-email');
+            const btn = document.getElementById('btn-weekly-sub');
+            const successEl = document.getElementById('drop-success');
+
+            const email = emailInput ? emailInput.value.trim() : '';
+            if (!email || !email.includes('@')) {
+                showToast("Please enter a valid email address.", "error");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Syncing...';
+
+            try {
+                const response = await fetch(WEEKLY_DROP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'subscribe', email })
+                });
+
+                if (response.ok) {
+                    // Hide form elements, show success
+                    emailInput.style.display = 'none';
+                    btn.style.display = 'none';
+                    if (successEl) successEl.style.display = 'block';
+                    showToast("You're on the list! See you Monday. ☕");
+                } else {
+                    throw new Error("Server error");
+                }
+            } catch (err) {
+                showToast("Connection error. Please try again.", "error");
+                btn.disabled = false;
+                btn.textContent = 'Join the List';
             }
         }
 
@@ -1448,7 +1598,7 @@
                     scene.add(dirLight);
 
                     geometry.computeBoundingBox();
-                    geometry.center(); // SMART Centering
+                    geometry.center();
                     
                     const material = new THREE.MeshPhongMaterial({ 
                         color: matteWhite, 
@@ -1456,8 +1606,6 @@
                         shininess: 30 
                     });
                     const mesh = new THREE.Mesh(geometry, material);
-
-                    // Transform: Make XY Plane the Bottom (Rotate -90deg on X)
                     mesh.rotation.x = -Math.PI / 2;
 
                     const box = new THREE.Box3().setFromObject(mesh);
@@ -1466,7 +1614,6 @@
                     const scale = 100 / Math.max(size.x, size.y, size.z);
                     mesh.scale.set(scale, scale, scale);
 
-                    // Place in a pivot group for clean turntable rotation
                     const pivot = new THREE.Group();
                     pivot.add(mesh);
                     scene.add(pivot);
@@ -1483,7 +1630,7 @@
                     function animate() {
                         if (isVisible) {
                             requestAnimationFrame(animate);
-                            pivot.rotation.y += 0.01; // Clean turntable spin
+                            pivot.rotation.y += 0.01;
                             renderer.render(scene, camera);
                         } else {
                             setTimeout(() => requestAnimationFrame(animate), 500);
@@ -1491,7 +1638,6 @@
                     }
                     animate();
 
-                    // Handle resizing
                     window.addEventListener('resize', () => {
                         if (wrapper.clientWidth > 0) {
                             renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
@@ -1578,6 +1724,14 @@
                     }
                 });
             }
+
+            // --- Admin password enter key ---
+            const adminPassInput = document.getElementById('adminPass');
+            if (adminPassInput) {
+                adminPassInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') checkPass();
+                });
+            }
         });
 
         // --- TOAST NOTIFICATION SYSTEM ---
@@ -1598,7 +1752,7 @@
             else nav.classList.remove('scrolled');
         });
 
-        // --- SPA ROUTING (HASH-BASED FIX) ---
+        // --- SPA ROUTING (HASH-BASED) ---
         function route() {
             let hash = window.location.hash.substring(1);
             
@@ -1760,7 +1914,7 @@
             } else {
                 const objectsToRemove = [];
                 stlViewerScene.children.forEach(c => {
-                    if (c.type === 'Group') objectsToRemove.push(c); // Cleanup pivot groups
+                    if (c.type === 'Group') objectsToRemove.push(c);
                 });
                 objectsToRemove.forEach(c => {
                     c.children.forEach(child => {
@@ -1786,7 +1940,6 @@
                     geometry.boundingBox.getCenter(center);
                     mesh.position.sub(center);
 
-                    // Transform: XY Plane is bottom (Z-up in CAD -> Y-up in Three.js)
                     mesh.rotation.x = -Math.PI / 2;
 
                     const size = new THREE.Vector3();
@@ -1795,7 +1948,6 @@
                     const scale = 100 / maxDim;
                     mesh.scale.set(scale, scale, scale);
 
-                    // Pivot for clean rotation
                     const pivot = new THREE.Group();
                     pivot.add(mesh);
                     stlViewerScene.add(pivot);
@@ -1910,7 +2062,6 @@
                 if(extruderDiesSection) extruderDiesSection.classList.add('hidden');
                 if(spongeBasketSection) spongeBasketSection.classList.add('hidden');
                 if(unitToggleSection) unitToggleSection.classList.add('hidden');
-                
                 if(step3Wrapper) step3Wrapper.classList.add('hidden');
                 
                 document.querySelectorAll('.dynamic-section input').forEach(input => input.required = false);
@@ -1944,9 +2095,9 @@
             }
 
             function updateSummaryCard() {
-                if (!productSelect.value) {
-                    sumEmpty.classList.remove('hidden');
-                    sumDetails.classList.add('hidden');
+                if (!productSelect || !productSelect.value) {
+                    if(sumEmpty) sumEmpty.classList.remove('hidden');
+                    if(sumDetails) sumDetails.classList.add('hidden');
                     return;
                 }
                 
@@ -1995,8 +2146,8 @@
                     }
                 }
 
-                sumEmpty.classList.add('hidden');
-                sumDetails.classList.remove('hidden');
+                if(sumEmpty) sumEmpty.classList.add('hidden');
+                if(sumDetails) sumDetails.classList.remove('hidden');
 
                 // DYNAMIC PREVIEW LOGIC
                 const imageUrl = selectedOption.getAttribute('data-image');
@@ -2013,7 +2164,6 @@
             }
 
             async function loadSummaryPreview(src, img, wrapper) {
-                // Cleanup previous 3D canvas
                 const oldCanvas = wrapper.querySelector('.stl-canvas-container');
                 if (oldCanvas) oldCanvas.remove();
                 if (summaryStlReqId) cancelAnimationFrame(summaryStlReqId);
@@ -2030,10 +2180,9 @@
                 img.style.display = 'block';
 
                 if (!src.toLowerCase().endsWith('.stl')) {
-                    return; // Regular image, stop here
+                    return;
                 }
 
-                // Render STL dynamically
                 const canvasContainer = document.createElement('div');
                 canvasContainer.className = 'stl-canvas-container active';
                 wrapper.appendChild(canvasContainer);
@@ -2102,7 +2251,6 @@
                     }
                     animate();
 
-                    // Ensure renderer stays matched to summary card width
                     summaryResizeObs = new ResizeObserver(entries => {
                         for(let entry of entries) {
                             if(entry.contentRect.width > 0 && summaryStlRenderer) {
@@ -2290,37 +2438,48 @@
         document.addEventListener('DOMContentLoaded', () => {
             const savedEmail = localStorage.getItem('tcl_user_email');
             if (savedEmail) {
-                document.getElementById('auth-container').classList.add('hidden');
-                document.getElementById('dashboard-container').classList.remove('hidden');
-                document.getElementById('user-email-display').innerText = "Viewing records for: " + savedEmail;
+                const authContainer = document.getElementById('auth-container');
+                const dashContainer = document.getElementById('dashboard-container');
+                if(authContainer) authContainer.classList.add('hidden');
+                if(dashContainer) dashContainer.classList.remove('hidden');
+                const emailDisplay = document.getElementById('user-email-display');
+                if(emailDisplay) emailDisplay.innerText = "Viewing records for: " + savedEmail;
                 fetchHistory(savedEmail);
             }
         });
 
         function handleLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
+            const emailEl = document.getElementById('loginEmail');
+            const email = emailEl ? emailEl.value.trim() : '';
             if (!email || !email.includes('@')) {
                 showToast("Please enter a valid email address.", "error");
                 return;
             }
             localStorage.setItem('tcl_user_email', email);
-            document.getElementById('auth-container').classList.add('hidden');
-            document.getElementById('dashboard-container').classList.remove('hidden');
-            document.getElementById('user-email-display').innerText = "Viewing records for: " + email;
+            const authContainer = document.getElementById('auth-container');
+            const dashContainer = document.getElementById('dashboard-container');
+            if(authContainer) authContainer.classList.add('hidden');
+            if(dashContainer) dashContainer.classList.remove('hidden');
+            const emailDisplay = document.getElementById('user-email-display');
+            if(emailDisplay) emailDisplay.innerText = "Viewing records for: " + email;
             fetchHistory(email);
             showToast('Portal accessed successfully!');
         }
 
         function handleLogout() { 
             localStorage.removeItem('tcl_user_email');
-            document.getElementById('auth-container').classList.remove('hidden');
-            document.getElementById('dashboard-container').classList.add('hidden');
-            document.getElementById('loginEmail').value = '';
+            const authContainer = document.getElementById('auth-container');
+            const dashContainer = document.getElementById('dashboard-container');
+            if(authContainer) authContainer.classList.remove('hidden');
+            if(dashContainer) dashContainer.classList.add('hidden');
+            const loginEmail = document.getElementById('loginEmail');
+            if(loginEmail) loginEmail.value = '';
             showToast('Signed out securely.');
         }
 
         async function fetchHistory(email) {
             const tbody = document.getElementById('historyTableBody');
+            if(!tbody) return;
             tbody.innerHTML = '<tr><td colspan="5" style="padding:40px; text-align:center; color: var(--tcl-text-muted);">Scanning database...</td></tr>';
             try {
                 const response = await fetch(SCRIPT_URL + "?email=" + encodeURIComponent(email));
@@ -2355,19 +2514,22 @@
 
         // --- ADMIN LOGIC ---
         async function checkPass() {
-            const input = document.getElementById('adminPass').value;
+            const input = document.getElementById('adminPass');
             const btn = document.getElementById('adminAuthBtn');
+            if(!input) return;
             
             if(btn) { btn.innerHTML = '<i class="material-icons spin-hourglass">hourglass_empty</i> Authenticating...'; btn.disabled = true; }
 
             try {
-                const response = await fetch(SCRIPT_URL + "?password=" + encodeURIComponent(input));
+                const response = await fetch(SCRIPT_URL + "?password=" + encodeURIComponent(input.value));
                 if (!response.ok) throw new Error(`Server Error: ${response.status}`);
                 const data = await response.json();
                 if (data.error === "ACCESS_DENIED") throw new Error("Unauthorized Access Code.");
 
-                document.getElementById('admin-login-screen').style.display = 'none';
-                document.getElementById('admin-dashboard').classList.remove('hidden');
+                const loginScreen = document.getElementById('admin-login-screen');
+                const adminDash = document.getElementById('admin-dashboard');
+                if(loginScreen) loginScreen.style.display = 'none';
+                if(adminDash) adminDash.classList.remove('hidden');
                 showToast("Access Granted");
                 renderAdminTable(data);
             } catch (error) {
@@ -2378,6 +2540,7 @@
 
         function renderAdminTable(data) {
             const tbody = document.getElementById('tableBody');
+            if(!tbody) return;
             tbody.innerHTML = ''; 
             if (data.length === 0) {
                  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px;">Zero active projects found.</td></tr>';
@@ -2405,20 +2568,13 @@
                 tbody.appendChild(tr);
             });
         }
-        
-        const adminPassInput = document.getElementById('adminPass');
-        if (adminPassInput) {
-            adminPassInput.addEventListener("keypress", (e) => {
-                if (e.key === "Enter") checkPass();
-            });
-        }
 
-        // --- IMAGE FALLBACK LOGIC (PNG-CENTRIC) ---
+        // --- IMAGE FALLBACK LOGIC ---
         document.addEventListener('error', function(e) {
             if (e.target.tagName && e.target.tagName.toLowerCase() === 'img') {
                 const img = e.target;
                 
-                // Ignore STL auto-loads so they don't get the CSS image broken outline
+                // Skip STL auto-loads
                 if (img.src && img.src.toLowerCase().endsWith('.stl')) return;
 
                 if (!img.dataset.fallbackAttempted) {
