@@ -7,137 +7,266 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Updated Fonts to match the M3 Design System -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="../assests/css/homepage.css">
-    <link rel="icon" type="image/png" href="../assests/images/favicon.png">
+    <!-- Fixed Paths: Absolute locations starting with / -->
+    <link rel="stylesheet" href="/assests/css/homepage.css">
+    <link rel="icon" type="image/png" href="/assests/images/favicon.png?v=2">
     
     <!-- EMAILJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
+    <!-- Specific Page Styles (Using M3 Variables) -->
     <style>
-        .request-form-container {
-            max-width: 600px; margin: 0 auto; background: #fff; padding: 30px;
-            border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;
+        #user-display a { text-decoration: none; color: white; }
+
+        .request-header {
+            margin-bottom: 24px;
         }
-        .form-group select, .form-group input {
-            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;
-            font-family: 'Inter', sans-serif; font-size: 1rem; background-color: white;
+
+        .request-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            color: var(--text-color);
+            margin-bottom: 8px;
         }
-        #status-msg { margin-top: 15px; text-align: center; font-weight: bold; }
-        .success-msg { color: #446944; }
-        .error-msg { color: #dc2626; }
-        .hidden { display: none; }
+
+        .request-subtitle {
+            color: var(--md-outline);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .request-card {
+            background: var(--card-bg);
+            border: 1px solid var(--md-outline-variant);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-1);
+            transition: all 0.3s var(--motion-standard);
+        }
+
+        .request-card:hover {
+            box-shadow: var(--shadow-2);
+            border-color: var(--md-outline);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            margin-bottom: 20px;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--md-outline);
+            background: var(--md-surface-container);
+            color: var(--text-color);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+
+        /* Make selects look consistent with inputs */
+        select.form-input {
+            cursor: pointer;
+            appearance: auto;
+        }
+
+        .form-input:focus {
+            border-color: var(--md-primary);
+            background: var(--bg-color);
+            box-shadow: 0 0 0 3px rgba(93, 140, 88, 0.2);
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--md-primary);
+            color: var(--md-on-primary);
+            border: none;
+            border-radius: var(--radius-full);
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            filter: brightness(0.9);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-2);
+        }
+
+        .submit-btn:disabled {
+            background: var(--md-outline);
+            color: var(--md-surface);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #status-msg {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status-success {
+            background: var(--md-primary-container);
+            color: var(--md-on-primary-container);
+            border: 1px solid var(--md-primary);
+            display: block !important;
+        }
+
+        .status-error {
+            background: rgba(186, 26, 26, 0.1);
+            color: var(--md-error);
+            border: 1px solid var(--md-error);
+            display: block !important;
+        }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <header class="main-header">
         <div class="container site-title-container">
-            <div id="auth-container"><a href="../login.html" id="login-link">Login</a></div>
+            <div id="auth-container">
+                <a href="/login.html" id="login-link">Login</a>
+            </div>
             <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <h1 class="site-title"><a href="/index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
                 <p class="tagline">Requests</p>
             </div>
             <div id="user-display" class="hidden">
-                <a href="../account.html"><span id="user-email-display"></span></a>
-                <button id="signOut-btn">Sign Out</button>
+                <a href="/account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn" class="btn-glass">Sign Out</button>
             </div>
         </div>
     </header>
 
     <div class="main-content-area">
         <div class="container">
+            
             <main class="main-content">
-                <article class="post-full">
-                    <h1>Submit a Request</h1>
-                    <p class="post-meta">Features, Bugs, Content Ideas & More</p>
-                    <div class="post-content">
-                        <p>Found a bug? Want to see a specific tech tip? Have an idea for a new app? Let us know below! Our team reviews these requests regularly.</p>
-                    </div>
-                </article>
+                <div class="request-header">
+                    <h1 class="request-title">Submit a Request</h1>
+                    <p class="request-subtitle">Found a bug? Want to see a specific tech tip? Have an idea for a new app? Let us know below! Our team reviews these requests regularly.</p>
+                </div>
 
-                <section class="comments-section">
-                    <div class="request-form-container">
-                        <h3>New Request Form</h3>
-                        <form id="featureRequestForm">
-                            
-                            <!-- 1. Request Type -->
-                            <div class="form-group">
-                                <label for="requestType">Request Type:</label>
-                                <select id="requestType" name="requestType" onchange="updateFormFields()">
-                                    <option value="Feature">✨ Feature Request</option>
-                                    <option value="Content">📝 New Content Idea</option>
-                                    <option value="Bug">🐛 Bug / Broken Stuff</option>
-                                    <option value="Other">❓ Other</option>
-                                </select>
-                            </div>
+                <div class="request-card">
+                    <form id="featureRequestForm">
+                        
+                        <!-- 1. Request Type -->
+                        <div class="form-group">
+                            <label for="requestType" class="form-label">Request Type:</label>
+                            <select id="requestType" name="requestType" class="form-input" onchange="updateFormFields()">
+                                <option value="Feature">✨ Feature Request</option>
+                                <option value="Content">📝 New Content Idea</option>
+                                <option value="Bug">🐛 Bug / Broken Stuff</option>
+                                <option value="Other">❓ Other</option>
+                            </select>
+                        </div>
 
-                            <!-- 2. Priority (Always Visible) -->
-                            <div class="form-group">
-                                <label for="priority">Priority Level:</label>
-                                <select id="priority" name="priority">
-                                    <option value="LOW">Low - Nice to have</option>
-                                    <option value="MED">Medium - Important</option>
-                                    <option value="HIGH">High - Urgent / Site Broken</option>
-                                </select>
-                            </div>
+                        <!-- 2. Priority (Always Visible) -->
+                        <div class="form-group">
+                            <label for="priority" class="form-label">Priority Level:</label>
+                            <select id="priority" name="priority" class="form-input">
+                                <option value="LOW">Low - Nice to have</option>
+                                <option value="MED">Medium - Important</option>
+                                <option value="HIGH">High - Urgent / Site Broken</option>
+                            </select>
+                        </div>
 
-                            <!-- 3. Dynamic Subject Line -->
-                            <div class="form-group">
-                                <label for="subject" id="lbl-subject">Feature Title:</label>
-                                <input type="text" id="subject" name="subject" required placeholder="e.g. Dark Mode Toggle">
-                            </div>
+                        <!-- 3. Dynamic Subject Line -->
+                        <div class="form-group">
+                            <label for="subject" id="lbl-subject" class="form-label">Feature Title:</label>
+                            <input type="text" id="subject" name="subject" class="form-input" required placeholder="e.g. Dark Mode Toggle">
+                        </div>
 
-                            <!-- 4. Dynamic Extra Fields (Bug URL or Content Category) -->
-                            <div id="extra-field-bug" class="form-group hidden">
-                                <label for="bugUrl">Page URL / Device:</label>
-                                <input type="text" id="bugUrl" placeholder="e.g. Homepage on iPhone Safari">
-                            </div>
+                        <!-- 4. Dynamic Extra Fields (Bug URL or Content Category) -->
+                        <div id="extra-field-bug" class="form-group hidden">
+                            <label for="bugUrl" class="form-label">Page URL / Device:</label>
+                            <input type="text" id="bugUrl" class="form-input" placeholder="e.g. Homepage on iPhone Safari">
+                        </div>
 
-                            <div id="extra-field-content" class="form-group hidden">
-                                <label for="contentCategory">Target Category:</label>
-                                <select id="contentCategory">
-                                    <option value="Tech Tips">Tech Tips</option>
-                                    <option value="Coding">Coding Projects</option>
-                                    <option value="Puppy">Puppy Life</option>
-                                    <option value="General">General/Other</option>
-                                </select>
-                            </div>
+                        <div id="extra-field-content" class="form-group hidden">
+                            <label for="contentCategory" class="form-label">Target Category:</label>
+                            <select id="contentCategory" class="form-input">
+                                <option value="Tech Tips">Tech Tips</option>
+                                <option value="Coding">Coding Projects</option>
+                                <option value="Puppy">Puppy Life</option>
+                                <option value="General">General/Other</option>
+                            </select>
+                        </div>
 
-                            <!-- 5. Name -->
-                            <div class="form-group">
-                                <label for="name">Your Name (Optional):</label>
-                                <input type="text" id="name" name="name" placeholder="Guest">
-                            </div>
+                        <!-- 5. Name -->
+                        <div class="form-group">
+                            <label for="name" class="form-label">Your Name (Optional):</label>
+                            <input type="text" id="name" name="name" class="form-input" placeholder="Guest">
+                        </div>
 
-                            <!-- 6. Description -->
-                            <div class="form-group">
-                                <label for="comment" id="lbl-desc">Description:</label>
-                                <textarea id="comment" name="comment" rows="5" required placeholder="Describe the feature in detail..."></textarea>
-                            </div>
-                            
-                            <button type="submit" class="submit-button">Submit Request</button>
-                        </form>
-                        <div id="status-msg"></div>
-                    </div>
-                </section>
+                        <!-- 6. Description -->
+                        <div class="form-group">
+                            <label for="comment" id="lbl-desc" class="form-label">Description:</label>
+                            <textarea id="comment" name="comment" class="form-input" required placeholder="Describe the feature in detail..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">
+                            <span class="material-symbols-rounded">send</span>
+                            Submit Request
+                        </button>
+                    </form>
+                    
+                    <div id="status-msg"></div>
+                </div>
             </main>
 
             <aside id="sidebar">
                 <div id="sidebar-container"></div> 
             </aside>
+            
         </div>
     </div>
 
     <footer class="main-footer">
-        <div class="container"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
+        <div class="container text-center"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
     </footer>
 
     <!-- FIREBASE & EMAIL LOGIC -->
     <script type="module">
-        import { db, auth } from "../assests/js/firebase-config.js";
+        import { db, auth } from "/assests/js/firebase-config.js";
         import { ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -158,7 +287,10 @@
                 const displayName = user.displayName || (user.email ? user.email.split('@')[0] : "User");
                 nameInput.value = displayName;
                 nameInput.readOnly = true;
-                nameInput.style.backgroundColor = "#f0f0f0";
+                // Add M3 disabled/readonly styling
+                nameInput.style.backgroundColor = "var(--md-surface-container)";
+                nameInput.style.color = "var(--md-outline)";
+                nameInput.style.cursor = "not-allowed";
             }
         });
 
@@ -208,7 +340,7 @@
             e.preventDefault();
             const submitBtn = form.querySelector('button');
             submitBtn.disabled = true;
-            submitBtn.textContent = "Transmitting...";
+            submitBtn.innerHTML = '<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync</span> Transmitting...';
 
             const requestType = document.getElementById('requestType').value;
             const priority = document.getElementById('priority').value;
@@ -254,20 +386,20 @@
 
                 // 3. Success UI
                 statusMsg.textContent = "Request received successfully.";
-                statusMsg.className = "success-msg";
+                statusMsg.className = "status-success";
                 form.reset();
                 updateFormFields(); // Reset UI state
 
                 setTimeout(() => {
-                    window.location.href = "../index.html";
+                    window.location.href = "/index.html";
                 }, 2000);
 
             } catch (error) {
                 console.error("Database Error:", error);
                 statusMsg.textContent = "Error submitting request. Please try again.";
-                statusMsg.className = "error-msg";
+                statusMsg.className = "status-error";
                 submitBtn.disabled = false;
-                submitBtn.textContent = "Submit Request";
+                submitBtn.innerHTML = '<span class="material-symbols-rounded">send</span> Submit Request';
             }
         });
         
@@ -276,7 +408,7 @@
     </script>
 
     <!-- MODULAR SCRIPTS -->
-    <script type="module" src="../assests/js/auth.js"></script>
-    <script src="../assests/js/loader.js"></script>
+    <script type="module" src="/assests/js/auth.js"></script>
+    <script src="/assests/js/loader.js"></script>
 </body>
 </html>
