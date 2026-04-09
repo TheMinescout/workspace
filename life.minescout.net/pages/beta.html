@@ -7,14 +7,15 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Updated Fonts to match the M3 Design System -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
-    <!-- Fixed paths to use forward slashes / -->
-    <link rel="stylesheet" href="../../assests/css/features.css">
-    <link rel="stylesheet" href="../assests/css/homepage.css">
-    <link rel="stylesheet" href="../assests/css/features.css">
-    <link rel="stylesheet" href="../assests/css/AI-ASSISTANT.css">
-    <link rel="icon" type="image/png" href="../assests/images/favicon.png?v=2">
+    <!-- Fixed Paths: Absolute locations starting with / -->
+    <link rel="stylesheet" href="/assests/css/homepage.css">
+    <link rel="stylesheet" href="/assests/css/features.css">
+    <link rel="stylesheet" href="/assests/css/AI-ASSISTANT.css">
+    <link rel="icon" type="image/png" href="/assests/images/favicon.png?v=2">
     
     <style>
         #user-display a { text-decoration: none; color: white; }
@@ -42,8 +43,9 @@
             padding: 10px 20px; font-family: 'Courier New', monospace;
             font-weight: bold; cursor: pointer; margin-right: 15px;
             text-transform: uppercase; box-shadow: 0 0 5px #0F0; transition: 0.3s;
+            border-radius: var(--radius-sm);
         }
-        .beta-portal-btn:hover { background: #0F0; color: #000; box-shadow: 0 0 15px #0F0; }
+        .beta-portal-btn:hover { background: #0F0; color: #000; box-shadow: 0 0 15px #0F0; transform: translateY(-2px); }
         
         .controls-wrapper {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
@@ -61,15 +63,15 @@
     <header class="main-header">
         <div class="container site-title-container">
             <div id="auth-container">
-                <a href="../login.html" id="login-link">Login</a>
+                <a href="/login.html" id="login-link">Login</a>
             </div>
             <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <h1 class="site-title"><a href="/index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
                 <p class="tagline">Beta Testing</p>
             </div>
             <div id="user-display" class="hidden">
-                <a href="../account.html"><span id="user-email-display"></span></a>
-                <button id="signOut-btn">Sign Out</button>
+                <a href="/account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn" class="btn-glass">Sign Out</button>
             </div>
         </div>
     </header>
@@ -82,15 +84,16 @@
                 <div class="controls-wrapper">
                     <button class="beta-portal-btn" onclick="enterTheMatrix()">[ ENTER TERMINAL ]</button>
                     
+                    <!-- Grid Controls (Using proper M3 Material Icons) -->
                     <div class="view-controls">
-                        <button id="grid-3" class="view-btn active" data-view="3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></button>
-                        <button id="grid-2" class="view-btn" data-view="2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg></button>
-                        <button id="grid-1" class="view-btn" data-view="1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></button>
+                        <button id="grid-3" class="view-btn active" data-view="3" title="Grid View"><span class="material-symbols-rounded">grid_view</span></button>
+                        <button id="grid-2" class="view-btn" data-view="2" title="Split View"><span class="material-symbols-rounded">view_day</span></button>
+                        <button id="grid-1" class="view-btn" data-view="1" title="List View"><span class="material-symbols-rounded">view_agenda</span></button>
                     </div>
                 </div>
 
                 <div id="posts-container" class="posts-grid view-3">
-                    <p class="text-center" id="loading-message">Loading Beta Content...</p>
+                    <p class="text-center" id="loading-message" style="margin-top: 50px; color: var(--md-outline);">Loading Beta Content...</p>
                 </div>
             </main>
 
@@ -102,8 +105,9 @@
     </div>
     
     <footer class="main-footer">
-        <div class="container">
-            <p id="copyright">© 2026 Minescouts Life. All rights reserved.</p>
+        <div class="container text-center">
+            <p>Email: <a href="mailto:theminescout@minescout.net" style="color: var(--md-primary); font-weight: 600;">theminescout@minescout.net</a></p>
+            <p id="copyright" style="margin-top: 8px;">© 2026 Minescouts Life. All rights reserved.</p>
         </div>
     </footer>
 
@@ -156,7 +160,7 @@
     <!-- CONTENT LOADING LOGIC -->
     <script type="module">
         // Import connection from your config file
-        import { db } from "../assests/js/firebase-config.js";
+        import { db } from "/assests/js/firebase-config.js";
         import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
         // Logic to fetch posts specifically for the BETA category
@@ -180,10 +184,10 @@
                 if (filteredPosts.length > 0) {
                     filteredPosts.forEach(post => postHtml += createPostElement(post.id, post));
                 } else {
-                    postHtml = `<p class="text-center" style="grid-column: 1 / -1;">No posts found in the "${categoryTitle}" category yet.</p>`;
+                    postHtml = `<p class="text-center" style="grid-column: 1 / -1; color: var(--md-outline); margin-top: 40px;">No posts found in the "${categoryTitle}" category yet.</p>`;
                 }
             } else {
-                postHtml = `<p class="text-center" style="grid-column: 1 / -1;">No content found.</p>`;
+                postHtml = `<p class="text-center" style="grid-column: 1 / -1; color: var(--md-outline); margin-top: 40px;">No content found.</p>`;
             }
             if (postsContainer) postsContainer.innerHTML = postHtml;
         }, (error) => {
@@ -191,16 +195,28 @@
             if (loadingMessage) loadingMessage.textContent = 'Error loading posts.';
         });
 
+        // --- M3 UPDATED CARD GENERATOR ---
         function createPostElement(postId, post) {
-            const date = new Date(post.timestamp).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const date = new Date(post.timestamp).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            
+            const imgHtml = post.imageUrl 
+                ? `<div class="post-image-wrapper"><img src="${post.imageUrl}" alt="${post.title}" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/400x300/e0e0e0/333333?text=Image+Unavailable';" /></div>` 
+                : `<div class="post-image-wrapper" style="background: var(--md-surface-container); display:flex; align-items:center; justify-content:center; color: var(--md-outline);"><span class="material-symbols-rounded" style="font-size:48px;">article</span></div>`;
+
             return `
                 <article class="post-card" data-post-id="${postId}">
-                    ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}" onerror="this.onerror=null; this.src='https://placehold.co/400x300/e0e0e0/333333?text=Image+Unavailable';" />` : ''}
+                    ${imgHtml}
                     <div class="post-card-content">
-                        <h3><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3>
-                        <p class="post-meta">Posted on ${date}</p>
-                        <p>${post.summary || 'No summary provided.'}</p>
-                        <a href="${post.linkUrl || '#'}" class="read-more" target="_blank">${post.linkText || 'Use Now!!!'}</a>
+                        <span class="category-pill">${post.category || 'BETA'}</span>
+                        <h3 class="post-title"><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3>
+                        <div class="post-meta">${date}</div>
+                        <p class="post-excerpt">${post.summary || 'No summary provided.'}</p>
+                        
+                        <div style="margin-top:auto;">
+                           <a href="${post.linkUrl || '#'}" class="read-more" target="_blank" style="width:100%;">
+                                ${post.linkText || 'Read More'}
+                           </a>
+                        </div>
                     </div>
                 </article>
             `;
@@ -208,9 +224,9 @@
     </script>
 
     <!-- STANDARD MODULAR SCRIPTS -->
-    <script type="module" src="../assests/js/auth.js"></script>
-    <script src="../assests/js/loader.js"></script>
-    <script type="module" src="../assests/js/homepage.js"></script>
+    <script type="module" src="/assests/js/auth.js"></script>
+    <script src="/assests/js/loader.js"></script>
+    <script type="module" src="/assests/js/homepage.js"></script>
 
 </body>
 </html>
