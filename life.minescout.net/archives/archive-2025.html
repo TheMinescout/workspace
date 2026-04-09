@@ -143,13 +143,13 @@
             }
 
             if (maxMonth < siteStartMonth) {
-                container.innerHTML = `<p class="text-center" style="grid-column: 1/-1;">No archives available for this year yet.</p>`;
+                container.innerHTML = `<p class="text-center" style="grid-column: 1/-1;">Formation logs begin in April 2025.</p>`;
                 return;
             }
 
             let html = '';
-            // Loop backwards from maxMonth to siteStartMonth to show newest first
-            for (let i = maxMonth; i >= siteStartMonth; i--) {
+            // Changed logic: Loop forwards from siteStartMonth (April) to maxMonth to "go up"
+            for (let i = siteStartMonth; i <= maxMonth; i++) {
                 const monthName = monthNames[i];
                 const monthNum = i + 1;
                 
