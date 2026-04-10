@@ -40,7 +40,7 @@
         <div class="auth-avatar" id="user-avatar">U</div>
         <span id="header-email"></span>
       </div>
-      <a href="/admin" id="login-btn" class="btn-primary">Sign In</a>
+      <a href="/login.html" id="login-btn" class="btn-primary">Sign In</a>
       <button id="signout-btn" class="clear-filter-btn" style="display:none; padding:7px 12px;">Sign Out</button>
     </div>
   </div>
@@ -88,7 +88,7 @@
   <!-- CONTENT AREA (TIMELINE) -->
   <main id="content-area">
 
-    <!-- ADMIN PANEL BANNER (NEW) -->
+    <!-- ADMIN PANEL BANNER -->
     <div id="admin-panel" class="admin-section hidden">
       <div style="display:flex; align-items:center; gap:10px;">
         <span style="font-size:24px;">🛡️</span>
@@ -123,6 +123,9 @@
   <!-- SIDEBAR -->
   <aside id="sidebar">
     
+    <!-- SIDEBAR NAV INJECTOR (Populated by sidebar.js) -->
+    <div id="sidebar-nav-container"></div>
+
     <!-- AI INSIGHTS MODULE -->
     <div class="sidebar-module" style="background: linear-gradient(180deg, var(--bg-card) 0%, rgba(124,90,255,0.05) 100%);">
       <div class="sidebar-module-header">
@@ -136,35 +139,15 @@
       </div>
     </div>
 
-    <!-- NOW BUILDING MODULE -->
+    <!-- NOW BUILDING MODULE (Populated by data.js) -->
     <div class="sidebar-module">
       <div class="sidebar-module-header">
         <span class="sidebar-module-icon">🔴</span>
         <span class="sidebar-module-title" style="color:var(--text-primary);">Now Building</span>
       </div>
       <div class="sidebar-module-body">
-        <ul class="now-building-list">
-          <li>
-            <div class="pulse-dot"></div>
-            <div>
-              Geo Quiz AI
-              <span class="desc">Training custom models for terrain recognition.</span>
-            </div>
-          </li>
-          <li>
-            <div class="pulse-dot"></div>
-            <div>
-              LifeOS v3 Timeline
-              <span class="desc">Implementing AI reflections & streak heatmaps.</span>
-            </div>
-          </li>
-          <li>
-            <div class="pulse-dot"></div>
-            <div>
-              Eagle Final Paperwork
-              <span class="desc">Formatting the binder & project reports.</span>
-            </div>
-          </li>
+        <ul class="now-building-list" id="now-building-list">
+          <!-- Injected via data.js -->
         </ul>
       </div>
     </div>
@@ -186,11 +169,11 @@
       </div>
     </div>
 
-    <!-- Archive Links -->
+    <!-- Timeline Dynamic Archive Links -->
     <div class="sidebar-module">
       <div class="sidebar-module-header">
-        <span class="sidebar-module-icon">🗂</span>
-        <span class="sidebar-module-title">Archive</span>
+        <span class="sidebar-module-icon">📅</span>
+        <span class="sidebar-module-title">Timeline</span>
       </div>
       <div class="sidebar-module-body" id="archive-links-container">
         <!-- Archive injected via JS -->
@@ -211,19 +194,22 @@
 <script src="assests/js/loader.js"></script>
 
 <!-- ════════════════════════════════════════════════════════════
-   V3 TIMELINE & DASHBOARD LOGIC (FIREBASE PULL)
+   V3 TIMELINE & DASHBOARD LOGIC
 ════════════════════════════════════════════════════════════ -->
 <script type="module">
 import { db, auth } from "./assests/js/firebase-config.js";
 import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+// IMPORT OUR NEW CENTRAL DATA AND SIDEBAR LOGIC
+import { siteData } from "./assests/includes/data.js";
+import { initSidebar } from "./assests/includes/sidebar.js";
+
 // ── THEME ENGINE ──
 const ThemeEngine = {
   init() {
     const saved = localStorage.getItem("theme");
     const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
     const theme = saved || (systemDark ? "dark" : "light");
     document.documentElement.setAttribute("data-theme", theme);
     this.updateIcon(theme);
@@ -231,13 +217,11 @@ const ThemeEngine = {
     document.getElementById("theme-toggle")?.addEventListener("click", () => {
       const current = document.documentElement.getAttribute("data-theme");
       const next = current === "dark" ? "light" : "dark";
-
       document.documentElement.setAttribute("data-theme", next);
       localStorage.setItem("theme", next);
       this.updateIcon(next);
     });
   },
-
   updateIcon(theme) {
     const btn = document.getElementById("theme-toggle");
     if (!btn) return;
@@ -249,7 +233,7 @@ const ThemeEngine = {
 const AppState = {
   rawPosts: [],
   filteredPosts: [],
-  activeFilter: 'all'
+  activeFilter: siteData.config.defaultFilter || 'all'
 };
 
 const LogicEngine = {
@@ -267,7 +251,8 @@ const LogicEngine = {
     const aiCount = posts.filter(p => p.category?.toLowerCase().includes("ai")).length;
     const launchCount = posts.filter(p => p.category?.toLowerCase().includes("launch")).length;
     const eaglePosts = posts.filter(p => p.category?.toLowerCase().includes("eagle") || p.title?.toLowerCase().includes("merit")).length;
-    const eaglePct = Math.min(100, Math.round((eaglePosts / 21) * 100)); 
+    const req = siteData.config.eagleBadgesRequired || 21;
+    const eaglePct = Math.min(100, Math.round((eaglePosts / req) * 100)); 
 
     const latestPost = posts.length > 0 ? Math.max(...posts.map(p => p.timestamp)) : 0;
     const daysSince = latestPost ? Math.floor((Date.now() - latestPost) / (1000 * 60 * 60 * 24)) : 0;
@@ -335,20 +320,33 @@ const RenderEngine = {
       grouped[year].push(p);
     });
 
-    const years = Object.keys(grouped).sort((a,b) => b - a);
-    
-    years.forEach(year => {
-      // 1. Index = Year only (No month separators)
+    // 1. Render ONLY the current year in the main feed
+    if (grouped[currentYear]) {
       const yearSep = document.createElement("div");
       yearSep.className = "year-separator";
-      yearSep.innerHTML = `<div class="year-timeline-dot"></div><div class="year-separator-label">${year}</div><div class="year-separator-line"></div>`;
+      yearSep.innerHTML = `<div class="year-timeline-dot"></div><div class="year-separator-label">${currentYear}</div><div class="year-separator-line"></div>`;
       container.appendChild(yearSep);
 
-      // 2. Render posts directly under the year
-      grouped[year].forEach(post => {
+      grouped[currentYear].forEach(post => {
         container.appendChild(this.createCard(post));
       });
-    });
+    }
+
+    // 2. Render Archive links for older years at the bottom
+    const years = Object.keys(grouped).sort((a,b) => b - a);
+    const olderYears = years.filter(y => parseInt(y) < currentYear);
+    
+    if (olderYears.length > 0) {
+      const archiveBlock = document.createElement("div");
+      archiveBlock.style = "grid-column: 1 / -1; text-align: center; margin-top: 30px;";
+      
+      olderYears.forEach(oldYear => {
+        const linkHtml = `<p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 12px;">See other articles located at <a href="archive-${oldYear}.html" style="color: var(--accent-3); font-weight: bold; text-decoration: underline;">${oldYear} Archive</a></p>`;
+        archiveBlock.insertAdjacentHTML('beforeend', linkHtml);
+      });
+      
+      container.appendChild(archiveBlock);
+    }
 
     this.renderArchive(AppState.rawPosts);
   },
@@ -516,9 +514,25 @@ const AppInit = {
     ThemeEngine.init();
     this.setupAuthUI();
     RenderEngine.initScrollGlow();
+    
+    // Inject the global sidebar links
+    initSidebar();
+
+    // Render "Now Building" module dynamically from data.js
+    const nbContainer = document.getElementById("now-building-list");
+    if (nbContainer && siteData.nowBuilding) {
+        nbContainer.innerHTML = siteData.nowBuilding.map(item => `
+            <li>
+                <div class="pulse-dot" style="background: ${item.color || 'var(--danger)'}; box-shadow: 0 0 8px ${item.color || 'var(--danger)'};"></div>
+                <div>
+                    ${item.title}
+                    <span class="desc">${item.desc}</span>
+                </div>
+            </li>
+        `).join('');
+    }
 
     const contentRef = ref(db, "content");
-    
     onValue(contentRef, (snap) => {
       if (snap.exists()) {
         const rawData = snap.val();
