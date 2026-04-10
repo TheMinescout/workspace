@@ -1,255 +1,215 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="auto">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minescouts Life - Home</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life of a Smart Kid — MineScout Life v3 Elite</title>
+  <meta name="description" content="The premium digital life OS of a smart ambitious builder documenting coding, AI, dogs, Eagle Scout milestones, and student projects." />
 
-    <!-- Updated CSS Link -->
-    <link rel="stylesheet" href="assests/css/homepage.css">
-    <link rel="stylesheet" href="assests/css/AI-ASSISTANT.css">
-    <link rel="icon" type="image/png" href="assests/images/favicon.png?v=2">
+  <link rel="icon" type="image/png" href="assests/images/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 
-    <style>
-        #user-display a { text-decoration: none; color: white; }
-    </style>
+  <link rel="stylesheet" href="assests/css/homepage.css" />
+  <link rel="stylesheet" href="assests/css/AI-ASSISTANT.css" />
 </head>
-
 <body>
 
-    <header class="main-header">
-        <div class="container site-title-container">
-            <div id="auth-container">
-                <a href="login.html" id="login-link">Login</a>
-            </div>
-            <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="index.html" style="color: white;">Minescouts Life</a></h1>
-                <p class="tagline">Life of a Smart Kid</p>
-            </div>
-            <div id="user-display" class="hidden">
-                <a href="account.html"><span id="user-email-display"></span></a>
-                <button id="signOut-btn">Sign Out</button>
-            </div>
+<!-- HEADER -->
+<header id="site-header">
+  <div class="header-left">
+    <span class="header-logo">Life of a Smart Kid</span>
+    <span class="header-tagline">minescout.net</span>
+  </div>
+  <div class="header-right">
+    <div id="view-controls" aria-label="Layout view controls">
+      <button class="view-btn" id="btn-cols-3" title="3 columns"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="0" y="0" width="3.5" height="14" rx="1" fill="currentColor" opacity=".6"/><rect x="5.25" y="0" width="3.5" height="14" rx="1" fill="currentColor" opacity=".6"/><rect x="10.5" y="0" width="3.5" height="14" rx="1" fill="currentColor" opacity=".6"/></svg></button>
+      <button class="view-btn" id="btn-cols-2" title="2 columns"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="0" y="0" width="6" height="14" rx="1" fill="currentColor" opacity=".6"/><rect x="8" y="0" width="6" height="14" rx="1" fill="currentColor" opacity=".6"/></svg></button>
+      <button class="view-btn active" id="btn-cols-1" title="1 column"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="0" y="0" width="14" height="14" rx="1" fill="currentColor" opacity=".6"/></svg></button>
+    </div>
+    
+    <!-- THEME TOGGLE -->
+    <button id="theme-toggle" class="view-btn" title="Toggle theme" style="margin-left:4px;">
+      ☀️
+    </button>
+
+    <!-- Auth Controls -->
+    <div id="auth-section">
+      <div class="auth-user-chip" id="user-chip" style="display:none;">
+        <div class="auth-avatar" id="user-avatar">U</div>
+        <span id="header-email"></span>
+      </div>
+      <a href="/admin" id="login-btn" class="btn-primary">Sign In</a>
+      <button id="signout-btn" class="clear-filter-btn" style="display:none; padding:7px 12px;">Sign Out</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO SECTION -->
+<section id="hero-section">
+  <div class="hero-eyebrow"><span class="dot"></span> Live from MineScout</div>
+  <h1 class="hero-title">The Life of a<br/><span>Smart Builder.</span></h1>
+  <p class="hero-subtitle">Coding. AI experiments. Eagle Scout milestones. Dogs. Student life. Documented in real-time timeline.</p>
+
+  <!-- CLICKABLE BENTO STATS (Filters) -->
+  <div class="hero-stats" id="dashboard-stats">
+    <div class="stat-card" data-filter="all" title="View all posts">
+      <div class="stat-icon">📝</div>
+      <div class="stat-value" id="stat-total-posts">0</div>
+      <div class="stat-label">Total Posts</div>
+    </div>
+    <div class="stat-card" data-filter="ai" title="Filter by AI Projects">
+      <div class="stat-icon">🤖</div>
+      <div class="stat-value" id="stat-ai-projects">0</div>
+      <div class="stat-label">AI Projects</div>
+    </div>
+    <div class="stat-card" data-filter="launch" title="Filter by App Launches">
+      <div class="stat-icon">🚀</div>
+      <div class="stat-value" id="stat-launches">0</div>
+      <div class="stat-label">App Launches</div>
+    </div>
+    <div class="stat-card" data-filter="eagle" title="Filter by Eagle Scout Journey">
+      <div class="stat-icon">🦅</div>
+      <div class="stat-value" id="stat-eagle">0%</div>
+      <div class="stat-label">Eagle %</div>
+    </div>
+    <div class="stat-card" data-filter="coding" title="Filter by Coding Updates">
+      <div class="stat-icon">🔥</div>
+      <div class="stat-value" id="stat-streak">0</div>
+      <div class="stat-label">Day Streak</div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div id="page-layout">
+
+  <!-- CONTENT AREA (TIMELINE) -->
+  <main id="content-area">
+
+    <!-- ADMIN PANEL BANNER (NEW) -->
+    <div id="admin-panel" class="admin-section hidden">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:24px;">🛡️</span>
+        <div>
+          <div class="admin-info-text">Admin Access Active</div>
+          <div style="font-size:12px; color:var(--text-secondary);">You are viewing the dashboard as an administrator.</div>
         </div>
-    </header>
-
-    <div class="main-content-area">
-        <div class="container">
-            
-            <!-- MAIN CONTENT -->
-            <main class="main-content">
-                
-                <!-- Admin Panel -->
-                <div id="admin-panel" class="admin-section hidden">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <span class="material-symbols-rounded" style="font-size:24px; color:var(--md-primary);">verified_user</span>
-                        <span class="admin-info-text">Admin Access Active</span>
-                    </div>
-                    <a href="admin/admin-posting.html" id="admin-link-btn" class="admin-button">
-                        Dashboard
-                        <span id="admin-badge" class="notification-badge hidden">0</span>
-                    </a>
-                </div>
-                
-                <!-- View Controls -->
-                <div class="view-controls">
-                    <button id="grid-3" class="view-btn active" data-view="3" title="Grid View"><span class="material-symbols-rounded">grid_view</span></button>
-                    <button id="grid-2" class="view-btn" data-view="2" title="Split View"><span class="material-symbols-rounded">view_day</span></button>
-                    <button id="grid-1" class="view-btn" data-view="1" title="List View"><span class="material-symbols-rounded">view_agenda</span></button>
-                </div>
-
-                <div id="announcements-container"></div>
-                <div id="all-posts-container" class="posts-grid view-3">
-                    <p class="text-center" id="loading-message" style="margin-top:50px; color:#666;">
-                        Loading content...
-                    </p>
-                </div>
-
-            </main>
-
-            <!-- Modular Sidebar -->
-            <aside id="sidebar">
-                <div id="sidebar-container"></div> 
-            </aside>
-
-        </div>
+      </div>
+      <a href="admin/admin-posting.html" id="admin-link-btn" class="admin-button">
+        Dashboard <span id="admin-badge" class="notification-badge hidden">0</span>
+      </a>
+    </div>
+    
+    <!-- Active Filter Indicator -->
+    <div id="active-filter-bar">
+      <div class="filter-info">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span>Viewing <span class="highlight" id="active-filter-name">All Posts</span></span>
+      </div>
+      <button class="clear-filter-btn" id="btn-clear-filter">Clear Filter ✕</button>
     </div>
 
-    <footer class="main-footer">
-        <div class="container">
-            <p> </p>
-            <p> Email: <a href="mailto:theminescout@minescout.net">theminescout@minescout.net</a></p>
-            <p id="copyright">© 2026 Minescouts Life. All rights reserved.</p>
-        </div>
-    </footer>
+    <!-- Timeline Wrapper -->
+    <div style="position: relative;">
+      <div id="timeline-rail"></div>
+      <div id="posts-container" class="cols-1">
+        <!-- Posts injected via JS -->
+      </div>
+    </div>
+  </main>
 
-
-
-    <!-- 1. Modular Scripts -->
-    <script type="module" src="assests/js/auth.js"></script>
-    <script src="assests/js/loader.js"></script>
-    <script type="module" src="assests/js/homepage.js"></script>
-
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
     
-    <!-- 2. Homepage Specific Logic -->
-    <script type="module">
-        import { db, auth } from "./assests/js/firebase-config.js";
-        import { ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    <!-- AI INSIGHTS MODULE -->
+    <div class="sidebar-module" style="background: linear-gradient(180deg, var(--bg-card) 0%, rgba(124,90,255,0.05) 100%);">
+      <div class="sidebar-module-header">
+        <span class="sidebar-module-icon">✨</span>
+        <span class="sidebar-module-title" style="color:var(--text-accent);">AI Reflection</span>
+      </div>
+      <div class="sidebar-module-body">
+        <div id="ai-insight-text" class="ai-insight-text">
+          <span class="ai-loading-pulse"></span> Analyzing timeline momentum...
+        </div>
+      </div>
+    </div>
 
-        const ADMIN_EMAIL = 'theminescout@minescout.net';
-        const postsContainer = document.getElementById('all-posts-container');
-        const announcementsContainer = document.getElementById('announcements-container');
-        const loadingMessage = document.getElementById('loading-message');
-        
-        let currentUserIsAdmin = false;
+    <!-- NOW BUILDING MODULE -->
+    <div class="sidebar-module">
+      <div class="sidebar-module-header">
+        <span class="sidebar-module-icon">🔴</span>
+        <span class="sidebar-module-title" style="color:var(--text-primary);">Now Building</span>
+      </div>
+      <div class="sidebar-module-body">
+        <ul class="now-building-list">
+          <li>
+            <div class="pulse-dot"></div>
+            <div>
+              Geo Quiz AI
+              <span class="desc">Training custom models for terrain recognition.</span>
+            </div>
+          </li>
+          <li>
+            <div class="pulse-dot"></div>
+            <div>
+              LifeOS v3 Timeline
+              <span class="desc">Implementing AI reflections & streak heatmaps.</span>
+            </div>
+          </li>
+          <li>
+            <div class="pulse-dot"></div>
+            <div>
+              Eagle Final Paperwork
+              <span class="desc">Formatting the binder & project reports.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUserIsAdmin = user.email === ADMIN_EMAIL;
-                if (currentUserIsAdmin) {
-                    const badge = document.getElementById('admin-badge');
-                    const adminBtn = document.getElementById('admin-link-btn');
-                    
-                    onValue(ref(db, 'feature_requests'), (snapshot) => {
-                        const data = snapshot.val();
-                        let unreadCount = 0;
-                        if (data) Object.values(data).forEach(req => { if (req.status === 'new') unreadCount++; });
-                        if (unreadCount > 0) {
-                            badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-                            badge.classList.remove('hidden');
-                            adminBtn.style.backgroundColor = "var(--md-error)"; 
-                        } else {
-                            badge.classList.add('hidden');
-                            adminBtn.style.backgroundColor = "var(--md-primary)"; 
-                        }
-                    });
-                }
-            }
-            fetchAndDisplayContent();
-        });
+    <!-- HEATMAP STREAK -->
+    <div class="sidebar-module">
+      <div class="sidebar-module-header">
+        <span class="sidebar-module-icon">🔥</span>
+        <span class="sidebar-module-title">90-Day Contribution</span>
+      </div>
+      <div class="sidebar-module-body">
+        <div id="heatmap-grid" class="heatmap-grid">
+          <!-- Heatmap squares injected via JS -->
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-top:8px;">
+          <span>Less</span>
+          <span>More</span>
+        </div>
+      </div>
+    </div>
 
-        function fetchAndDisplayContent() {
-            const contentRef = ref(db, 'content');
-            
-            onValue(contentRef, (snapshot) => {
-                const allContent = snapshot.val();
-                let postHtml = '';
-                let announcementHtml = '';
-                
-                if (loadingMessage) loadingMessage.style.display = 'none';
+    <!-- Archive Links -->
+    <div class="sidebar-module">
+      <div class="sidebar-module-header">
+        <span class="sidebar-module-icon">🗂</span>
+        <span class="sidebar-module-title">Archive</span>
+      </div>
+      <div class="sidebar-module-body" id="archive-links-container">
+        <!-- Archive injected via JS -->
+      </div>
+    </div>
 
-                if (allContent) {
-                    const sortedContent = Object.keys(allContent)
-                        .map(key => ({ id: key, ...allContent[key] }))
-                        .sort((a, b) => b.timestamp - a.timestamp);
+  </aside>
+</div>
 
-                    const announcements = sortedContent.filter(item => item.type === 'announcement');
-                    const posts = sortedContent.filter(item => item.type !== 'announcement');
+<footer style="padding: 40px; text-align: center; border-top: 1px solid var(--border); margin-top: 60px;">
+  <p style="font-size: 13px; color: var(--text-muted);">Life of a Smart Kid OS v3.1 • Dual Theme Edition</p>
+</footer>
 
-                    announcements.forEach(ann => {
-                        announcementHtml += createAnnouncementElement(ann.id, ann);
-                    });
+<!-- ════════════════════════════════════════════════════════════
+   MODULAR SCRIPTS
+════════════════════════════════════════════════════════════ -->
+<script type="module" src="assests/js/auth.js"></script>
+<script type="module" src="assests/js/homepage.js"></script>
+<script src="assests/js/loader.js"></script>
 
-                    const currentYear = new Date().getFullYear();
-                    const previousYear = currentYear - 1;
-                    const thisYearPosts = posts.filter(post => new Date(post.timestamp).getFullYear() === currentYear);
-                    const olderPostsExist = posts.some(post => new Date(post.timestamp).getFullYear() < currentYear);
-                    
-                    let currentMonthYear = '';
-
-                    if (thisYearPosts.length > 0) {
-                        thisYearPosts.forEach(post => {
-                            const postDate = new Date(post.timestamp);
-                            const monthYear = postDate.toLocaleString('default', { month: 'long', year: 'numeric' });
-                            
-                            if (monthYear !== currentMonthYear) {
-                                currentMonthYear = monthYear;
-                                const monthNum = postDate.getMonth() + 1;
-                                const monthArchiveUrl = `archives/2026/archive-${monthNum}-${currentYear}.html`;
-                                // FIX: Use the specific class defined in CSS
-                                postHtml += `<h2 class="month-header-span"><a href="${monthArchiveUrl}">${monthYear}</a></h2>`;
-                            }
-                            postHtml += createPostElement(post.id, post);
-                        });
-                    } else {
-                        postHtml = '<p class="text-center" style="grid-column:1/-1;">No posts found for this year yet.</p>';
-                    }
-
-                    if (olderPostsExist) {
-                        const archiveUrl = `archives/archive-${previousYear}.html`;
-                        postHtml += `<div style="grid-column:1/-1; text-align:center; margin-top:40px;"><p style="font-size:1.1rem;">See previous posts here: <a href="${archiveUrl}" style="color:var(--md-primary); font-weight:bold; text-decoration:underline;">Archive for ${previousYear}</a></p></div>`;
-                    }
-                } else {
-                    postHtml = '<p class="text-center" style="grid-column:1/-1;">No content found yet.</p>';
-                }
-
-                announcementsContainer.innerHTML = announcementHtml;
-                postsContainer.innerHTML = postHtml;
-            }, (error) => {
-                console.error("Firebase Read Error:", error);
-                if (loadingMessage) loadingMessage.textContent = 'Error loading content.';
-            });
-        }
-
-        function createPostElement(postId, post) {
-            const date = new Date(post.timestamp).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-            
-            const imgHtml = post.imageUrl 
-                ? `<div class="post-image-wrapper"><img src="${post.imageUrl}" alt="${post.title}" loading="lazy" /></div>` 
-                : `<div class="post-image-wrapper" style="background:#e2e8f0; display:flex; align-items:center; justify-content:center; color:#94a3b8;"><span class="material-symbols-rounded" style="font-size:48px;">article</span></div>`;
-
-            return `
-                <article class="post-card" data-content-id="${postId}">
-                    ${imgHtml}
-                    <div class="post-card-content">
-                        <span class="category-pill">${post.category || 'General'}</span>
-                        <h3 class="post-title"><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3>
-                        <div class="post-meta">${date}</div>
-                        <p class="post-excerpt">${post.summary || 'No summary provided.'}</p>
-                        
-                        <div style="margin-top:auto;">
-                           <a href="${post.linkUrl || '#'}" class="read-more" target="_blank" style="width:100%;">
-                                ${post.linkText || 'Read More'}
-                           </a>
-                        </div>
-                    </div>
-                </article>
-            `;
-        }
-
-        function createAnnouncementElement(contentId, announcement) {
-            let dismissButtonHtml = '';
-            if (currentUserIsAdmin) {
-                dismissButtonHtml = `<button class="dismiss-btn" data-id="${contentId}">Dismiss</button>`;
-            }
-            return `
-                <div class="notice-box" data-content-id="${contentId}">
-                    <span class="material-symbols-rounded" style="color:var(--md-warning); font-size:24px;">campaign</span>
-                    <div style="flex:1">
-                        <h4 style="margin:0 0 4px 0; color:#92400e; font-weight:700;">${announcement.title}</h4>
-                        <p style="margin:0; font-size:0.95rem; color:#b45309;">${announcement.text}</p>
-                        <p style="margin:6px 0 0 0; font-size:0.8rem; opacity:0.7;">— ${announcement.from}</p>
-                    </div>
-                    ${dismissButtonHtml}
-                </div>
-            `;
-        }
-
-        announcementsContainer.addEventListener('click', (event) => {
-            if (event.target.classList.contains('dismiss-btn')) {
-                const contentId = event.target.getAttribute('data-id');
-                if (confirm('Permanently delete this announcement?')) {
-                    remove(ref(db, `content/${contentId}`))
-                        .catch(err => console.error('Failed to remove announcement:', err));
-                }
-            }
-        });
-    </script>
 </body>
 </html>
