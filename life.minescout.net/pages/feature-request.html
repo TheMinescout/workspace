@@ -1,414 +1,532 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="auto">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit a Request - Minescouts Life</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit a Request — MineScout Life</title>
+  <meta name="description" content="Submit a feature request, content idea, or bug report." />
+
+  <!-- Asset paths step up one directory because this is in /pages/ -->
+  <link rel="icon" type="image/png" href="../assests/images/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../assests/css/homepage.css" />
+
+  <!-- EMAILJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <style>
+    /* ════ V3 ELITE FORM STYLES ════ */
+    .request-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      box-shadow: var(--shadow-card);
+      animation: fade-up 0.5s ease both;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      transition: all var(--transition);
+      box-sizing: border-box;
+    }
+
+    /* Select specific fix for dark mode */
+    select.form-input {
+      cursor: pointer;
+      appearance: auto;
+    }
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Updated Fonts to match the M3 Design System -->
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    select.form-input option {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
 
-    <!-- Fixed Paths: Absolute locations starting with / -->
-    <link rel="stylesheet" href="/assests/css/homepage.css">
-    <link rel="icon" type="image/png" href="/assests/images/favicon.png?v=2">
-    
-    <!-- EMAILJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent-1);
+      box-shadow: 0 0 0 3px rgba(124,90,255,0.15);
+      background: var(--bg-void);
+    }
 
-    <!-- Specific Page Styles (Using M3 Variables) -->
-    <style>
-        #user-display a { text-decoration: none; color: white; }
+    textarea.form-input {
+      resize: vertical;
+      min-height: 140px;
+      line-height: 1.6;
+    }
 
-        .request-header {
-            margin-bottom: 24px;
-        }
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent-grad);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition);
+      margin-top: 10px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(124,90,255,0.3);
+    }
 
-        .request-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2.2rem;
-            color: var(--text-color);
-            margin-bottom: 8px;
-        }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(124,90,255,0.4);
+    }
 
-        .request-subtitle {
-            color: var(--md-outline);
-            font-size: 1.05rem;
-            line-height: 1.6;
-        }
+    .submit-btn:disabled {
+      background: var(--border);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
 
-        .request-card {
-            background: var(--card-bg);
-            border: 1px solid var(--md-outline-variant);
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            box-shadow: var(--shadow-1);
-            transition: all 0.3s var(--motion-standard);
-        }
+    #status-msg {
+      margin-top: 24px;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-weight: 600;
+      font-size: 13px;
+      display: none;
+    }
 
-        .request-card:hover {
-            box-shadow: var(--shadow-2);
-            border-color: var(--md-outline);
-        }
+    .status-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      display: block !important;
+    }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-            margin-bottom: 20px;
-            gap: 6px;
-        }
+    .status-error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      display: block !important;
+    }
 
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text-color);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+    .hidden { display: none !important; }
 
-        .form-input {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--md-outline);
-            background: var(--md-surface-container);
-            color: var(--text-color);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.2s;
-            box-sizing: border-box;
-        }
-
-        /* Make selects look consistent with inputs */
-        select.form-input {
-            cursor: pointer;
-            appearance: auto;
-        }
-
-        .form-input:focus {
-            border-color: var(--md-primary);
-            background: var(--bg-color);
-            box-shadow: 0 0 0 3px rgba(93, 140, 88, 0.2);
-        }
-
-        textarea.form-input {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--md-primary);
-            color: var(--md-on-primary);
-            border: none;
-            border-radius: var(--radius-full);
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 10px;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .submit-btn:hover {
-            filter: brightness(0.9);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-2);
-        }
-
-        .submit-btn:disabled {
-            background: var(--md-outline);
-            color: var(--md-surface);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        #status-msg {
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: var(--radius-sm);
-            text-align: center;
-            font-weight: 600;
-            display: none;
-        }
-
-        .status-success {
-            background: var(--md-primary-container);
-            color: var(--md-on-primary-container);
-            border: 1px solid var(--md-primary);
-            display: block !important;
-        }
-
-        .status-error {
-            background: rgba(186, 26, 26, 0.1);
-            color: var(--md-error);
-            border: 1px solid var(--md-error);
-            display: block !important;
-        }
-
-        .hidden { display: none !important; }
-    </style>
+    @media(max-width: 600px) {
+      .request-card { padding: 24px; }
+    }
+  </style>
 </head>
 <body>
 
-    <header class="main-header">
-        <div class="container site-title-container">
-            <div id="auth-container">
-                <a href="/login.html" id="login-link">Login</a>
-            </div>
-            <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="/index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
-                <p class="tagline">Requests</p>
-            </div>
-            <div id="user-display" class="hidden">
-                <a href="/account.html"><span id="user-email-display"></span></a>
-                <button id="signOut-btn" class="btn-glass">Sign Out</button>
-            </div>
+<!-- HEADER -->
+<header id="site-header">
+  <div class="header-left">
+    <span class="header-logo"><a href="../index.html" style="color:inherit; text-decoration:none;">Life of a Smart Kid</a></span>
+    <span class="header-tagline">minescout.net</span>
+  </div>
+  <div class="header-right">
+    <!-- THEME TOGGLE -->
+    <button id="theme-toggle" class="view-btn" title="Toggle theme">
+      ☀️
+    </button>
+
+    <!-- Auth Controls -->
+    <div id="auth-section">
+      <div class="auth-user-chip" id="user-chip" style="display:none;">
+        <div class="auth-avatar" id="user-avatar">U</div>
+        <span id="header-email"></span>
+      </div>
+      <a href="../login.html" id="login-btn" class="btn-primary">Sign In</a>
+      <button id="signout-btn" class="clear-filter-btn" style="display:none; padding:7px 12px;">Sign Out</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO SECTION -->
+<section id="hero-section">
+  <div class="hero-eyebrow"><span class="dot"></span> Platform Input</div>
+  <h1 class="hero-title">Submit a <span>Request.</span></h1>
+  <p class="hero-subtitle">Found a bug? Want to see a specific tech tip? Have an idea for a new app? Let us know below! Our team reviews these requests regularly.</p>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div id="page-layout">
+
+  <!-- CONTENT AREA (FORM) -->
+  <main id="content-area">
+
+    <!-- ADMIN PANEL BANNER -->
+    <div id="admin-panel" class="admin-section hidden">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:24px;">🛡️</span>
+        <div>
+          <div class="admin-info-text">Admin Access Active</div>
+          <div style="font-size:12px; color:var(--text-secondary);">You are viewing the dashboard as an administrator.</div>
         </div>
-    </header>
-
-    <div class="main-content-area">
-        <div class="container">
-            
-            <main class="main-content">
-                <div class="request-header">
-                    <h1 class="request-title">Submit a Request</h1>
-                    <p class="request-subtitle">Found a bug? Want to see a specific tech tip? Have an idea for a new app? Let us know below! Our team reviews these requests regularly.</p>
-                </div>
-
-                <div class="request-card">
-                    <form id="featureRequestForm">
-                        
-                        <!-- 1. Request Type -->
-                        <div class="form-group">
-                            <label for="requestType" class="form-label">Request Type:</label>
-                            <select id="requestType" name="requestType" class="form-input" onchange="updateFormFields()">
-                                <option value="Feature">✨ Feature Request</option>
-                                <option value="Content">📝 New Content Idea</option>
-                                <option value="Bug">🐛 Bug / Broken Stuff</option>
-                                <option value="Other">❓ Other</option>
-                            </select>
-                        </div>
-
-                        <!-- 2. Priority (Always Visible) -->
-                        <div class="form-group">
-                            <label for="priority" class="form-label">Priority Level:</label>
-                            <select id="priority" name="priority" class="form-input">
-                                <option value="LOW">Low - Nice to have</option>
-                                <option value="MED">Medium - Important</option>
-                                <option value="HIGH">High - Urgent / Site Broken</option>
-                            </select>
-                        </div>
-
-                        <!-- 3. Dynamic Subject Line -->
-                        <div class="form-group">
-                            <label for="subject" id="lbl-subject" class="form-label">Feature Title:</label>
-                            <input type="text" id="subject" name="subject" class="form-input" required placeholder="e.g. Dark Mode Toggle">
-                        </div>
-
-                        <!-- 4. Dynamic Extra Fields (Bug URL or Content Category) -->
-                        <div id="extra-field-bug" class="form-group hidden">
-                            <label for="bugUrl" class="form-label">Page URL / Device:</label>
-                            <input type="text" id="bugUrl" class="form-input" placeholder="e.g. Homepage on iPhone Safari">
-                        </div>
-
-                        <div id="extra-field-content" class="form-group hidden">
-                            <label for="contentCategory" class="form-label">Target Category:</label>
-                            <select id="contentCategory" class="form-input">
-                                <option value="Tech Tips">Tech Tips</option>
-                                <option value="Coding">Coding Projects</option>
-                                <option value="Puppy">Puppy Life</option>
-                                <option value="General">General/Other</option>
-                            </select>
-                        </div>
-
-                        <!-- 5. Name -->
-                        <div class="form-group">
-                            <label for="name" class="form-label">Your Name (Optional):</label>
-                            <input type="text" id="name" name="name" class="form-input" placeholder="Guest">
-                        </div>
-
-                        <!-- 6. Description -->
-                        <div class="form-group">
-                            <label for="comment" id="lbl-desc" class="form-label">Description:</label>
-                            <textarea id="comment" name="comment" class="form-input" required placeholder="Describe the feature in detail..."></textarea>
-                        </div>
-                        
-                        <button type="submit" class="submit-btn">
-                            <span class="material-symbols-rounded">send</span>
-                            Submit Request
-                        </button>
-                    </form>
-                    
-                    <div id="status-msg"></div>
-                </div>
-            </main>
-
-            <aside id="sidebar">
-                <div id="sidebar-container"></div> 
-            </aside>
-            
-        </div>
+      </div>
+      <a href="../admin/admin-posting.html" id="admin-link-btn" class="admin-button">
+        Dashboard <span id="admin-badge" class="notification-badge hidden">0</span>
+      </a>
     </div>
 
-    <footer class="main-footer">
-        <div class="container text-center"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
-    </footer>
+    <!-- REQUEST FORM CARD -->
+    <div class="request-card">
+      <form id="featureRequestForm">
+          
+          <!-- 1. Request Type -->
+          <div class="form-group">
+              <label for="requestType" class="form-label">Request Type:</label>
+              <select id="requestType" name="requestType" class="form-input" onchange="updateFormFields()">
+                  <option value="Feature">✨ Feature Request</option>
+                  <option value="Content">📝 New Content Idea</option>
+                  <option value="Bug">🐛 Bug / Broken Stuff</option>
+                  <option value="Other">❓ Other</option>
+              </select>
+          </div>
 
-    <!-- FIREBASE & EMAIL LOGIC -->
-    <script type="module">
-        import { db, auth } from "/assests/js/firebase-config.js";
-        import { ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+          <!-- 2. Priority -->
+          <div class="form-group">
+              <label for="priority" class="form-label">Priority Level:</label>
+              <select id="priority" name="priority" class="form-input">
+                  <option value="LOW">Low - Nice to have</option>
+                  <option value="MED">Medium - Important</option>
+                  <option value="HIGH">High - Urgent / Site Broken</option>
+              </select>
+          </div>
 
-        // --- EMAILJS CONFIGURATION ---
-        const EMAIL_SERVICE_ID = "service_khgjq1e";   
-        const EMAIL_TEMPLATE_ID = "template_yb9xkyy"; 
-        const EMAIL_PUBLIC_KEY = "Fa69EL7WS0e4EWsl-";   
+          <!-- 3. Dynamic Subject Line -->
+          <div class="form-group">
+              <label for="subject" id="lbl-subject" class="form-label">Feature Title:</label>
+              <input type="text" id="subject" name="subject" class="form-input" required placeholder="e.g. Dark Mode Toggle">
+          </div>
 
-        (function(){ emailjs.init(EMAIL_PUBLIC_KEY); })();
+          <!-- 4. Dynamic Extra Fields -->
+          <div id="extra-field-bug" class="form-group hidden">
+              <label for="bugUrl" class="form-label">Page URL / Device:</label>
+              <input type="text" id="bugUrl" class="form-input" placeholder="e.g. Homepage on iPhone Safari">
+          </div>
 
-        const form = document.getElementById('featureRequestForm');
-        const statusMsg = document.getElementById('status-msg');
-        const nameInput = document.getElementById('name');
+          <div id="extra-field-content" class="form-group hidden">
+              <label for="contentCategory" class="form-label">Target Category:</label>
+              <select id="contentCategory" class="form-input">
+                  <option value="Tech Tips">Tech Tips</option>
+                  <option value="Coding">Coding Projects</option>
+                  <option value="Puppy">Puppy Life</option>
+                  <option value="General">General/Other</option>
+              </select>
+          </div>
 
-        // Auto-fill name if logged in
-        onAuthStateChanged(auth, user => {
-            if(user) {
-                const displayName = user.displayName || (user.email ? user.email.split('@')[0] : "User");
-                nameInput.value = displayName;
-                nameInput.readOnly = true;
-                // Add M3 disabled/readonly styling
-                nameInput.style.backgroundColor = "var(--md-surface-container)";
-                nameInput.style.color = "var(--md-outline)";
-                nameInput.style.cursor = "not-allowed";
+          <!-- 5. Name -->
+          <div class="form-group">
+              <label for="name" class="form-label">Your Name (Optional):</label>
+              <input type="text" id="name" name="name" class="form-input" placeholder="Guest">
+          </div>
+
+          <!-- 6. Description -->
+          <div class="form-group">
+              <label for="comment" id="lbl-desc" class="form-label">Description:</label>
+              <textarea id="comment" name="comment" class="form-input" required placeholder="Describe the feature in detail..."></textarea>
+          </div>
+          
+          <button type="submit" class="submit-btn" id="submitBtn">
+              Submit Request →
+          </button>
+      </form>
+      
+      <div id="status-msg"></div>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <!-- SIDEBAR NAV INJECTOR -->
+    <div id="sidebar-nav-container"></div>
+
+    <!-- NOW BUILDING MODULE -->
+    <div class="sidebar-module">
+      <div class="sidebar-module-header">
+        <span class="sidebar-module-icon">🔴</span>
+        <span class="sidebar-module-title" style="color:var(--text-primary);">Now Building</span>
+      </div>
+      <div class="sidebar-module-body">
+        <ul class="now-building-list" id="now-building-list">
+          <!-- Injected via data.js -->
+        </ul>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<footer style="padding: 40px; text-align: center; border-top: 1px solid var(--border); margin-top: 60px;">
+  <p style="font-size: 13px; color: var(--text-muted);">Life of a Smart Kid OS v3.1 • Dual Theme Edition</p>
+</footer>
+
+<!-- ════════════════════════════════════════════════════════════
+   V3 REQUEST LOGIC (FIREBASE PULL)
+════════════════════════════════════════════════════════════ -->
+<script type="module">
+import { db, auth } from "../assests/js/firebase-config.js";
+import { ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// IMPORT CENTRAL DATA AND SIDEBAR
+import { siteData } from "../assests/includes/data.js";
+import { initSidebar } from "../assests/includes/sidebar.js";
+
+// --- EMAILJS CONFIGURATION ---
+const EMAIL_SERVICE_ID = "service_khgjq1e";   
+const EMAIL_TEMPLATE_ID = "template_yb9xkyy"; 
+const EMAIL_PUBLIC_KEY = "Fa69EL7WS0e4EWsl-";   
+emailjs.init(EMAIL_PUBLIC_KEY);
+
+// ── THEME ENGINE ──
+const ThemeEngine = {
+  init() {
+    const saved = localStorage.getItem("theme");
+    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const theme = saved || (systemDark ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+    this.updateIcon(theme);
+
+    document.getElementById("theme-toggle")?.addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme");
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      this.updateIcon(next);
+    });
+  },
+  updateIcon(theme) {
+    const btn = document.getElementById("theme-toggle");
+    if (!btn) return;
+    btn.textContent = theme === "dark" ? "☀️" : "🌙";
+  }
+};
+
+// --- DYNAMIC FORM LOGIC ---
+window.updateFormFields = function() {
+    const type = document.getElementById('requestType').value;
+    const lblSubject = document.getElementById('lbl-subject');
+    const subjectInput = document.getElementById('subject');
+    const lblDesc = document.getElementById('lbl-desc');
+    const descInput = document.getElementById('comment');
+    
+    // Toggle Extra Fields
+    document.getElementById('extra-field-bug').classList.add('hidden');
+    document.getElementById('extra-field-content').classList.add('hidden');
+
+    if (type === 'Feature') {
+        lblSubject.textContent = "Feature Title:";
+        subjectInput.placeholder = "e.g. Dark Mode Toggle";
+        lblDesc.textContent = "Description:";
+        descInput.placeholder = "Describe how this feature should work...";
+    } 
+    else if (type === 'Content') {
+        lblSubject.textContent = "Topic Idea:";
+        subjectInput.placeholder = "e.g. How to Build a PC";
+        lblDesc.textContent = "Content Details:";
+        descInput.placeholder = "What specific points should this article/video cover?";
+        document.getElementById('extra-field-content').classList.remove('hidden');
+    } 
+    else if (type === 'Bug') {
+        lblSubject.textContent = "Issue Summary:";
+        subjectInput.placeholder = "e.g. Images not loading on homepage";
+        lblDesc.textContent = "Steps to Reproduce:";
+        descInput.placeholder = "1. Go to homepage\n2. Click login\n3. Error appears...";
+        document.getElementById('extra-field-bug').classList.remove('hidden');
+    } 
+    else {
+        lblSubject.textContent = "Subject:";
+        subjectInput.placeholder = "Summary of request";
+        lblDesc.textContent = "Details:";
+        descInput.placeholder = "Explain your request...";
+    }
+};
+
+// ── INITIALIZATION ──
+const AppInit = {
+  start() {
+    ThemeEngine.init();
+    this.setupAuthUI();
+    
+    // Inject the global sidebar links
+    initSidebar();
+
+    // Render "Now Building" module dynamically from data.js
+    const nbContainer = document.getElementById("now-building-list");
+    if (nbContainer && siteData.nowBuilding) {
+        nbContainer.innerHTML = siteData.nowBuilding.map(item => `
+            <li>
+                <div class="pulse-dot" style="background: ${item.color || 'var(--danger)'}; box-shadow: 0 0 8px ${item.color || 'var(--danger)'};"></div>
+                <div>
+                    ${item.title}
+                    <span class="desc">${item.desc}</span>
+                </div>
+            </li>
+        `).join('');
+    }
+
+    // Initialize default view
+    window.updateFormFields();
+
+    // --- SUBMIT LOGIC ---
+    const form = document.getElementById('featureRequestForm');
+    const statusMsg = document.getElementById('status-msg');
+    
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Transmitting...';
+
+        const requestType = document.getElementById('requestType').value;
+        const priority = document.getElementById('priority').value;
+        const subject = document.getElementById('subject').value;
+        const name = document.getElementById('name').value || "Anonymous";
+        let desc = document.getElementById('comment').value;
+
+        if (requestType === 'Bug') {
+            const bugUrl = document.getElementById('bugUrl').value;
+            if(bugUrl) desc = `[URL/DEVICE]: ${bugUrl}\n\n${desc}`;
+        } 
+        else if (requestType === 'Content') {
+            const category = document.getElementById('contentCategory').value;
+            desc = `[CATEGORY]: ${category}\n\n${desc}`;
+        }
+
+        const taggedSubject = `[${requestType.toUpperCase()}] ${subject}`;
+
+        try {
+            // 1. Save to Firebase
+            await push(ref(db, 'feature_requests'), {
+                type: requestType,
+                sender: name,
+                subject: taggedSubject,
+                description: desc,
+                priority: priority,
+                timestamp: serverTimestamp(),
+                status: 'new'
+            });
+
+            // 2. Send Email
+            const templateParams = {
+                from_name: name,
+                subject: taggedSubject,
+                priority: `${priority} (${requestType})`,
+                message: desc
+            };
+
+            emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
+                .then(() => console.log('Email sent successfully!'))
+                .catch((err) => console.error('Email failed:', err));
+
+            // 3. Success UI
+            statusMsg.textContent = "Request received successfully.";
+            statusMsg.className = "status-success";
+            form.reset();
+            window.updateFormFields(); 
+
+            setTimeout(() => {
+                window.location.href = "../index.html";
+            }, 2000);
+
+        } catch (error) {
+            console.error("Database Error:", error);
+            statusMsg.textContent = "Error submitting request. Please try again.";
+            statusMsg.className = "status-error";
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Submit Request →';
+        }
+    });
+  },
+
+  setupAuthUI() {
+    const loginBtn = document.getElementById("login-btn");
+    const signoutBtn = document.getElementById("signout-btn");
+    const userChip = document.getElementById("user-chip");
+    const emailEl = document.getElementById("header-email");
+    const avatarEl = document.getElementById("user-avatar");
+    const adminPanel = document.getElementById("admin-panel");
+    const adminBadge = document.getElementById("admin-badge");
+    const nameInput = document.getElementById("name");
+    const ADMIN_EMAIL = 'theminescout@minescout.net';
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        if(loginBtn) loginBtn.style.display = "none";
+        if(signoutBtn) signoutBtn.style.display = "inline-flex";
+        if(userChip) userChip.style.display = "flex";
+        if(emailEl) emailEl.textContent = user.email;
+        if(avatarEl) avatarEl.textContent = (user.email || "U")[0].toUpperCase();
+
+        // Auto-fill Request Name
+        if(nameInput) {
+            const displayName = user.displayName || (user.email ? user.email.split('@')[0] : "User");
+            nameInput.value = displayName;
+            nameInput.readOnly = true;
+            nameInput.style.opacity = "0.6";
+            nameInput.style.cursor = "not-allowed";
+        }
+
+        // Admin Access Logic
+        if (user.email === ADMIN_EMAIL && adminPanel) {
+          adminPanel.classList.remove("hidden");
+          onValue(ref(db, 'feature_requests'), (snapshot) => {
+            const data = snapshot.val();
+            let unreadCount = 0;
+            if (data) Object.values(data).forEach(req => { if (req.status === 'new') unreadCount++; });
+            if (adminBadge) {
+              if (unreadCount > 0) {
+                adminBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                adminBadge.classList.remove('hidden');
+              } else {
+                adminBadge.classList.add('hidden');
+              }
             }
-        });
+          });
+        }
+      } else {
+        if(loginBtn) loginBtn.style.display = "inline-flex";
+        if(signoutBtn) signoutBtn.style.display = "none";
+        if(userChip) userChip.style.display = "none";
+        if(adminPanel) adminPanel.classList.add("hidden");
+      }
+    });
 
-        // --- DYNAMIC FORM LOGIC ---
-        // Attached to window so the HTML 'onchange' works
-        window.updateFormFields = function() {
-            const type = document.getElementById('requestType').value;
-            const lblSubject = document.getElementById('lbl-subject');
-            const subjectInput = document.getElementById('subject');
-            const lblDesc = document.getElementById('lbl-desc');
-            const descInput = document.getElementById('comment');
-            
-            // Toggle Extra Fields
-            document.getElementById('extra-field-bug').classList.add('hidden');
-            document.getElementById('extra-field-content').classList.add('hidden');
+    if(signoutBtn) signoutBtn.addEventListener("click", () => signOut(auth).catch(err => console.error("Sign out error", err)));
+  }
+};
 
-            if (type === 'Feature') {
-                lblSubject.textContent = "Feature Title:";
-                subjectInput.placeholder = "e.g. Dark Mode Toggle";
-                lblDesc.textContent = "Description:";
-                descInput.placeholder = "Describe how this feature should work...";
-            } 
-            else if (type === 'Content') {
-                lblSubject.textContent = "Topic Idea:";
-                subjectInput.placeholder = "e.g. How to Build a PC";
-                lblDesc.textContent = "Content Details:";
-                descInput.placeholder = "What specific points should this article/video cover?";
-                document.getElementById('extra-field-content').classList.remove('hidden');
-            } 
-            else if (type === 'Bug') {
-                lblSubject.textContent = "Issue Summary:";
-                subjectInput.placeholder = "e.g. Images not loading on homepage";
-                lblDesc.textContent = "Steps to Reproduce:";
-                descInput.placeholder = "1. Go to homepage\n2. Click login\n3. Error appears...";
-                document.getElementById('extra-field-bug').classList.remove('hidden');
-            } 
-            else {
-                lblSubject.textContent = "Subject:";
-                subjectInput.placeholder = "Summary of request";
-                lblDesc.textContent = "Details:";
-                descInput.placeholder = "Explain your request...";
-            }
-        };
+document.addEventListener("DOMContentLoaded", () => AppInit.start());
+</script>
 
-        // --- SUBMIT LOGIC ---
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitBtn = form.querySelector('button');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync</span> Transmitting...';
-
-            const requestType = document.getElementById('requestType').value;
-            const priority = document.getElementById('priority').value;
-            const subject = document.getElementById('subject').value;
-            const name = document.getElementById('name').value || "Anonymous";
-            let desc = document.getElementById('comment').value;
-
-            // Combine Extra Fields into Description for Admin Panel Visibility
-            if (requestType === 'Bug') {
-                const bugUrl = document.getElementById('bugUrl').value;
-                if(bugUrl) desc = `[URL/DEVICE]: ${bugUrl}\n\n${desc}`;
-            } 
-            else if (requestType === 'Content') {
-                const category = document.getElementById('contentCategory').value;
-                desc = `[CATEGORY]: ${category}\n\n${desc}`;
-            }
-
-            const taggedSubject = `[${requestType.toUpperCase()}] ${subject}`;
-
-            try {
-                // 1. Save to Firebase
-                await push(ref(db, 'feature_requests'), {
-                    type: requestType,
-                    sender: name,
-                    subject: taggedSubject,
-                    description: desc,
-                    priority: priority,
-                    timestamp: serverTimestamp(),
-                    status: 'new'
-                });
-
-                // 2. Send Email
-                const templateParams = {
-                    from_name: name,
-                    subject: taggedSubject,
-                    priority: `${priority} (${requestType})`,
-                    message: desc
-                };
-
-                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
-                    .then(() => console.log('Email sent successfully!'))
-                    .catch((err) => console.error('Email failed:', err));
-
-                // 3. Success UI
-                statusMsg.textContent = "Request received successfully.";
-                statusMsg.className = "status-success";
-                form.reset();
-                updateFormFields(); // Reset UI state
-
-                setTimeout(() => {
-                    window.location.href = "/index.html";
-                }, 2000);
-
-            } catch (error) {
-                console.error("Database Error:", error);
-                statusMsg.textContent = "Error submitting request. Please try again.";
-                statusMsg.className = "status-error";
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span class="material-symbols-rounded">send</span> Submit Request';
-            }
-        });
-        
-        // Initialize default view
-        updateFormFields();
-    </script>
-
-    <!-- MODULAR SCRIPTS -->
-    <script type="module" src="/assests/js/auth.js"></script>
-    <script src="/assests/js/loader.js"></script>
 </body>
 </html>

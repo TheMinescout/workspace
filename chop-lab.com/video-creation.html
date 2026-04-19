@@ -3,189 +3,435 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chop Lab | Email Engine</title>
+  <title>Chop Lab | Studio Engine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
-    body { font-family: 'Montserrat', sans-serif; background-color: #0f0f0f; color: #ffffff; display: flex; justify-content: center; padding: 40px 20px; margin: 0; }
-    .dashboard { background: #1a1a1a; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); width: 100%; max-width: 600px; border: 1px solid #333; }
-    h1 { text-align: center; text-transform: uppercase; font-weight: 900; margin-bottom: 5px; }
-    p.subtitle { text-align: center; color: #888; font-size: 0.9em; margin-bottom: 20px; }
+    body { font-family: 'Montserrat', sans-serif; background-color: #09090b; color: #f4f4f5; }
     
-    /* Tabs */
-    .tabs { display: flex; gap: 10px; margin-bottom: 30px; background: #000; padding: 5px; border-radius: 8px; border: 1px solid #333; }
-    .tab-btn { flex: 1; padding: 12px; background: transparent; color: #888; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.85em; text-transform: uppercase; }
-    .tab-btn.active { background: #333; color: #fff; }
-    
-    label { display: block; margin-top: 20px; font-weight: 700; font-size: 0.85em; text-transform: uppercase; color: #aaa; }
-    input[type="text"], input[type="email"], textarea { width: 100%; padding: 14px; margin-top: 8px; background: #0f0f0f; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 0.9em; box-sizing: border-box; font-family: 'Montserrat', sans-serif;}
-    textarea { resize: vertical; min-height: 120px; }
-    input[type="file"] { display: none; }
-    
-    .file-upload-btn { display: block; width: 100%; padding: 20px 14px; margin-top: 8px; background: #0f0f0f; border: 2px dashed #444; border-radius: 8px; color: #aaa; text-align: center; cursor: pointer; transition: 0.3s; font-weight: 700; box-sizing: border-box; }
-    .file-upload-btn:hover { border-color: #fff; color: #fff; }
-    
-    .preview-container { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-    .preview-box { width: calc(33.333% - 7px); aspect-ratio: 1; background-color: #000; border-radius: 8px; background-size: cover; background-position: center; border: 2px solid transparent; cursor: crosshair; position: relative; overflow: hidden; }
-    .badge { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; pointer-events: none; z-index: 10; }
-    .target-dot { position: absolute; width: 14px; height: 14px; background-color: #ff0055; border: 2px solid white; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; box-shadow: 0 0 5px rgba(0,0,0,0.8); z-index: 5; }
-    
-    .instruction { font-size: 0.75em; color: #ff0055; text-align: center; margin-top: 8px; font-weight: bold; display: none; }
-    .music-badge { display: none; margin-top: 10px; padding: 10px; background: #1e3a23; border: 1px solid #4caf50; color: #4caf50; border-radius: 6px; text-align: center; font-size: 0.85em; font-weight: bold; }
-    .hidden { display: none !important; }
-    .script-group { margin-top: 15px; padding-left: 10px; border-left: 3px solid #4caf50; display: flex; flex-direction: column; gap: 8px; }
-    
-    button { width: 100%; padding: 16px; margin-top: 25px; background: #ffffff; color: #000000; border: none; border-radius: 8px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
-    button:hover { background: #e0e0e0; transform: translateY(-2px); }
-    button:disabled { background: #333; color: #666; cursor: not-allowed; }
-    .btn-green { background: #4caf50; color: white; }
-    .btn-blue { background: #2196F3; color: white; }
-    
-    #status-box { margin-top: 25px; padding: 15px; border-radius: 8px; text-align: center; display: none; word-wrap: break-word;}
-    .status-loading { background: #333; display: block !important; }
-    .status-success { background: #1e3a23; color: #4caf50; border: 1px solid #4caf50; display: block !important; }
-    .status-error { background: #3a1e1e; color: #f44336; border: 1px solid #f44336; display: block !important; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #18181b; }
+    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #52525b; }
 
-    /* Chat / Interview Styles */
-    .chat-box { background: #0f0f0f; border: 1px solid #333; border-radius: 8px; padding: 15px; height: 300px; overflow-y: auto; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
+    .input-field {
+      width: 100%; padding: 0.75rem; background-color: #18181b; border: 1px solid #27272a; 
+      border-radius: 0.5rem; color: #fff; font-size: 0.875rem; transition: all 0.2s;
+    }
+    .input-field:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 1px #10b981; }
+    .label-text { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #a1a1aa; margin-bottom: 0.25rem; margin-top: 1rem;}
+    
+    /* Email Receipt Styles */
+    .email-container { background: #F4F4F6; color: #3A3F42; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+    .email-inner { background-color: #FFFFFF; padding: 50px; border-top: 6px solid #D86A46; }
+    .email-table th { text-align: left; padding: 12px; border-bottom: 2px solid #3A3F42; font-weight: 600; font-size: 0.9rem;}
+    .email-table td { padding: 15px 12px; border-bottom: 1px solid #E5E5E5; font-size: 0.9rem; vertical-align: top; }
+
+    /* Video Preview Grid Specifics */
+    .preview-box { aspect-ratio: 1; background-color: #000; border-radius: 8px; background-size: cover; background-position: center; border: 2px solid transparent; cursor: crosshair; position: relative; overflow: hidden; }
+    .preview-box.drag-over { border-color: #10b981; opacity: 0.7; }
+    .badge { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.7); color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; pointer-events: none; z-index: 10; }
+    .target-dot { position: absolute; width: 14px; height: 14px; background-color: #ef4444; border: 2px solid white; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; box-shadow: 0 0 5px rgba(0,0,0,0.8); z-index: 5; }
+
+    /* AI Chat Specifics */
     .msg { padding: 10px 14px; border-radius: 8px; max-width: 80%; font-size: 0.9em; line-height: 1.4; }
-    .msg.ai { background: #222; align-self: flex-start; border-bottom-left-radius: 2px; }
-    .msg.user { background: #4caf50; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-    .chat-input-row { display: flex; gap: 10px; }
-    .chat-input-row input { margin-top: 0; }
-    .chat-input-row button { width: auto; margin-top: 0; padding: 0 25px; }
+    .msg.ai { background: #18181b; border: 1px solid #27272a; align-self: flex-start; border-bottom-left-radius: 2px; }
+    .msg.user { background: #10b981; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
   </style>
 </head>
-<body>
+<body class="h-screen flex flex-col overflow-hidden relative">
 
-  <div class="dashboard">
-    <h1>Email Engine</h1>
-    <p class="subtitle">Draft and Dispatch Your Studio Updates</p>
-
-    <!-- MODE TABS -->
-    <div class="tabs">
-      <button id="tab-video" class="tab-btn active">🎥 Video Campaign</button>
-      <button id="tab-interview" class="tab-btn">✍️ AI Interview Draft</button>
+  <!-- LOGIN OVERLAY -->
+  <div id="login-overlay" class="absolute inset-0 z-50 flex items-center justify-center bg-zinc-950 backdrop-blur-sm transition-opacity duration-500">
+    <div class="w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-xl p-8 shadow-2xl text-center">
+      <h1 class="text-2xl font-black tracking-widest uppercase text-white mb-1">Chop Lab</h1>
+      <p class="text-xs text-zinc-400 font-semibold tracking-wider mb-8">Studio Engine Access</p>
+      
+      <input type="password" id="auth-password" class="input-field mb-4 text-center tracking-widest" placeholder="Enter Passcode">
+      
+      <button id="btn-auth" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-lg hover:bg-emerald-500 transition shadow-lg shadow-emerald-900/20 flex justify-center items-center gap-2">
+        <i data-lucide="lock" class="w-4 h-4"></i> Unlock Engine
+      </button>
+      
+      <p id="auth-error" class="text-red-400 text-xs font-bold mt-4 hidden">Access Denied. Incorrect passcode.</p>
     </div>
-
-    <!-- ========================================== -->
-    <!-- VIEW 1: VIDEO CAMPAIGN (Dynamic Shotstack) -->
-    <!-- ========================================== -->
-    <div id="view-video">
-      <div id="phase-1">
-        <label>1. Campaign Subject Line</label>
-        <input type="text" id="subject" placeholder="e.g., The Matte Black Collection is Live!" required>
-
-        <label>Optional: Extra Details / Call to Action</label>
-        <input type="text" id="context" placeholder="e.g., 'Link to shop in the email below'">
-
-        <label>2. Upload Media (Unlimited Photos + MP3)</label>
-        <label for="file-upload" class="file-upload-btn">Click to browse files...</label>
-        <input id="file-upload" type="file" multiple accept="image/*, audio/*" />
-        
-        <div id="music-detected" class="music-badge">🎵 Custom background music auto-detected!</div>
-        
-        <div class="instruction" id="dot-instruction">Click on a photo to set the POV focus target 🎯</div>
-        <div class="preview-container" id="preview-grid"></div>
-
-        <button id="btn-draft">Generate Video Script</button>
-      </div>
-
-      <div id="phase-2" class="hidden">
-        <label>3. Review Video Script</label>
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
-          <input type="text" id="ai-command" placeholder="AI Command (e.g., 'Make it funnier')">
-          <button id="btn-ai-edit" style="width: auto; margin-top: 8px; padding: 14px; background: #333; color: #fff; flex-shrink: 0;">✨ Apply</button>
-        </div>
-        <div class="script-group" id="dynamic-script-group">
-          <!-- Dynamic script inputs will appear here based on image count -->
-        </div>
-
-        <label style="margin-top: 25px;">4. Voice Actor</label>
-        <select id="voice-style" style="width: 100%; padding: 14px; margin-top: 8px; background: #0f0f0f; border: 1px solid #444; border-radius: 8px; color: #fff; font-family: 'Montserrat', sans-serif;">
-          <option value="en_uk_001" selected>UK Male 1 (British)</option>
-          <option value="en_us_002">Jessie (Energetic Female)</option>
-          <option value="en_us_001">Female 1 (Standard)</option>
-          <option value="en_us_009">Male 3 (Storyteller)</option>
-        </select>
-
-        <label style="margin-top: 25px;">5. Email Body (Optional Text below video)</label>
-        <textarea id="video-email-body" placeholder="Write a short message to go along with your video..."></textarea>
-
-        <button id="btn-render" class="btn-blue">Render Video & Prepare Email</button>
-      </div>
-
-      <div id="phase-3" class="hidden" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #333;">
-        <h3 style="margin-top:0; text-align:center;">🚀 Ready to Dispatch</h3>
-        <p style="font-size: 0.85em; color: #aaa; text-align: center; margin-bottom: 20px;">Your video is rendering and attached to your campaign.</p>
-        <button id="btn-send-video-email" class="btn-green">Send to All Subscribers Now</button>
-      </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- VIEW 2: AI INTERVIEW EMAIL DRAFT           -->
-    <!-- ========================================== -->
-    <div id="view-interview" class="hidden">
-      <div id="interview-phase">
-        <label>AI Studio Assistant</label>
-        <p style="font-size: 0.85em; color: #aaa;">Answer a few questions about what you're working on, and I'll draft a perfect email for your subscribers.</p>
-        
-        <div class="chat-box" id="chat-history">
-          <div class="msg ai">Hi! What's the main update or story you want to share with your audience today?</div>
-        </div>
-        
-        <div class="chat-input-row">
-          <input type="text" id="chat-input" placeholder="Type your answer...">
-          <button id="btn-send-chat" class="btn-blue">Send</button>
-        </div>
-
-        <button id="btn-finish-interview" style="background: transparent; border: 1px solid #4caf50; color: #4caf50; margin-top: 15px;">Skip to Draft Email Now</button>
-      </div>
-
-      <div id="draft-phase" class="hidden">
-        <label>Final Email Draft</label>
-        <input type="text" id="interview-subject" placeholder="Subject Line">
-        <textarea id="interview-body" style="min-height: 200px;" placeholder="Email body will appear here..."></textarea>
-        
-        <button id="btn-send-text-email" class="btn-green">Send to All Subscribers Now</button>
-        <button id="btn-restart-interview" style="background: transparent; color: #aaa; font-size: 0.8em; margin-top: 10px; padding: 10px;">Start Over</button>
-      </div>
-    </div>
-
-    <div id="status-box"></div>
   </div>
 
-  <script>
-    const CLOUDFLARE_WORKER_URL = "https://video-intake-engine.tmcarleton11.workers.dev/";
+  <!-- Header & Global Navigation -->
+  <header class="bg-zinc-950 border-b border-zinc-800 p-4 flex justify-between items-center shrink-0">
+    <div>
+      <h1 class="text-xl font-black tracking-widest uppercase text-white">Chop Lab</h1>
+      <p class="text-xs text-zinc-400 font-semibold tracking-wider">Studio Engine OS</p>
+    </div>
     
-    // --- TAB LOGIC ---
-    const tabVideo = document.getElementById('tab-video');
-    const tabInterview = document.getElementById('tab-interview');
-    const viewVideo = document.getElementById('view-video');
-    const viewInterview = document.getElementById('view-interview');
+    <!-- Tab Controls -->
+    <nav class="flex gap-2 bg-zinc-900 p-1 rounded-lg border border-zinc-800">
+      <button id="tab-btn-video" class="tab-trigger px-4 py-2 rounded-md text-sm font-bold text-zinc-400 hover:text-white transition bg-zinc-800 text-white shadow" data-target="view-video">🎥 Video Maker</button>
+      <button id="tab-btn-chat" class="tab-trigger px-4 py-2 rounded-md text-sm font-bold text-zinc-400 hover:text-white transition" data-target="view-chat">✍️ AI Newsletter</button>
+      <button id="tab-btn-invoice" class="tab-trigger px-4 py-2 rounded-md text-sm font-bold text-zinc-400 hover:text-white transition" data-target="view-invoice">🧾 Invoice Gen</button>
+    </nav>
+  </header>
 
-    tabVideo.addEventListener('click', () => {
-      tabVideo.classList.add('active'); tabInterview.classList.remove('active');
-      viewVideo.classList.remove('hidden'); viewInterview.classList.add('hidden');
-    });
+  <!-- Main Unified Workspace -->
+  <main class="flex-1 overflow-hidden relative">
 
-    tabInterview.addEventListener('click', () => {
-      tabInterview.classList.add('active'); tabVideo.classList.remove('active');
-      viewInterview.classList.remove('hidden'); viewVideo.classList.add('hidden');
-    });
+    <!-- ========================================== -->
+    <!-- VIEW 1: VIDEO CAMPAIGN                     -->
+    <!-- ========================================== -->
+    <div id="view-video" class="view-section absolute inset-0 flex flex-col md:flex-row overflow-hidden">
+      <!-- Left Panel -->
+      <section class="w-full md:w-1/2 lg:w-1/3 bg-zinc-900 border-r border-zinc-800 overflow-y-auto p-6">
+        <div id="video-phase-1">
+          <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
+            <i data-lucide="video" class="w-5 h-5 text-emerald-500"></i> Video Builder
+          </h2>
+          
+          <label class="label-text mt-0">Campaign Subject Line</label>
+          <input type="text" id="vid-subject" class="input-field" placeholder="e.g., The Matte Black Collection is Live!">
+
+          <label class="label-text">Extra Details / Call to Action</label>
+          <input type="text" id="vid-context" class="input-field" placeholder="e.g., 'Link to shop below'">
+
+          <label class="label-text">Upload Media (Photos + MP3)</label>
+          <label for="vid-file-upload" class="block w-full p-6 border-2 border-dashed border-zinc-700 rounded-lg text-center cursor-pointer hover:border-emerald-500 hover:bg-zinc-800 transition mt-2">
+            <i data-lucide="folder-up" class="w-8 h-8 mx-auto text-zinc-500 mb-2"></i>
+            <span class="text-sm text-zinc-400 font-semibold" id="vid-upload-text">Browse Files</span>
+          </label>
+          <input id="vid-file-upload" type="file" multiple accept="image/*, audio/*" class="hidden" />
+          
+          <div id="vid-music-detected" class="hidden mt-2 p-3 bg-emerald-900/20 text-emerald-400 border border-emerald-800 rounded-lg text-xs font-bold text-center">🎵 Background music detected!</div>
+          <div id="vid-dot-instruction" class="hidden mt-2 text-red-400 text-xs text-center font-bold">🎯 Click a photo to set the focal point</div>
+          
+          <div class="grid grid-cols-3 gap-2 mt-4" id="vid-preview-grid"></div>
+
+          <button id="btn-vid-draft" class="w-full bg-zinc-100 text-zinc-900 font-bold py-3 rounded-lg mt-6 hover:bg-white transition">Generate Script</button>
+        </div>
+
+        <div id="video-phase-2" class="hidden mt-6 pt-6 border-t border-zinc-700">
+          <label class="label-text mt-0">Review Video Script</label>
+          <div id="vid-script-status" class="hidden text-xs text-zinc-500 italic mb-2"></div>
+          
+          <div id="vid-dynamic-scripts" class="flex flex-col gap-2 mt-4 pl-3 border-l-2 border-emerald-500">
+             <!-- Dynamically populated script inputs -->
+          </div>
+
+          <label class="label-text">Voice Actor</label>
+          <select id="vid-voice-style" class="input-field">
+            <option value="en_uk_001" selected>UK Male 1 (British)</option>
+            <option value="en_us_002">Jessie (Energetic Female)</option>
+            <option value="en_us_001">Female 1 (Standard)</option>
+            <option value="en_us_009">Male 3 (Storyteller)</option>
+          </select>
+
+          <label class="label-text">Email Body Text</label>
+          <textarea id="vid-email-body" class="input-field h-24" placeholder="Write a short message to accompany your video..."></textarea>
+
+          <button id="btn-vid-render" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg mt-6 hover:bg-blue-500 transition shadow-lg shadow-blue-900/20">Render Video</button>
+        </div>
+      </section>
+
+      <!-- Right Panel: Status/Preview -->
+      <section class="w-full md:w-1/2 lg:w-2/3 bg-zinc-950 overflow-y-auto p-4 md:p-8 flex items-center justify-center">
+        <div id="vid-status-box" class="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl p-8 text-center shadow-2xl">
+          <i data-lucide="clapperboard" class="w-12 h-12 text-zinc-700 mx-auto mb-4"></i>
+          <h3 class="text-lg font-bold text-white mb-2">Video Campaign</h3>
+          <p class="text-sm text-zinc-400" id="vid-status-text">Upload assets to begin generating your dynamic video sequence.</p>
+          
+          <!-- Phase 3: Preview and Dispatch Block -->
+          <div id="vid-phase-3" class="hidden mt-6 pt-6 border-t border-zinc-800 text-left">
+             <label class="label-text mt-0">Verify Render & Preview</label>
+             <p class="text-xs text-zinc-400 mb-2">Once rendering is complete on the dashboard, load the final video URL below to unlock dispatching.</p>
+             <div class="flex gap-2 mb-4">
+               <input type="url" id="vid-final-url" class="input-field" placeholder="Paste .mp4 URL here...">
+               <button id="btn-vid-load-preview" class="bg-blue-600 text-white px-4 rounded-lg text-sm font-bold hover:bg-blue-500 transition shrink-0">Load Video</button>
+             </div>
+             
+             <video id="vid-final-preview" controls class="w-full mb-4 rounded border border-zinc-700 hidden aspect-video bg-black"></video>
+             
+             <button id="btn-vid-send" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-lg transition shadow-lg shadow-emerald-900/20 opacity-50 cursor-not-allowed" disabled>Dispatch Mass Campaign</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW 2: AI INTERVIEW DRAFT                 -->
+    <!-- ========================================== -->
+    <div id="view-chat" class="view-section hidden absolute inset-0 flex flex-col md:flex-row overflow-hidden">
+      <!-- Left Panel -->
+      <section class="w-full md:w-1/2 lg:w-1/3 bg-zinc-900 border-r border-zinc-800 overflow-y-auto p-6 flex flex-col">
+        <div id="chat-phase-1" class="flex-1 flex flex-col">
+          <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2 shrink-0">
+            <i data-lucide="bot" class="w-5 h-5 text-emerald-500"></i> AI Studio Assistant
+          </h2>
+          <p class="text-xs text-zinc-400 mb-4 shrink-0">Answer a few questions about your work, and I'll draft the perfect mass email update.</p>
+          
+          <!-- Chat History -->
+          <div id="chat-history" class="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg p-4 mb-4 flex flex-col gap-3 overflow-y-auto shadow-inner">
+            <div class="msg ai text-zinc-200">Hi! What's the main update or story you want to share with your audience today?</div>
+          </div>
+          
+          <!-- Input Row -->
+          <div class="flex gap-2 shrink-0">
+            <input type="text" id="chat-input" class="input-field m-0" placeholder="Type your answer...">
+            <button id="btn-chat-send" class="bg-blue-600 text-white px-6 rounded-lg font-bold hover:bg-blue-500 transition">Send</button>
+          </div>
+
+          <button id="btn-chat-finish" class="w-full bg-transparent border border-emerald-600 text-emerald-500 font-bold py-2 rounded-lg mt-4 hover:bg-emerald-900/20 transition shrink-0">Skip & Generate Draft</button>
+        </div>
+      </section>
+
+      <!-- Right Panel: Draft Review -->
+      <section class="w-full md:w-1/2 lg:w-2/3 bg-zinc-950 overflow-y-auto p-4 md:p-8 flex justify-center">
+        <div id="chat-phase-2" class="w-full max-w-2xl bg-zinc-100 rounded-xl shadow-2xl overflow-hidden border border-zinc-800 flex flex-col opacity-50 pointer-events-none transition-opacity" style="height: fit-content;">
+          <div class="bg-zinc-200 border-b border-zinc-300 p-4 shrink-0 flex justify-between items-center">
+             <div>
+               <span class="text-xs font-bold text-zinc-500 uppercase mr-2">Subject:</span>
+               <input type="text" id="chat-out-subject" class="bg-white border border-zinc-300 rounded px-2 py-1 text-sm font-semibold text-zinc-900 w-64" placeholder="Drafting subject...">
+             </div>
+          </div>
+          <div class="p-6 flex-1">
+             <textarea id="chat-out-body" class="w-full h-64 bg-transparent border-none text-zinc-800 text-sm focus:ring-0 resize-none" placeholder="AI drafted email body will appear here for you to edit..."></textarea>
+          </div>
+          <div class="bg-zinc-200 p-4 border-t border-zinc-300 flex justify-between items-center">
+             <button id="btn-chat-restart" class="text-xs font-bold text-zinc-500 hover:text-zinc-800">Start Over</button>
+             <button id="btn-chat-dispatch" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg font-bold transition flex items-center gap-2 text-sm shadow-lg shadow-emerald-900/20">
+               <i data-lucide="send" class="w-4 h-4"></i> Dispatch to List
+             </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW 3: INVOICE ENGINE                     -->
+    <!-- ========================================== -->
+    <div id="view-invoice" class="view-section hidden absolute inset-0 flex flex-col md:flex-row overflow-hidden">
+      <!-- Left Panel: Controls -->
+      <section class="w-full md:w-1/2 lg:w-1/3 bg-zinc-900 border-r border-zinc-800 overflow-y-auto p-6">
+        
+        <!-- Google Sheets Import -->
+        <div class="mb-8">
+          <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
+            <i data-lucide="cloud-download" class="w-5 h-5 text-emerald-500"></i> Import Order
+          </h2>
+          <label class="label-text mt-0">Pending Orders (Unpaid)</label>
+          <select id="inv-pending-orders" multiple class="input-field cursor-pointer border-emerald-500/50 bg-emerald-950/20 text-emerald-100 h-32">
+            <option value="" disabled>-- Loading Orders... --</option>
+          </select>
+          <p class="text-xs text-zinc-400 mt-2">Hold <strong>Ctrl</strong> (Windows) or <strong>Cmd</strong> (Mac) to select multiple orders.</p>
+        </div>
+
+        <div class="mb-8">
+          <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
+            <i data-lucide="mail" class="w-5 h-5 text-emerald-500"></i> Invoice Dispatch Details
+          </h2>
+          <label class="label-text mt-0">Send To (Customer Email)</label>
+          <input type="email" id="inv-email" class="input-field" placeholder="customer@example.com">
+          <label class="label-text">Invoice Title / Name</label>
+          <input type="text" id="inv-project" class="input-field" placeholder="e.g. Custom Matte Black Case" value="Chop Lab Order">
+        </div>
+
+        <div class="mb-8">
+          <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
+            <i data-lucide="shopping-cart" class="w-5 h-5 text-emerald-500"></i> Catalog Selection
+          </h2>
+          <label class="label-text mt-0">Manual Base Product</label>
+          <select id="inv-catalog-item" class="input-field cursor-pointer">
+            <option value="">-- Loading Catalog... --</option>
+          </select>
+          <div id="inv-catalog-info" class="hidden mt-2 p-3 bg-zinc-800 rounded-lg text-xs text-zinc-300 border border-zinc-700 leading-relaxed"></div>
+          <label class="label-text">Quantity</label>
+          <input type="number" id="inv-qty" class="input-field" placeholder="1" min="1" value="1">
+        </div>
+
+        <div class="mb-8">
+          <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
+            <i data-lucide="calculator" class="w-5 h-5 text-emerald-500"></i> Logged Hours (Included)
+          </h2>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="label-text mt-0">Print Hours</label>
+              <input type="number" id="inv-print-hrs" class="input-field" placeholder="0" min="0" step="0.5" value="0">
+            </div>
+            <div>
+              <label class="label-text flex justify-between mt-0"><span>Design Mins</span><span id="inv-design-hrs-display" class="text-emerald-500">(1.0 hrs)</span></label>
+              <input type="number" id="inv-design-mins" class="input-field" placeholder="60" min="0" step="5" value="60">
+            </div>
+          </div>
+          
+          <label class="label-text mt-4">Extra Costs / Hardware ($)</label>
+          <input type="number" id="inv-extra-cost" class="input-field" placeholder="0.00" step="1" value="0">
+
+          <!-- Discount Sub-Section -->
+          <div class="grid grid-cols-2 gap-4 mt-6 pt-4 border-t border-zinc-800">
+            <div>
+              <label class="label-text mt-0">Additional Discount</label>
+              <input type="number" id="inv-discount-val" class="input-field text-emerald-400 font-bold" placeholder="0.00" min="0" step="1" value="0">
+            </div>
+            <div>
+              <label class="label-text mt-0">Discount Type</label>
+              <select id="inv-discount-type" class="input-field cursor-pointer">
+                <option value="flat">Flat Amount ($)</option>
+                <option value="percent">Percentage (%)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-8">
+          <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
+            <i data-lucide="wallet" class="w-5 h-5 text-emerald-500"></i> Payment & Notes
+          </h2>
+          <label class="label-text mt-0">Venmo Username (Without @)</label>
+          <input type="text" id="inv-venmo" class="input-field" placeholder="your-venmo-handle" value="tmcarleton">
+          <label class="label-text">Custom Message / Notes</label>
+          <textarea id="inv-notes" class="input-field h-24" placeholder="Notes for the customer...">Thanks for trusting The Chop Lab. I can't wait to see the crisp impressions it leaves on your pottery!</textarea>
+        </div>
+      </section>
+
+      <!-- Right Panel: Live HTML Email Preview -->
+      <section class="w-full md:w-1/2 lg:w-2/3 bg-zinc-950 overflow-y-auto p-4 md:p-8 flex justify-center items-start">
+        <div class="w-full max-w-2xl bg-zinc-100 rounded-xl shadow-2xl overflow-hidden border border-zinc-800 flex flex-col" id="invoice-preview-wrapper">
+          <!-- Client Header Mock -->
+          <div class="bg-zinc-200 border-b border-zinc-300 p-4 shrink-0 flex justify-between items-center">
+            <button id="btn-inv-send" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded text-sm font-bold shadow transition"><i data-lucide="send" class="w-4 h-4 inline mr-1"></i> Send to Client</button>
+            <div class="text-right">
+               <div class="text-xs font-bold text-zinc-500 uppercase">To: <span id="inv-out-email" class="text-zinc-800 normal-case bg-white px-1 rounded ml-1"></span></div>
+               <div class="text-xs font-bold text-zinc-500 uppercase mt-1">Subj: <span id="inv-out-subject" class="text-zinc-800 normal-case bg-white px-1 rounded ml-1"></span></div>
+            </div>
+          </div>
+
+          <!-- THE ACTUAL EMAIL PAYLOAD -->
+          <div class="bg-[#F4F4F6] p-4 md:p-10 flex-1">
+            <div id="invoice-html-payload" style="width: 100%; max-width: 600px; background-color: #FFFFFF; padding: 40px; border-top: 6px solid #D86A46; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #3A3F42;">
+              <h1 style="margin-top: 0; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; color: #3A3F42; font-size: 24px;">The Chop Lab.</h1>
+              <p style="color: #D86A46; font-weight: 600; font-size: 14px; margin-top: -10px;">CAD meets Clay.</p>
+              
+              <hr style="border: 0; border-top: 1px solid #E5E5E5; margin: 40px 0;">
+              
+              <table style="width: 100%; border-collapse: collapse;"><tr>
+                <td style="padding: 0; vertical-align: top;">
+                   <h2 style="font-weight: 400; color: #3A3F42; margin-bottom: 5px; font-size: 18px;">Invoice / Receipt</h2>
+                   <p style="font-size: 16px; margin-top: 0; color: #3A3F42;"><strong>Billed To:</strong> <span id="inv-out-name">Client</span></p>
+                </td>
+                <td style="padding: 0; text-align: right; vertical-align: top;">
+                   <p style="font-size: 14px; color: #7da5a8; margin:0;"><strong>Date:</strong><br><span id="inv-out-date"></span></p>
+                </td>
+              </tr></table>
+
+              <p style="color: #3A3F42; font-size: 14px; line-height: 1.5; margin-top: 30px; white-space: pre-wrap;" id="inv-out-notes"></p>
+
+              <table style="width: 100%; margin-top: 30px; border-collapse: collapse; background-color: #FAFAFB; border: 1px solid #E5E5E5;">
+                <thead>
+                  <tr style="background-color: #F4F4F6;">
+                     <th style="padding: 12px; border-bottom: 2px solid #3A3F42; font-size: 12px; text-transform: uppercase; color: #7da5a8; text-align: left;">Description</th>
+                     <th style="padding: 12px; border-bottom: 2px solid #3A3F42; font-size: 12px; text-transform: uppercase; color: #7da5a8; text-align: right; width: 100px;">Total</th>
+                  </tr>
+                </thead>
+                <tbody id="inv-tbody">
+                  <!-- Dynamic Rows -->
+                </tbody>
+              </table>
+
+              <h3 style="text-align: right; margin-top: 30px; font-size: 24px; color: #D86A46;">Amount Due: <span id="inv-out-total">$0.00</span></h3>
+              
+              <div style="background-color: #F0F8FF; border: 1px solid #BFE0FF; padding: 20px; text-align: center; margin-top: 40px; border-radius: 8px;">
+                 <p style="margin-top: 0; font-size: 14px; color: #3A3F42; font-weight: 600;">Settle this invoice securely via Venmo:</p>
+                 <a href="#" id="inv-venmo-link" target="_blank" style="display: inline-block; background-color: #008CFF; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 30px; font-weight: bold; font-size: 14px; margin: 10px 0;">
+                   Pay <span id="inv-venmo-btn-amt">$0.00</span>
+                 </a>
+                 <p style="margin-bottom: 0; font-size: 12px; color: #7da5a8;">@<span id="inv-venmo-handle">tmcarleton</span></p>
+              </div>
+
+              <p style="font-size: 14px; color: #7da5a8; text-align: center; margin-top: 40px; margin-bottom: 0;">Thank you for trusting The Chop Lab.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <script>
+    // Initialize Lucide Icons globally
+    lucide.createIcons();
 
     // ==========================================
-    // LOGIC: VIDEO CAMPAIGN (Dynamic)
+    // SECURITY AUTHENTICATION LOGIC
     // ==========================================
+    const GAS_AUTH_URL = "https://script.google.com/macros/s/AKfycbz7MJE7mNY1A-SvbdHGV3yI6-ftBElB1wOth4MqEABvJXLI5SNzeqiG2r7PJBpWvcAiOg/exec";
+
+    document.getElementById('btn-auth').addEventListener('click', async () => {
+      const pass = document.getElementById('auth-password').value.trim();
+      const btn = document.getElementById('btn-auth');
+      const err = document.getElementById('auth-error');
+
+      if (!pass) return;
+
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Verifying...`;
+      lucide.createIcons();
+      err.classList.add('hidden');
+
+      try {
+        const response = await fetch(`${GAS_AUTH_URL}?password=${encodeURIComponent(pass)}`);
+        const result = await response.json();
+
+        if (result.success) {
+          const overlay = document.getElementById('login-overlay');
+          overlay.style.opacity = '0';
+          setTimeout(() => overlay.remove(), 500);
+        } else {
+          err.classList.remove('hidden');
+        }
+      } catch (error) {
+        err.innerText = "Connection error. Make sure your Google Script URL is correct.";
+        err.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="lock" class="w-4 h-4"></i> Unlock Engine`;
+        lucide.createIcons();
+      }
+    });
+    
+    document.getElementById('auth-password').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') document.getElementById('btn-auth').click();
+    });
+
+
+    // ==========================================
+    // EXISTING APP LOGIC BELOW
+    // ==========================================
+    const CLOUDFLARE_WORKER_URL = "https://video-intake-engine.tmcarleton11.workers.dev/";
+
+    // TAB NAVIGATION LOGIC
+    const tabTriggers = document.querySelectorAll('.tab-trigger');
+    const viewSections = document.querySelectorAll('.view-section');
+
+    tabTriggers.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        
+        tabTriggers.forEach(t => { t.classList.remove('bg-zinc-800', 'text-white', 'shadow'); t.classList.add('text-zinc-400'); });
+        btn.classList.add('bg-zinc-800', 'text-white', 'shadow');
+        btn.classList.remove('text-zinc-400');
+        
+        viewSections.forEach(v => v.classList.add('hidden'));
+        document.getElementById(targetId).classList.remove('hidden');
+      });
+    });
+
+    // LOGIC: VIDEO CAMPAIGN (Tab 1)
     let imageDatabase = []; 
     let customMusicBase64 = null; 
     let draggedIndex = null;
 
     const processImage = (file) => new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
+      const reader = new FileReader(); reader.readAsDataURL(file);
       reader.onload = (event) => {
-        const img = new Image();
-        img.src = event.target.result;
+        const img = new Image(); img.src = event.target.result;
         img.onload = () => {
           const canvasHigh = document.createElement('canvas');
           let wHigh = img.width, hHigh = img.height;
@@ -215,44 +461,38 @@
       reader.onload = () => resolve(reader.result);
     });
 
-    // Accept UNLIMITED images (capped at 10 to prevent browser crash)
-    document.getElementById('file-upload').addEventListener('change', async (e) => {
+    document.getElementById('vid-file-upload').addEventListener('change', async (e) => {
       const allFiles = Array.from(e.target.files);
       const imageFiles = allFiles.filter(f => f.type.startsWith('image/')).slice(0, 10); 
       const audioFile = allFiles.find(f => f.type.startsWith('audio/'));
 
       if(imageFiles.length === 0) return;
-      document.getElementById('btn-draft').innerText = "Optimizing assets...";
+      
+      const btn = document.getElementById('btn-vid-draft');
+      btn.innerText = "Optimizing assets..."; btn.disabled = true;
       
       const dualResImages = await Promise.all(imageFiles.map(f => processImage(f)));
-      
-      imageDatabase = dualResImages.map(img => ({ 
-        base64: img.highRes, 
-        visionBase64: img.lowRes, 
-        x: 50, y: 50 
-      }));
+      imageDatabase = dualResImages.map(img => ({ base64: img.highRes, visionBase64: img.lowRes, x: 50, y: 50 }));
       
       if (audioFile) {
         customMusicBase64 = await audioToBase64(audioFile);
-        document.getElementById('music-detected').style.display = 'block';
+        document.getElementById('vid-music-detected').classList.remove('hidden');
       }
 
-      document.getElementById('dot-instruction').style.display = 'block';
-      renderPreviews();
-      document.getElementById('btn-draft').innerText = "Generate Video Script";
+      document.getElementById('vid-dot-instruction').classList.remove('hidden');
+      renderVidPreviews();
+      btn.innerText = "Generate Script"; btn.disabled = false;
     });
 
-    function renderPreviews() {
-      const grid = document.getElementById('preview-grid');
+    function renderVidPreviews() {
+      const grid = document.getElementById('vid-preview-grid');
       grid.innerHTML = '';
       imageDatabase.forEach((item, index) => {
         const box = document.createElement('div');
         box.className = 'preview-box';
         box.style.backgroundImage = `url(${item.base64})`;
         box.draggable = true;
-        
         box.innerHTML = `<span class="badge">${index + 1}</span>`;
-        
         if (item.x !== undefined && item.y !== undefined) {
           const dot = document.createElement('div');
           dot.className = 'target-dot';
@@ -264,172 +504,203 @@
         box.addEventListener('dragover', (e) => { e.preventDefault(); box.classList.add('drag-over'); });
         box.addEventListener('dragleave', () => box.classList.remove('drag-over'));
         box.addEventListener('drop', () => {
-          const temp = imageDatabase[draggedIndex];
-          imageDatabase[draggedIndex] = imageDatabase[index];
-          imageDatabase[index] = temp;
-          renderPreviews();
+          const temp = imageDatabase[draggedIndex]; imageDatabase[draggedIndex] = imageDatabase[index]; imageDatabase[index] = temp;
+          renderVidPreviews();
         });
 
         box.addEventListener('click', (e) => {
           const rect = box.getBoundingClientRect();
-          const clickX = ((e.clientX - rect.left) / rect.width) * 100;
-          const clickY = ((e.clientY - rect.top) / rect.height) * 100;
-          imageDatabase[index].x = Math.max(0, Math.min(100, clickX));
-          imageDatabase[index].y = Math.max(0, Math.min(100, clickY));
-          renderPreviews();
+          imageDatabase[index].x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+          imageDatabase[index].y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+          renderVidPreviews();
         });
-
         grid.appendChild(box);
       });
     }
 
-    function buildDynamicScriptUI(scripts) {
-      const container = document.getElementById('dynamic-script-group');
-      container.innerHTML = '';
-      scripts.forEach((line, i) => {
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.id = `script-${i}`;
-        input.value = line;
-        input.placeholder = `Slide ${i + 1} Text`;
-        container.appendChild(input);
-      });
-    }
-
-    document.getElementById('btn-draft').addEventListener('click', async () => {
-      const subject = document.getElementById('subject').value;
-      const contextInput = document.getElementById('context').value;
-      
+    document.getElementById('btn-vid-draft').addEventListener('click', async () => {
+      const subject = document.getElementById('vid-subject').value.trim();
+      const contextInput = document.getElementById('vid-context').value.trim();
       if (!subject || imageDatabase.length === 0) return alert("Add title and images.");
-      const btn = document.getElementById('btn-draft');
-      btn.disabled = true; btn.innerText = "Analyzing all images... (~15s)";
+      
+      const btn = document.getElementById('btn-vid-draft');
+      const statusDiv = document.getElementById('vid-script-status');
+      btn.disabled = true; 
+      btn.innerText = "AI Analyzing images...";
+      statusDiv.classList.remove('hidden');
+      statusDiv.innerText = "Processing image 1 of " + imageDatabase.length + "...";
 
       try {
         const response = await fetch(CLOUDFLARE_WORKER_URL, {
           method: "POST", headers: { "Content-Type": "application/json" },
-          // Worker needs updating to handle dynamic length scripts
           body: JSON.stringify({ action: "draft_dynamic_script", subject: subject, context: contextInput, images: imageDatabase })
         });
         const data = await response.json();
         
-        if (!response.ok) throw new Error(data.error || "Unknown Server Error");
-
-        if (data.script) {
-          buildDynamicScriptUI(data.script);
-          document.getElementById('phase-1').classList.add('hidden');
-          document.getElementById('phase-2').classList.remove('hidden');
+        if (data.script && Array.isArray(data.script)) {
+          const container = document.getElementById('vid-dynamic-scripts'); 
+          container.innerHTML = '';
+          
+          data.script.forEach((item, i) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'mb-3';
+            
+            const label = document.createElement('div');
+            label.className = 'text-xs text-zinc-500 mb-1';
+            label.innerText = `Slide ${i + 1}`;
+            
+            const input = document.createElement('input'); 
+            input.type = 'text'; 
+            input.className = 'input-field'; 
+            input.value = typeof item === 'object' ? item.text : item;
+            input.dataset.index = i;
+            
+            wrapper.appendChild(label);
+            wrapper.appendChild(input);
+            container.appendChild(wrapper);
+          });
+          
+          statusDiv.innerText = "✓ Script generated successfully";
+          document.getElementById('video-phase-1').classList.add('opacity-50', 'pointer-events-none');
+          document.getElementById('video-phase-2').classList.remove('hidden');
+        } else {
+          throw new Error("Invalid script format received");
         }
-      } catch (err) {
-        alert("AI Error: " + err.message);
-        btn.disabled = false;
-        btn.innerText = "Generate Video Script";
+      } catch (err) { 
+        alert("AI Error: " + err.message); 
+        statusDiv.innerText = "⚠ Generation failed - " + err.message;
+      } 
+      finally { 
+        btn.disabled = false; 
+        btn.innerText = "Generate Script"; 
       }
     });
 
-    document.getElementById('btn-render').addEventListener('click', async () => {
-      const btn = document.getElementById('btn-render');
-      const statusBox = document.getElementById('status-box');
-      
-      // Gather dynamic scripts
-      const scripts = [];
-      const scriptInputs = document.getElementById('dynamic-script-group').querySelectorAll('input');
-      scriptInputs.forEach(input => scripts.push(input.value));
+    document.getElementById('btn-vid-render').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-vid-render');
+      const scriptInputs = Array.from(document.getElementById('vid-dynamic-scripts').querySelectorAll('input'));
+      const scripts = scriptInputs.map(input => input.value);
+      const statusText = document.getElementById('vid-status-text');
 
       btn.disabled = true; btn.innerText = "Rendering via Shotstack...";
-      statusBox.className = "status-loading"; statusBox.innerHTML = "Uploading assets and compiling video sequence...";
+      statusText.innerHTML = "<span class='text-emerald-400 font-bold animate-pulse'>Uploading assets & compiling sequence...</span>";
 
       try {
         const response = await fetch(CLOUDFLARE_WORKER_URL, {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
-            action: "render_shotstack", // Switching action to point to new Shotstack logic
-            subject: document.getElementById('subject').value, 
+            action: "render_shotstack", 
+            subject: document.getElementById('vid-subject').value, 
             images: imageDatabase, 
             script: scripts, 
             music: customMusicBase64, 
-            voice: document.getElementById('voice-style').value 
+            voice: document.getElementById('vid-voice-style').value 
           })
         });
         const result = await response.json();
+        
         if (response.ok) {
-          statusBox.className = "status-success";
-          const renderUrl = result.url || (result.data ? result.data.url : null);
+          const renderId = result.renderId || result.id || (result.response && result.response.id) || (result.raw && result.raw.response && result.raw.response.id);
+          const renderUrl = result.url || result.statusUrl || (result.raw && result.raw.data && result.raw.data.url);
           
-          statusBox.innerHTML = `
-            Video generation initiated successfully.<br>
-            <a href="${renderUrl}" target="_blank" style="display:inline-block; margin-top:10px;">Check Render Status</a>
-          `;
-          
-          // Show Final Email Phase
-          document.getElementById('phase-2').classList.add('hidden');
-          document.getElementById('phase-3').classList.remove('hidden');
+          let linkHtml = "";
+          if (renderUrl && renderUrl.includes('.mp4')) {
+             document.getElementById('vid-final-url').value = renderUrl;
+             linkHtml = `<br><a href="${renderUrl}" target="_blank" class="text-white underline mt-2 inline-block">Direct Video Link</a>`;
+          } else if (renderUrl) {
+             linkHtml = `<br><a href="${renderUrl}" target="_blank" class="text-white underline mt-2 inline-block">View Render Status</a>`;
+          } else if (renderId) {
+             linkHtml = `<br><span class="text-xs text-zinc-500 mt-2 block">Render ID: ${renderId}</span><br><a href="https://dashboard.shotstack.io/renders/${renderId}" target="_blank" class="text-white underline mt-1 inline-block">Check Dashboard</a>`;
+          }
 
-        } else { throw new Error(result.error || "Render Failed"); }
+          statusText.innerHTML = `<span class="text-emerald-400 font-bold">Render initiated!</span>${linkHtml}`;
+          document.getElementById('vid-phase-3').classList.remove('hidden');
+        } else {
+          throw new Error(result.error || "Render Failed");
+        }
       } catch (error) { 
-        statusBox.className = "status-error"; statusBox.innerHTML = `Error: ${error.message}`; btn.disabled = false; 
+        statusText.innerText = `Error: ${error.message}`; 
+        btn.disabled = false; 
+        btn.innerText = "Render Video"; 
       }
     });
 
-    document.getElementById('btn-send-video-email').addEventListener('click', async () => {
-       const btn = document.getElementById('btn-send-video-email');
-       btn.disabled = true; btn.innerText = "Dispatching Emails...";
-       
+    document.getElementById('btn-vid-load-preview').addEventListener('click', () => {
+      const url = document.getElementById('vid-final-url').value.trim();
+      const videoEl = document.getElementById('vid-final-preview');
+      const sendBtn = document.getElementById('btn-vid-send');
+      const loadBtn = document.getElementById('btn-vid-load-preview');
+
+      if (!url) return alert("Please enter a valid video URL.");
+
+      loadBtn.innerText = "Loading...";
+      loadBtn.disabled = true;
+
+      videoEl.src = url;
+      
+      videoEl.onloadeddata = () => {
+        videoEl.classList.remove('hidden');
+        sendBtn.disabled = false;
+        sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        sendBtn.classList.add('hover:bg-emerald-500');
+        loadBtn.innerText = "Loaded";
+        loadBtn.disabled = false;
+      };
+
+      videoEl.onerror = () => {
+        alert("Failed to load video. It might still be rendering, or the URL is invalid. Check the dashboard status and try again.");
+        videoEl.classList.add('hidden');
+        sendBtn.disabled = true;
+        sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        sendBtn.classList.remove('hover:bg-emerald-500');
+        loadBtn.innerText = "Load Video";
+        loadBtn.disabled = false;
+      };
+    });
+
+    document.getElementById('btn-vid-send').addEventListener('click', async () => {
+       const btn = document.getElementById('btn-vid-send'); 
+       const finalUrl = document.getElementById('vid-final-url').value;
+       btn.disabled = true; btn.innerText = "Dispatching...";
        try {
          const response = await fetch(CLOUDFLARE_WORKER_URL, {
             method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
               action: "send_immediate_campaign", 
-              subject: document.getElementById('subject').value,
-              body: document.getElementById('video-email-body').value,
-              hasVideo: true
+              subject: document.getElementById('vid-subject').value, 
+              body: document.getElementById('vid-email-body').value, 
+              hasVideo: true,
+              videoUrl: finalUrl
             })
           });
-          if (response.ok) {
-            btn.innerText = "✅ Campaign Sent Successfully!";
-            btn.style.background = "#1e3a23";
-          } else { throw new Error("Dispatch failed"); }
-       } catch(e) {
-          alert(e.message);
-          btn.disabled = false; btn.innerText = "Send to All Subscribers Now";
-       }
+          if (response.ok) { btn.innerText = "✅ Campaign Sent!"; btn.classList.replace('bg-emerald-600', 'bg-zinc-700'); } 
+          else throw new Error("Dispatch failed");
+       } catch(e) { alert(e.message); btn.disabled = false; btn.innerText = "Dispatch Mass Campaign"; }
     });
 
-    // ==========================================
-    // LOGIC: AI INTERVIEW (Text Email)
-    // ==========================================
-    let interviewMessages = [{ role: 'assistant', content: "Hi! What's the main update or story you want to share with your audience today?" }];
+    // LOGIC: AI INTERVIEW (Tab 2)
+    const DEFAULT_MSG = "Hi! What's the main update or story you want to share with your audience today?";
+    let interviewMessages = [{ role: 'assistant', content: DEFAULT_MSG }];
     let questionCount = 1;
 
     function renderChat() {
-      const box = document.getElementById('chat-history');
-      box.innerHTML = '';
+      const box = document.getElementById('chat-history'); box.innerHTML = '';
       interviewMessages.forEach(msg => {
-        const div = document.createElement('div');
-        div.className = `msg ${msg.role === 'user' ? 'user' : 'ai'}`;
-        div.innerText = msg.content;
-        box.appendChild(div);
+        const div = document.createElement('div'); div.className = `msg ${msg.role === 'user' ? 'user' : 'ai text-zinc-200'}`;
+        div.innerText = msg.content; box.appendChild(div);
       });
       box.scrollTop = box.scrollHeight;
     }
 
-    document.getElementById('btn-send-chat').addEventListener('click', async () => {
-      const input = document.getElementById('chat-input');
-      const text = input.value.trim();
+    document.getElementById('btn-chat-send').addEventListener('click', async () => {
+      const input = document.getElementById('chat-input'); const text = input.value.trim();
       if (!text) return;
-
-      // Add user message
-      interviewMessages.push({ role: 'user', content: text });
-      input.value = '';
-      renderChat();
+      interviewMessages.push({ role: 'user', content: text }); input.value = ''; renderChat();
       
-      const btn = document.getElementById('btn-send-chat');
-      btn.disabled = true; btn.innerText = "...";
+      const btn = document.getElementById('btn-chat-send');
+      btn.disabled = true; input.disabled = true; btn.innerText = "...";
 
-      // If we hit 10 questions, force the draft
-      if (questionCount >= 10) {
-         generateInterviewDraft();
-         return;
-      }
+      if (questionCount >= 10) return generateInterviewDraft();
 
       try {
         const response = await fetch(CLOUDFLARE_WORKER_URL, {
@@ -437,25 +708,18 @@
           body: JSON.stringify({ action: "interview_chat", history: interviewMessages })
         });
         const data = await response.json();
-        
-        if (data.reply) {
-          interviewMessages.push({ role: 'assistant', content: data.reply });
-          questionCount++;
-          renderChat();
-        }
+        if (data.reply) { interviewMessages.push({ role: 'assistant', content: data.reply }); questionCount++; renderChat(); }
       } catch (err) {
-        interviewMessages.push({ role: 'assistant', content: "Sorry, I had a connection hiccup. Let's draft what we have so far!" });
-        renderChat();
-      } finally {
-        btn.disabled = false; btn.innerText = "Send";
-      }
+        interviewMessages.push({ role: 'assistant', content: "Hiccup! Let's draft what we have." }); renderChat();
+      } finally { btn.disabled = false; input.disabled = false; btn.innerText = "Send"; input.focus(); }
     });
 
-    document.getElementById('btn-finish-interview').addEventListener('click', generateInterviewDraft);
+    document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('btn-chat-send').click(); });
+    document.getElementById('btn-chat-finish').addEventListener('click', generateInterviewDraft);
 
     async function generateInterviewDraft() {
-      const btn = document.getElementById('btn-finish-interview');
-      btn.disabled = true; btn.innerText = "Drafting Email...";
+      const btn = document.getElementById('btn-chat-finish'); btn.disabled = true; btn.innerText = "Drafting...";
+      document.getElementById('chat-phase-2').classList.remove('opacity-50', 'pointer-events-none');
       
       try {
         const response = await fetch(CLOUDFLARE_WORKER_URL, {
@@ -463,58 +727,319 @@
           body: JSON.stringify({ action: "draft_interview_email", history: interviewMessages })
         });
         const data = await response.json();
-        
         if (data.subject && data.body) {
-          document.getElementById('interview-subject').value = data.subject;
-          document.getElementById('interview-body').value = data.body;
-          document.getElementById('interview-phase').classList.add('hidden');
-          document.getElementById('draft-phase').classList.remove('hidden');
-        } else {
-           throw new Error("Failed to parse draft");
-        }
-      } catch (e) {
-        alert("Failed to generate draft. Ensure backend is updated.");
-        btn.disabled = false; btn.innerText = "Skip to Draft Email Now";
-      }
+          document.getElementById('chat-out-subject').value = data.subject;
+          document.getElementById('chat-out-body').value = data.body;
+          document.getElementById('chat-phase-1').classList.add('opacity-50', 'pointer-events-none');
+        } else throw new Error("Parse fail");
+      } catch (e) { alert("Draft gen failed"); btn.disabled = false; btn.innerText = "Skip & Generate Draft"; }
     }
 
-    document.getElementById('btn-send-text-email').addEventListener('click', async () => {
-       const btn = document.getElementById('btn-send-text-email');
-       btn.disabled = true; btn.innerText = "Dispatching...";
-       
+    document.getElementById('btn-chat-dispatch').addEventListener('click', async () => {
+       const btn = document.getElementById('btn-chat-dispatch'); btn.disabled = true; btn.innerText = "Dispatching...";
        try {
          const response = await fetch(CLOUDFLARE_WORKER_URL, {
             method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-              action: "send_immediate_campaign", 
-              subject: document.getElementById('interview-subject').value,
-              body: document.getElementById('interview-body').value,
-              hasVideo: false
-            })
+            body: JSON.stringify({ action: "send_immediate_campaign", subject: document.getElementById('chat-out-subject').value, body: document.getElementById('chat-out-body').value, hasVideo: false })
           });
-          if (response.ok) {
-            btn.innerText = "✅ Sent Successfully!";
-            btn.style.background = "#1e3a23";
-          } else { throw new Error("Dispatch failed"); }
-       } catch(e) {
-          alert(e.message);
-          btn.disabled = false; btn.innerText = "Send to All Subscribers Now";
-       }
+          if (response.ok) { btn.innerText = "✅ Sent!"; btn.classList.replace('bg-emerald-600', 'bg-zinc-700'); } 
+          else throw new Error("Dispatch failed");
+       } catch(e) { alert(e.message); btn.disabled = false; btn.innerText = "Dispatch to List"; }
     });
 
-    document.getElementById('btn-restart-interview').addEventListener('click', () => {
-      interviewMessages = [{ role: 'assistant', content: "Hi! What's the main update or story you want to share with your audience today?" }];
-      questionCount = 1;
-      renderChat();
-      document.getElementById('interview-phase').classList.remove('hidden');
-      document.getElementById('draft-phase').classList.add('hidden');
-      document.getElementById('btn-finish-interview').disabled = false;
-      document.getElementById('btn-finish-interview').innerText = "Skip to Draft Email Now";
+    document.getElementById('btn-chat-restart').addEventListener('click', () => {
+      interviewMessages = [{ role: 'assistant', content: DEFAULT_MSG }]; questionCount = 1; renderChat();
+      document.getElementById('chat-phase-1').classList.remove('opacity-50', 'pointer-events-none');
+      document.getElementById('chat-phase-2').classList.add('opacity-50', 'pointer-events-none');
+      const btn = document.getElementById('btn-chat-finish'); btn.disabled = false; btn.innerText = "Skip & Generate Draft";
     });
 
-    // Enter key submits chat
-    document.getElementById('chat-input').addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') document.getElementById('btn-send-chat').click();
+    // LOGIC: INVOICE ENGINE (Tab 3) & GOOGLE SHEETS
+    document.getElementById('inv-out-date').innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    const GOOGLE_SHEET_ID = '1x3Sag5AwQt1wuSITzUnlwQQdrxlSejy8N8RiDZTglhk';
+    
+    function parseCSV(text) {
+      const rows = [];
+      let quote = false; let col = 0, row = 0;
+      for (let c = 0; c < text.length; c++) {
+          let cc = text[c], nc = text[c+1];
+          rows[row] = rows[row] || [];
+          rows[row][col] = rows[row][col] || '';
+          if (cc === '"' && quote && nc === '"') { rows[row][col] += cc; ++c; continue; }
+          if (cc === '"') { quote = !quote; continue; }
+          if (cc === ',' && !quote) { ++col; continue; }
+          if (cc === '\r' && nc === '\n' && !quote) { ++row; col = 0; ++c; continue; }
+          if (cc === '\n' && !quote) { ++row; col = 0; continue; }
+          if (cc === '\r' && !quote) { ++row; col = 0; continue; }
+          rows[row][col] += cc;
+      }
+      return rows;
+    }
+
+    const formatMoney = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+
+    const invInputs = {
+      email: document.getElementById('inv-email'), project: document.getElementById('inv-project'),
+      qty: document.getElementById('inv-qty'), printHrs: document.getElementById('inv-print-hrs'),
+      designMins: document.getElementById('inv-design-mins'), extraCost: document.getElementById('inv-extra-cost'),
+      discountVal: document.getElementById('inv-discount-val'), discountType: document.getElementById('inv-discount-type'),
+      venmo: document.getElementById('inv-venmo'), notes: document.getElementById('inv-notes')
+    };
+
+    let catalogData = []; 
+    const selectCatalog = document.getElementById('inv-catalog-item');
+
+    async function loadCatalogData() {
+      try {
+        const res = await fetch(`https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Reference`);
+        if (!res.ok) throw new Error("Fetch failed");
+        
+        const rows = parseCSV(await res.text());
+        catalogData = [];
+        
+        for (let i = 1; i < rows.length; i++) {
+           const r = rows[i];
+           if (!r || r.length < 2 || !r[0].trim()) continue;
+           catalogData.push({
+             name: r[0].trim(),
+             price: parseFloat((r[1] || '0').replace(/[^0-9.-]+/g, "")) || 0,
+             info: (r[2] || '').trim()
+           });
+        }
+        
+        selectCatalog.innerHTML = '<option value="">-- No Base Item (Custom Only) --</option>';
+        catalogData.forEach((item, index) => {
+          const option = document.createElement('option'); option.value = index; option.text = `${item.name} — ${formatMoney(item.price)}`;
+          selectCatalog.appendChild(option);
+        });
+      } catch (err) {
+        console.error("Failed to load catalog:", err);
+        selectCatalog.innerHTML = '<option value="">-- Error loading catalog --</option>';
+      }
+    }
+
+    let pendingOrdersData = [];
+    const pendingOrdersSelect = document.getElementById('inv-pending-orders');
+
+    async function loadPendingOrders() {
+      try {
+        const res = await fetch(`https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Income`);
+        if (!res.ok) throw new Error("Fetch failed");
+        const rows = parseCSV(await res.text());
+        
+        pendingOrdersSelect.innerHTML = '<option value="" disabled>-- Select order(s) --</option>';
+        pendingOrdersData = [];
+
+        for (let i = 1; i < rows.length; i++) {
+          const r = rows[i];
+          if (!r || r.length < 2) continue; 
+          
+          const paidCol = (r[0] || '').trim().toLowerCase();
+          const isUnpaid = paidCol === 'no' || paidCol === 'false' || paidCol === '' || paidCol === 'pending';
+          
+          if (isUnpaid) {
+            const customerName = (r[1] || '').trim();
+            const email = (r[2] || '').trim();
+            if (!customerName && !email) continue;
+            
+            const filamentCol = (r[14] || '').trim().toLowerCase();
+            
+            const order = {
+              customer: customerName,
+              email: email,
+              item: (r[3] || '').trim(),
+              printHrs: parseFloat(r[6]) || 0,
+              totalPrice: parseFloat((r[11] || r[13] || '').replace(/[^0-9.-]+/g, "")) || 0,
+              filamentOnly: filamentCol === 'true' || filamentCol === 'yes',
+              desc: (r[15] || '').trim()
+            };
+            
+            pendingOrdersData.push(order);
+            const opt = document.createElement('option');
+            opt.value = pendingOrdersData.length - 1;
+            opt.text = `${order.customer || 'Unknown'} - ${order.item || 'Custom Order'}`;
+            pendingOrdersSelect.appendChild(opt);
+          }
+        }
+        
+        if (pendingOrdersData.length === 0) {
+           pendingOrdersSelect.innerHTML = '<option value="" disabled>-- No pending orders found --</option>';
+        }
+      } catch (err) {
+        console.error("Sheet import failed:", err);
+        pendingOrdersSelect.innerHTML = '<option value="" disabled>-- Error: Ensure sheet is public --</option>';
+      }
+    }
+
+    loadCatalogData();
+    loadPendingOrders();
+
+    pendingOrdersSelect.addEventListener('change', (e) => {
+      const selectedOptions = Array.from(e.target.selectedOptions).filter(opt => !opt.disabled && opt.value !== "");
+      if (selectedOptions.length === 0) return;
+
+      let combinedEmail = "";
+      let combinedProject = [];
+      let totalPrintHrs = 0;
+      let combinedNotes = `Thanks for trusting The Chop Lab. I can't wait to see the crisp impressions it leaves on your pottery!`;
+      let appendedNotes = [];
+
+      selectedOptions.forEach(opt => {
+        const order = pendingOrdersData[opt.value];
+        if (!combinedEmail && order.email) combinedEmail = order.email;
+        if (order.item) combinedProject.push(order.item);
+        if (order.printHrs > 0) totalPrintHrs += order.printHrs;
+        if (order.desc) appendedNotes.push(`- ${order.item || 'Order'}: ${order.desc}`);
+      });
+
+      invInputs.email.value = combinedEmail;
+      invInputs.project.value = combinedProject.join(" & ") || "Chop Lab Order";
+      invInputs.printHrs.value = totalPrintHrs;
+      
+      if (!invInputs.designMins.value || parseInt(invInputs.designMins.value) === 0) {
+        invInputs.designMins.value = 60;
+      }
+      
+      selectCatalog.selectedIndex = 0;
+      invInputs.extraCost.value = 0;
+
+      if (appendedNotes.length > 0) {
+         combinedNotes += `\n\nOrder Notes:\n` + appendedNotes.join("\n");
+      }
+      invInputs.notes.value = combinedNotes;
+
+      selectCatalog.dispatchEvent(new Event('change'));
+      updateInvoicePreview();
+    });
+
+    selectCatalog.addEventListener('change', (e) => {
+      const idx = e.target.value; const infoBox = document.getElementById('inv-catalog-info');
+      if (idx !== "" && catalogData[idx].info) {
+        let infoText = catalogData[idx].info;
+        const addonMatch = infoText.match(/add \$([0-9.]+) for each hour/i);
+        if (addonMatch) infoText = infoText.replace(addonMatch[0], `<span class="text-emerald-400 font-bold">${addonMatch[0]} <br>⚡ (Will be auto-calculated)</span>`);
+        infoBox.innerHTML = `<strong><i data-lucide="info" class="w-3 h-3 inline"></i> Detail:</strong> ${infoText}`;
+        infoBox.classList.remove('hidden'); lucide.createIcons();
+      } else { infoBox.classList.add('hidden'); }
+      updateInvoicePreview();
+    });
+
+    function updateInvoicePreview() {
+      const projName = invInputs.project.value.trim() || "Chop Lab Order";
+      document.getElementById('inv-out-email').innerText = invInputs.email.value || "customer@example.com";
+      document.getElementById('inv-out-subject').innerText = projName;
+      document.getElementById('inv-out-name').innerText = invInputs.email.value.split('@')[0] || "Client";
+      document.getElementById('inv-out-notes').innerText = invInputs.notes.value || "";
+      document.getElementById('inv-venmo-handle').innerText = invInputs.venmo.value || "tmcarleton";
+
+      let tbodyHTML = ""; let grandTotal = 0; let autoHourlyAddon = 0;
+
+      const catIdx = selectCatalog.value;
+      if (catIdx !== "") {
+        const item = catalogData[catIdx]; const qty = parseInt(invInputs.qty.value) || 1;
+        const total = item.price * qty; grandTotal += total;
+        const addonMatch = item.info.match(/add \$([0-9.]+) for each hour/i);
+        if (addonMatch) autoHourlyAddon = parseFloat(addonMatch[1]);
+        tbodyHTML += `<tr><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;"><strong style="color: #3A3F42;">${item.name}</strong><br><span style="font-size:12px;color:#7da5a8;">Base Product (Qty: ${qty})</span></td><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color: #3A3F42;">${formatMoney(total)}</td></tr>`;
+      }
+
+      const selectedOrderOpts = Array.from(document.getElementById('inv-pending-orders').selectedOptions).filter(opt => !opt.disabled && opt.value !== "");
+      selectedOrderOpts.forEach(opt => {
+         const order = pendingOrdersData[opt.value];
+         let orderPrice = order.totalPrice;
+         let descText = "Imported Order";
+         
+         if (order.filamentOnly) {
+             descText = "Filament Only (75% Discount Applied)";
+         }
+         
+         grandTotal += orderPrice;
+         tbodyHTML += `<tr><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;"><strong style="color: #3A3F42;">${order.item || 'Custom Order'}</strong><br><span style="font-size:12px;color:#7da5a8;">${descText}</span></td><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color: #3A3F42;">${formatMoney(orderPrice)}</td></tr>`;
+      });
+
+      const pHrs = parseFloat(invInputs.printHrs.value) || 0;
+      if (pHrs > 0) {
+        tbodyHTML += `<tr><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;"><strong style="color: #3A3F42;">3D Printing</strong><br><span style="font-size:12px;color:#7da5a8;">Logged Machine Time: ${pHrs} hrs</span></td><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color:#7da5a8;">Included</td></tr>`;
+        if (autoHourlyAddon > 0) {
+           const autoTotal = autoHourlyAddon * pHrs; grandTotal += autoTotal;
+           tbodyHTML += `<tr><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;"><strong style="color: #3A3F42;">Material Surcharge</strong><br><span style="font-size:12px;color:#D86A46;">Auto-Applied @ ${formatMoney(autoHourlyAddon)}/hr</span></td><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; font-weight:bold; color: #3A3F42;">+${formatMoney(autoTotal)}</td></tr>`;
+        }
+      }
+
+      const dMins = parseInt(invInputs.designMins.value) || 0; const dHrs = dMins / 60;
+      document.getElementById('inv-design-hrs-display').innerText = `(${dHrs.toFixed(1)} hrs)`;
+      if (dMins > 0) {
+        tbodyHTML += `<tr><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;"><strong style="color: #3A3F42;">Design & CAD</strong><br><span style="font-size:12px;color:#7da5a8;">Time Spent: ${dHrs.toFixed(2)} hrs</span></td><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color:#7da5a8;">Included</td></tr>`;
+      }
+
+      const extras = parseFloat(invInputs.extraCost.value) || 0;
+      if (extras > 0) { grandTotal += extras; tbodyHTML += `<tr><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;"><strong style="color: #3A3F42;">Hardware / Adjustments</strong></td><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color: #3A3F42;">${formatMoney(extras)}</td></tr>`; }
+
+      let discountVal = parseFloat(invInputs.discountVal.value) || 0;
+      if (discountVal > 0) {
+        let discountAmount = 0;
+        let discountLabel = "Discount";
+        
+        if (invInputs.discountType.value === 'percent') {
+            let percent = Math.min(discountVal, 100);
+            discountAmount = grandTotal * (percent / 100);
+            discountLabel = `Discount (${percent}%)`;
+        } else {
+            discountAmount = discountVal;
+            discountLabel = `Discount ($${discountVal.toFixed(2)})`;
+        }
+        
+        discountAmount = Math.min(discountAmount, grandTotal); grandTotal -= discountAmount;
+        tbodyHTML += `<tr><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;"><strong style="color: #3A3F42;">${discountLabel}</strong></td><td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color:#10b981;">-${formatMoney(discountAmount)}</td></tr>`;
+      }
+
+      document.getElementById('inv-tbody').innerHTML = tbodyHTML;
+      const totalStr = formatMoney(grandTotal);
+      document.getElementById('inv-out-total').innerText = totalStr;
+      document.getElementById('inv-venmo-btn-amt').innerText = totalStr;
+      
+      document.getElementById('inv-venmo-link').href = `https://venmo.com/?txn=pay&audience=private&recipients=${(invInputs.venmo.value.replace('@','').trim() || 'tmcarleton')}&amount=${grandTotal.toFixed(2)}&note=${encodeURIComponent(`Invoice for ${projName} via Chop Lab`)}`;
+    }
+
+    Object.values(invInputs).forEach(input => { input.addEventListener('input', updateInvoicePreview); if(input.tagName === 'SELECT') input.addEventListener('change', updateInvoicePreview); });
+    invInputs.discountType.addEventListener('change', (e) => { invInputs.discountVal.placeholder = e.target.value === 'percent' ? '100' : '20.00'; });
+    updateInvoicePreview();
+
+    document.getElementById('btn-inv-send').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-inv-send');
+      const emailTo = invInputs.email.value;
+      if(!emailTo) return alert("Please enter a customer email.");
+
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 inline mr-1 animate-spin"></i> Sending...`; btn.disabled = true;
+
+      try {
+        const innerContent = document.getElementById('invoice-html-payload').innerHTML;
+        const finalEmailHTML = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="margin: 0; padding: 40px 20px; background-color: #F4F4F6; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 40px; border-top: 6px solid #D86A46; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+              ${innerContent}
+            </div>
+          </body>
+          </html>
+        `;
+
+        const response = await fetch(CLOUDFLARE_WORKER_URL, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "send_invoice", toEmail: emailTo, subject: document.getElementById('inv-out-subject').innerText, htmlBody: finalEmailHTML })
+        });
+        if (!response.ok) throw new Error("Worker Error");
+        btn.innerHTML = `<i data-lucide="check" class="w-4 h-4 inline mr-1"></i> Sent!`; btn.classList.replace('bg-emerald-600', 'bg-zinc-700');
+      } catch (error) {
+        btn.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4 inline mr-1"></i> Failed`; btn.classList.replace('bg-emerald-600', 'bg-red-600');
+      } finally {
+        setTimeout(() => { btn.innerHTML = `<i data-lucide="send" class="w-4 h-4 inline mr-1"></i> Send to Client`; btn.classList.remove('bg-zinc-700', 'bg-red-600'); btn.classList.add('bg-emerald-600'); btn.disabled = false; lucide.createIcons(); }, 3000);
+      }
     });
   </script>
 </body>

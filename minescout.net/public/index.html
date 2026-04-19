@@ -3,63 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>Thomas Carleton</title>
+  <meta name="description" content="Builder. Student. Eagle Scout. I build things on the internet — from Minecraft tools to web apps." />
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
-  <link rel="stylesheet" href="/styles/main.css?v=8.1" />
+  
+  <link rel="stylesheet" href="/main.css?v=3.1" />
+  
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
-  <!-- Open Graph -->
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+  
   <meta property="og:type"         content="website" />
   <meta property="og:site_name"    content="Thomas Carleton" />
   <meta property="og:title"        content="Thomas Carleton" />
   <meta property="og:description"  content="Builder. Student. Eagle Scout. — minescout.net" />
   <meta property="og:url"          content="https://minescout.net/" />
   <meta property="og:image"        content="https://minescout.net/assets/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="Thomas Carleton" />
-  <meta name="twitter:description" content="Builder. Student. Eagle Scout. — minescout.net" />
-  <meta name="twitter:image"       content="https://minescout.net/assets/og-image.png" />
-  <style>
-    .hero-layout { display: flex; align-items: center; gap: 5rem; }
-    .hero-photo {
-      flex-shrink: 0; width: 240px; height: 300px; border-radius: 16px;
-      object-fit: cover; object-position: center top;
-      opacity: 0; animation: fadeUp 0.5s ease 0.5s forwards;
-      border: 3px solid var(--border);
-    }
-    @media (max-width: 900px) {
-      .hero-layout { flex-direction: column-reverse; gap: 2rem; }
-      .hero-photo  { width: 140px; height: 175px; }
-    }
-  </style>
 </head>
 <body>
 
-  <!-- Sidebar injected by sidebar.js -->
+  <main class="main" id="app"></main>
 
-  <main class="main">
-    <div class="hero-layout">
-      <div class="hero">
-        <p class="hero-greeting">Welcome</p>
-        <h1 class="hero-title">Hi, I'm<br><em>Thomas.</em></h1>
-        <p class="hero-sub">Builder. Student. Eagle Scout.</p>
-        <p class="hero-desc">
-          I'm a 9th grader who builds things on the internet —
-          from Minecraft tools to web apps. This is where I share what I've made.
-        </p>
-        <div class="hero-links">
-          <a href="/work" class="btn-primary">See My Work</a>
-          <a href="/about" class="btn-ghost">About Me →</a>
-        </div>
-      </div>
-      <img src="assets/photo.png" alt="Thomas Carleton" class="hero-photo" />
-    </div>
-  </main>
-
-  <script src="/scripts/sidebar.js"></script>
-  <script src="/scripts/main.js"></script>
+  <script type="module" src="/app.js?v=3.1"></script>
 </body>
 </html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Venn | Booking without the Hassle</title>
+  
+  <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/TheMinescout/venn/refs/heads/main/public/favicon.svg">
+  
+  <style>
+    /* Prevents the page from having an annoying horizontal scrollbar */
+    body {
+      overflow-x: hidden; 
+    }
+  </style>
+</head>
+<body>
+
+  <iframe 
+    id="venn-iframe"
+    src="https://theminescout.github.io/venn/" 
+    style="
+      width: 100vw; 
+      height: 900px; 
+      border: none; 
+      border-radius: 2rem; 
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+    " 
+    title="Venn Calendar">
+  </iframe>
+
+  <script>
+    const iframe = document.getElementById('venn-iframe');
+    
+    // When the page loads, pass the URL hash to the iframe
+    if (window.location.hash) {
+      iframe.src = "https://theminescout.github.io/venn/" + window.location.hash;
+    }
+
+    // Listen for the iframe telling us the user navigated or created a group
+    window.addEventListener('message', (event) => {
+      // Make sure the message is actually coming from your github site
+      if (event.origin === "https://theminescout.github.io" && event.data.type === 'HASH_UPDATE') {
+        // Update the parent URL bar without reloading the page
+        window.history.replaceState(null, null, event.data.hash);
+      }
+    });
+  </script>
+
+</body>
+</html>

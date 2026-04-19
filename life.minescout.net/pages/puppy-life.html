@@ -1,193 +1,408 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-theme="auto">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Puppy Life!! - Minescouts Life</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Puppy Life — MineScout Life v3 Elite</title>
+  <meta name="description" content="Official records, stats, and timeline of the Carleton Pack: Monty and Nigel." />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/assests/images/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 
-    <link rel="stylesheet" href="../assests/css/homepage.css">
-    <link rel="stylesheet" href="../assests/css/features.css">
-    <link rel="icon" type="image/png" href="../assests/images/favicon.png">
+  <link rel="stylesheet" href="/assests/css/homepage.css" />
 
-    <style>
-        .puppy-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 30px;
-        }
+  <style>
+    /* ════ PUPPY LIFE SPECIFIC STYLES ════ */
+    .puppy-header-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 40px;
+      animation: fade-up 0.5s ease both;
+    }
 
-        .puppy-card {
-            position: relative;
-            height: 350px;
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            align-items: flex-end;
-            text-decoration: none;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+    .page-title {
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
 
-        .puppy-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        }
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
 
-        .card-overlay {
-            background: linear-gradient(transparent, rgba(0,0,0,0.9));
-            width: 100%;
-            padding: 25px;
-            color: white;
-            z-index: 2;
-        }
+    .puppy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
 
-        .card-overlay h3 { margin: 0; font-size: 1.8rem; }
-        .card-overlay p { margin: 5px 0 0; opacity: 0.9; font-weight: bold; color: #DD8566; }
+    .puppy-card {
+      position: relative;
+      height: 350px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      text-decoration: none;
+      transition: transform var(--transition), box-shadow var(--transition);
+      box-shadow: var(--shadow-1);
+      border: 1px solid var(--border);
+    }
 
-        .feeling-tag {
-            display: inline-block;
-            background: rgba(221, 133, 102, 0.2);
-            border: 1px solid #DD8566;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            margin-bottom: 10px;
-            color: #ffb094;
-        }
+    .puppy-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lift);
+      border-color: var(--border-glow);
+    }
 
-        .stats-container {
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            font-size: 0.85rem;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            padding-top: 10px;
-        }
+    .card-overlay {
+      background: linear-gradient(transparent, rgba(8,8,16,0.95));
+      width: 100%;
+      padding: 24px;
+      color: #ffffff;
+      z-index: 2;
+    }
 
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-        }
+    .card-overlay h3 { 
+      margin: 0; 
+      font-size: 28px; 
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    
+    .card-overlay p { 
+      margin: 4px 0 0; 
+      opacity: 0.9; 
+      font-weight: 700; 
+      color: #DD8566; 
+      font-size: 14px;
+    }
 
-        .stat-label { opacity: 0.7; font-weight: normal; }
-        .photo-timestamp { font-size: 0.7rem; opacity: 0.5; font-style: italic; margin-top: 5px; }
+    .feeling-tag {
+      display: inline-block;
+      background: rgba(221, 133, 102, 0.15);
+      border: 1px solid rgba(221, 133, 102, 0.4);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #ffb094;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-        .monty-bg { 
-            background: url('../../assests/images/puppy-life/Monty-Life-Homepage.png') center/cover; 
-            background-color: #222;
-        }
-        .nigel-bg { 
-            background: url('../../assests/images/puppy-life/Nigel-Life-Homepage.png') center/cover; 
-            background-color: #d2b48c;
-        }
+    .stats-container {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 12px;
+    }
 
-        @media (max-width: 650px) {
-            .puppy-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .stat-label { 
+      opacity: 0.7; 
+      font-weight: 500; 
+    }
+    
+    .photo-timestamp { 
+      font-size: 11px; 
+      opacity: 0.5; 
+      font-style: italic; 
+      margin-top: 8px; 
+    }
+
+    /* ABSOLUTE PATHS FOR BACKGROUNDS */
+    .monty-bg { 
+      background: url('/assests/images/puppy-life/Monty-Life-Homepage.png') center/cover; 
+      background-color: var(--bg-deep);
+    }
+    .nigel-bg { 
+      background: url('/assests/images/puppy-life/Nigel-Life-Homepage.png') center/cover; 
+      background-color: var(--bg-deep);
+    }
+
+    @media (max-width: 768px) {
+      .puppy-grid { grid-template-columns: 1fr; }
+      .puppy-header-card { padding: 24px; }
+    }
+  </style>
 </head>
-
 <body>
 
-    <header class="main-header">
-        <div class="container site-title-container">
-            <div id="auth-container"><a href="../login.html" id="login-link">Login</a></div>
-            <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
-                <p class="tagline">Puppy Life</p>
-            </div>
-            <div id="user-display" class="hidden">
-                <a href="../account.html"><span id="user-email-display"></span></a>
-                <button id="signOut-btn">Sign Out</button>
-            </div>
+<header id="site-header">
+  <div class="header-left">
+    <span class="header-logo"><a href="/index.html" style="color:inherit; text-decoration:none;">Life of a Smart Kid</a></span>
+    <span class="header-tagline">minescout.net</span>
+  </div>
+  <div class="header-right">
+    <div id="view-controls" aria-label="Layout view controls">
+      <button class="view-btn" id="btn-cols-3" title="3 columns"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="0" y="0" width="3.5" height="14" rx="1" fill="currentColor" opacity=".6"/><rect x="5.25" y="0" width="3.5" height="14" rx="1" fill="currentColor" opacity=".6"/><rect x="10.5" y="0" width="3.5" height="14" rx="1" fill="currentColor" opacity=".6"/></svg></button>
+      <button class="view-btn" id="btn-cols-2" title="2 columns"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="0" y="0" width="6" height="14" rx="1" fill="currentColor" opacity=".6"/><rect x="8" y="0" width="6" height="14" rx="1" fill="currentColor" opacity=".6"/></svg></button>
+      <button class="view-btn active" id="btn-cols-1" title="1 column"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="0" y="0" width="14" height="14" rx="1" fill="currentColor" opacity=".6"/></svg></button>
+    </div>
+    
+    <button id="theme-toggle" class="view-btn" title="Toggle theme" style="margin-left:4px;">
+      ☀️
+    </button>
+
+    <div id="auth-section">
+      <div class="auth-user-chip" id="user-chip" style="display:none;">
+        <div class="auth-avatar" id="user-avatar">U</div>
+        <span id="header-email"></span>
+      </div>
+      <a href="/login.html" id="login-btn" class="btn-primary">Sign In</a>
+      <button id="signout-btn" class="clear-filter-btn" style="display:none; padding:7px 12px;">Sign Out</button>
+    </div>
+  </div>
+</header>
+
+<section id="hero-section">
+  <div class="hero-eyebrow"><span class="dot"></span> Category Archive</div>
+  <h1 class="hero-title" id="hero-category-title">Puppy Life <span>Archive</span></h1>
+  <p class="hero-subtitle" id="dynamic-tagline">All posts tagged in Puppy Life</p>
+</section>
+
+<div id="page-layout">
+
+  <main id="content-area">
+
+    <div id="admin-panel" class="admin-section hidden">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:24px;">🛡️</span>
+        <div>
+          <div class="admin-info-text">Admin Access Active</div>
+          <div style="font-size:12px; color:var(--text-secondary);">You are viewing the dashboard as an administrator.</div>
         </div>
-    </header>
+      </div>
+      <a href="/admin/admin-posting.html" id="admin-link-btn" class="admin-button">
+        Dashboard <span id="admin-badge" class="notification-badge hidden">0</span>
+      </a>
+    </div>
 
-    <div class="main-content-area">
-        <div class="container">
+    <article class="puppy-header-card">
+      <h1 class="page-title">The Carleton Pack</h1>
+      <p class="page-subtitle">Official records and live stats of our favorite dogs. Choose a profile below to view their full documentary history, or scroll down to see the latest timeline updates.</p>
 
-            <main class="main-content">
-                <div class="post-main">
-                    <article class="post-full">
-                        <h1>Welcome to Puppy Life!</h1>
-                        <p class="post-meta">Official records of the Carleton Pack</p>
+      <div class="puppy-grid">
+          <a href="/posts/puppy/monty.html" class="puppy-card monty-bg">
+              <div class="card-overlay">
+                  <div class="feeling-tag">Monthly Feeling: Stoic & Healthy</div>
+                  <h3>Monty</h3>
+                  <p>The Resilient Veteran</p>
+                  <div class="stats-container">
+                      <div class="stat-row"><span class="stat-label">Birthday:</span> <span>Nov 11, 2019</span></div>
+                      <div class="stat-row"><span class="stat-label">Current Age:</span> <span id="monty-age">Calculating...</span></div>
+                      <div class="stat-row"><span class="stat-label">Diet:</span> <span>Medical (Vegan)</span></div>
+                      <div class="photo-timestamp">Captured: Mid-2025</div>
+                  </div>
+              </div>
+          </a>
 
-                        <div class="post-content">
-                            <p>Choose a profile below to view their full documentary history and stats. Ages are automatically updated.</p>
-                        </div>
+          <a href="/posts/puppy/nigel.html" class="puppy-card nigel-bg">
+              <div class="card-overlay">
+                  <div class="feeling-tag">Monthly Feeling: Hyper-Active</div>
+                  <h3>Nigel</h3>
+                  <p>The Agent of Chaos</p>
+                  <div class="stats-container">
+                      <div class="stat-row"><span class="stat-label">Birthday:</span> <span>Dec 21, 2023</span></div>
+                      <div class="stat-row"><span class="stat-label">Current Age:</span> <span id="nigel-age">Calculating...</span></div>
+                      <div class="stat-row"><span class="stat-label">Hobby:</span> <span>Yard Wrestling</span></div>
+                      <div class="photo-timestamp">Captured: Mid-2025</div>
+                  </div>
+              </div>
+          </a>
+      </div>
+    </article>
 
-                        <div class="puppy-grid">
-                            <a href="../posts/puppy/monty.html" class="puppy-card monty-bg">
-                                <div class="card-overlay">
-                                    <div class="feeling-tag">Monthly Feeling: Stoic & Healthy</div>
-                                    <h3>Monty</h3>
-                                    <p>The Resilient Veteran</p>
-                                    <div class="stats-container">
-                                        <div class="stat-row"><span class="stat-label">Birthday:</span> <span>Nov 11, 2019</span></div>
-                                        <div class="stat-row"><span class="stat-label">Current Age:</span> <span id="monty-age">Calculating...</span></div>
-                                        <div class="stat-row"><span class="stat-label">Diet:</span> <span>Medical (Vegan)</span></div>
-                                        <div class="photo-timestamp">Captured: Mid-2025</div>
-                                    </div>
-                                </div>
-                            </a>
+    <div style="position: relative;">
+      <div id="timeline-rail"></div>
+      <div id="posts-container" class="cols-1">
+        </div>
+    </div>
+  </main>
 
-                            <a href="../posts/puppy/nigel.html" class="puppy-card nigel-bg">
-                                <div class="card-overlay">
-                                    <div class="feeling-tag">Monthly Feeling: Hyper-Active</div>
-                                    <h3>Nigel</h3>
-                                    <p>The Agent of Chaos</p>
-                                    <div class="stats-container">
-                                        <div class="stat-row"><span class="stat-label">Birthday:</span> <span>Dec 21, 2023</span></div>
-                                        <div class="stat-row"><span class="stat-label">Current Age:</span> <span id="nigel-age">Calculating...</span></div>
-                                        <div class="stat-row"><span class="stat-label">Hobby:</span> <span>Yard Wrestling</span></div>
-                                        <div class="photo-timestamp">Captured: Mid-2025</div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </article>
-                </div>
-            </main>
+  <aside id="sidebar">
+    
+    <div id="sidebar-nav-container"></div>
 
-            <aside id="sidebar">
-                <div id="sidebar-container"></div> 
-            </aside>
+    <div class="sidebar-module" style="background: linear-gradient(180deg, var(--bg-card) 0%, rgba(124,90,255,0.05) 100%);">
+      <div class="sidebar-module-header">
+        <span class="sidebar-module-icon">✨</span>
+        <span class="sidebar-module-title" style="color:var(--text-accent);">AI Reflection</span>
+      </div>
+      <div class="sidebar-module-body">
+        <div id="ai-insight-text" class="ai-insight-text">
+          <span class="ai-loading-pulse"></span> Analyzing category momentum...
+        </div>
+      </div>
+    </div>
 
+    <div class="sidebar-module">
+      <div class="sidebar-module-header">
+        <span class="sidebar-module-icon">🔥</span>
+        <span class="sidebar-module-title">90-Day Contribution</span>
+      </div>
+      <div class="sidebar-module-body">
+        <div id="heatmap-grid" class="heatmap-grid">
+          </div>
+        <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-top:8px;">
+          <span>Less</span>
+          <span>More</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-module">
+      <div class="sidebar-module-header">
+        <span class="sidebar-module-icon">📅</span>
+        <span class="sidebar-module-title">Timeline</span>
+      </div>
+      <div class="sidebar-module-body" id="archive-links-container">
         </div>
     </div>
 
-    <footer class="main-footer">
-        <div class="container">
-            <p id="copyright">© 2026 Minescouts Life. All rights reserved.</p>
-        </div>
-    </footer>
+  </aside>
+</div>
 
-    <script>
-        function calculateAge(birthDate) {
-            const today = new Date();
-            const birth = new Date(birthDate);
-            let age = today.getFullYear() - birth.getFullYear();
-            const m = today.getMonth() - birth.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
-                age--;
+<footer style="padding: 40px; text-align: center; border-top: 1px solid var(--border); margin-top: 60px;">
+  <p style="font-size: 13px; color: var(--text-muted);">Life of a Smart Kid OS v3.1 • Dual Theme Edition</p>
+</footer>
+
+<script type="module">
+import { db, auth } from "/assests/js/firebase-config.js";
+import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// IMPORT CENTRAL DATA AND SIDEBAR
+import { siteData } from "/assests/includes/data.js";
+import { initSidebar } from "/assests/includes/sidebar.js";
+
+// ── PUPPY AGE CALCULATOR ──
+function calculateAge(birthDate) {
+  const today = new Date();
+  const birth = new Date(birthDate);
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+  return age + (age === 1 ? " Year" : " Years");
+}
+
+// ── THEME ENGINE ──
+const ThemeEngine = {
+  init() {
+    const saved = localStorage.getItem("theme");
+    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const theme = saved || (systemDark ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+    this.updateIcon(theme);
+
+    document.getElementById("theme-toggle")?.addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme");
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      this.updateIcon(next);
+    });
+  },
+  updateIcon(theme) {
+    const btn = document.getElementById("theme-toggle");
+    if (!btn) return;
+    btn.textContent = theme === "dark" ? "☀️" : "🌙";
+  }
+};
+
+// ── INITIALIZATION ──
+const AppInit = {
+  start() {
+    ThemeEngine.init();
+    this.setupAuthUI();
+    
+    // Inject the global sidebar links
+    if (typeof initSidebar === 'function') {
+      initSidebar();
+    }
+
+    // Set ages dynamically
+    const montyEl = document.getElementById('monty-age');
+    const nigelEl = document.getElementById('nigel-age');
+    if(montyEl) montyEl.innerText = calculateAge('2019-11-11');
+    if(nigelEl) nigelEl.innerText = calculateAge('2023-12-21');
+
+    /* NOTE: Any external timeline/heatmap rendering logic 
+      that was previously located inside your external 'homepage.js' 
+      should be initialized right here if applicable.
+    */
+  },
+
+  setupAuthUI() {
+    const loginBtn = document.getElementById("login-btn");
+    const signoutBtn = document.getElementById("signout-btn");
+    const userChip = document.getElementById("user-chip");
+    const emailEl = document.getElementById("header-email");
+    const avatarEl = document.getElementById("user-avatar");
+    const adminPanel = document.getElementById("admin-panel");
+    const adminBadge = document.getElementById("admin-badge");
+    const ADMIN_EMAIL = 'theminescout@minescout.net';
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        if(loginBtn) loginBtn.style.display = "none";
+        if(signoutBtn) signoutBtn.style.display = "inline-flex";
+        if(userChip) userChip.style.display = "flex";
+        if(emailEl) emailEl.textContent = user.email;
+        if(avatarEl) avatarEl.textContent = (user.email || "U")[0].toUpperCase();
+
+        // Admin Access Logic
+        if (user.email === ADMIN_EMAIL && adminPanel) {
+          adminPanel.classList.remove("hidden");
+          onValue(ref(db, 'feature_requests'), (snapshot) => {
+            const data = snapshot.val();
+            let unreadCount = 0;
+            if (data) Object.values(data).forEach(req => { if (req.status === 'new') unreadCount++; });
+            if (adminBadge) {
+              if (unreadCount > 0) {
+                adminBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                adminBadge.classList.remove('hidden');
+              } else {
+                adminBadge.classList.add('hidden');
+              }
             }
-            return age + " Years";
+          });
         }
+      } else {
+        if(loginBtn) loginBtn.style.display = "inline-flex";
+        if(signoutBtn) signoutBtn.style.display = "none";
+        if(userChip) userChip.style.display = "none";
+        if(adminPanel) adminPanel.classList.add("hidden");
+      }
+    });
 
-        document.getElementById('monty-age').innerText = calculateAge('2019-11-11');
-        document.getElementById('nigel-age').innerText = calculateAge('2023-12-21');
-    </script>
+    if(signoutBtn) signoutBtn.addEventListener("click", () => signOut(auth).catch(err => console.error("Sign out error", err)));
+  }
+};
 
-    <script type="module" src="../assests/js/auth.js"></script>
-    <script type="module" src="../assests/js/homepage.js"></script>
-    <script src="../assests/js/loader.js"></script>
+document.addEventListener("DOMContentLoaded", () => AppInit.start());
+</script>
 
 </body>
 </html>
