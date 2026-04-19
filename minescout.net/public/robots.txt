@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Keep Google out of the backend/admin routes
+Disallow: /ai/admin
+Disallow: /portal
+Disallow: /hq
+Disallow: /ai/chat-config
+Disallow: /ai/generator/audit
+Disallow: /ai/generator/doc-compile
+
+# Point bots directly to your map
+Sitemap: https://minescout.net/sitemap.xml
