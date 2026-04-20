@@ -1049,7 +1049,7 @@ export const views = {
     <div class="main--page">
       <div class="page-content pricing-wrap">
         <p class="page-label">Minescout AI</p>
-        <h1 class="page-title">Pricing</h1>
+        <h1 class="page-title">Pricing & Beta Programs</h1>
 
         <div class="anchor-bar">
           <div class="anchor-bar-icon">&#128161;</div>
@@ -1059,8 +1059,9 @@ export const views = {
           </div>
         </div>
 
-        <div class="tiers">
-          <div class="tier">
+        <div class="tiers" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-top: 2rem;">
+          
+          <div class="tier" style="flex: 1 1 220px; max-width: 260px;">
             <div class="tier-name">Digital Remodel</div>
             <div class="tier-price">$<em>499</em></div>
             <div class="tier-price-sub">one-time setup</div>
@@ -1068,16 +1069,32 @@ export const views = {
             <p class="tier-target">A fast, high-end &ldquo;front door&rdquo; for businesses that need a modern site without AI &mdash; yet.</p>
             <hr class="tier-divider" />
             <ul class="tier-features">
-              <li class="tier-feature">Playfair Display editorial typography</li>
-              <li class="tier-feature">Mobile-first responsive design</li>
+              <li class="tier-feature">Playfair Display typography</li>
+              <li class="tier-feature">Mobile-first responsive</li>
               <li class="tier-feature">Sub-second load times</li>
-              <li class="tier-feature">Full SEO metadata &amp; schema</li>
-              <li class="tier-feature">Self-hosted or managed ($29/mo)</li>
+              <li class="tier-feature">SEO metadata &amp; schema</li>
             </ul>
             <a href="/contact" class="tier-cta">Get started</a>
           </div>
 
-          <div class="tier tier--featured">
+          <div class="tier" style="flex: 1 1 220px; max-width: 260px;">
+            <span class="tier-badge" style="background: #fff4f1; color: var(--accent); border: 1px solid #ffd5c8;">Beta — 50% Off</span>
+            <div class="tier-name">Lead-Gen Widget</div>
+            <div class="tier-price">$<em>299</em></div>
+            <div class="tier-price-sub"><span style="text-decoration: line-through; opacity: 0.6;">$599</span> one-time setup</div>
+            <div class="tier-price-sub">+ $15 per month</div>
+            <p class="tier-target">Custom calculators or quote engines. 50% off for early adopters who help refine the product.</p>
+            <hr class="tier-divider" />
+            <ul class="tier-features">
+              <li class="tier-feature">Interactive logic/math</li>
+              <li class="tier-feature">Instant lead capture</li>
+              <li class="tier-feature">Data routed to your email</li>
+              <li class="tier-feature">Co-development process</li>
+            </ul>
+            <a href="/contact" class="tier-cta" style="background: var(--light); color: var(--fg); border: 1px solid var(--border);">Claim Beta Spot</a>
+          </div>
+
+          <div class="tier tier--featured" style="flex: 1 1 220px; max-width: 260px;">
             <span class="tier-badge">Most Popular</span>
             <div class="tier-name">Full AI Upgrade</div>
             <div class="tier-price">$<em>749</em></div>
@@ -1087,33 +1104,47 @@ export const views = {
             <p class="tier-target">Complete remodel plus a custom-trained AI assistant. The full package for growth-stage local businesses.</p>
             <hr class="tier-divider" />
             <ul class="tier-features">
-              <li class="tier-feature">Everything in Digital Remodel</li>
+              <li class="tier-feature">Everything in Remodel</li>
               <li class="tier-feature">Custom-trained AI assistant</li>
               <li class="tier-feature">Managed Training Bridge</li>
-              <li class="tier-feature">Real-time feedback loop</li>
               <li class="tier-feature">After-hours coverage</li>
-              <li class="tier-feature">Monthly updates &amp; API management</li>
             </ul>
             <a href="/contact" class="tier-cta">Get started</a>
           </div>
 
-          <div class="tier tier--charter">
+          <div class="tier" style="flex: 1 1 220px; max-width: 260px;">
+            <span class="tier-badge" style="background: #fff4f1; color: var(--accent); border: 1px solid #ffd5c8;">Beta — 50% Off</span>
+            <div class="tier-name">Internal Ops AI</div>
+            <div class="tier-price">$<em>449</em></div>
+            <div class="tier-price-sub"><span style="text-decoration: line-through; opacity: 0.6;">$899</span> one-time setup</div>
+            <div class="tier-price-sub">+ $39 per month</div>
+            <p class="tier-target">A secure "Staff Bot" trained on your private SOPs and handbooks. Discounted as we perfect the system.</p>
+            <hr class="tier-divider" />
+            <ul class="tier-features">
+              <li class="tier-feature">Private &amp; secure access</li>
+              <li class="tier-feature">Trained on internal docs</li>
+              <li class="tier-feature">Instant HR/SOP answers</li>
+              <li class="tier-feature">Co-development process</li>
+            </ul>
+            <a href="/contact" class="tier-cta" style="background: var(--light); color: var(--fg); border: 1px solid var(--border);">Claim Beta Spot</a>
+          </div>
+
+          <div class="tier tier--charter" style="flex: 1 1 220px; max-width: 260px;">
             <span class="tier-badge tier-badge--charter">Invite Only</span>
             <div class="tier-name">Charter Partner</div>
             <div class="tier-price" style="font-size:1.5rem;color:var(--muted);">$<em style="color:var(--muted);">0</em></div>
             <div class="tier-price-sub">setup &amp; hosting waived</div>
             <div class="tier-was">Valued at $749 + $59/mo</div>
-            <p class="tier-target">For select beta partners. You get the full stack free &mdash; in exchange for a signed testimonial and 12 months of feedback. Exactly 3 spots available.</p>
+            <p class="tier-target">For select beta partners. The full stack free in exchange for a signed testimonial. 3 spots available.</p>
             <hr class="tier-divider" />
             <ul class="tier-features">
               <li class="tier-feature">Full AI Upgrade at no cost</li>
               <li class="tier-feature">Signed testimonial required</li>
-              <li class="tier-feature">Featured case study permission</li>
-              <li class="tier-feature">12 months of active feedback</li>
-              <li class="tier-feature">Priority support &amp; updates</li>
+              <li class="tier-feature">12 months of feedback</li>
             </ul>
             <a href="/contact" class="tier-cta">Request an invite</a>
           </div>
+
         </div>
 
         <div class="pricing-section-label" style="--ad:0.26s;">Not sure what plan?</div>
@@ -1163,12 +1194,10 @@ export const views = {
               </div>
             </div>
           </div>
-          
           <div class="plan-quiz-nav" style="padding: 0 1.5rem 1.5rem;">
             <button type="button" class="plan-quiz-back" id="quiz-back" style="visibility: hidden;">&larr; Back</button>
             <button type="button" class="plan-quiz-next" id="quiz-next" disabled>Next Step</button>
           </div>
-
           <div class="plan-quiz-result" id="quiz-result">
             <div class="plan-quiz-result-label">Our recommendation</div>
             <div class="plan-quiz-result-title" id="quiz-result-title"></div>
@@ -1178,89 +1207,19 @@ export const views = {
           </div>
         </div>
 
-        <div class="roi-bar">
-          <div class="roi-stat">
-            <span class="roi-val">40<em>hrs</em></span>
-            <span class="roi-label">Saved per month<br>in manual Q&amp;A</span>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; text-align: center; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 2.5rem 0; margin: 3rem 0; opacity: 0; animation: fadeUp 0.5s ease 0.35s forwards;">
+          <div>
+            <div style="font-family: var(--serif); font-size: 2.4rem; font-weight: 700; color: var(--fg); line-height: 1;">40<em style="color: var(--accent); font-style: normal; font-size: 1.4rem; margin-left: 2px;">hrs</em></div>
+            <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 0.75rem;">Saved per month<br>in manual Q&amp;A</div>
           </div>
-          <div class="roi-stat">
-            <span class="roi-val">24<em>/7</em></span>
-            <span class="roi-label">After-hours coverage<br>& automated triage</span>
+          <div>
+            <div style="font-family: var(--serif); font-size: 2.4rem; font-weight: 700; color: var(--fg); line-height: 1;">24<em style="color: var(--accent); font-style: normal; font-size: 1.4rem; margin-left: 2px;">/7</em></div>
+            <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 0.75rem;">After-hours coverage<br>&amp; automated triage</div>
           </div>
-          <div class="roi-stat">
-            <span class="roi-val">&lt;1<em>wk</em></span>
-            <span class="roi-label">From first call<br>to live widget</span>
+          <div>
+            <div style="font-family: var(--serif); font-size: 2.4rem; font-weight: 700; color: var(--fg); line-height: 1;">&lt;1<em style="color: var(--accent); font-style: normal; font-size: 1.4rem; margin-left: 2px;">wk</em></div>
+            <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 0.75rem;">From first call<br>to live widget</div>
           </div>
-        </div>
-
-        <div class="pricing-section-label" style="--ad:0.3s;">What&rsquo;s included</div>
-        <div class="comparison">
-          <table>
-            <thead>
-              <tr>
-                <th>Feature</th>
-                <th>Remodel</th>
-                <th>Full AI Upgrade</th>
-                <th>Charter</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Modern site redesign</td>
-                <td><span class="check">&#10003;</span></td>
-                <td><span class="check">&#10003;</span></td>
-                <td><span class="check">&#10003;</span></td>
-              </tr>
-              <tr>
-                <td>Mobile-first responsive</td>
-                <td><span class="check">&#10003;</span></td>
-                <td><span class="check">&#10003;</span></td>
-                <td><span class="check">&#10003;</span></td>
-              </tr>
-              <tr>
-                <td>SEO metadata &amp; schema</td>
-                <td><span class="check">&#10003;</span></td>
-                <td><span class="check">&#10003;</span></td>
-                <td><span class="check">&#10003;</span></td>
-              </tr>
-              <tr>
-                <td>AI chat assistant</td>
-                <td><span class="cross">&mdash;</span></td>
-                <td><span class="check">&#10003;</span></td>
-                <td><span class="check">&#10003;</span></td>
-              </tr>
-              <tr>
-                <td>Managed Training Bridge</td>
-                <td><span class="cross">&mdash;</span></td>
-                <td><span class="check">&#10003;</span></td>
-                <td><span class="check">&#10003;</span></td>
-              </tr>
-              <tr>
-                <td>Real-time feedback loop</td>
-                <td><span class="cross">&mdash;</span></td>
-                <td><span class="check">&#10003;</span></td>
-                <td><span class="check">&#10003;</span></td>
-              </tr>
-              <tr>
-                <td>Lead capture alerts</td>
-                <td><span class="cross">&mdash;</span></td>
-                <td><span class="partial">Coming Soon</span></td>
-                <td><span class="partial">Coming Soon</span></td>
-              </tr>
-              <tr>
-                <td>Monthly maintenance</td>
-                <td><span class="partial">Optional $29/mo</span></td>
-                <td><span class="check">&#10003; $59/mo</span></td>
-                <td><span class="check">&#10003; Free</span></td>
-              </tr>
-              <tr>
-                <td>Featured case study</td>
-                <td><span class="cross">&mdash;</span></td>
-                <td><span class="cross">&mdash;</span></td>
-                <td><span class="check">&#10003; Required</span></td>
-              </tr>
-            </tbody>
-          </table>
         </div>
 
         <div class="pricing-section-label" style="--ad:0.38s;">What the monthly fee covers</div>
@@ -1290,55 +1249,6 @@ export const views = {
           </div>
         </div>
 
-        <div class="pricing-section-label" style="--ad:0.42s;">Frequently asked</div>
-        <div class="faq-list">
-          <div class="faq-item">
-            <button class="faq-q" onclick="window.toggleFaq(this)">
-              Do I need a new website to add the AI?
-              <span class="faq-chevron">&#9660;</span>
-            </button>
-            <div class="faq-a">
-              <div class="faq-a-inner">No &mdash; the AI widget is a single line of code that works on any existing site. WordPress, Squarespace, Wix, custom HTML, anything. If you want a remodel too, that&rsquo;s a separate add-on.</div>
-            </div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-q" onclick="window.toggleFaq(this)">
-              How does the AI learn my business?
-              <span class="faq-chevron">&#9660;</span>
-            </button>
-            <div class="faq-a">
-              <div class="faq-a-inner">You send me your FAQs, hours, services, and pricing in any format &mdash; a Google Doc, PDF, or even a voice note. I train the AI on your documents and it answers as if it works for you.</div>
-            </div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-q" onclick="window.toggleFaq(this)">
-              What happens when the AI gets something wrong?
-              <span class="faq-chevron">&#9660;</span>
-            </button>
-            <div class="faq-a">
-              <div class="faq-a-inner">Every response has a thumbs up/down button. If something&rsquo;s wrong, you type the correct answer in a text box &mdash; it goes straight into your Managed Training Bridge and I apply the fix in the next update cycle.</div>
-            </div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-q" onclick="window.toggleFaq(this)">
-              Is there a contract or lock-in?
-              <span class="faq-chevron">&#9660;</span>
-            </button>
-            <div class="faq-a">
-              <div class="faq-a-inner">No contracts. The monthly fee is month-to-month ($59 per month). If you want to cancel, I remove the widget and hand over all your training data within 48 hours. Charter Partners have a 12-month feedback commitment in exchange for the free setup.</div>
-            </div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-q" onclick="window.toggleFaq(this)">
-              Who is building this &mdash; is it a big agency?
-              <span class="faq-chevron">&#9660;</span>
-            </button>
-            <div class="faq-a">
-              <div class="faq-a-inner">It&rsquo;s me &mdash; Thomas Carleton, a 9th grader at Eastlake High School in Sammamish, WA. I&rsquo;m building AI tools as part of my CS track and FRC robotics engineering. Every client I take on gets my direct attention, not an outsourced team.</div>
-            </div>
-          </div>
-        </div>
-
         <div class="pricing-cta">
           <div class="pricing-cta-text">
             <div class="pricing-cta-title">Not sure which plan?</div>
@@ -1346,7 +1256,7 @@ export const views = {
           </div>
           <div class="pricing-cta-btns">
             <a href="/contact" class="btn-primary">Get in touch</a>
-            <a href="/ai/demo/index.html" class="btn-ghost">See demo first</a>
+            <a href="/ai/demo/" class="btn-ghost">See demo first</a>
           </div>
         </div>
 

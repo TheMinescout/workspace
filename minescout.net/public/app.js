@@ -1,6 +1,6 @@
 // app.js — Application Logic & Routing
 
-import { views } from './views.js?v=1';
+import { views } from './views.js?v=2';
 
 // ── 1. SIDEBAR CONFIGURATION ──────────────────────────────────────
 const MAIN_MENU = [

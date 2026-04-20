@@ -9,12 +9,13 @@
     <link rel="icon" type="image/png" href="https://chop-lab.com/assets/images/Favicon.png">
     <meta name="theme-color" content="#C97B63">
     
-    <!-- Markdown Parser for AI Chat -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-    <!-- Three.js for STL Preview -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/manthrax/THREE-CSGMesh@master/CSGMesh.js"></script>
 
     <style>
         /* ==========================================================================
@@ -510,10 +511,8 @@
 </head>
 <body>
 
-    <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- Shared Top Navigation (HASH NAV) -->
     <nav class="navbar" id="main-nav">
         <div class="container nav-flex">
             <a href="#home" class="logo">The Chop Lab<span>.</span></a>
@@ -528,7 +527,6 @@
         </div>
     </nav>
 
-    <!-- Mobile Bottom Navigation (HASH NAV) -->
     <div class="bottom-nav">
         <a href="#home" class="nav-link" data-target="home"><i class="material-icons">home</i><span>Home</span></a>
         <a href="#studio" class="nav-link" data-target="studio"><i class="material-icons">category</i><span>Studio</span></a>
@@ -537,9 +535,6 @@
         <a href="#account" class="nav-link" data-target="account"><i class="material-icons">person</i><span>Account</span></a>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SECTION 0: HOME / WELCOME PAGE -->
-    <!-- ========================================== -->
     <div id="page-home" class="page-view">
         <header class="hero">
             <div class="container reveal">
@@ -569,7 +564,6 @@
                     </div>
                 </div>
 
-                <!-- FROM CAD TO CLAY PROCESS -->
                 <div class="reveal" style="text-align: center; margin-bottom: 60px; margin-top: 120px;">
                     <h2 class="section-title" style="margin-bottom: 16px; font-style: italic;">From CAD to Clay.</h2>
                     <p style="color: var(--tcl-text-muted); font-size: 1.15rem;">See how digital engineering translates into handmade ceramics.</p>
@@ -599,7 +593,6 @@
                 </div>
             </div>
 
-            <!-- SOCIAL PROOF SECTION -->
             <div style="background: var(--tcl-surface); border-top: 1px solid var(--tcl-border); border-bottom: 1px solid var(--tcl-border); padding: 100px 0;">
                 <div class="container reveal">
                     <div style="text-align: center; margin-bottom: 60px;">
@@ -614,7 +607,6 @@
             </div>
 
             <div class="container">
-                <!-- FOUNDER STORY -->
                 <div class="split-section reveal" style="border-radius: 12px; overflow: hidden; box-shadow: var(--tcl-shadow-md); margin-top: 100px; margin-bottom: 60px; border: 1px solid var(--tcl-border);">
                     <div class="split-image">
                         <img src="https://chop-lab.com/assets/images/maker-photo.png" alt="Thomas Carleton - Lab Technician">
@@ -629,9 +621,6 @@
         </section>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SECTION 1: STUDIO -->
-    <!-- ========================================== -->
     <div id="page-studio" class="page-view hidden-page">
         <div class="info-intro reveal" style="text-align: center; border-bottom: none; margin-bottom: 0;">
             <div class="container">
@@ -643,7 +632,6 @@
         <div class="gallery">
             <div class="container">
                 
-                <!-- CATEGORY SELECTION GRID -->
                 <div id="studio-categories" class="product-grid reveal">
                     <div class="card-link category-link" data-category="stamping" style="cursor: pointer;">
                         <div class="art-card" style="text-align: center; padding: 40px 20px; justify-content: center; min-height: 280px;">
@@ -675,14 +663,12 @@
                     </div>
                 </div>
 
-                <!-- PRODUCT CARDS (INITIALLY HIDDEN) -->
                 <div id="studio-products" class="hidden">
                     <div style="margin-bottom: 30px; text-align: left;">
                         <button id="btn-back-categories" class="btn-minimal" style="padding: 10px 20px; font-size: 0.75rem;">&larr; View All Categories</button>
                     </div>
                     <div class="product-grid" id="studio-product-grid">
                         
-                        <!-- FIX: roller-hex card now correctly links to roller-10in to match the select option value -->
                         <a href="#order?product=chop-simple" class="card-link reveal" data-category="stamping">
                             <div class="art-card">
                                 <div class="art-image-wrapper">
@@ -711,7 +697,6 @@
                             </div>
                         </a>
 
-                        <!-- FIX: was href="#order?product=roller-hex" — corrected to roller-10in -->
                         <a href="#order?product=roller-10in" class="card-link reveal" data-category="stamping">
                             <div class="art-card">
                                 <div class="art-image-wrapper">
@@ -841,7 +826,6 @@
                     </div>
                 </div>
 
-                <!-- R&D / IN DEVELOPMENT SECTION -->
                 <div class="reveal" style="margin-top: 80px; margin-bottom: 60px; border-top: 1px solid var(--tcl-border); padding-top: 60px;">
                     <div style="text-align: center; margin-bottom: 40px;">
                         <h2 style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--tcl-text-main); font-style: italic;">In the R&D Lab.</h2>
@@ -867,40 +851,267 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SECTION 2: 3D PRINTING -->
-    <!-- ========================================== -->
     <div id="page-3dprint" class="page-view hidden-page">
         <div class="info-intro reveal" style="background: var(--tcl-background); border-bottom: 1px solid var(--tcl-border); text-align: center; margin-bottom: 0;">
             <div class="container">
-                <h1>Print on Demand.</h1>
-                <p>Bring your STLs to life in our lab.</p>
+                <h1>AI Lab Technician.</h1>
+                <p>Generate parametric 3D models using natural language.</p>
             </div>
         </div>
 
-        <div class="container reveal" style="padding-top: 80px; padding-bottom: 80px;">
-            <div class="split-section" style="border-radius: 12px; overflow: hidden; box-shadow: var(--tcl-shadow-md); border: 1px solid var(--tcl-border);">
-                <div class="split-image">
-                    <img src="https://chop-lab.com/assets/images/printer-action.png" alt="Bambu Lab A1 Printer in Action">
+        <div class="container reveal" style="padding-top: 60px; padding-bottom: 80px;">
+            <div class="split-section" style="border-radius: 12px; overflow: hidden; box-shadow: var(--tcl-shadow-md); border: 1px solid var(--tcl-border); background: var(--tcl-surface); display: flex; min-height: 600px; flex-direction: row;">
+                
+                <div style="flex: 1; border-right: 1px solid var(--tcl-border); display: flex; flex-direction: column;">
+                    <div style="padding: 24px; border-bottom: 1px solid var(--tcl-border); background: #2B2B2B; color: #fff; font-family: 'Roboto Mono', monospace; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">
+                        <span class="ai-status"></span> TCL Parametric Engine // Online
+                    </div>
+                    
+                    <div id="ai-cad-chat" style="flex-grow: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; background: var(--tcl-background);">
+                        <div class="ai-message system">
+                            <strong>Lab AI:</strong> Describe the tool you need. I'll help you engineer it. For example: "I need a sponge holder."
+                        </div>
+                    </div>
+
+                    <div style="padding: 16px; border-top: 1px solid var(--tcl-border); background: var(--tcl-surface); display: flex; gap: 10px;">
+                        <input type="text" id="ai-cad-input" placeholder="Enter specifications..." style="flex-grow: 1; padding: 16px; border: 1px solid var(--tcl-border); border-radius: 6px; font-family: var(--font-primary);" onkeypress="if(event.key==='Enter') generateCAD()">
+                        <button onclick="generateCAD()" class="btn-launch" id="btn-generate-cad" style="padding: 0 24px;">Send</button>
+                    </div>
                 </div>
-                <div class="split-content">
-                    <h2 style="font-family: var(--font-heading); font-style: italic;">Rapid Prototyping</h2>
-                    <p style="color: var(--tcl-text-muted); line-height: 1.8; margin-bottom: 20px;">We use high-speed Bambu Lab A1 printers to bring your custom 3D models into reality. Whether you need a functional replacement part, a cosplay prop, or a custom tool, our lab is equipped to handle it.</p>
-                    <ul class="feature-list">
-                        <li><strong>Max Build Volume:</strong> 256 x 256 x 256 mm</li>
-                        <li><strong>Materials:</strong> Tough PLA Matte &amp; Durable PETG</li>
-                        <li><strong>Pricing:</strong> $5 base fee + $1 per hour of print time</li>
-                        <li><strong>Turnaround:</strong> Typically 3-5 business days</li>
-                    </ul>
-                    <a href="#order?product=custom-stl" class="btn-minimal" style="margin-top: 30px; width: fit-content;">Upload an STL</a>
+
+                <div style="flex: 1.5; position: relative; background: #F5EFE6; display: flex; flex-direction: column;">
+                    <div id="ai-viewport" style="width: 100%; height: 100%; min-height: 400px; flex-grow: 1;"></div>
+                    
+                    <div style="position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px;">
+                        <button onclick="exportAiSTL()" class="btn-minimal" style="background: var(--tcl-surface); font-size: 0.75rem; padding: 10px 16px; box-shadow: var(--tcl-shadow-sm);">
+                            <i class="material-icons" style="font-size: 1rem; vertical-align: middle;">download</i> Export STL
+                        </button>
+                    </div>
                 </div>
+
             </div>
         </div>
+
+        <script>
+            // --- AI CAD GENERATOR LOGIC ---
+            let aiScene, aiCamera, aiRenderer, aiControls;
+            let currentAiMesh = null;
+            
+            // Conversation Memory Array
+            let aiChatHistory = [];
+            
+            const WORKER_URL = "https://ai-cad-engine.tmcarleton11.workers.dev"; 
+
+            function initAiViewport() {
+                const container = document.getElementById('ai-viewport');
+                if (aiRenderer || !container) return; 
+
+                aiScene = new THREE.Scene();
+                aiScene.background = null; 
+
+                aiCamera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+                aiCamera.position.set(60, 60, 60);
+
+                aiRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                aiRenderer.setSize(container.clientWidth, container.clientHeight);
+                container.appendChild(aiRenderer.domElement);
+
+                aiControls = new THREE.OrbitControls(aiCamera, aiRenderer.domElement);
+                aiControls.enableDamping = true;
+                aiControls.dampingFactor = 0.05;
+
+                aiScene.add(new THREE.AmbientLight(0xffffff, 0.7));
+                const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+                dirLight.position.set(100, 200, 50);
+                aiScene.add(dirLight);
+
+                const gridHelper = new THREE.GridHelper(100, 20, 0xC97B63, 0xD8C3A5);
+                gridHelper.position.y = -0.1; 
+                aiScene.add(gridHelper);
+
+                function animate() {
+                    requestAnimationFrame(animate);
+                    aiControls.update();
+                    aiRenderer.render(aiScene, aiCamera);
+                }
+                animate();
+
+                window.addEventListener('resize', () => {
+                    if (container.clientWidth > 0) {
+                        aiCamera.aspect = container.clientWidth / container.clientHeight;
+                        aiCamera.updateProjectionMatrix();
+                        aiRenderer.setSize(container.clientWidth, container.clientHeight);
+                    }
+                });
+            }
+
+            window.addEventListener('hashchange', () => {
+                if (window.location.hash === '#3dprint') setTimeout(initAiViewport, 150);
+            });
+            if (window.location.hash === '#3dprint' || window.location.hash === '') setTimeout(initAiViewport, 150);
+
+            async function generateCAD() {
+                const input = document.getElementById('ai-cad-input');
+                const chat = document.getElementById('ai-cad-chat');
+                const btn = document.getElementById('btn-generate-cad');
+                const prompt = input.value.trim();
+
+                if (!prompt) return;
+
+                // 1. Add user message to history & UI
+                aiChatHistory.push({ role: "user", content: prompt });
+                input.value = '';
+                chat.innerHTML += `<div class="ai-message user" style="text-align: right; color: var(--tcl-primary); font-weight: bold; font-family: 'Roboto Mono', monospace;">> ${prompt}</div>`;
+                
+                const loadingId = 'ai-loading-' + Date.now();
+                chat.innerHTML += `<div class="ai-message system" id="${loadingId}"><em><i class="material-icons spin-hourglass" style="font-size: 14px; vertical-align: middle;">hourglass_empty</i> Analyzing parameters...</em></div>`;
+                chat.scrollTop = chat.scrollHeight;
+                btn.disabled = true;
+
+                try {
+                    // 2. Send the ENTIRE conversation history to the Worker
+                    const response = await fetch(WORKER_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ messages: aiChatHistory })
+                    });
+
+                    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                    
+                    const data = await response.json();
+                    console.log("AI CSG Payload:", data); // Check the console (F12) to see exactly what LLaMA built
+
+                    document.getElementById(loadingId).remove();
+
+                    // 3. Handle the two different AI response types
+                    if (data.type === 'message') {
+                        // AI needs more info
+                        aiChatHistory.push({ role: "assistant", content: data.text });
+                        chat.innerHTML += `<div class="ai-message system"><strong>Lab AI:</strong> ${data.text}</div>`;
+                    } 
+                    else if (data.type === 'model') {
+                        // AI has enough info and built the model
+                        aiChatHistory.push({ role: "assistant", content: "I have rendered the geometry on the canvas." });
+                        chat.innerHTML += `<div class="ai-message system" style="border-left-color: var(--tcl-accent-green);"><strong>Lab AI:</strong> Geometry compiled. Rendering preview to canvas.</div>`;
+                        buildMeshFromJSON(data);
+                    } 
+                    else {
+                        throw new Error("Invalid response format from AI.");
+                    }
+
+                } catch (err) {
+                    console.error("CAD Engine Error:", err);
+                    document.getElementById(loadingId)?.remove();
+                    chat.innerHTML += `<div class="ai-message system" style="color: #d9534f; border-left-color: #d9534f;"><strong>System Error:</strong> Failed to process data. Check the browser console (F12) for math errors, or simplify the request.</div>`;
+                } finally {
+                    chat.scrollTop = chat.scrollHeight;
+                    btn.disabled = false;
+                    input.focus();
+                }
+            }
+
+            function buildMeshFromJSON(data) {
+                if (!data.operations || !Array.isArray(data.operations)) {
+                    throw new Error("AI did not provide an operations array.");
+                }
+
+                if (currentAiMesh) {
+                    aiScene.remove(currentAiMesh);
+                    currentAiMesh.geometry.dispose();
+                    currentAiMesh.material.dispose();
+                    currentAiMesh = null;
+                }
+
+                let csgResult = null;
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: 0xCBC6B8, 
+                    specular: 0x111111, 
+                    shininess: 10,
+                    side: THREE.DoubleSide
+                });
+
+                data.operations.forEach((op, index) => {
+                    // DEFENSIVE PARSING: Force everything to floats and provide safe fallbacks
+                    const size = op.size || [10, 10, 10];
+                    const pos = op.position || [0, 0, 0];
+                    
+                    const w = Math.abs(parseFloat(size[0])) || 1;
+                    const h = Math.abs(parseFloat(size[1])) || 1;
+                    const d = Math.abs(parseFloat(size[2])) || 1;
+                    
+                    const px = parseFloat(pos[0]) || 0;
+                    const py = parseFloat(pos[1]) || 0;
+                    const pz = parseFloat(pos[2]) || 0;
+
+                    let geometry;
+                    try {
+                        if (op.shape === "box") {
+                            geometry = new THREE.BoxGeometry(w, h, d);
+                            // THE MAGIC FIX: Pull the bottom of the shape up to Y=0
+                            geometry.translate(0, h/2, 0); 
+                        } else if (op.shape === "cylinder") {
+                            geometry = new THREE.CylinderGeometry(w, h, d, 32);
+                            // THE MAGIC FIX: Pull the bottom of the shape up to Y=0
+                            geometry.translate(0, h/2, 0);
+                        } else {
+                            return; // Skip unknown shapes silently
+                        }
+                    } catch(e) {
+                        console.error(`Invalid geometry parameters at operation ${index}:`, op);
+                        return;
+                    }
+
+                    const mesh = new THREE.Mesh(geometry, material);
+                    mesh.position.set(px, py, pz);
+                    mesh.updateMatrix();
+
+                    const csgBrush = CSG.fromMesh(mesh);
+
+                    if (!csgResult) {
+                        csgResult = csgBrush; 
+                    } else {
+                        if (op.action === "add") csgResult = csgResult.union(csgBrush);
+                        else if (op.action === "subtract") csgResult = csgResult.subtract(csgBrush);
+                    }
+                });
+
+                if (csgResult) {
+                    currentAiMesh = CSG.toMesh(csgResult, new THREE.Matrix4(), material);
+                    
+                    currentAiMesh.geometry.computeBoundingBox();
+                    const box = currentAiMesh.geometry.boundingBox;
+                    
+                    // Prevent crash if the subtract operation wiped out the entire mesh
+                    if (!box || isNaN(box.min.y) || box.isEmpty()) {
+                        throw new Error("AI subtracted too much, resulting in empty geometry.");
+                    }
+
+                    // Sit exactly on the grid floor
+                    currentAiMesh.position.y = -box.min.y;
+
+                    aiScene.add(currentAiMesh);
+                    
+                    const center = new THREE.Vector3();
+                    box.getCenter(center);
+                    aiControls.target.set(center.x, currentAiMesh.position.y, center.z);
+                    
+                    const maxDim = Math.max(box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
+                    aiCamera.position.set(center.x + (maxDim * 1.5), currentAiMesh.position.y + (maxDim * 1.5), center.z + (maxDim * 1.5));
+                } else {
+                    throw new Error("CSG compilation failed.");
+                }
+            }
+
+            function exportAiSTL() {
+                if (!currentAiMesh) {
+                    showToast("No model generated to export.", "error");
+                    return;
+                }
+                showToast("STL Exporter library coming soon!");
+            }
+        </script>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SECTION 3: Q&A / ASK AI -->
-    <!-- ========================================== -->
     <div id="page-qa" class="page-view hidden-page">
         <div class="container reveal" style="padding-top: 60px; padding-bottom: 80px;">
             <div style="text-align: center; margin-bottom: 60px;">
@@ -929,7 +1140,6 @@
                     </div>
                 </div>
 
-                <!-- THE MINESCOUT SHELL -->
                 <div class="ai-terminal">
                     <div class="ai-header">
                         <div><span class="ai-status"></span> TCL_LAB_SYSTEM // MINESCOUT AI</div>
@@ -947,9 +1157,6 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SECTION 4: ORDER PAGE VIEW -->
-    <!-- ========================================== -->
     <div id="page-order" class="page-view hidden-page">
         <div class="container order-page-content reveal">
             <header class="order-header" style="text-align: center; margin-bottom: 60px;">
@@ -959,10 +1166,8 @@
 
             <form id="tcl-order-form" class="order-layout">
                 
-                <!-- LEFT COLUMN: BUILDER STEPS -->
                 <div class="order-form-column">
                     
-                    <!-- STEP 01 -->
                     <div class="step-container">
                         <div class="step-header">
                             <div class="step-number">01</div>
@@ -978,7 +1183,6 @@
                         </div>
                     </div>
 
-                    <!-- STEP 02 -->
                     <div class="step-container">
                         <div class="step-header">
                             <div class="step-number">02</div>
@@ -1009,19 +1213,16 @@
                         </div>
                     </div>
 
-                    <!-- STEP 03 (DYNAMIC CONFIGURATION) -->
                     <div id="step-3-wrapper" class="step-container hidden">
                         <div class="step-header">
                             <div class="step-number">03</div>
                             <h2 class="step-title">Configuration</h2>
                         </div>
                         
-                        <!-- Global Lab Note about Head Color -->
                         <div class="form-group" style="background: rgba(201, 123, 99, 0.05); padding: 15px; border-left: 4px solid var(--tcl-primary); border-radius: 6px; margin-bottom: 25px;">
                             <p style="font-size: 0.85rem; color: var(--tcl-text-muted); margin: 0; line-height: 1.5;"><strong>Lab Note:</strong> Custom stamp heads are printed in our specialized Matte White material for optimal clay release properties. We highly recommend keeping this standard configuration.</p>
                         </div>
 
-                        <!-- Measurement Unit Toggle (Dynamically Shown) -->
                         <div id="unit-toggle-section" class="form-group hidden" style="background: var(--tcl-surface); border: 1px solid var(--tcl-border); padding: 20px; border-left: 4px solid var(--tcl-primary); border-radius: 6px;">
                             <label style="margin-bottom: 12px; color: var(--tcl-primary); font-size: 0.9rem;">Measurement System</label>
                             <div style="display: flex; gap: 24px;">
@@ -1034,7 +1235,6 @@
                             </div>
                         </div>
 
-                        <!-- Custom STL Upload Section -->
                         <div id="opt-3d-print" class="dynamic-section hidden">
                             <p style="font-size: 0.9rem; color: var(--tcl-text-muted); margin-bottom: 25px;">Pricing is a $5 base fee + $1 per hour of print time. We will email you a quote before starting.</p>
                             
@@ -1048,7 +1248,6 @@
                                 </div>
                                 <span class="note" style="display:block; text-align:center; margin-top:10px; color: var(--tcl-text-muted); font-size: 0.85rem;">Max size: 256x256x256mm.</span>
                                 
-                                <!-- Advanced WebGL STL Preview -->
                                 <div id="stl-preview-container" class="stl-preview hidden"></div>
                             </div>
                             
@@ -1062,7 +1261,6 @@
                             </div>
                         </div>
 
-                        <!-- Pottery Tool Options -->
                         <div id="opt-chop-simple" class="dynamic-section hidden">
                             <div class="form-group">
                                 <label>Example Impression</label>
@@ -1218,7 +1416,6 @@
 
                     </div>
 
-                    <!-- STEP 04 / NOTES -->
                     <div class="step-container">
                         <div class="step-header">
                             <div class="step-number" id="step-notes-number">03</div>
@@ -1236,7 +1433,6 @@
 
                 </div>
 
-                <!-- RIGHT COLUMN: STICKY SUMMARY CARD + WEEKLY DROP -->
                 <div class="order-summary-column">
                     <div class="summary-card">
                         <h3>Project Estimate</h3>
@@ -1265,7 +1461,6 @@
                                 <span id="sum-total">$0.00</span>
                             </div>
                             
-                            <!-- DYNAMIC PREVIEW IMAGE/STL SECTION -->
                             <div id="summary-preview-section" style="display: none; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--tcl-border);">
                                 <span style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--tcl-text-muted); letter-spacing: 1px; margin-bottom: 10px; display: block;">Tool Preview</span>
                                 <div class="art-image-wrapper" id="summary-preview-wrapper" style="border-radius: 8px; border: 1px solid var(--tcl-border); aspect-ratio: 1/1; position: relative; background: var(--tcl-background);">
@@ -1279,7 +1474,6 @@
                         </div>
                     </div>
 
-                    <!-- WEEKLY DROP WIDGET — styled to match TCL aesthetic -->
                     <div class="weekly-drop-widget">
                         <span class="drop-eyebrow">The Lab Newsletter</span>
                         <h4>Weekly Drop ☕</h4>
@@ -1339,9 +1533,6 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- ACCOUNT PAGE VIEW -->
-    <!-- ========================================== -->
     <div id="page-account" class="page-view hidden-page">
         <div class="container reveal" style="margin-top: 100px; min-height: 70vh; max-width: 900px;">
             <div id="auth-container" style="max-width: 450px; margin: 0 auto; padding: 60px 40px; border: 1px solid var(--tcl-border); background: var(--tcl-surface); border-radius: 12px; box-shadow: var(--tcl-shadow-md);">
@@ -1379,9 +1570,6 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- ADMIN & 404 VIEWS -->
-    <!-- ========================================== -->
     <div id="page-admin" class="page-view hidden-page">
         <div id="admin-login-screen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 90vh; background: var(--tcl-background);">
             <div style="background: var(--tcl-surface); padding: 60px 40px; text-align: center; width: 100%; max-width: 450px; border: 1px solid var(--tcl-border); border-radius: 8px; box-shadow: var(--tcl-shadow-md);">
@@ -1434,7 +1622,6 @@
         </div>
     </div>
 
-    <!-- Shared Footer -->
     <footer id="main-footer">
         <p>&copy; <span id="footer-year"></span> The Chop Lab</p>
         <div style="margin-top: 15px;">
@@ -1445,9 +1632,6 @@
         </div>
     </footer>
 
-    <!-- ========================================== -->
-    <!-- SINGLE FILE JAVASCRIPT -->
-    <!-- ========================================== -->
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxA0tHDzsc4baNHSURGJRMFVvRpXLZMAL0Hhkezq5xC641ehY5asGkTD1X4k6uauBJF9A/exec";
         const WEEKLY_DROP_URL = "https://video-intake-engine.tmcarleton11.workers.dev/";
