@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internal Ops AI (Demo)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  
+  <style>
+    /* --- CSS Variables & Reset --- */
+    :root {
+      --bg: #F3F4F6;
+      --surface: #FFFFFF;
+      --primary: #0F172A;
+      --secondary: #3B82F6;
+      --accent: #10B981;
+      --text: #334155;
+      --muted: #94A3B8;
+      --border: #E2E8F0;
+      --danger: #EF4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    
+    body { background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+    /* --- Demo Banner --- */
+    .demo-banner {
+      background-color: var(--primary); color: white; text-align: center; padding: 10px;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; z-index: 1000;
+    }
+    .demo-banner span { color: var(--accent); }
+
+    /* --- Navigation --- */
+    nav { background: var(--surface); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+    .brand { font-weight: 700; font-size: 1.2rem; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+    .nav-links a { margin-left: 20px; text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--secondary); }
+
+    /* --- App Container --- */
+    #app { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 40px 20px; overflow-y: auto; }
+    .view { display: none; width: 100%; max-width: 800px; animation: fadeIn 0.3s ease; }
+    .view.active { display: block; }
+
+    .card { background: var(--surface); border-radius: 12px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+
+    /* --- Typography & Buttons --- */
+    h1 { font-size: 1.8rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+    p { font-size: 0.95rem; line-height: 1.6; color: var(--text); margin-bottom: 20px; }
+    
+    .btn { background: var(--secondary); color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .btn:hover { background: #2563EB; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: var(--bg); }
+
+    /* --- Inputs --- */
+    .input-group { margin-bottom: 20px; }
+    .input-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; }
+    .input-field { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px; outline: none; transition: 0.2s; }
+    .input-field:focus { border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+
+    /* --- Chat UI --- */
+    .chat-container { display: flex; flex-direction: column; height: 600px; max-height: 70vh; background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+    .chat-header { padding: 15px 20px; background: #F8FAFC; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+    .status-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+    .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: #F1F5F9; }
+    .msg { max-width: 80%; padding: 12px 16px; border-radius: 8px; font-size: 0.95rem; line-height: 1.5; }
+    .msg-bot { background: var(--surface); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 2px; }
+    .msg-user { background: var(--secondary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .msg-offline { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; align-self: flex-start; }
+    .chat-input-area { padding: 15px; background: var(--surface); border-top: 1px solid var(--border); display: flex; gap: 10px; }
+    
+    /* --- Admin OCR UI --- */
+    .file-drop { border: 2px dashed var(--border); border-radius: 8px; padding: 40px 20px; text-align: center; background: #F8FAFC; cursor: pointer; transition: 0.2s; margin-bottom: 20px; }
+    .file-drop:hover { border-color: var(--secondary); background: #EFF6FF; }
+    .knowledge-box { width: 100%; height: 200px; padding: 15px; font-family: monospace; font-size: 0.85rem; color: var(--muted); border: 1px solid var(--border); border-radius: 6px; resize: vertical; background: #F8FAFC; }
+    
+    .ocr-progress { display: none; margin-top: 15px; }
+    .ocr-bar-wrap { width: 100%; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+    .ocr-bar-fill { height: 100%; width: 0%; background: var(--secondary); transition: width 0.2s; }
+    .ocr-log { font-size: 0.75rem; color: var(--muted); margin-top: 5px; font-family: monospace; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <div class="demo-banner">Internal Ops AI Concept <span>(Beta Demo)</span></div>
+  
+  <nav>
+    <div class="brand">🏢 Acme Corp Intranet</div>
+    <div class="nav-links" id="nav-links">
+      <a href="#login" id="link-login">Login</a>
+      <a href="#chat" id="link-chat" style="display:none;">Staff Portal</a>
+      <a href="#admin" id="link-admin" style="display:none;">Admin (Brain)</a>
+      <a href="#" onclick="logout()" id="link-logout" style="display:none;">Logout</a>
+    </div>
+  </nav>
+
+  <div id="app">
+    
+    <div id="view-login" class="view">
+      <div class="card" style="max-width: 400px; margin: 0 auto;">
+        <h1>Staff Login</h1>
+        <p style="color: var(--muted); font-size: 0.85rem;">Try logging in as <strong>admin</strong> to upload documents, or <strong>staff</strong> to test the AI.</p>
+        
+        <div class="input-group">
+          <label>Employee ID</label>
+          <input type="text" id="login-id" class="input-field" placeholder="admin or staff">
+        </div>
+        
+        <div class="input-group">
+          <label>Password (Admin Only)</label>
+          <input type="password" id="login-pass" class="input-field" placeholder="Leave blank for staff">
+          </div>
+
+        <button class="btn" style="width: 100%;" onclick="login()">Authenticate</button>
+      </div>
+    </div>
+
+    <div id="view-chat" class="view">
+      <div style="margin-bottom: 20px;">
+        <h1>HR & Operations Assistant</h1>
+        <p>Ask me about company policies, SOPs, or uploaded documents.</p>
+      </div>
+      
+      <div class="chat-container">
+        <div class="chat-header">
+          <div class="status-dot"></div>
+          <span style="font-weight: 600; font-size: 0.9rem;">Internal Ops Bot v2.0</span>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="msg msg-bot">Hello! I am connected to the Acme Corp knowledge base. How can I help you today?</div>
+        </div>
+        <div class="chat-input-area">
+          <input type="text" id="chat-input" class="input-field" style="margin: 0;" placeholder="E.g. What is the vacation policy?" autocomplete="off" onkeypress="if(event.key === 'Enter') sendMessage()">
+          <button class="btn" id="chat-btn" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-admin" class="view">
+      <div class="card">
+        <h1>Knowledge Base Admin</h1>
+        <p>Upload an image of a document (e.g. a screenshot of an SOP or Employee Handbook). The AI will read it instantly using offline OCR.</p>
+        
+        <label for="file-upload">
+          <div class="file-drop">
+            <div style="font-size: 2rem; margin-bottom: 10px;">📄</div>
+            <h3 style="color: var(--secondary); margin-bottom: 5px;">Click to Upload Image</h3>
+            <p style="font-size: 0.8rem; margin: 0;">Supports PNG, JPG (Plain text .txt also supported)</p>
+          </div>
+        </label>
+        <input type="file" id="file-upload" accept="image/*, .txt" style="display: none;" onchange="handleFileUpload(event)">
+
+        <div class="ocr-progress" id="ocr-progress">
+          <div style="font-size: 0.8rem; font-weight: 600; color: var(--secondary);">Optical Character Recognition Running...</div>
+          <div class="ocr-bar-wrap"><div class="ocr-bar-fill" id="ocr-fill"></div></div>
+          <div class="ocr-log" id="ocr-log">Initializing engine...</div>
+        </div>
+
+        <div class="input-group" style="margin-top: 20px;">
+          <label>Current AI Brain (Raw Text)</label>
+          <textarea id="knowledge-base" class="knowledge-box">Acme Corp Default Policy:
+- Office hours are 9AM to 5PM.
+- Employees get 15 days of PTO per year.
+- The WiFi password is "AcmeSecure2026".</textarea>
+        </div>
+        <button class="btn" onclick="saveKnowledge()">Save Brain</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* =========================================
+       STATE & CONFIG
+       ========================================= */
+    const CHAT_WORKER = 'https://thomas-chat.tmcarleton11.workers.dev/';
+    let currentUser = null; // 'admin' or 'staff'
+    let chatHistory = [];
+
+    /* =========================================
+       ROUTING & AUTH
+       ========================================= */
+    function render() {
+      const hash = window.location.hash || '#login';
+      
+      // Protect routes
+      if (!currentUser && hash !== '#login') {
+        window.location.hash = '#login';
+        return;
+      }
+
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+
+      if (hash === '#login') {
+        document.getElementById('view-login').classList.add('active');
+      } else if (hash === '#chat') {
+        document.getElementById('view-chat').classList.add('active');
+        document.getElementById('link-chat').classList.add('active');
+      } else if (hash === '#admin') {
+        if (currentUser !== 'admin') { alert('Access Denied'); window.location.hash = '#chat'; return; }
+        document.getElementById('view-admin').classList.add('active');
+        document.getElementById('link-admin').classList.add('active');
+      }
+    }
+
+    function login() {
+      const id = document.getElementById('login-id').value.toLowerCase().trim();
+      const pass = document.getElementById('login-pass').value;
+
+      if (id === 'admin') {
+        // Simple hardcoded check for the demo
+        if (pass !== 'demo2026') {
+          alert('Incorrect Admin Password. (Hint: use demo2026)');
+          return;
+        }
+        currentUser = 'admin';
+        document.getElementById('link-admin').style.display = 'inline';
+      } else if (id) {
+        currentUser = 'staff';
+      } else {
+        return;
+      }
+      
+      document.getElementById('link-chat').style.display = 'inline';
+      document.getElementById('link-logout').style.display = 'inline';
+      document.getElementById('link-login').style.display = 'none';
+      
+      window.location.hash = currentUser === 'admin' ? '#admin' : '#chat';
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById('link-admin').style.display = 'none';
+      document.getElementById('link-chat').style.display = 'none';
+      document.getElementById('link-logout').style.display = 'none';
+      document.getElementById('link-login').style.display = 'inline';
+      document.getElementById('login-id').value = '';
+      document.getElementById('login-pass').value = '';
+      window.location.hash = '#login';
+    }
+
+    /* =========================================
+       ADMIN: OCR & FILE UPLOAD
+       ========================================= */
+    async function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const kbBox = document.getElementById('knowledge-base');
+
+      // Handle plain text files instantly
+      if (file.type === "text/plain") {
+        const reader = new FileReader();
+        reader.onload = (e) => { kbBox.value = e.target.result; };
+        reader.readAsText(file);
+        return;
+      }
+
+      // Handle Images using Tesseract.js (OCR)
+      if (file.type.startsWith("image/")) {
+        const progressBox = document.getElementById('ocr-progress');
+        const fillBar = document.getElementById('ocr-fill');
+        const logText = document.getElementById('ocr-log');
+        
+        progressBox.style.display = 'block';
+        kbBox.value = "Scanning document...\n";
+
+        try {
+          const result = await Tesseract.recognize(
+            file,
+            'eng',
+            { 
+              logger: m => {
+                logText.innerText = `${m.status}: ${Math.round(m.progress * 100)}%`;
+                if(m.status === 'recognizing text') {
+                  fillBar.style.width = `${m.progress * 100}%`;
+                }
+              }
+            }
+          );
+          
+          kbBox.value = result.data.text;
+          logText.innerText = "OCR Complete! Text extracted successfully.";
+          setTimeout(() => { progressBox.style.display = 'none'; fillBar.style.width = '0%'; }, 3000);
+        } catch (err) {
+          logText.innerText = "OCR Failed. Try a clearer image.";
+          console.error(err);
+        }
+      }
+    }
+
+    function saveKnowledge() {
+      alert("Brain updated! The Chat Bot will now use this new information.");
+      window.location.hash = '#chat';
+    }
+
+    /* =========================================
+       CHAT & OFFLINE FALLBACK
+       ========================================= */
+    async function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      const btn = document.getElementById('chat-btn');
+      if (!text) return;
+
+      // 1. Add user message to UI
+      input.value = '';
+      input.disabled = true;
+      btn.disabled = true;
+      addMessage(text, 'user');
+      chatHistory.push({ role: 'user', content: text });
+
+      // Build the System Prompt from the Admin Box
+      const rawKnowledge = document.getElementById('knowledge-base').value;
+      const systemPrompt = `You are a helpful Internal HR/Ops assistant. Answer the user's question using ONLY the following uploaded knowledge. If the answer is not in the text, say you don't know.\n\nKNOWLEDGE BASE:\n${rawKnowledge}`;
+
+      try {
+        // 2. Try the Cloudflare AI Worker
+        const response = await fetch(CHAT_WORKER, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            client_id: "OPS_DEMO",
+            messages: chatHistory,
+            system_override: systemPrompt,
+            temperature: 0.1 
+          })
+        });
+
+        if (!response.ok) throw new Error("Network response was not ok");
+        
+        const data = await response.json();
+        const reply = data.content || "Service initializing.";
+        addMessage(reply, 'bot');
+        chatHistory.push({ role: 'assistant', content: reply });
+
+      } catch (err) {
+        // 3. THE FALLBACK LOGIC (Regex Keyword Search)
+        console.warn("AI Server Unreachable. Engaging Offline Keyword Extraction.");
+        const fallbackReply = runOfflineSearch(text, rawKnowledge);
+        addMessage(fallbackReply, 'offline');
+        // Do not push fallback to chat history so it doesn't confuse the AI later if it reconnects
+      }
+
+      input.disabled = false;
+      btn.disabled = false;
+      input.focus();
+    }
+
+    function runOfflineSearch(query, knowledgeBase) {
+      // Clean and split the document into sentences
+      const sentences = knowledgeBase.replace(/\n/g, ' ').split(/[.?!]/).map(s => s.trim()).filter(s => s.length > 5);
+      
+      // Extract keywords from the user's query (ignore small words)
+      const ignoreWords = ['what', 'is', 'the', 'how', 'do', 'i', 'can', 'you', 'tell', 'me', 'about'];
+      const keywords = query.toLowerCase().split(' ').filter(w => w.length > 3 && !ignoreWords.includes(w));
+
+      if (keywords.length === 0) return "[OFFLINE MODE] I am disconnected from the AI server and cannot parse that question. Please use specific keywords like 'vacation' or 'wifi'.";
+
+      // Score each sentence based on how many keywords it contains
+      let bestMatch = null;
+      let highestScore = 0;
+
+      for (let sentence of sentences) {
+        let score = 0;
+        const lowerSentence = sentence.toLowerCase();
+        
+        for (let keyword of keywords) {
+          if (lowerSentence.includes(keyword)) score++;
+        }
+
+        if (score > highestScore) {
+          highestScore = score;
+          bestMatch = sentence;
+        }
+      }
+
+      if (bestMatch) {
+        return `[OFFLINE KEYWORD MATCH]: "...${bestMatch}."`;
+      } else {
+        return `[OFFLINE MODE]: No matching keywords found in the uploaded documents for '${keywords.join(', ')}'.`;
+      }
+    }
+
+    function addMessage(text, type) {
+      const container = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = `msg msg-${type}`;
+      div.innerHTML = text.replace(/\n/g, '<br/>');
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    /* =========================================
+       INITIALIZE
+       ========================================= */
+    window.addEventListener('hashchange', render);
+    render();
+
+  </script>
+</body>
+</html>
