@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathBlast Tutoring K-12 (Demo)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* --- CSS Variables & Reset --- */
+    :root {
+      --primary: #6C5CE7; /* Deeper purple, friendly but grows with age */
+      --secondary: #00CEC9;
+      --accent: #FD79A8;
+      --bg: #F8F9FA;
+      --text: #2D3436;
+      --card-bg: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* --- Demo Banner --- */
+    .demo-banner {
+      background-color: var(--text);
+      color: white;
+      width: 100%;
+      text-align: center;
+      padding: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      z-index: 1000;
+    }
+
+    /* --- App Container --- */
+    #app {
+      width: 100%;
+      max-width: 650px;
+      padding: 20px;
+      margin-top: 40px;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      text-align: center;
+      border: 4px solid #EDF2F7;
+    }
+
+    /* --- Typography --- */
+    h1 { font-size: 2.8rem; font-weight: 900; color: var(--primary); margin-bottom: 10px; letter-spacing: -1px; }
+    h2 { font-size: 1.8rem; font-weight: 700; color: var(--secondary); margin-bottom: 20px; }
+    p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 25px; color: #636E72; }
+
+    /* --- Buttons & Inputs --- */
+    .btn {
+      display: inline-block;
+      background: var(--secondary);
+      color: white;
+      font-family: inherit;
+      font-size: 1.2rem;
+      font-weight: 800;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 6px 0 #00A8A3;
+      margin: 10px;
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #00A8A3; }
+    .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #00A8A3; }
+    
+    .btn-primary { background: var(--primary); box-shadow: 0 6px 0 #4A3EAA; }
+    .btn-primary:hover { box-shadow: 0 8px 0 #4A3EAA; }
+    .btn-primary:active { box-shadow: 0 2px 0 #4A3EAA; }
+    
+    .input-field, .select-field {
+      width: 100%;
+      padding: 15px;
+      font-size: 1.1rem;
+      font-family: inherit;
+      font-weight: 700;
+      color: var(--text);
+      border: 3px solid #EDF2F7;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      background-color: #fff;
+    }
+    .input-field:focus, .select-field:focus { border-color: var(--secondary); }
+    textarea.input-field { resize: vertical; min-height: 120px; font-weight: 400; }
+
+    /* --- Options Grid (Multiple Choice) --- */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    @media(max-width: 480px) { .options-grid { grid-template-columns: 1fr; } }
+
+    .option-btn {
+      background: white;
+      border: 3px solid #EDF2F7;
+      color: var(--text);
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding: 20px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .option-btn:hover { border-color: var(--secondary); background: #F0FBFA; transform: translateY(-2px); }
+
+    /* --- Progress Bar --- */
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #EDF2F7;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* --- Animations --- */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-banner">Interactive K-12 Assessment Demo</div>
+  
+  <div id="app"></div>
+
+  <script>
+    /* =========================================
+       STATE MANAGEMENT & CURRICULUM DATA
+       ========================================= */
+    const state = {
+      gradeLevel: null,
+      topic: null,
+      score: 0,
+      currentQ: 0,
+      activeQuestions: []
+    };
+
+    // The structured question bank supporting K-12 logic
+    const curriculum = {
+      "Elementary (K-5)": {
+        "Addition & Subtraction": [
+          { q: "If you have 8 apples 🍎 and your friend gives you 5 more, how many do you have in total?", opts: ["11", "12", "13", "14"], a: "13" },
+          { q: "What is 15 - 7?", opts: ["6", "7", "8", "9"], a: "8" },
+          { q: "12 + 19 = ?", opts: ["21", "29", "31", "32"], a: "31" }
+        ],
+        "Multiplication & Division": [
+          { q: "What is 4 times 6? ✖️", opts: ["20", "24", "26", "28"], a: "24" },
+          { q: "If you divide 20 cookies equally among 4 friends, how many does each get?", opts: ["4", "5", "6", "16"], a: "5" },
+          { q: "7 x 8 = ?", opts: ["54", "56", "62", "64"], a: "56" }
+        ]
+      },
+      "Middle School (6-8)": {
+        "Pre-Algebra": [
+          { q: "Solve for x:  2x + 4 = 10", opts: ["2", "3", "4", "5"], a: "3" },
+          { q: "Evaluate: 3(4 + 2) - 5", opts: ["13", "14", "15", "18"], a: "13" },
+          { q: "What is 15% of 200?", opts: ["15", "20", "30", "45"], a: "30" }
+        ],
+        "Fractions & Decimals": [
+          { q: "What is 1/2 + 1/4?", opts: ["2/6", "3/4", "1/6", "1"], a: "3/4" },
+          { q: "Convert 0.75 to a fraction.", opts: ["1/4", "1/2", "3/4", "4/5"], a: "3/4" },
+          { q: "Simplify: 12/16", opts: ["1/2", "2/3", "3/4", "4/5"], a: "3/4" }
+        ]
+      },
+      "High School (9-12)": {
+        "Algebra & Geometry": [
+          { q: "Factor the expression: x² - 9", opts: ["(x-3)²", "(x+3)²", "(x-3)(x+3)", "x(x-9)"], a: "(x-3)(x+3)" },
+          { q: "What is the slope of the line y = -3x + 4?", opts: ["-3", "3", "4", "-4"], a: "-3" },
+          { q: "If a right triangle has sides 3 and 4, what is the hypotenuse?", opts: ["5", "6", "7", "25"], a: "5" }
+        ],
+        "Precalculus & Calculus": [
+          { q: "What is the exact value of sin(π/2)?", opts: ["0", "1", "-1", "undefined"], a: "1" },
+          { q: "What is the derivative of f(x) = x³?", opts: ["3x", "x²", "3x²", "x³/3"], a: "3x²" },
+          { q: "Evaluate the limit as x approaches 0 of sin(x)/x", opts: ["0", "1", "Infinity", "Undefined"], a: "1" }
+        ]
+      }
+    };
+
+    /* =========================================
+       ROUTER & VIEWS
+       ========================================= */
+    const app = document.getElementById('app');
+
+    function render() {
+      const hash = window.location.hash;
+      
+      if (hash.startsWith('#signup')) {
+        renderSignup(hash);
+        return;
+      }
+
+      switch (hash) {
+        case '':
+        case '#home': renderHome(); break;
+        case '#onboarding': renderOnboarding(); break;
+        case '#assessment': 
+          if(state.activeQuestions.length === 0) window.location.hash = '#onboarding'; // Failsafe
+          else renderAssessment(); 
+          break;
+        case '#result': renderResult(); break;
+        default: renderHome();
+      }
+    }
+
+    // 1. Home View
+    function renderHome() {
+      app.innerHTML = `
+        <div class="card">
+          <h1>MathBlast! 🚀</h1>
+          <p>From learning how to add your first numbers to mastering Calculus derivatives, we build the perfect path for you.</p>
+          <a href="#onboarding" class="btn btn-primary">Start My Adventure</a>
+        </div>
+      `;
+    }
+
+    // 2. Onboarding View (Dynamic Dropdowns)
+    function renderOnboarding() {
+      app.innerHTML = `
+        <div class="card">
+          <h2>Tell us about yourself! 🎓</h2>
+          
+          <select id="level-select" class="select-field" onchange="updateTopics()">
+            <option value="" disabled selected>What is your school level?</option>
+            <option value="Elementary (K-5)">Elementary (K-5)</option>
+            <option value="Middle School (6-8)">Middle School (6-8)</option>
+            <option value="High School (9-12)">High School (9-12)</option>
+          </select>
+
+          <select id="topic-select" class="select-field" disabled>
+            <option value="" disabled selected>Select a level first...</option>
+          </select>
+
+          <button class="btn btn-primary" onclick="startAssessment()">Start Assessment</button>
+        </div>
+      `;
+    }
+
+    // Triggered when the first dropdown changes
+    window.updateTopics = function() {
+      const levelSelect = document.getElementById('level-select');
+      const topicSelect = document.getElementById('topic-select');
+      const selectedLevel = levelSelect.value;
+
+      topicSelect.innerHTML = '<option value="" disabled selected>What do you want to learn?</option>';
+      
+      if (selectedLevel && curriculum[selectedLevel]) {
+        topicSelect.disabled = false;
+        const topics = Object.keys(curriculum[selectedLevel]);
+        topics.forEach(topic => {
+          topicSelect.innerHTML += `<option value="${topic}">${topic}</option>`;
+        });
+      } else {
+        topicSelect.disabled = true;
+      }
+    }
+
+    // 3. Assessment Logic & View
+    window.startAssessment = function() {
+      const level = document.getElementById('level-select').value;
+      const topic = document.getElementById('topic-select').value;
+      
+      if (!level || !topic) {
+        alert("Please select your school level and topic to continue!");
+        return;
+      }
+      
+      state.gradeLevel = level;
+      state.topic = topic;
+      state.score = 0;
+      state.currentQ = 0;
+      state.activeQuestions = curriculum[level][topic]; // Load specific questions
+      
+      window.location.hash = '#assessment';
+    };
+
+    function renderAssessment() {
+      if (state.currentQ >= state.activeQuestions.length) {
+        window.location.hash = '#result';
+        return;
+      }
+
+      const q = state.activeQuestions[state.currentQ];
+      const progressPct = (state.currentQ / state.activeQuestions.length) * 100;
+      
+      let optionsHtml = '';
+      q.opts.forEach(opt => {
+        optionsHtml += `<button class="option-btn" onclick="checkAnswer('${opt}', '${q.a}')">${opt}</button>`;
+      });
+
+      app.innerHTML = `
+        <div class="card">
+          <div class="progress-bar"><div class="progress-fill" style="width: ${progressPct}%"></div></div>
+          <p style="text-transform: uppercase; font-weight: 900; color: var(--secondary); letter-spacing: 1px;">Question ${state.currentQ + 1}</p>
+          <h2 style="font-size: 1.6rem; color: var(--text); margin-bottom: 30px;">${q.q}</h2>
+          <div class="options-grid">
+            ${optionsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    window.checkAnswer = function(selected, correct) {
+      if (selected === correct) state.score++;
+      state.currentQ++;
+      renderAssessment(); // Re-render next question
+    };
+
+    // 4. Result View
+    function renderResult() {
+      const total = state.activeQuestions.length;
+      const percentage = state.score / total;
+      
+      let levelDesc = "";
+      if (percentage === 1) levelDesc = "Advanced Master";
+      else if (percentage >= 0.5) levelDesc = "Core Explorer";
+      else levelDesc = "Foundation Builder";
+
+      // Build the custom hash string
+      const rawBodyText = `Hello! \n\nI am an ${state.gradeLevel} student requesting tutoring for ${state.topic}. \nI completed the placement assessment and was assigned to the [${levelDesc}] tier. \n\nPlease let me know the next steps!`;
+      
+      // Replace spaces with dashes for the hash URL structure
+      const formattedBodyText = rawBodyText.replace(/ /g, '-');
+      const signupHash = `#signup-level:${encodeURIComponent(levelDesc)}-body:${encodeURIComponent(formattedBodyText)}`;
+
+      app.innerHTML = `
+        <div class="card">
+          <h1>Assessment Complete! 🎉</h1>
+          <p>You scored ${state.score} out of ${total} on ${state.topic}.</p>
+          <h2>Suggested Tier: <br><span style="color: var(--primary);">${levelDesc}</span></h2>
+          <p>We've analyzed your results and know exactly where to begin. Let's get you signed up for your first session.</p>
+          <a href="${signupHash}" class="btn btn-primary">Enroll in ${levelDesc}</a>
+        </div>
+      `;
+    }
+
+    // 5. Custom Hash Signup View
+    function renderSignup(hash) {
+      // Decode the hash logic: #signup-level:XYZ-body:XYZ
+      let levelStr = "Unknown Level";
+      let bodyStr = "";
+
+      try {
+        const parts = hash.split('-body:');
+        const rawBody = parts[1] || "";
+        
+        const levelParts = parts[0].split('-level:');
+        levelStr = decodeURIComponent(levelParts[1]) || "Unknown Level";
+        
+        // Convert dashes back to spaces, and handle newlines for the text area
+        bodyStr = decodeURIComponent(rawBody).replace(/-/g, ' ');
+      } catch (e) {
+        console.error("Failed to parse URL hash parameters.");
+      }
+
+      app.innerHTML = `
+        <div class="card" style="text-align: left;">
+          <h2 style="text-align: center; color: var(--primary);">Signup for Tutoring 📝</h2>
+          
+          <div style="background: #F0FBFA; padding: 15px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--secondary);">
+            <strong>Target Curriculum:</strong> <span style="color: var(--secondary);">${levelStr}</span>
+          </div>
+          
+          <label style="font-weight: 800; color: #636E72; display: block; margin-bottom: 8px;">Student Name</label>
+          <input type="text" class="input-field" placeholder="Jane Doe">
+          
+          <label style="font-weight: 800; color: #636E72; display: block; margin-bottom: 8px;">Message to Instructor</label>
+          <textarea class="input-field">${bodyStr}</textarea>
+          
+          <button class="btn btn-primary" style="width: 100%; margin: 0;" onclick="alert('Demo: Form routed to CRM successfully!')">Submit Request</button>
+          
+          <div style="text-align: center; margin-top: 20px;">
+            <a href="#home" style="color: #B2BEC3; text-decoration: none; font-weight: 700; font-size: 0.9rem;">← Start Over</a>
+          </div>
+        </div>
+      `;
+    }
+
+    /* =========================================
+       INITIALIZE
+       ========================================= */
+    window.addEventListener('hashchange', render);
+    render(); // Initial load
+
+  </script>
+</body>
+</html>
