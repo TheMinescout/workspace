@@ -1,6 +1,6 @@
 // app.js — Application Logic & Routing
 
-import { views } from './views.js?v=2';
+import { views } from './views.js?v=2.1';
 
 // ── 1. SIDEBAR CONFIGURATION ──────────────────────────────────────
 const MAIN_MENU = [
@@ -894,6 +894,7 @@ function initIntake() {
 }
 
 function initPricing() {
+  // 1. FAQ Toggle Logic
   window.toggleFaq = function(btn) {
     const item = btn.closest('.faq-item');
     const wasOpen = item.classList.contains('open');
@@ -902,10 +903,10 @@ function initPricing() {
   };
 
   const CHAT_WORKER = 'https://thomas-chat.tmcarleton11.workers.dev/';
-  
   const planQuizEl = document.getElementById('plan-quiz');
   const openQuizBtn = document.getElementById('open-plan-quiz');
 
+  // Open Quiz Button
   if (openQuizBtn && planQuizEl) {
     openQuizBtn.addEventListener('click', function () {
       planQuizEl.classList.remove('is-hidden');
@@ -943,11 +944,7 @@ function initPricing() {
     if (backBtn) backBtn.style.visibility = step > 1 ? 'visible' : 'hidden';
     
     if (nextBtn) {
-      if (selections[step]) {
-        nextBtn.disabled = false;
-      } else {
-        nextBtn.disabled = true;
-      }
+      nextBtn.disabled = !selections[step];
       nextBtn.textContent = step === TOTAL_STEPS ? 'See Recommendation' : 'Next Step';
     }
   }
@@ -959,14 +956,19 @@ function initPricing() {
     if (quizResult) quizResult.classList.add('active');
     if (progressFill) progressFill.style.width = '100%';
 
-    let userAnswers = [];
+    // Initialize Scores
     let remodelScore = 0;
     let aiScore = 0;
+    let widgetScore = 0;
+    let opsScore = 0;
+    let userAnswers = [];
     
     for (let i = 1; i <= TOTAL_STEPS; i++) {
       if (selections[i]) {
-        remodelScore += selections[i].r;
-        aiScore += selections[i].a;
+        remodelScore += selections[i].remodel || 0;
+        aiScore += selections[i].ai || 0;
+        widgetScore += selections[i].widget || 0;
+        opsScore += selections[i].ops || 0;
         userAnswers.push(`Q: ${selections[i].qText} | A: ${selections[i].aText}`);
       }
     }
@@ -975,20 +977,34 @@ function initPricing() {
     if (resultDesc) resultDesc.innerHTML = '';
     if (resultCta) resultCta.style.display = 'none';
 
-    const systemPrompt = `You are a technical sales advisor for Minescout AI. A potential client just finished a quiz about their website needs.
-    Based on their answers, you must explicitly decide which of these two plans is best:
-    1. "Digital Remodel" ($499 + $29/mo) - Best if they just want a modern site, have a strict budget, or don't get repetitive questions.
-    2. "Full AI Upgrade" ($749 + $59/mo) - Best if they miss leads, spend time answering the same questions, or want 24/7 automated support.
+    // Determine the winning plan locally first
+    const scores = { 
+      'Digital Remodel': remodelScore, 
+      'Full AI Upgrade': aiScore, 
+      'Lead-Gen Widget (Beta)': widgetScore, 
+      'Internal Ops AI (Beta)': opsScore 
+    };
+    
+    const topPlan = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+
+    const systemPrompt = `You are a technical sales advisor for Minescout AI. A client just finished a quiz.
+    Based on their answers, explain why "${topPlan}" is the perfect fit.
+    
+    PLANS TO REFERENCE:
+    1. Digital Remodel ($499): Fast, high-end site. Best for those who just need a modern presence.
+    2. Full AI Upgrade ($749 + $59/mo): Customer-facing AI. Best for high inquiry volume and after-hours support.
+    3. Lead-Gen Widget ($299 Beta): Custom calculators/quotes. Best for businesses needing higher conversion from current traffic.
+    4. Internal Ops AI ($449 Beta): Secure staff bot. Best for automating SOPs and employee training.
 
     Format your response EXACTLY like this:
-    PLAN: [Digital Remodel OR Full AI Upgrade]
-    REASON: [1-2 paragraphs explaining exactly why this plan is the perfect fit based on their specific answers. Speak directly to the client ("you").]`;
+    PLAN: [The Exact Plan Name]
+    REASON: [1-2 professional, persuasive paragraphs speaking directly to 'you'.]`;
 
     fetch(CHAT_WORKER, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        messages: [{ role: "user", content: "My quiz answers:\n" + userAnswers.join("\n") }],
+        messages: [{ role: "user", content: "Recommend: " + topPlan + "\nAnswers:\n" + userAnswers.join("\n") }],
         system_override: systemPrompt,
         temperature: 0.4
       })
@@ -996,22 +1012,17 @@ function initPricing() {
     .then(res => res.json())
     .then(async data => {
       const text = data.content || "";
-      let planName = "Digital Remodel";
+      let planName = topPlan;
       let reasonText = text;
 
       if (text.includes("PLAN:") && text.includes("REASON:")) {
         const parts = text.split("REASON:");
         planName = parts[0].replace("PLAN:", "").trim();
         reasonText = parts[1].trim();
-      } else if (text.toLowerCase().includes("full ai upgrade")) {
-        planName = "Full AI Upgrade";
       }
-
-      planName = planName.replace(/\*/g, '');
 
       if (resultTitle) resultTitle.textContent = planName;
       if (resultDesc) {
-        resultDesc.textContent = '';
         for (let i = 0; i < reasonText.length; i++) {
           resultDesc.innerHTML += reasonText[i] === '\n' ? '<br/>' : reasonText[i];
           await new Promise(r => setTimeout(r, 5));
@@ -1024,26 +1035,13 @@ function initPricing() {
         resultCta.style.display = 'inline-flex';
       }
     })
-    .catch(async err => {
-      var recommendFullAI = aiScore >= remodelScore;
-      var recommendedPlan = recommendFullAI ? 'Full AI Upgrade' : 'Digital Remodel';
-      
-      if (resultTitle) resultTitle.textContent = recommendedPlan;
-      if (resultDesc) {
-        resultDesc.textContent = '';
-        let fallbackReason = recommendFullAI 
-          ? 'You want a modern site and get enough repeat questions or after-hours interest that an AI assistant will pay off. The Full AI Upgrade gives you a complete remodel plus a custom-trained assistant that answers as your business, provides after-hours coverage, and works 24/7. Rate: $749 setup, then $59/mo.'
-          : 'You need a better website first, and you’re either keeping ongoing costs minimal or not yet sure you need an AI layer. The Digital Remodel is a one-time $499 build for a fast, modern front door. You can add the AI later when you’re ready. Optional $29/mo for managed hosting.';
-        
-        for (let i = 0; i < fallbackReason.length; i++) {
-          resultDesc.innerHTML += fallbackReason[i] === '\n' ? '<br/>' : fallbackReason[i];
-          await new Promise(r => setTimeout(r, 5));
-        }
-      }
+    .catch(err => {
+      // Fallback if AI fails
+      if (resultTitle) resultTitle.textContent = topPlan;
+      if (resultDesc) resultDesc.textContent = "Based on your focus on efficiency and growth, the " + topPlan + " is your best path forward. Contact us to discuss the next steps.";
       if (resultCta) {
-        resultCta.textContent = 'Get started with ' + recommendedPlan;
-        resultCta.href = '/contact';
         resultCta.style.display = 'inline-flex';
+        resultCta.textContent = 'Get started';
       }
     });
   }
@@ -1059,6 +1057,7 @@ function initPricing() {
     goToStep(1);
   }
 
+  // Quiz Event Listener
   if (planQuizEl) {
     planQuizEl.addEventListener('click', function(e) {
       var opt = e.target.closest('.plan-quiz-opt');
@@ -1072,8 +1071,10 @@ function initPricing() {
         selections[stepNum] = {
           qText: stepEl.querySelector('.plan-quiz-q').textContent,
           aText: opt.textContent,
-          r: parseInt(opt.getAttribute('data-remodel'), 10) || 0,
-          a: parseInt(opt.getAttribute('data-ai'), 10) || 0
+          remodel: parseInt(opt.getAttribute('data-remodel'), 10) || 0,
+          ai: parseInt(opt.getAttribute('data-ai'), 10) || 0,
+          widget: parseInt(opt.getAttribute('data-widget'), 10) || 0,
+          ops: parseInt(opt.getAttribute('data-ops'), 10) || 0
         };
         
         const nextBtn = document.getElementById('quiz-next');

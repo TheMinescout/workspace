@@ -1074,7 +1074,10 @@ export const views = {
               <li class="tier-feature">Sub-second load times</li>
               <li class="tier-feature">SEO metadata &amp; schema</li>
             </ul>
-            <a href="/contact" class="tier-cta">Get started</a>
+            <div style="display: flex; gap: 8px;">
+              <a href="/contact" class="tier-cta" style="flex: 1; padding: 0.8rem 0;">Get started</a>
+              <a href="/ai/demo/assessment-ex.html" target="_blank" class="tier-cta" style="flex: 1; padding: 0.8rem 0; background: transparent; color: var(--fg); border: 1px solid var(--border);">View Demo</a>
+            </div>
           </div>
 
           <div class="tier" style="flex: 1 1 220px; max-width: 260px;">
@@ -1091,7 +1094,10 @@ export const views = {
               <li class="tier-feature">Data routed to your email</li>
               <li class="tier-feature">Co-development process</li>
             </ul>
-            <a href="/contact" class="tier-cta" style="background: var(--light); color: var(--fg); border: 1px solid var(--border);">Claim Beta Spot</a>
+            <div style="display: flex; gap: 8px;">
+              <a href="/contact" class="tier-cta" style="flex: 1; padding: 0.8rem 0; background: var(--light); color: var(--fg); border: 1px solid var(--border);">Claim Beta</a>
+              <a href="/ai/demo/lead-gen-ex.html" target="_blank" class="tier-cta" style="flex: 1; padding: 0.8rem 0; background: transparent; color: var(--fg); border: 1px solid var(--border);">View Demo</a>
+            </div>
           </div>
 
           <div class="tier tier--featured" style="flex: 1 1 220px; max-width: 260px;">
@@ -1109,7 +1115,10 @@ export const views = {
               <li class="tier-feature">Managed Training Bridge</li>
               <li class="tier-feature">After-hours coverage</li>
             </ul>
-            <a href="/contact" class="tier-cta">Get started</a>
+            <div style="display: flex; gap: 8px;">
+              <a href="/contact" class="tier-cta" style="flex: 1; padding: 0.8rem 0;">Get started</a>
+              <a href="/ai/demo/assessment-ex.html" target="_blank" class="tier-cta" style="flex: 1; padding: 0.8rem 0; background: transparent; color: var(--fg); border: 1px solid var(--border);">View Demo</a>
+            </div>
           </div>
 
           <div class="tier" style="flex: 1 1 220px; max-width: 260px;">
@@ -1126,7 +1135,10 @@ export const views = {
               <li class="tier-feature">Instant HR/SOP answers</li>
               <li class="tier-feature">Co-development process</li>
             </ul>
-            <a href="/contact" class="tier-cta" style="background: var(--light); color: var(--fg); border: 1px solid var(--border);">Claim Beta Spot</a>
+            <div style="display: flex; gap: 8px;">
+              <a href="/contact" class="tier-cta" style="flex: 1; padding: 0.8rem 0; background: var(--light); color: var(--fg); border: 1px solid var(--border);">Claim Beta</a>
+              <a href="/ai/demo/ops-bot-ex.html" target="_blank" class="tier-cta" style="flex: 1; padding: 0.8rem 0; background: transparent; color: var(--fg); border: 1px solid var(--border);">View Demo</a>
+            </div>
           </div>
 
           <div class="tier tier--charter" style="flex: 1 1 220px; max-width: 260px;">
@@ -1156,41 +1168,40 @@ export const views = {
         <div class="plan-quiz is-hidden" id="plan-quiz">
           <div class="plan-quiz-header">
             <div class="plan-quiz-title">Find your plan</div>
-            <div class="plan-quiz-desc">A few quick questions so we can suggest the best fit. You&rsquo;ll still see all options below.</div>
+            <div class="plan-quiz-desc">Answer 4 questions and we'll suggest the best Beta or standard tier for you.</div>
           </div>
           <div class="plan-quiz-progress"><div class="plan-quiz-progress-fill" id="quiz-progress"></div></div>
           <div class="plan-quiz-body" id="quiz-body">
             <div class="plan-quiz-step active" data-step="1">
-              <div class="plan-quiz-q">What best describes your website right now?</div>
+              <div class="plan-quiz-q">What is your biggest priority right now?</div>
               <div class="plan-quiz-options">
-                <button type="button" class="plan-quiz-opt" data-remodel="2" data-ai="0">I don&rsquo;t have one yet</button>
-                <button type="button" class="plan-quiz-opt" data-remodel="2" data-ai="0">I have one but it&rsquo;s outdated or I&rsquo;m embarrassed by it</button>
-                <button type="button" class="plan-quiz-opt" data-remodel="1" data-ai="1">It&rsquo;s okay but I&rsquo;d like it more modern</button>
-                <button type="button" class="plan-quiz-opt" data-remodel="0" data-ai="2">I&rsquo;m happy with it &mdash; I&rsquo;m mainly looking to add something (e.g. AI)</button>
+                <button type="button" class="plan-quiz-opt" data-remodel="2">I need a brand new, fast website</button>
+                <button type="button" class="plan-quiz-opt" data-widget="2">I want to get more leads/emails from my current site</button>
+                <button type="button" class="plan-quiz-opt" data-ai="2">I want a 24/7 AI to talk to my customers</button>
+                <button type="button" class="plan-quiz-opt" data-ops="2">I want to automate my internal staff questions/SOPs</button>
               </div>
             </div>
             <div class="plan-quiz-step" data-step="2">
-              <div class="plan-quiz-q">Do customers ask you the same questions over and over (hours, pricing, services)?</div>
+              <div class="plan-quiz-q">How do you currently handle customer questions?</div>
               <div class="plan-quiz-options">
-                <button type="button" class="plan-quiz-opt" data-remodel="1" data-ai="0">Rarely</button>
-                <button type="button" class="plan-quiz-opt" data-remodel="0" data-ai="1">Sometimes</button>
-                <button type="button" class="plan-quiz-opt" data-remodel="0" data-ai="2">All the time &mdash; it takes real time to answer</button>
+                <button type="button" class="plan-quiz-opt" data-remodel="1">I answer them manually, and it's fine</button>
+                <button type="button" class="plan-quiz-opt" data-ai="2">I miss leads because I can't answer fast enough</button>
+                <button type="button" class="plan-quiz-opt" data-widget="2">I need a calculator/tool to give them instant quotes</button>
               </div>
             </div>
             <div class="plan-quiz-step" data-step="3">
-              <div class="plan-quiz-q">Do you miss leads or calls when you&rsquo;re closed or too busy?</div>
+              <div class="plan-quiz-q">How much time do you spend training staff or answering repetitive team questions?</div>
               <div class="plan-quiz-options">
-                <button type="button" class="plan-quiz-opt" data-remodel="1" data-ai="0">No, we keep up</button>
-                <button type="button" class="plan-quiz-opt" data-remodel="0" data-ai="1">Sometimes</button>
-                <button type="button" class="plan-quiz-opt" data-remodel="0" data-ai="2">Yes, it&rsquo;s a real problem</button>
+                <button type="button" class="plan-quiz-opt" data-remodel="1">Not much, we are a small team</button>
+                <button type="button" class="plan-quiz-opt" data-ops="2">A lot &mdash; I wish they could just "Ask" our handbook</button>
+                <button type="button" class="plan-quiz-opt" data-ai="1">Some, but I'm more worried about customers</button>
               </div>
             </div>
             <div class="plan-quiz-step" data-step="4">
-              <div class="plan-quiz-q">What matters most for your budget?</div>
+              <div class="plan-quiz-q">Are you open to being a "Beta Partner" for a 50% discount?</div>
               <div class="plan-quiz-options">
-                <button type="button" class="plan-quiz-opt" data-remodel="2" data-ai="0">I&rsquo;d rather pay once and keep ongoing costs minimal</button>
-                <button type="button" class="plan-quiz-opt" data-remodel="0" data-ai="1">I&rsquo;m okay with a small monthly fee if the value is there</button>
-                <button type="button" class="plan-quiz-opt" data-remodel="0" data-ai="0">I&rsquo;m open &mdash; just want the right fit</button>
+                <button type="button" class="plan-quiz-opt" data-widget="1" data-ops="1">Yes! I'd love to help co-develop a new tool</button>
+                <button type="button" class="plan-quiz-opt" data-remodel="1" data-ai="1">I prefer a finished, standard product</button>
               </div>
             </div>
           </div>
@@ -1256,7 +1267,7 @@ export const views = {
           </div>
           <div class="pricing-cta-btns">
             <a href="/contact" class="btn-primary">Get in touch</a>
-            <a href="/ai/demo/" class="btn-ghost">See demo first</a>
+            <a href="/ai/demo/" class="btn-ghost">See demo directory</a>
           </div>
         </div>
 
