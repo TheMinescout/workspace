@@ -200,7 +200,7 @@ export const views = {
         <div class="ai-features">
           <a href="/blog/minescout-genesis" class="ai-feature"><div class="ai-feature-icon">⚙️</div><div><div class="ai-feature-title">Multi-Tenant Routing Engine</div><div class="ai-feature-desc">The core v61.0 logic. Hosting unlimited client nodes from a single codebase via header-based routing and KV data persistence.</div></div><span class="ai-feature-badge badge-live">System Live</span></a>
           <a href="https://ferncarleton.com?studio" target="_blank" class="ai-feature"><div class="ai-feature-icon">🎭</div><div><div class="ai-feature-title">The "Backstage" Dashboard</div><div class="ai-feature-desc">A private, secure admin suite allowing clients to update photography, bios, and skills grids without touching a line of code.</div></div><span class="ai-feature-badge badge-node">Node 02</span></a>
-          <a href="/ai/demo/index.html" class="ai-feature"><div class="ai-feature-icon">🤖</div><div><div class="ai-feature-title">River Guide AI (RAG Assistant)</div><div class="ai-feature-desc">A persistent assistant trained on proprietary data. Handles high-frequency inquiries with 24/7 accuracy and instant triage.</div></div><span class="ai-feature-badge badge-ready">Demo Ready</span></a>
+          <a href="/ai/demo/index.html" class="ai-feature"><div class="ai-feature-icon">🤖</div><div><div class="ai-feature-title">Sentry AI (RAG Assistant)</div><div class="ai-feature-desc">A persistent assistant trained on proprietary data. Handles high-frequency inquiries with 24/7 accuracy and instant triage.</div></div><span class="ai-feature-badge badge-ready">Demo Ready</span></a>
         </div>
         <div class="ai-section-label">The Implementation Loop</div>
         <div class="ai-steps">

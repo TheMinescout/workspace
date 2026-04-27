@@ -1,6 +1,6 @@
 // app.js — Application Logic & Routing
 
-import { views } from './views.js?v=2.1';
+import { views } from './views.js?v=3';
 
 // ── 1. SIDEBAR CONFIGURATION ──────────────────────────────────────
 const MAIN_MENU = [
@@ -126,6 +126,7 @@ let fbDb = null;
 let askKnowledgeBase = "";
 let askHistory = [];
 
+    // 3. Connect to Firebase for Live Overrides
 async function initAskChat() {
   const input = document.getElementById('chat-input');
   const sendBtn = document.getElementById('chat-send');
@@ -133,6 +134,7 @@ async function initAskChat() {
   const chatWin = document.getElementById('chat-window');
   if (!input) return;
 
+  // Restore history if user navigated back
   if (askHistory.length > 0) {
     const emptyState = document.getElementById('chat-empty');
     if (emptyState) emptyState.remove();
@@ -141,77 +143,34 @@ async function initAskChat() {
 
   if (fbDb) {
     input.disabled = false; sendBtn.disabled = false;
-    input.placeholder = "Ask about FRC, Minescout AI, Eagle Scout...";
-    badge.innerText = "● System Online (Context Synced)";
+    badge.innerText = "● Sentry AI: Online";
     badge.className = "status-badge status-online";
     setupChatListeners(input, sendBtn, chatWin);
     return;
   }
 
-  askKnowledgeBase = `STRICT SYSTEM ROLE: You are the AI Assistant representing Thomas Carleton and Minescout AI.
-Your ONLY truth is the live context provided below. If a user asks about a project, service, or stat that is NOT in this text, say you don't have that information.
-Identity: Speak as an extension of Thomas/Minescout. Be highly professional, technical, and concise. Do NOT hallucinate skills or metrics.
-
-CRITICAL PRICING & AVAILABILITY RULES:
-- Digital Remodel: $499 setup + $29/mo (or $0/mo self-hosted).
-- Full AI Upgrade: $749 setup + $59/mo.
-- Charter Partner: $0 setup, $0/mo (Free). Requires a signed testimonial and 12 months of feedback. Exactly 3 spots are currently available.
-
-LIVE SCRAPED CONTEXT:\n`;
-
   try {
     const { getApp, getApps, initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-    const { getFirestore, collection, getDocs, query, where } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const { getFirestore } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
 
     const firebaseConfig = {
       apiKey: "AIzaSyAmZbRI37rbHWGaOSVomMdcG-IvHMf6S3Y",
       authDomain: "minescout-5533a.firebaseapp.com",
-      projectId: "minescout-5533a",
-      storageBucket: "minescout-5533a.firebasestorage.app",
-      messagingSenderId: "639262143843",
-      appId: "1:639262143843:web:4fe407d3b15a4c885a8f56",
-      measurementId: "G-VD5NNWE1MK"
+      projectId: "minescout-5533a"
     };
     
     const fbApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
     fbDb = getFirestore(fbApp);
-    const CLIENT_ID = '5mAIDPwf9kNmNTk3pAQPDfIP9Z93';
 
-    async function scrapePageText(path, label) {
-      try {
-        let html = views[path] ? views[path] : "";
-        if (!html) return "";
-        const doc = new DOMParser().parseFromString(html, 'text/html');
-        doc.querySelectorAll('script, style, nav, footer, iframe').forEach(el => el.remove());
-        const mainContent = doc.querySelector('main') || doc.body;
-        let cleanText = mainContent.textContent.replace(/\s+/g, ' ').trim();
-        return `\n--- SOURCE: ${label} (${path}) ---\n${cleanText.substring(0, 3500)}\n`;
-      } catch (e) { return ""; }
-    }
-
-    const results = await Promise.allSettled([
-      scrapePageText('/resume', 'RESUME & EXPERIENCE'),
-      scrapePageText('/ai', 'MINESCOUT AI PLATFORM'),
-      scrapePageText('/', 'PORTFOLIO & WORK'),
-      getDocs(query(collection(fbDb, 'clients', CLIENT_ID, 'corrections'), where('status', '==', 'applied'))),
-      getDocs(collection(fbDb, 'clients', CLIENT_ID, 'faqs'))
-    ]);
-
-    if (results[0].status === 'fulfilled') askKnowledgeBase += results[0].value;
-    if (results[1].status === 'fulfilled') askKnowledgeBase += results[1].value;
-    if (results[2].status === 'fulfilled') askKnowledgeBase += results[2].value;
-    if (results[3].status === 'fulfilled') results[3].value.forEach(d => { askKnowledgeBase += `\nFACT OVERRIDE: ${d.data().question} -> ${d.data().correction}`; });
-    if (results[4].status === 'fulfilled') results[4].value.forEach(d => { askKnowledgeBase += `\nFAQ OVERRIDE: ${d.data().question} -> ${d.data().answer}`; });
-
-    if (input) {
-      input.disabled = false; 
-      sendBtn.disabled = false;
-      input.placeholder = "Ask about FRC, Minescout AI, Eagle Scout...";
-      badge.innerText = "● System Online (Context Synced)"; 
-      badge.className = "status-badge status-online";
-      setupChatListeners(input, sendBtn, chatWin);
-    }
-  } catch(e) { console.error("KB Error:", e); }
+    input.disabled = false; 
+    sendBtn.disabled = false;
+    input.placeholder = "Ask Sentry AI anything...";
+    badge.innerText = "● Sentry AI: Online"; 
+    badge.className = "status-badge status-online";
+    setupChatListeners(input, sendBtn, chatWin);
+  } catch(e) { 
+    console.error("Initialization Error:", e);
+  }
 }
 
 function setupChatListeners(input, sendBtn, chatWin) {
@@ -219,6 +178,35 @@ function setupChatListeners(input, sendBtn, chatWin) {
     const text = input.value.trim();
     if (!text || sendBtn.disabled) return;
 
+    // --- RAG: Context Retrieval (Keep this, it's your AI's brain) ---
+    const searchTerms = text.toLowerCase().split(' ').filter(word => word.length > 3);
+    let dynamicContext = "";
+    const priorityRoutes = ['/', '/resume', '/ai', '/ai/pricing', '/ai/clients'];
+    
+    priorityRoutes.forEach(path => {
+      const rawHtml = views[path] ? views[path].toLowerCase() : "";
+      const isRelevant = searchTerms.some(term => rawHtml.includes(term));
+      if (isRelevant || (path === '/ai/pricing' && text.toLowerCase().includes('cost'))) {
+        const doc = new DOMParser().parseFromString(views[path], 'text/html');
+        doc.querySelectorAll('script, style, nav, footer, .btn, aside').forEach(el => el.remove());
+        let cleanText = doc.body.textContent.replace(/\s+/g, ' ').trim();
+        dynamicContext += `\n[Context from ${path}]: ${cleanText.substring(0, 1000)}`;
+      }
+    });
+
+    // --- SYSTEM PROMPT (Simplified for Reliability) ---
+    const finalSystemPrompt = `STRICT SYSTEM ROLE: You are Sentry AI, the autonomous representative for Thomas Carleton and Minescout AI.
+    
+    CORE RULE: You cannot book appointments. 
+    If a user wants to schedule, book, or get a recap, say: 
+    "To keep things organized and ensure 100% accuracy, Thomas handles all scheduling and detailed follow-ups personally. Please head to minescout.net/contact to drop your details—he usually responds within the hour."
+
+    TONE: Professional, direct, and elite. No fluff.
+
+    LOCAL CONTEXT:
+    ${dynamicContext || "General portfolio and AI infrastructure info."}`;
+
+    // UI Updates
     const emptyState = document.getElementById('chat-empty');
     if (emptyState) emptyState.remove();
 
@@ -227,18 +215,27 @@ function setupChatListeners(input, sendBtn, chatWin) {
     input.value = ''; sendBtn.disabled = true;
 
     const typing = addTyping(chatWin);
+    
     try {
       const res = await fetch('https://thomas-chat.tmcarleton11.workers.dev', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: askHistory, client_id: '5mAIDPwf9kNmNTk3pAQPDfIP9Z93', system_override: askKnowledgeBase, temperature: 0.1 })
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          messages: askHistory.slice(-8), 
+          client_id: '5mAIDPwf9kNmNTk3pAQPDfIP9Z93', 
+          system_override: finalSystemPrompt, 
+          temperature: 0.2 
+        })
       });
+      
       const data = await res.json();
       typing.remove();
       
-      const responseText = data.content || '';
+      const responseText = data.content || 'I encountered a processing error.';
       const msgEl = addMessage('assistant', '', chatWin);
       const bubble = msgEl.querySelector('.msg-bubble');
       
+      // Typing Effect
       let currentHTML = '';
       for (let i = 0; i < responseText.length; i++) {
         currentHTML += responseText[i] === '\n' ? '<br/>' : responseText[i];
@@ -249,11 +246,12 @@ function setupChatListeners(input, sendBtn, chatWin) {
       
       askHistory.push({ role: 'assistant', content: responseText });
     } catch(err) {
-      typing.remove();
-      addMessage('assistant', 'Network disruption. Unable to reach Minescout Edge Worker.', chatWin);
+      if(typing) typing.remove();
+      addMessage('assistant', 'Sentry AI is currently optimizing systems. Please check back shortly.', chatWin);
     }
     sendBtn.disabled = false; input.focus();
   };
+  
   input.onkeydown = function(e) { if (e.key === 'Enter') window.sendMessage(); };
 }
 

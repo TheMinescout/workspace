@@ -1324,4 +1324,31 @@ body {
     text-align: center;
     justify-content: center;
   }
+}.email-confirm-box {
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
 }
+
+.btn-accept-email {
+  background: #2ecc71;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.btn-decline-email {
+  background: transparent;
+  color: #999;
+  border: 1px solid #444;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-accept-email:hover { background: #27ae60; }

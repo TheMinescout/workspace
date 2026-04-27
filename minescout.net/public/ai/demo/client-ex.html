@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" minescout-ai-id="timberline">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timberline Landscaping & Hardscaping</title>
+  
+  <!-- Favicon using the Leaf Logo SVG -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231b4332' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z'/><path d='M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12'/></svg>">
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Modern Theme Colors */
+      --forest: #1b4332;
+      --forest-light: #2d6a4f;
+      --forest-accent: #40916c;
+      --white: #ffffff;
+      --paper: #f4f7f6; /* Modern subtle cool-gray */
+      --charcoal: #1f2937;
+      --slate: #4b5563;
+      
+      --nav-height: 80px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body { 
+      background-color: var(--paper); 
+      font-family: 'Inter', sans-serif; 
+      color: var(--charcoal); 
+      line-height: 1.7; 
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--forest-light); text-decoration: none; transition: 0.2s; font-weight: 600; }
+    a:hover { color: var(--forest); text-decoration: underline; }
+
+    /* Top Navigation Bar - Glassmorphism */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: var(--nav-height);
+      background: rgba(27, 67, 50, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-links { display: flex; gap: 2.5rem; align-items: center; }
+    
+    .nav-btn {
+      background: none; border: none; color: rgba(255,255,255,0.8);
+      font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: 0.3s;
+      padding-bottom: 4px; border-bottom: 2px solid transparent;
+    }
+    .nav-btn:hover, .nav-btn.active { color: var(--white); border-bottom: 2px solid var(--white); }
+
+    /* Modern Pill Button */
+    .quote-btn {
+      background: var(--forest-accent); color: var(--white);
+      padding: 12px 28px; border-radius: 50px; font-weight: 700;
+      border: none; cursor: pointer; transition: all 0.3s ease;
+      text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;
+      display: inline-block;
+      box-shadow: 0 4px 15px rgba(64, 145, 108, 0.3);
+    }
+    .quote-btn:hover { 
+      background: var(--forest-light); 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 20px rgba(64, 145, 108, 0.4); 
+    }
+    
+    .top-nav .quote-btn {
+      background: var(--white);
+      color: var(--forest);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .top-nav .quote-btn:hover {
+      background: var(--paper);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-toggle { display: none; font-size: 1.8rem; cursor: pointer; color: var(--white); border: none; background: none; }
+
+    main {
+      padding: 5rem 5% 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: calc(100vh - var(--nav-height) - 100px);
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.2rem;
+      color: var(--forest);
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+    }
+    .page-title::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: var(--forest-accent);
+      border-radius: 2px;
+    }
+
+    /* Modern Cards */
+    .service-card { 
+      background: var(--white); 
+      padding: 2.5rem; 
+      border-radius: 12px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04); 
+      margin-bottom: 1.5rem;
+      border-left: 6px solid var(--forest-accent);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .service-card:hover { 
+      transform: translateY(-5px); 
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
+    }
+    .service-title { font-size: 1.4rem; font-weight: 700; color: var(--forest); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;}
+    .service-desc { font-size: 1.1rem; color: var(--slate); }
+
+    /* Contact Details Grid */
+    .contact-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;
+      margin-top: 2rem;
+    }
+    .contact-box {
+      background: var(--white); padding: 2.5rem; border-radius: 12px; text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+    }
+    .contact-box h3 { color: var(--forest-accent); margin-bottom: 1rem; font-family: 'Inter'; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1.5px; }
+    .contact-box p { 
+      font-size: 1.2rem; 
+      font-weight: 600; 
+      color: var(--charcoal);
+      width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    /* Hero adjustments */
+    .hero-container {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+    }
+    .hero-text { font-size: 1.25rem; color: var(--slate); }
+    .hero-img { 
+      width: 100%; 
+      border-radius: 16px; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15); 
+      object-fit: cover; 
+      aspect-ratio: 4/3; 
+    }
+
+    /* Footer */
+    .site-footer {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--slate);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* ── AI Chat Widget ── */
+    .chat-fab {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 60px; height: 60px;
+      background: var(--forest-accent);
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 2000;
+      color: white;
+    }
+
+    .chat-fab:hover { transform: scale(1.1); background: var(--forest-light); }
+    .chat-fab .fab-close { display: none; }
+    .chat-fab.open .fab-icon { display: none; }
+    .chat-fab.open .fab-close { display: block; }
+
+    .chat-badge {
+      position: absolute;
+      top: -4px; right: -4px;
+      width: 22px; height: 22px;
+      background: #ff4d1c;
+      border-radius: 50%;
+      border: 3px solid var(--paper);
+      font-size: 0.6rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chat-panel {
+      position: fixed;
+      bottom: 6.5rem;
+      right: 2rem;
+      width: 360px;
+      height: 580px;
+      max-height: calc(100vh - 10rem);
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 12px 60px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 2000;
+      transform: scale(0.95) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: bottom right;
+    }
+
+    .chat-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+
+    .chat-header { background: var(--forest); padding: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    .chat-avatar { width: 40px; height: 40px; background: var(--forest-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white; }
+    .chat-info-name { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 0.2rem; }
+    .chat-info-status { font-size: 0.75rem; color: #a7f3d0; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+    .chat-status-dot { width: 6px; height: 6px; background: #a7f3d0; border-radius: 50%; }
+
+    .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; background: var(--paper); }
+    .msg { max-width: 85%; line-height: 1.5; font-size: 0.9rem; padding: 0.8rem 1rem; border-radius: 12px; }
+    .msg-bot { align-self: flex-start; background: var(--white); border: 1px solid #e5e7eb; border-bottom-left-radius: 2px; color: var(--charcoal); }
+    .msg-user { align-self: flex-end; background: var(--forest-light); color: var(--white); border-bottom-right-radius: 2px; }
+
+    .chat-input-area { padding: 1rem; border-top: 1px solid #e5e7eb; background: var(--white); display: flex; align-items: center; gap: 0.5rem; }
+    .chat-input { flex: 1; border: none; outline: none; font-family: inherit; font-size: 0.9rem; padding: 0.5rem; background: transparent;}
+    .chat-submit { background: var(--forest-accent); border: none; cursor: pointer; color: white; font-size: 1rem; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .chat-submit:hover { background: var(--forest); }
+    .chat-submit:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* Custom Falling Leaves Animation for Chat Loader */
+    .typing-leaves {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding-left: 1rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      height: 30px;
+    }
+    .typing-leaves.visible { display: flex; }
+    .leaf {
+      width: 12px;
+      height: 12px;
+      background-color: var(--forest-accent);
+      border-radius: 0 50% 0 50%; /* Creates a leaf shape */
+      animation: fallAndSway 2s infinite ease-in-out;
+      opacity: 0;
+    }
+    .leaf-1 { animation-delay: 0s; }
+    .leaf-2 { animation-delay: 0.6s; }
+    .leaf-3 { animation-delay: 1.2s; }
+
+    @keyframes fallAndSway {
+      0% { transform: translateY(-8px) rotate(-15deg); opacity: 0; }
+      25% { transform: translateY(-3px) rotate(25deg); opacity: 1; }
+      50% { transform: translateY(2px) rotate(-15deg); opacity: 1; }
+      75% { transform: translateY(7px) rotate(25deg); opacity: 1; }
+      100% { transform: translateY(12px) rotate(-15deg); opacity: 0; }
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade { animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+    @media (max-width: 900px) {
+      .hero-container { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-img { order: -1; } /* Keeps image on top on mobile */
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { 
+        display: none; flex-direction: column; position: absolute; top: var(--nav-height); left: 0; right: 0;
+        background: rgba(27, 67, 50, 0.98); backdrop-filter: blur(10px); padding: 2rem; gap: 1.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);
+      }
+      .nav-links.open { display: flex; }
+      .mobile-toggle { display: block; }
+      .page-title { font-size: 2.5rem; }
+    }
+    
+    @media (max-width: 600px) {
+      .chat-panel { width: calc(100vw - 2rem); right: 1rem; bottom: 5.5rem; height: 500px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const renderer = new marked.Renderer();
+    const originalLink = renderer.link.bind(renderer);
+    renderer.link = function() {
+      return originalLink.apply(this, arguments).replace(/^<a /, '<a target="_blank" rel="noopener noreferrer" ');
+    };
+    marked.setOptions({ renderer: renderer });
+
+    // Embedded ChatWidget Component
+    const ChatWidget = ({ siteData }) => {
+      const [isOpen, setIsOpen] = useState(false);
+      const [config, setConfig] = useState(null);
+      const [messages, setMessages] = useState([]);
+      const [input, setInput] = useState('');
+      const [isTyping, setIsTyping] = useState(false);
+      const [hasUnread, setHasUnread] = useState(false);
+      const messagesEndRef = useRef(null);
+
+      // Fetch external config securely from master file
+      useEffect(() => {
+        const fetchConfig = async () => {
+          try {
+            const res = await fetch('https://minescout.net/ai/chat-config/index.html');
+            const html = await res.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const script = doc.querySelector('script[minescout-ai-id="timberline"]');
+            
+            if (script) {
+              const parsedConfig = JSON.parse(script.textContent);
+              setConfig(parsedConfig);
+              setMessages([{ role: 'assistant', content: parsedConfig.welcomeMessage }]);
+              setHasUnread(true);
+            } else {
+              throw new Error("Timberline script config tag not found in master file");
+            }
+          } catch (e) {
+            console.warn("Failed to load secure master config, using localized fallback.", e);
+            const fallback = {
+              assistantName: "Timberline Assistant",
+              welcomeMessage: "Hello! I am the Timberline virtual assistant. How can I help?",
+              endpoint: "https://thomas-chat.tmcarleton11.workers.dev/",
+              systemInstruction: "ROLE: You are the AI assistant for Timberline Landscaping & Hardscaping. Tone: Helpful, polite, and professional. Keep answers brief."
+            };
+            setConfig(fallback);
+            setMessages([{ role: 'assistant', content: fallback.welcomeMessage }]);
+            setHasUnread(true);
+          }
+        };
+        fetchConfig();
+      }, []);
+
+      const toggleChat = () => {
+        setIsOpen(!isOpen);
+        if (!isOpen) setHasUnread(false);
+      };
+
+      const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      };
+
+      useEffect(() => {
+        if (isOpen) {
+          scrollToBottom();
+        }
+      }, [messages, isOpen, isTyping]);
+
+      const handleSend = async () => {
+        if (!input.trim() || !config) return;
+        const userMsg = { role: 'user', content: input.trim() };
+        const newMessages = [...messages, userMsg];
+        
+        setMessages(newMessages);
+        setInput('');
+        setIsTyping(true);
+
+        // Dynamically inject operational site data into the fetched secure config
+        const dynamicContext = `\n\nDYNAMIC SITE DATA:
+- Services: ${siteData.services.map(s => s.label).join(', ')}.
+- Service Area: ${siteData.contact.area}.
+- Hours: ${siteData.contact.hours}.
+- Contact: ${siteData.contact.phone} or ${siteData.contact.email}.`;
+
+        const finalSystemOverride = config.systemInstruction + dynamicContext;
+
+        try {
+          const response = await fetch(config.endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              client_id: "timberline",
+              messages: newMessages,
+              system_override: finalSystemOverride,
+              temperature: 0.0
+            })
+          });
+
+          const data = await response.json();
+          const reply = data.content || "Service initializing.";
+          setMessages([...newMessages, { role: 'assistant', content: reply }]);
+        } catch (err) {
+          setMessages([...newMessages, { role: 'assistant', content: "Engine standby. Please try again or call us." }]);
+        } finally {
+          setIsTyping(false);
+        }
+      };
+
+      const handleKeyPress = (e) => {
+        if (e.key === 'Enter') handleSend();
+      };
+
+      return (
+        <React.Fragment>
+          <button className={`chat-fab ${isOpen ? 'open' : ''}`} onClick={toggleChat}>
+            <span className="fab-icon">💬</span>
+            <span className="fab-close">✕</span>
+            {hasUnread && !isOpen && <div className="chat-badge">1</div>}
+          </button>
+
+          <div className={`chat-panel ${isOpen ? 'open' : ''}`}>
+            <div className="chat-header">
+              <div className="chat-avatar">🌱</div>
+              <div className="chat-info">
+                <div className="chat-info-name">{config?.assistantName || "Timberline Assistant"}</div>
+                <div className="chat-info-status">
+                  <div className="chat-status-dot"></div>
+                  Online
+                </div>
+              </div>
+            </div>
+
+            <div className="chat-messages">
+              {messages.map((msg, idx) => (
+                <div key={idx} className={`msg msg-${msg.role === 'user' ? 'user' : 'bot'}`}>
+                  {msg.content}
+                </div>
+              ))}
+              
+              {/* Custom Falling Leaves Animation */}
+              <div className={`typing-leaves ${isTyping ? 'visible' : ''}`}>
+                <div className="leaf leaf-1"></div>
+                <div className="leaf leaf-2"></div>
+                <div className="leaf leaf-3"></div>
+              </div>
+
+              <div ref={messagesEndRef} />
+            </div>
+
+            <div className="chat-input-area">
+              <input 
+                type="text" 
+                className="chat-input" 
+                placeholder="Ask a question..." 
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={handleKeyPress}
+                autoComplete="off"
+                disabled={!config}
+              />
+              <button 
+                className="chat-submit" 
+                onClick={handleSend}
+                disabled={isTyping || !config}
+              >
+                ➤
+              </button>
+            </div>
+          </div>
+        </React.Fragment>
+      );
+    };
+
+    const App = () => {
+      const [view, setView] = useState('home');
+      const [menuOpen, setMenuOpen] = useState(false);
+
+      useEffect(() => {
+        const handleHash = () => {
+          const h = window.location.hash.replace('#', '') || 'home';
+          setView(h);
+          setMenuOpen(false);
+          window.scrollTo(0, 0);
+        };
+        window.addEventListener('hashchange', handleHash);
+        handleHash();
+        return () => window.removeEventListener('hashchange', handleHash);
+      }, []);
+
+      // Hardcoded Default Data for Preview
+      const data = {
+        welcome: { 
+          title: "Timberline Landscaping & Hardscaping", 
+          text: "Welcome to Timberline. We specialize in transforming outdoor spaces with expert landscaping and durable hardscaping solutions. Our team is dedicated to bringing your vision to life.", 
+          image: "https://dam.thdstatic.com/content/production/V0kFoxiJSHetjPybvgI7NQ/TqW9zOKBQEcAlITe2Yh5Bg/Original%20file/327681193_RM_RYOBI.jpg" 
+        },
+        services: [
+          { label: "Routine Maintenance", content: "Weekly mowing, edging, blowing, and weed control." },
+          { label: "Seasonal Cleanups", content: "Spring mulch installations, fall leaf removal, and heavy pruning." },
+          { label: "Hardscaping", content: "Custom paver patios, block retaining walls, and fire pits." },
+          { label: "Pressure Washing", content: "Driveways, walkways, and cedar decks." }
+        ],
+        contact: {
+          phone: "(425) 555-0199",
+          email: "dave@timberlinelandscaping.net",
+          hours: "Monday - Friday, 7:00 AM to 6:00 PM. Closed weekends.",
+          area: "Sammamish, Issaquah, and Redmond."
+        }
+      };
+
+      return (
+        <div>
+          <header className="top-nav">
+            <div className="brand" onClick={() => window.location.hash='home'}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+              Timberline
+            </div>
+            <button className="mobile-toggle" onClick={() => setMenuOpen(!menuOpen)}>☰</button>
+            <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
+              <button className={`nav-btn ${view === 'home' ? 'active' : ''}`} onClick={() => window.location.hash='home'}>Home</button>
+              <button className={`nav-btn ${view === 'services' ? 'active' : ''}`} onClick={() => window.location.hash='services'}>Services</button>
+              <button className={`nav-btn ${view === 'contact' ? 'active' : ''}`} onClick={() => window.location.hash='contact'}>Contact / Quote</button>
+              <button className="quote-btn" onClick={() => window.location.hash='contact'}>Get a Quote</button>
+            </nav>
+          </header>
+
+          <main>
+            <div className="animate-fade" key={view}>
+              {view === 'home' && <HeroSection title={data.welcome.title} text={data.welcome.text} img={data.welcome.image} />}
+              {view === 'services' && <ServicesSection items={data.services} />}
+              {view === 'contact' && <ContactSection data={data.contact} />}
+            </div>
+          </main>
+
+          <footer className="site-footer">
+            Created by Minescout AI
+          </footer>
+
+          <ChatWidget siteData={data} />
+        </div>
+      );
+    };
+
+    // Components
+    const HeroSection = ({ title, text, img }) => (
+      <div className="hero-container">
+        {img && (
+          <div>
+            <img src={img} className="hero-img" alt="Professional exterior cleaning and landscaping" onError={(e) => e.target.style.display='none'} />
+          </div>
+        )}
+        <div>
+          <h1 className="page-title">{title}</h1>
+          <div className="hero-text" dangerouslySetInnerHTML={{ __html: marked.parse(text || '') }} />
+          <button style={{marginTop: '2.5rem'}} className="quote-btn" onClick={() => window.location.hash='contact'}>Request Service</button>
+        </div>
+      </div>
+    );
+
+    const ServicesSection = ({ items }) => (
+      <div>
+        <h2 className="page-title">Our Core Services</h2>
+        <div style={{marginTop: '1rem'}}>
+          {items.map((item, i) => (
+            <div key={i} className="service-card">
+              <div className="service-title">{item.label}</div>
+              <div className="service-desc" dangerouslySetInnerHTML={{ __html: marked.parse(item.content || '') }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+
+    const ContactSection = ({ data }) => (
+      <div>
+        <h2 className="page-title">Contact & Request a Quote</h2>
+        <div style={{fontSize: '1.25rem', color: 'var(--slate)', maxWidth: '800px'}}>
+          Ready to enhance your property? Reach out to us directly or view our operational hours below. We are here to help.
+        </div>
+        
+        <div className="contact-grid">
+          <div className="contact-box">
+            <h3>Service Area</h3>
+            <p>{data.area}</p>
+          </div>
+          <div className="contact-box">
+            <h3>Business Hours</h3>
+            <p>{data.hours}</p>
+          </div>
+          <div className="contact-box">
+            <h3>Contact Us</h3>
+            <p style={{marginBottom: '12px'}}><a href={`tel:${data.phone}`}>{data.phone}</a></p>
+            <p><a href={`mailto:${data.email}`}>{data.email}</a></p>
+          </div>
+        </div>
+      </div>
+    );
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

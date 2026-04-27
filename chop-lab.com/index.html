@@ -10,12 +10,403 @@
     <meta name="theme-color" content="#C97B63">
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/manthrax/THREE-CSGMesh@master/CSGMesh.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/STLExporter.js"></script>
+    <script>
+        (function() {
+            "use strict";
+
+            // =======================================================
+            // PART 1: CORE MATH CLASSES (from csg-lib.js)
+            // =======================================================
+            class CSG {
+                constructor() { this.polygons = []; }
+                clone() {
+                    let csg = new CSG();
+                    csg.polygons = this.polygons.map(p=>p.clone())
+                    return csg;
+                }
+                toPolygons() { return this.polygons; }
+                union(csg) {
+                    let a = new Node(this.clone().polygons);
+                    let b = new Node(csg.clone().polygons);
+                    a.clipTo(b); b.clipTo(a); b.invert(); b.clipTo(a); b.invert();
+                    a.build(b.allPolygons());
+                    return CSG.fromPolygons(a.allPolygons());
+                }
+                subtract(csg) {
+                    let a = new Node(this.clone().polygons);
+                    let b = new Node(csg.clone().polygons);
+                    a.invert(); a.clipTo(b); b.clipTo(a); b.invert(); b.clipTo(a); b.invert();
+                    a.build(b.allPolygons());
+                    a.invert();
+                    return CSG.fromPolygons(a.allPolygons());
+                }
+                intersect(csg) {
+                    let a = new Node(this.clone().polygons);
+                    let b = new Node(csg.clone().polygons);
+                    a.invert(); b.clipTo(a); b.invert(); a.clipTo(b); b.clipTo(a);
+                    a.build(b.allPolygons());
+                    a.invert();
+                    return CSG.fromPolygons(a.allPolygons());
+                }
+                inverse() {
+                    let csg = this.clone();
+                    csg.polygons.forEach(p=>p.flip());
+                    return csg;
+                }
+            }
+            CSG.fromPolygons=function(polygons) {
+                let csg = new CSG();
+                csg.polygons = polygons;
+                return csg;
+            }
+
+            class Vector {
+                constructor(x=0, y=0, z=0) { this.x=x; this.y=y; this.z=z; }
+                copy(v){ this.x=v.x; this.y=v.y; this.z=v.z; return this; }
+                clone() { return new Vector(this.x,this.y,this.z); }
+                negate() { this.x*=-1; this.y*=-1; this.z*=-1; return this; }
+                add(a) { this.x+=a.x; this.y+=a.y; this.z+=a.z; return this; }
+                sub(a) { this.x-=a.x; this.y-=a.y; this.z-=a.z; return this; }
+                times(a) { this.x*=a; this.y*=a; this.z*=a; return this; }
+                dividedBy(a) { this.x/=a; this.y/=a; this.z/=a; return this; }
+                lerp(a, t) { return this.add(tv0.copy(a).sub(this).times(t)); }
+                unit() { return this.dividedBy(this.length()); }
+                length(){ return Math.sqrt((this.x**2)+(this.y**2)+(this.z**2)); }
+                normalize(){ return this.unit(); }
+                cross(b) {
+                    let a = this;
+                    const ax = a.x, ay = a.y, az = a.z;
+                    const bx = b.x, by = b.y, bz = b.z;
+                    this.x = ay * bz - az * by;
+                    this.y = az * bx - ax * bz;
+                    this.z = ax * by - ay * bx;
+                    return this;
+                }
+                dot(b){ return (this.x*b.x)+(this.y*b.y)+(this.z*b.z); }
+            }
+
+            let tv0=new Vector();
+            let tv1=new Vector();
+
+            class Vertex {
+                constructor(pos, normal, uv, color) {
+                    this.pos = new Vector().copy(pos);
+                    this.normal = new Vector().copy(normal);
+                    uv && (this.uv = new Vector().copy(uv)) && (this.uv.z=0);
+                    color && (this.color = new Vector().copy(color));
+                }
+                clone() { return new Vertex(this.pos,this.normal,this.uv,this.color); }
+                flip() { this.normal.negate(); }
+                interpolate(other, t) {
+                    return new Vertex(
+                        this.pos.clone().lerp(other.pos, t),
+                        this.normal.clone().lerp(other.normal, t),
+                        this.uv&&other.uv&&this.uv.clone().lerp(other.uv, t), 
+                        this.color&&other.color&&this.color.clone().lerp(other.color,t)
+                    );
+                }
+            }
+
+            class Plane {
+                constructor(normal, w) { this.normal = normal; this.w = w; }
+                clone() { return new Plane(this.normal.clone(),this.w); }
+                flip() { this.normal.negate(); this.w = -this.w; }
+                splitPolygon(polygon, coplanarFront, coplanarBack, front, back) {
+                    const COPLANAR = 0, FRONT = 1, BACK = 2, SPANNING = 3;
+                    let polygonType = 0;
+                    let types = [];
+                    for (let i = 0; i < polygon.vertices.length; i++) {
+                        let t = this.normal.dot(polygon.vertices[i].pos) - this.w;
+                        let type = (t < -Plane.EPSILON) ? BACK : (t > Plane.EPSILON) ? FRONT : COPLANAR;
+                        polygonType |= type;
+                        types.push(type);
+                    }
+                    switch (polygonType) {
+                        case COPLANAR:
+                            (this.normal.dot(polygon.plane.normal) > 0 ? coplanarFront : coplanarBack).push(polygon);
+                            break;
+                        case FRONT:
+                            front.push(polygon);
+                            break;
+                        case BACK:
+                            back.push(polygon);
+                            break;
+                        case SPANNING:
+                            let f = [], b = [];
+                            for (let i = 0; i < polygon.vertices.length; i++) {
+                                let j = (i + 1) % polygon.vertices.length;
+                                let ti = types[i], tj = types[j];
+                                let vi = polygon.vertices[i], vj = polygon.vertices[j];
+                                if (ti != BACK) f.push(vi);
+                                if (ti != FRONT) b.push(ti != BACK ? vi.clone() : vi);
+                                if ((ti | tj) == SPANNING) {
+                                    let t = (this.w - this.normal.dot(vi.pos)) / this.normal.dot(tv0.copy(vj.pos).sub(vi.pos));
+                                    let v = vi.interpolate(vj, t);
+                                    f.push(v);
+                                    b.push(v.clone());
+                                }
+                            }
+                            if (f.length >= 3) front.push(new Polygon(f,polygon.shared));
+                            if (b.length >= 3) back.push(new Polygon(b,polygon.shared));
+                            break;
+                    }
+                }
+            }
+            Plane.EPSILON = 1e-5;
+            Plane.fromPoints = function(a, b, c) {
+                let n = tv0.copy(b).sub(a).cross(tv1.copy(c).sub(a)).normalize()
+                return new Plane(n.clone(),n.dot(a));
+            }
+
+            class Polygon {
+                constructor(vertices, shared) {
+                    this.vertices = vertices;
+                    this.shared = shared;
+                    this.plane = Plane.fromPoints(vertices[0].pos, vertices[1].pos, vertices[2].pos);
+                }
+                clone() { return new Polygon(this.vertices.map(v=>v.clone()),this.shared); }
+                flip() {
+                    this.vertices.reverse().forEach(v=>v.flip())
+                    this.plane.flip();
+                }
+            }
+
+            class Node {
+                constructor(polygons) {
+                    this.plane = null; this.front = null; this.back = null; this.polygons = [];
+                    if (polygons) this.build(polygons);
+                }
+                clone() {
+                    let node = new Node();
+                    node.plane = this.plane && this.plane.clone();
+                    node.front = this.front && this.front.clone();
+                    node.back = this.back && this.back.clone();
+                    node.polygons = this.polygons.map(p=>p.clone());
+                    return node;
+                }
+                invert() {
+                    for (let i = 0; i < this.polygons.length; i++) this.polygons[i].flip();
+                    this.plane && this.plane.flip();
+                    this.front && this.front.invert();
+                    this.back && this.back.invert();
+                    let temp = this.front;
+                    this.front = this.back;
+                    this.back = temp;
+                }
+                clipPolygons(polygons) {
+                    if (!this.plane) return polygons.slice();
+                    let front = [], back = [];
+                    for (let i = 0; i < polygons.length; i++) {
+                        this.plane.splitPolygon(polygons[i], front, back, front, back);
+                    }
+                    if (this.front) front = this.front.clipPolygons(front);
+                    if (this.back) back = this.back.clipPolygons(back);
+                    else back = [];
+                    return front.concat(back);
+                }
+                clipTo(bsp) {
+                    this.polygons = bsp.clipPolygons(this.polygons);
+                    if (this.front) this.front.clipTo(bsp);
+                    if (this.back) this.back.clipTo(bsp);
+                }
+                allPolygons() {
+                    let polygons = this.polygons.slice();
+                    if (this.front) polygons = polygons.concat(this.front.allPolygons());
+                    if (this.back) polygons = polygons.concat(this.back.allPolygons());
+                    return polygons;
+                }
+                build(polygons) {
+                    if (!polygons.length) return;
+                    if (!this.plane) this.plane = polygons[0].plane.clone();
+                    let front = [], back = [];
+                    for (let i = 0; i < polygons.length; i++) {
+                        this.plane.splitPolygon(polygons[i], this.polygons, this.polygons, front, back);
+                    }
+                    if (front.length) {
+                        if (!this.front) this.front = new Node();
+                        this.front.build(front);
+                    }
+                    if (back.length) {
+                        if (!this.back) this.back = new Node();
+                        this.back.build(back);
+                    }
+                }
+            }
+
+            CSG.fromJSON=function(json){
+                return CSG.fromPolygons(json.polygons.map(p=>new Polygon(p.vertices.map(v=> new Vertex(v.pos,v.normal,v.uv)),p.shared)))
+            }
+
+            // =======================================================
+            // PART 2: THREE.JS BINDINGS (from three-csg.js)
+            // =======================================================
+            let { BufferGeometry, Vector3, Vector2 } = THREE;
+
+            CSG.fromGeometry = function(geom,objectIndex) {
+                let polys = []
+                if (geom.isGeometry) {
+                    let fs = geom.faces;
+                    let vs = geom.vertices;
+                    let fm = ['a', 'b', 'c']
+                    for (let i = 0; i < fs.length; i++) {
+                        let f = fs[i];
+                        let vertices = []
+                        for (let j = 0; j < 3; j++)
+                            vertices.push(new Vertex(vs[f[fm[j]]],f.vertexNormals[j],geom.faceVertexUvs[0][i][j]))
+                        polys.push(new Polygon(vertices, objectIndex))
+                    }
+                } else if (geom.isBufferGeometry) {
+                    let vertices, normals, uvs
+                    let posattr = geom.attributes.position
+                    let normalattr = geom.attributes.normal
+                    let uvattr = geom.attributes.uv
+                    let colorattr = geom.attributes.color
+                    let index;
+                    if (geom.index)
+                        index = geom.index.array;
+                    else {
+                        index = new Array((posattr.array.length / posattr.itemSize) | 0);
+                        for (let i = 0; i < index.length; i++)
+                            index[i] = i
+                    }
+                    let triCount = (index.length / 3) | 0
+                    polys = new Array(triCount)
+                    for (let i = 0, pli = 0, l = index.length; i < l; i += 3, pli++) {
+                        let vertices = new Array(3)
+                        for (let j = 0; j < 3; j++) {
+                            let vi = index[i + j]
+                            let vp = vi * 3;
+                            let vt = vi * 2;
+                            let x = posattr.array[vp]
+                            let y = posattr.array[vp + 1]
+                            let z = posattr.array[vp + 2]
+                            let nx = normalattr.array[vp]
+                            let ny = normalattr.array[vp + 1]
+                            let nz = normalattr.array[vp + 2]
+                            vertices[j] = new Vertex({x, y, z},{x: nx, y: ny, z: nz},uvattr&&{x: uvattr.array[vt], y: uvattr.array[vt+1], z: 0},colorattr&&{x:colorattr.array[vt],y:colorattr.array[vt+1],z:colorattr.array[vt+2]});
+                        }
+                        polys[pli] = new Polygon(vertices,objectIndex)
+                    }
+                } else console.error("Unsupported CSG input type:" + geom.type)
+                return CSG.fromPolygons(polys)
+            }
+
+            let ttvv0 = new THREE.Vector3()
+            let tmpm3 = new THREE.Matrix3();
+            CSG.fromMesh = function(mesh,objectIndex) {
+                let csg = CSG.fromGeometry(mesh.geometry,objectIndex)
+                tmpm3.getNormalMatrix(mesh.matrix);
+                for (let i = 0; i < csg.polygons.length; i++) {
+                    let p = csg.polygons[i]
+                    for (let j = 0; j < p.vertices.length; j++) {
+                        let v = p.vertices[j]
+                        v.pos.copy(ttvv0.copy(v.pos).applyMatrix4(mesh.matrix));
+                        v.normal.copy(ttvv0.copy(v.normal).applyMatrix3(tmpm3))
+                    }
+                }
+                return csg;
+            }
+
+            let nbuf3=(ct)=>{
+                return{
+                    top:0, array:new Float32Array(ct),
+                    write:function(v){(this.array[this.top++]=v.x);(this.array[this.top++]=v.y);(this.array[this.top++]=v.z);}
+                }
+            }
+            let nbuf2=(ct)=>{
+                return{
+                    top:0, array:new Float32Array(ct),
+                    write:function(v){(this.array[this.top++]=v.x);(this.array[this.top++]=v.y)}
+                }
+            }
+
+            CSG.toGeometry = function(csg, buffered=true) {
+                let ps = csg.polygons;
+                let geom;
+                let g2;
+                if(!buffered) {
+                    // Legacy code path removed for brevity since Three.js r128 only uses BufferGeometry
+                    console.error("Non-buffered geometry no longer supported in r128+");
+                } else {
+                    let triCount = 0;
+                    ps.forEach(p=>triCount += (p.vertices.length - 2))
+                    geom = new THREE.BufferGeometry()
+
+                    let vertices = nbuf3(triCount * 3 * 3)
+                    let normals = nbuf3(triCount * 3 * 3)
+                    let uvs; 
+                    let colors;
+                    let grps=[]
+                    ps.forEach(p=>{
+                        let pvs = p.vertices
+                        let pvlen = pvs.length
+                        if(p.shared!==undefined){
+                            if(!grps[p.shared])grps[p.shared]=[]
+                        }
+                        if(pvlen){
+                            if(pvs[0].color!==undefined){
+                                if(!colors)colors = nbuf3(triCount*3*3);
+                            }
+                            if(pvs[0].uv!==undefined){
+                                if(!uvs)uvs = nbuf2(triCount * 2 * 3)
+                            }
+                        }
+                        for (let j = 3; j <= pvlen; j++) {
+                            (p.shared!==undefined) && (grps[p.shared].push(vertices.top/3,(vertices.top/3)+1,(vertices.top/3)+2));
+                            vertices.write(pvs[0].pos)
+                            vertices.write(pvs[j-2].pos)
+                            vertices.write(pvs[j-1].pos)
+                            normals.write(pvs[0].normal)
+                            normals.write(pvs[j-2].normal)
+                            normals.write(pvs[j-1].normal);
+                            uvs&&(pvs[0].uv)&&(uvs.write(pvs[0].uv)||uvs.write(pvs[j-2].uv)||uvs.write(pvs[j-1].uv));
+                            colors&&(colors.write(pvs[0].color)||colors.write(pvs[j-2].color)||colors.write(pvs[j-1].color))
+                        }
+                    })
+                    geom.setAttribute('position', new THREE.BufferAttribute(vertices.array,3));
+                    geom.setAttribute('normal', new THREE.BufferAttribute(normals.array,3));
+                    uvs && geom.setAttribute('uv', new THREE.BufferAttribute(uvs.array,2));
+                    colors && geom.setAttribute('color', new THREE.BufferAttribute(colors.array,3));
+                    if(grps.length){
+                        let index = []
+                        let gbase=0;
+                        for(let gi=0;gi<grps.length;gi++){
+                            geom.addGroup(gbase,grps[gi].length,gi)
+                            gbase+=grps[gi].length
+                            index=index.concat(grps[gi]);
+                        }
+                        geom.setIndex(index)
+                    }
+                    g2 = geom;
+                }
+                return geom;
+            }
+
+            CSG.toMesh = function(csg, toMatrix=new THREE.Matrix4(), toMaterial) {
+                let geom = CSG.toGeometry(csg);
+                let inv = new THREE.Matrix4().copy(toMatrix).invert();
+                geom.applyMatrix4(inv);
+                geom.computeBoundingSphere();
+                geom.computeBoundingBox();
+                let m = new THREE.Mesh(geom,toMaterial);
+                m.matrix.copy(toMatrix);
+                m.matrix.decompose(m.position, m.quaternion, m.scale)
+                m.rotation.setFromQuaternion(m.quaternion)
+                m.updateMatrixWorld();
+                m.castShadow = m.receiveShadow = true;
+                return m
+            }
+
+            // Expose globally to your SPA
+            window.CSG = CSG;
+            console.log("Lab Engine: Native CSG Math Engine loaded perfectly!");
+        })();
+    </script>
+    
 
     <style>
         /* ==========================================================================
@@ -676,7 +1067,7 @@
                                 </div>
                                 <div class="art-info">
                                     <h3>Custom Chop Simple</h3>
-                                    <span class="price">$15.00</span>
+                                    <span class="price">$3 Base + $15/hr Design</span>
                                     <p class="desc">Standard logo or initials engineered for clean impressions.</p>
                                     <div class="card-cta">Configure This Tool &rarr;</div>
                                 </div>
@@ -690,7 +1081,7 @@
                                 </div>
                                 <div class="art-info">
                                     <h3>Custom Chop Complex</h3>
-                                    <span class="price">$20.00</span>
+                                    <span class="price">$3 Base + $20/hr Design</span>
                                     <p class="desc">High-fidelity detail extraction for complex branding and art.</p>
                                     <div class="card-cta">Configure This Tool &rarr;</div>
                                 </div>
@@ -704,7 +1095,7 @@
                                 </div>
                                 <div class="art-info">
                                     <h3>Texture Roller 10in</h3>
-                                    <span class="price">$20.00</span>
+                                    <span class="price">$3 Base + $12/hr Design</span>
                                     <p class="desc">Engineered honeycomb geometry for continuous slab rolling.</p>
                                     <div class="card-cta">Configure This Tool &rarr;</div>
                                 </div>
@@ -718,7 +1109,7 @@
                                 </div>
                                 <div class="art-info">
                                     <h3>Trimming Spinner</h3>
-                                    <span class="price">$15.00</span>
+                                    <span class="price">$3 Base + $12/hr Design</span>
                                     <p class="desc">Zero-friction ball bearing stabilizer to protect rims during trimming.</p>
                                     <div class="card-cta">Configure This Tool &rarr;</div>
                                 </div>
@@ -732,7 +1123,7 @@
                                 </div>
                                 <div class="art-info">
                                     <h3>Precision Rib Set</h3>
-                                    <span class="price">$15.00</span>
+                                    <span class="price">$3 Base + $10/hr Design</span>
                                     <p class="desc">Custom angled pottery ribs for strict profile shaping.</p>
                                     <div class="card-cta">Configure This Tool &rarr;</div>
                                 </div>
@@ -746,7 +1137,7 @@
                                 </div>
                                 <div class="art-info">
                                     <h3>Adjustable Throwing Gauge</h3>
-                                    <span class="price">$30.00</span>
+                                    <span class="price">$3 Base + $18/hr Design</span>
                                     <p class="desc">Engineered multi-axis measurement tool for repeatable throwing.</p>
                                     <div class="card-cta">Configure This Tool &rarr;</div>
                                 </div>
@@ -760,7 +1151,7 @@
                                 </div>
                                 <div class="art-info">
                                     <h3>Origin Square</h3>
-                                    <span class="price">$12.00</span>
+                                    <span class="price">$3 Base + $10/hr Design</span>
                                     <p class="desc">Squaring tool engineered for exact corner slab joints.</p>
                                     <div class="card-cta">Configure This Tool &rarr;</div>
                                 </div>
@@ -774,7 +1165,7 @@
                                 </div>
                                 <div class="art-info">
                                     <h3>Mug Handle Mandrels</h3>
-                                    <span class="price">$15.00</span>
+                                    <span class="price">$3 Base + $12/hr Design</span>
                                     <p class="desc">Parametric slump molds for repeatable production handles.</p>
                                     <div class="card-cta">Configure This Tool &rarr;</div>
                                 </div>
@@ -788,7 +1179,7 @@
                                 </div>
                                 <div class="art-info">
                                     <h3>Dual Bevel Cutter</h3>
-                                    <span class="price">$12.00</span>
+                                    <span class="price">$3 Base + $12/hr Design</span>
                                     <p class="desc">Ergonomic cutting block for precise 45° and 60° foot rings.</p>
                                     <div class="card-cta">Configure This Tool &rarr;</div>
                                 </div>
@@ -802,7 +1193,7 @@
                                 </div>
                                 <div class="art-info">
                                     <h3>Interlocking Slab Rails</h3>
-                                    <span class="price">$20.00</span>
+                                    <span class="price">$3 Base + $10/hr Design</span>
                                     <p class="desc">Thickness guides engineered for consistent slabs and tiles.</p>
                                     <div class="card-cta">Configure This Tool &rarr;</div>
                                 </div>
@@ -816,7 +1207,7 @@
                                 </div>
                                 <div class="art-info">
                                     <h3>Sponge Basket</h3>
-                                    <span class="price">$15.00</span>
+                                    <span class="price">$12 Base + $2/hr Design</span>
                                     <p class="desc">Shallow, breathable hex-lattice storage to let your sponges drain right into the bucket.</p>
                                     <div class="card-cta">Configure This Tool &rarr;</div>
                                 </div>
@@ -855,7 +1246,7 @@
         <div class="info-intro reveal" style="background: var(--tcl-background); border-bottom: 1px solid var(--tcl-border); text-align: center; margin-bottom: 0;">
             <div class="container">
                 <h1>AI Lab Technician.</h1>
-                <p>Generate parametric 3D models using natural language.</p>
+                <p>Generate parametric 3D models using natural language. <span style="font-style: italic; font-weight: bold;">STILL IN PROGRESS</span> </p>
             </div>
         </div>
 
@@ -869,7 +1260,7 @@
                     
                     <div id="ai-cad-chat" style="flex-grow: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; background: var(--tcl-background);">
                         <div class="ai-message system">
-                            <strong>Lab AI:</strong> Describe the tool you need. I'll help you engineer it. For example: "I need a sponge holder."
+                            <strong>Lab AI:</strong> Describe the tool you need and I'll engineer it. Try: <em>"I need a sponge holder, 80mm wide, 60mm deep, 30mm tall, with 2mm walls."</em>
                         </div>
                     </div>
 
@@ -893,41 +1284,79 @@
         </div>
 
         <script>
-            // --- AI CAD GENERATOR LOGIC ---
+            // --- AI CAD GENERATOR LOGIC (v2 — Fixed) ---
             let aiScene, aiCamera, aiRenderer, aiControls;
             let currentAiMesh = null;
-            
-            // Conversation Memory Array
             let aiChatHistory = [];
-            
-            const WORKER_URL = "https://ai-cad-engine.tmcarleton11.workers.dev"; 
 
+            const WORKER_URL = "https://ai-cad-engine.tmcarleton11.workers.dev";
+            function exportSceneToSTL() {
+    // 1. Create the exporter
+    const exporter = new THREE.STLExporter();
+    
+    // 2. Find the model in the scene
+    // We search for the specific mesh that contains our geometry
+    let meshToExport = null;
+    scene.traverse(function (object) {
+        if (object.isMesh && object.name === "aiModel") {
+            meshToExport = object;
+        }
+    });
+
+    if (!meshToExport) {
+        alert("No model found to export! Please generate something first.");
+        return;
+    }
+
+    // 3. Generate the STL data (binary is smaller and better for 3D printing)
+    const result = exporter.parse(meshToExport, { binary: true });
+    
+    // 4. Create a "Blob" (a file-like object) and trigger a download
+    const blob = new Blob([result], { type: 'application/octet-stream' });
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    
+    link.href = URL.createObjectURL(blob);
+    link.download = 'ChopLab_Model_' + Date.now() + '.stl';
+    link.click();
+    
+    // Cleanup
+    document.body.removeChild(link);
+}
             function initAiViewport() {
                 const container = document.getElementById('ai-viewport');
-                if (aiRenderer || !container) return; 
+                if (aiRenderer || !container) return;
 
                 aiScene = new THREE.Scene();
-                aiScene.background = null; 
+                aiScene.background = null;
 
-                aiCamera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-                aiCamera.position.set(60, 60, 60);
+                const w = container.clientWidth || 600;
+                const h = container.clientHeight || 500;
+                aiCamera = new THREE.PerspectiveCamera(45, w / h, 0.1, 2000);
+                aiCamera.position.set(120, 120, 120);
 
                 aiRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-                aiRenderer.setSize(container.clientWidth, container.clientHeight);
+                aiRenderer.setSize(w, h);
+                aiRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
                 container.appendChild(aiRenderer.domElement);
 
                 aiControls = new THREE.OrbitControls(aiCamera, aiRenderer.domElement);
                 aiControls.enableDamping = true;
                 aiControls.dampingFactor = 0.05;
 
-                aiScene.add(new THREE.AmbientLight(0xffffff, 0.7));
-                const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
-                dirLight.position.set(100, 200, 50);
-                aiScene.add(dirLight);
+                // Warm lighting setup
+                aiScene.add(new THREE.AmbientLight(0xfff5e6, 0.8));
+                const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
+                keyLight.position.set(150, 250, 100);
+                aiScene.add(keyLight);
+                const fillLight = new THREE.DirectionalLight(0xffeedd, 0.3);
+                fillLight.position.set(-100, 50, -100);
+                aiScene.add(fillLight);
 
-                const gridHelper = new THREE.GridHelper(100, 20, 0xC97B63, 0xD8C3A5);
-                gridHelper.position.y = -0.1; 
-                aiScene.add(gridHelper);
+                // Grid
+                const grid = new THREE.GridHelper(200, 25, 0xC97B63, 0xD8C3A5);
+                aiScene.add(grid);
 
                 function animate() {
                     requestAnimationFrame(animate);
@@ -936,13 +1365,17 @@
                 }
                 animate();
 
-                window.addEventListener('resize', () => {
-                    if (container.clientWidth > 0) {
-                        aiCamera.aspect = container.clientWidth / container.clientHeight;
+                // Responsive resize
+                const ro = new ResizeObserver(() => {
+                    const cw = container.clientWidth;
+                    const ch = container.clientHeight;
+                    if (cw > 0 && ch > 0) {
+                        aiCamera.aspect = cw / ch;
                         aiCamera.updateProjectionMatrix();
-                        aiRenderer.setSize(container.clientWidth, container.clientHeight);
+                        aiRenderer.setSize(cw, ch);
                     }
                 });
+                ro.observe(container);
             }
 
             window.addEventListener('hashchange', () => {
@@ -950,165 +1383,285 @@
             });
             if (window.location.hash === '#3dprint' || window.location.hash === '') setTimeout(initAiViewport, 150);
 
+            function cadEscape(str) {
+                return String(str)
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
+
             async function generateCAD() {
                 const input = document.getElementById('ai-cad-input');
-                const chat = document.getElementById('ai-cad-chat');
-                const btn = document.getElementById('btn-generate-cad');
+                const chat  = document.getElementById('ai-cad-chat');
+                const btn   = document.getElementById('btn-generate-cad');
                 const prompt = input.value.trim();
-
                 if (!prompt) return;
 
-                // 1. Add user message to history & UI
                 aiChatHistory.push({ role: "user", content: prompt });
                 input.value = '';
-                chat.innerHTML += `<div class="ai-message user" style="text-align: right; color: var(--tcl-primary); font-weight: bold; font-family: 'Roboto Mono', monospace;">> ${prompt}</div>`;
-                
-                const loadingId = 'ai-loading-' + Date.now();
-                chat.innerHTML += `<div class="ai-message system" id="${loadingId}"><em><i class="material-icons spin-hourglass" style="font-size: 14px; vertical-align: middle;">hourglass_empty</i> Analyzing parameters...</em></div>`;
+
+                chat.innerHTML += `<div class="ai-message user">> ${cadEscape(prompt)}</div>`;
+                const loadId = 'ld-' + Date.now();
+                chat.innerHTML += `<div class="ai-message system" id="${loadId}">
+                    <em><i class="material-icons spin-hourglass" style="font-size:14px;vertical-align:middle;">hourglass_empty</i>&nbsp;Compiling geometry...</em>
+                </div>`;
                 chat.scrollTop = chat.scrollHeight;
                 btn.disabled = true;
+                btn.textContent = '...';
 
                 try {
-                    // 2. Send the ENTIRE conversation history to the Worker
-                    const response = await fetch(WORKER_URL, {
+                    const res = await fetch(WORKER_URL, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ messages: aiChatHistory })
                     });
 
-                    if (!response.ok) throw new Error(`API Error: ${response.status}`);
-                    
-                    const data = await response.json();
-                    console.log("AI CSG Payload:", data); // Check the console (F12) to see exactly what LLaMA built
+                    if (!res.ok) {
+                        const body = await res.text();
+                        throw new Error(`Worker ${res.status}: ${body.slice(0, 200)}`);
+                    }
 
-                    document.getElementById(loadingId).remove();
+                    const raw = await res.text();
+                    console.log("Raw worker response:", raw);
 
-                    // 3. Handle the two different AI response types
+                    // Robust JSON extraction — handles extra whitespace or partial wrapping
+                    // Replace the JSON extraction logic in generateCAD() with this:
+let data;
+try {
+    // 1. Try a clean parse
+    data = JSON.parse(raw);
+} catch (e) {
+    console.warn("Clean parse failed, attempting surgical extraction...");
+    // 2. Find the VERY FIRST { and the VERY LAST }
+    const firstBrace = raw.indexOf('{');
+    const lastBrace = raw.lastIndexOf('}');
+    
+    if (firstBrace !== -1 && lastBrace !== -1) {
+        const jsonCandidate = raw.substring(firstBrace, lastBrace + 1);
+        try {
+            data = JSON.parse(jsonCandidate);
+        } catch (innerErr) {
+            // 3. Final attempt: Fix common LLM array truncation
+            const fixedJson = jsonCandidate.trim() + (jsonCandidate.endsWith('}') ? '' : '}]}');
+            try {
+                data = JSON.parse(fixedJson);
+            } catch(f) {
+                throw new Error("AI output was too malformed to repair.");
+            }
+        }
+    } else {
+        throw new Error("Worker returned non-JSON structure.");
+    }
+}
+
+                    console.log("Parsed worker data:", JSON.stringify(data, null, 2));
+                    document.getElementById(loadId)?.remove();
+
                     if (data.type === 'message') {
-                        // AI needs more info
                         aiChatHistory.push({ role: "assistant", content: data.text });
-                        chat.innerHTML += `<div class="ai-message system"><strong>Lab AI:</strong> ${data.text}</div>`;
-                    } 
-                    else if (data.type === 'model') {
-                        // AI has enough info and built the model
-                        aiChatHistory.push({ role: "assistant", content: "I have rendered the geometry on the canvas." });
-                        chat.innerHTML += `<div class="ai-message system" style="border-left-color: var(--tcl-accent-green);"><strong>Lab AI:</strong> Geometry compiled. Rendering preview to canvas.</div>`;
-                        buildMeshFromJSON(data);
-                    } 
-                    else {
-                        throw new Error("Invalid response format from AI.");
+                        chat.innerHTML += `<div class="ai-message system"><strong>Lab AI:</strong> ${cadEscape(data.text)}</div>`;
+
+                    } else if (data.type === 'model') {
+    aiChatHistory.push({ role: "assistant", content: JSON.stringify(data) });
+        const opCount = (data.operations || []).length;
+                        chat.innerHTML += `<div class="ai-message system" style="border-left-color:var(--tcl-accent-green)">
+                            <strong>Lab AI:</strong> Model compiled — ${opCount} operation${opCount !== 1 ? 's' : ''}. Rendering to viewport.<br>
+                            <small style="color:var(--tcl-text-muted)">Drag to orbit &middot; Scroll to zoom &middot; Right-drag to pan</small>
+                        </div>`;
+                        try {
+                            buildMeshFromJSON(data);
+                        } catch (buildErr) {
+                            chat.innerHTML += `<div class="ai-message system" style="border-left-color:#d9534f">
+                                <strong style="color:#d9534f">Render Error:</strong> ${cadEscape(buildErr.message)}
+                            </div>`;
+                        }
+
+                    } else if (data.type === 'error') {
+                        throw new Error(data.text || 'Unknown worker error');
+                    } else {
+                        throw new Error("Unexpected response format: " + JSON.stringify(data).slice(0, 120));
                     }
 
                 } catch (err) {
-                    console.error("CAD Engine Error:", err);
-                    document.getElementById(loadingId)?.remove();
-                    chat.innerHTML += `<div class="ai-message system" style="color: #d9534f; border-left-color: #d9534f;"><strong>System Error:</strong> Failed to process data. Check the browser console (F12) for math errors, or simplify the request.</div>`;
+                    console.error("CAD Error:", err);
+                    document.getElementById(loadId)?.remove();
+                    chat.innerHTML += `<div class="ai-message system" style="border-left-color:#d9534f">
+                        <strong style="color:#d9534f">Error:</strong> ${cadEscape(err.message)}<br>
+                        <small style="color:var(--tcl-text-muted)">Open browser console (F12) for full details.</small>
+                    </div>`;
                 } finally {
                     chat.scrollTop = chat.scrollHeight;
                     btn.disabled = false;
+                    btn.textContent = 'Send';
                     input.focus();
                 }
             }
 
             function buildMeshFromJSON(data) {
-                if (!data.operations || !Array.isArray(data.operations)) {
-                    throw new Error("AI did not provide an operations array.");
+                if (!Array.isArray(data.operations) || data.operations.length === 0) {
+                    throw new Error("No valid operations array in model response.");
                 }
 
+                // Clean up previous mesh
                 if (currentAiMesh) {
                     aiScene.remove(currentAiMesh);
-                    currentAiMesh.geometry.dispose();
-                    currentAiMesh.material.dispose();
+                    currentAiMesh.geometry?.dispose();
+                    currentAiMesh.material?.dispose();
                     currentAiMesh = null;
                 }
 
-                let csgResult = null;
-                const material = new THREE.MeshPhongMaterial({ 
-                    color: 0xCBC6B8, 
-                    specular: 0x111111, 
-                    shininess: 10,
+                const material = new THREE.MeshPhongMaterial({
+                    color: 0xCBC6B8,
+                    specular: 0x222222,
+                    shininess: 20,
                     side: THREE.DoubleSide
                 });
 
-                data.operations.forEach((op, index) => {
-                    // DEFENSIVE PARSING: Force everything to floats and provide safe fallbacks
-                    const size = op.size || [10, 10, 10];
-                    const pos = op.position || [0, 0, 0];
-                    
-                    const w = Math.abs(parseFloat(size[0])) || 1;
-                    const h = Math.abs(parseFloat(size[1])) || 1;
-                    const d = Math.abs(parseFloat(size[2])) || 1;
-                    
+                let csgResult = null;
+
+                for (let i = 0; i < data.operations.length; i++) {
+                    const op = data.operations[i];
+
+                    // Safely parse dimensions with fallbacks
+                    const size = Array.isArray(op.size) ? op.size : [10, 10, 10];
+                    const pos  = Array.isArray(op.position) ? op.position : [0, 0, 0];
+
+                    // Enforce positive, non-degenerate dimensions
+                    const sx = Math.max(Math.abs(parseFloat(size[0])) || 1, 0.1);
+                    const sy = Math.max(Math.abs(parseFloat(size[1])) || 1, 0.1);
+                    const sz = Math.max(Math.abs(parseFloat(size[2])) || 1, 0.1);
                     const px = parseFloat(pos[0]) || 0;
                     const py = parseFloat(pos[1]) || 0;
                     const pz = parseFloat(pos[2]) || 0;
 
                     let geometry;
+                    const shape = (op.shape || 'box').toLowerCase();
+
                     try {
-                        if (op.shape === "box") {
-                            geometry = new THREE.BoxGeometry(w, h, d);
-                            // THE MAGIC FIX: Pull the bottom of the shape up to Y=0
-                            geometry.translate(0, h/2, 0); 
-                        } else if (op.shape === "cylinder") {
-                            geometry = new THREE.CylinderGeometry(w, h, d, 32);
-                            // THE MAGIC FIX: Pull the bottom of the shape up to Y=0
-                            geometry.translate(0, h/2, 0);
+                        if (shape === 'cylinder') {
+                            // size = [radius, height, ignored]
+                            geometry = new THREE.CylinderGeometry(sx, sx, sy, 64);
+                            geometry.translate(0, sy / 2, 0);
+                        } else if (shape === 'sphere') {
+                            // size = [radius, ignored, ignored]
+                            geometry = new THREE.SphereGeometry(sx, 64, 64);
+                            geometry.translate(0, sx, 0); // rest on the floor
                         } else {
-                            return; // Skip unknown shapes silently
+                            // box: size = [width, height, depth]
+                            geometry = new THREE.BoxGeometry(sx, sy, sz);
+                            geometry.translate(0, sy / 2, 0);
                         }
-                    } catch(e) {
-                        console.error(`Invalid geometry parameters at operation ${index}:`, op);
-                        return;
+                    } catch (e) {
+                        console.warn(`Op ${i}: geometry creation failed`, op, e);
+                        continue;
                     }
 
                     const mesh = new THREE.Mesh(geometry, material);
-                    mesh.position.set(px, py, pz);
-                    mesh.updateMatrix();
+mesh.position.set(px, py, pz);
 
-                    const csgBrush = CSG.fromMesh(mesh);
+// Apply rotation if the AI provided it
+if (op.rotation && Array.isArray(op.rotation)) {
+    const rx = parseFloat(op.rotation[0]) || 0;
+    const ry = parseFloat(op.rotation[1]) || 0;
+    const rz = parseFloat(op.rotation[2]) || 0;
+    // Three.js uses radians, so we convert the AI's degrees to radians
+    mesh.rotation.set(
+        THREE.MathUtils.degToRad(rx), 
+        THREE.MathUtils.degToRad(ry), 
+        THREE.MathUtils.degToRad(rz)
+    );
+}
 
-                    if (!csgResult) {
-                        csgResult = csgBrush; 
+mesh.updateMatrix();
+
+                    let brush;
+                    try {
+                        brush = CSG.fromMesh(mesh);
+                    } catch (e) {
+                        console.warn(`Op ${i}: CSG.fromMesh failed`, e);
+                        continue;
+                    }
+
+                    if (csgResult === null) {
+                        csgResult = brush;
                     } else {
-                        if (op.action === "add") csgResult = csgResult.union(csgBrush);
-                        else if (op.action === "subtract") csgResult = csgResult.subtract(csgBrush);
+                        const action = (op.action || 'add').toLowerCase();
+                        try {
+                            csgResult = action === 'subtract'
+                                ? csgResult.subtract(brush)
+                                : csgResult.union(brush);
+                        } catch (e) {
+                            console.warn(`Op ${i}: CSG.${action} failed`, e);
+                        }
                     }
-                });
-
-                if (csgResult) {
-                    currentAiMesh = CSG.toMesh(csgResult, new THREE.Matrix4(), material);
-                    
-                    currentAiMesh.geometry.computeBoundingBox();
-                    const box = currentAiMesh.geometry.boundingBox;
-                    
-                    // Prevent crash if the subtract operation wiped out the entire mesh
-                    if (!box || isNaN(box.min.y) || box.isEmpty()) {
-                        throw new Error("AI subtracted too much, resulting in empty geometry.");
-                    }
-
-                    // Sit exactly on the grid floor
-                    currentAiMesh.position.y = -box.min.y;
-
-                    aiScene.add(currentAiMesh);
-                    
-                    const center = new THREE.Vector3();
-                    box.getCenter(center);
-                    aiControls.target.set(center.x, currentAiMesh.position.y, center.z);
-                    
-                    const maxDim = Math.max(box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
-                    aiCamera.position.set(center.x + (maxDim * 1.5), currentAiMesh.position.y + (maxDim * 1.5), center.z + (maxDim * 1.5));
-                } else {
-                    throw new Error("CSG compilation failed.");
                 }
+
+                if (!csgResult) {
+                    throw new Error("All CSG operations failed — see console for details.");
+                }
+
+                currentAiMesh = CSG.toMesh(csgResult, new THREE.Matrix4(), material);
+                currentAiMesh.name = "aiModel"; // Explicitly tag for identification
+                currentAiMesh.geometry.computeBoundingBox();
+                const bbox = currentAiMesh.geometry.boundingBox;
+
+                if (!bbox || bbox.isEmpty() || isNaN(bbox.min.x) || isNaN(bbox.min.y)) {
+                    aiScene.remove(currentAiMesh);
+                    currentAiMesh = null;
+                    throw new Error("Resulting geometry is empty. The subtracted volume may be larger than the base shape — try increasing wall thickness.");
+                }
+
+                // Sit flat on grid floor
+                currentAiMesh.position.y = -bbox.min.y;
+                aiScene.add(currentAiMesh);
+
+                // Auto-frame camera on the new object
+                const center = new THREE.Vector3();
+                const size3  = new THREE.Vector3();
+                bbox.getCenter(center);
+                bbox.getSize(size3);
+                const maxDim = Math.max(size3.x, size3.y, size3.z, 1);
+                const dist = maxDim * 2.5;
+
+                aiControls.target.set(center.x, currentAiMesh.position.y + size3.y / 2, center.z);
+                aiCamera.position.set(
+                    center.x + dist,
+                    currentAiMesh.position.y + dist * 0.9,
+                    center.z + dist
+                );
+                aiControls.update();
             }
 
             function exportAiSTL() {
-                if (!currentAiMesh) {
-                    showToast("No model generated to export.", "error");
-                    return;
-                }
-                showToast("STL Exporter library coming soon!");
-            }
+    if (!currentAiMesh) {
+        showToast("No model generated yet.", "error");
+        return;
+    }
+
+    try {
+        // 1. Initialize the Exporter
+        const exporter = new THREE.STLExporter();
+        
+        // 2. Parse the current AI mesh (Binary is smaller/better for printing)
+        const result = exporter.parse(currentAiMesh, { binary: true });
+        
+        // 3. Create a download link and trigger it
+        const blob = new Blob([result], { type: 'application/octet-stream' });
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        
+        link.href = URL.createObjectURL(blob);
+        link.download = 'TCL_Custom_Tool_' + Date.now() + '.stl';
+        link.click();
+        
+        // 4. Cleanup
+        document.body.removeChild(link);
+        showToast("STL Exported Successfully!");
+    } catch (err) {
+        console.error("Export Error:", err);
+        showToast("Failed to export STL.", "error");
+    }
+}
         </script>
     </div>
 
@@ -1192,23 +1745,25 @@
                             <select id="productSelect" name="productSelect" required>
                                 <option value="" disabled selected>-- Choose a Tool to Configure --</option>
                                 <optgroup label="Studio Tools">
-                                    <option value="chop-simple" data-price="15.00" data-name="Custom Chop Simple" data-image="https://chop-lab.com/assets/images/simple-chop-ex.JPG">Custom Chop Simple - $15.00</option>
-                                    <option value="chop-complex" data-price="20.00" data-name="Custom Chop Complex" data-image="https://chop-lab.com/assets/images/compex-FC-chop.png">Custom Chop Complex - $20.00</option>
-                                    <option value="spinner" data-price="15.00" data-name="Trimming Spinner" data-image="https://chop-lab.com/assets/files/The TCL Trimming Spinner.stl">Trimming Spinner - $15.00</option>
-                                    <option value="rib-set" data-price="15.00" data-name="Precision Rib Set" data-image="https://chop-lab.com/assets/files/The TCL Trinity.stl">Precision Rib Set - $15.00</option>
-                                    <option value="origin-square" data-price="12.00" data-name="Origin Square" data-image="https://chop-lab.com/assets/files/The Origin Square.stl">Origin Square - $12.00</option>
-                                    <option value="roller-10in" data-price="20.00" data-name="Texture Roller 10in" data-image="https://chop-lab.com/assets/images/hex-lattice-croller.JPG">Texture Roller 10in - $20.00</option>
-                                    <option value="roller-4in" data-price="10.00" data-name="Texture Roller 4in" data-image="https://chop-lab.com/assets/images/mason-roller.JPG">Texture Roller 4in - $10.00</option>
-                                    <option value="tombo" data-price="30.00" data-name="Adjustable Throwing Gauge" data-image="https://chop-lab.com/assets/files/Throwing Gauge.stl">Adjustable Throwing Gauge - $30.00</option>
-                                    <option value="mandrel" data-price="15.00" data-name="Mug Handle Mandrels" data-image="https://chop-lab.com/assets/files/Mug Handle Slump Mold.stl">Mug Handle Mandrels - $15.00</option>
-                                    <option value="slab-rails" data-price="20.00" data-name="Interlocking Slab Rails" data-image="https://chop-lab.com/assets/files/Interlocking Slab Rails.stl">Interlocking Slab Thickness Rails (Pair) - $20.00</option>
-                                    <option value="bevel-cutter" data-price="12.00" data-name="Dual Bevel Cutter" data-image="https://chop-lab.com/assets/files/Bevel Cutter.stl">Dual Bevel Cutter (45°/60°) - $12.00</option>
-                                    <option value="extruder-dies" data-price="10.00" data-name="Custom Extruder Dies">Custom Extruder Dies - $10.00</option>
-                                    <option value="sponge-basket" data-price="15.00" data-name="Sponge Basket" data-image="https://chop-lab.com/assets/files/Sponge-Basket.stl">Sponge Basket - $15.00</option>
+                                    <option value="chop-simple" data-base="3.00" data-design="15.00" data-print="2.00" data-name="Custom Chop Simple" data-image="https://chop-lab.com/assets/images/simple-chop-ex.JPG">Custom Chop Simple</option>
+                                    <option value="chop-complex" data-base="3.00" data-design="20.00" data-print="2.00" data-name="Custom Chop Complex" data-image="https://chop-lab.com/assets/images/compex-FC-chop.png">Custom Chop Complex</option>
+                                    <option value="spinner" data-base="3.00" data-design="12.00" data-print="2.00" data-name="Trimming Spinner" data-image="https://chop-lab.com/assets/files/The TCL Trimming Spinner.stl">Trimming Spinner</option>
+                                    <option value="rib-set" data-base="3.00" data-design="10.00" data-print="2.00" data-name="Precision Rib Set" data-image="https://chop-lab.com/assets/files/The TCL Trinity.stl">Precision Rib Set</option>
+                                    <option value="origin-square" data-base="3.00" data-design="10.00" data-print="2.00" data-name="Origin Square" data-image="https://chop-lab.com/assets/files/The Origin Square.stl">Origin Square</option>
+                                    <option value="roller-10in" data-base="3.00" data-design="12.00" data-print="2.00" data-name="Texture Roller 10in" data-image="https://chop-lab.com/assets/images/hex-lattice-croller.JPG">Texture Roller 10in</option>
+                                    <option value="roller-4in" data-base="3.00" data-design="12.00" data-print="2.00" data-name="Texture Roller 4in" data-image="https://chop-lab.com/assets/images/mason-roller.JPG">Texture Roller 4in</option>
+                                    <option value="tombo" data-base="3.00" data-design="18.00" data-print="2.00" data-name="Adjustable Throwing Gauge" data-image="https://chop-lab.com/assets/files/Throwing Gauge.stl">Adjustable Throwing Gauge</option>
+                                    <option value="mandrel" data-base="3.00" data-design="12.00" data-print="2.00" data-name="Mug Handle Mandrels" data-image="https://chop-lab.com/assets/files/Mug Handle Slump Mold.stl">Mug Handle Mandrels</option>
+                                    <option value="slab-rails" data-base="3.00" data-design="10.00" data-print="2.00" data-name="Interlocking Slab Rails" data-image="https://chop-lab.com/assets/files/Interlocking Slab Rails.stl">Interlocking Slab Thickness Rails (Pair)</option>
+                                    <option value="bevel-cutter" data-base="3.00" data-design="12.00" data-print="2.00" data-name="Dual Bevel Cutter" data-image="https://chop-lab.com/assets/files/Bevel Cutter.stl">Dual Bevel Cutter (45°/60°)</option>
+                                    <option value="extruder-dies" data-base="5.00" data-design="3.00" data-print="2.00" data-name="Custom Extruder Dies">Custom Extruder Dies</option>
+                                    <option value="sponge-basket" data-base="12.00" data-design="2.00" data-print="3.00" data-name="Sponge Basket" data-image="https://chop-lab.com/assets/files/Sponge-Basket.stl">Sponge Basket</option>
+                                    <option value="sgraffito-stencil" data-base="5.00" data-design="7.00" data-print="4.00" data-name="Flexible Sgraffito Stencils">Flexible Sgraffito Stencils</option>
                                 </optgroup>
                                 <optgroup label="3D Printing">
-                                    <option value="custom-stl" data-price="5.00 Base" data-name="Custom STL Print">Custom STL Print - $5.00 Base</option>
-                                </optgroup>
+    <option value="custom-stl" data-base="3.00" data-design="20.00" data-print="2.00" data-name="3D Print (Full Custom)">Custom STL Print / 3D Print</option>
+    <option value="custom-design" data-base="3.00" data-design="20.00" data-print="2.00" data-name="Custom CAD Design">Custom CAD Design (We design it)</option>
+</optgroup>
                             </select>
                         </div>
                     </div>
@@ -1260,6 +1815,26 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div id="opt-custom-design" class="dynamic-section hidden">
+    <p style="font-size: 0.9rem; color: var(--tcl-text-muted); margin-bottom: 25px;">Need something designed from scratch? Describe your idea below. Pricing matches our standard 3D print rates.</p>
+    
+    <div class="form-group">
+        <label>Design Description & Dimensions</label>
+        <textarea name="customDesignDesc" placeholder="Describe the part, its purpose, and provide precise dimensions (mm or inches)..."></textarea>
+    </div>
+    
+    <div class="form-group">
+        <label>Reference Sketch / Image (Optional)</label>
+        <div id="reference-drop-zone" class="drop-zone">
+            <i class="material-icons">draw</i>
+            <span class="drop-text">Drag &amp; drop a sketch or photo, or click to browse</span>
+            <span class="file-details"></span>
+            <input type="file" id="referenceUpload" name="referenceUpload" accept="image/*,.pdf" hidden>
+        </div>
+        <span class="note" style="display:block; text-align:center; margin-top:10px; color: var(--tcl-text-muted); font-size: 0.85rem;">Helps us visualize what you need engineered.</span>
+    </div>
+</div>
 
                         <div id="opt-chop-simple" class="dynamic-section hidden">
                             <div class="form-group">
@@ -1706,7 +2281,6 @@
                 });
 
                 if (response.ok) {
-                    // Hide form elements, show success
                     emailInput.style.display = 'none';
                     btn.style.display = 'none';
                     if (successEl) successEl.style.display = 'block';
@@ -2167,10 +2741,12 @@
 
             setupDropZone('stl-drop-zone', 'stlUpload', true);
             setupDropZone('logo-drop-zone', 'logoUpload', false);
+            setupDropZone('reference-drop-zone', 'referenceUpload', false);
 
             const simpleSection = document.getElementById('opt-chop-simple');
             const complexSection = document.getElementById('opt-chop-complex');
             const stlSection = document.getElementById('opt-3d-print');
+            const customDesignSection = document.getElementById('opt-custom-design');
             const roller4Section = document.getElementById('opt-roller-4in');
             const roller10Section = document.getElementById('opt-roller-10in');
             const tomboSection = document.getElementById('opt-tombo');
@@ -2193,7 +2769,6 @@
             let isRushRequested = false;
             let summaryStlScene, summaryStlRenderer, summaryStlReqId, summaryResizeObs;
 
-            // Simple font other input logic
             const simpleFontSelect = document.getElementById('simpleFontSelect');
             const simpleFontOtherGroup = document.getElementById('simpleFontOtherGroup');
             if (simpleFontSelect && simpleFontOtherGroup) {
@@ -2206,7 +2781,6 @@
                 });
             }
 
-            // Simple text warning length logic
             const simpleTextInput = document.getElementById('simpleTextInput');
             const simpleTextWarning = document.getElementById('simpleTextWarning');
             if (simpleTextInput && simpleTextWarning) {
@@ -2219,7 +2793,6 @@
                 });
             }
 
-            // Detect Rush Delivery
             if (commentsBox) {
                 commentsBox.addEventListener('input', (e) => {
                     const text = e.target.value.toLowerCase();
@@ -2237,6 +2810,7 @@
                 if(simpleSection) simpleSection.classList.add('hidden');
                 if(complexSection) complexSection.classList.add('hidden');
                 if(stlSection) stlSection.classList.add('hidden');
+                if(customDesignSection) customDesignSection.classList.add('hidden');
                 if(roller4Section) roller4Section.classList.add('hidden');
                 if(roller10Section) roller10Section.classList.add('hidden');
                 if(tomboSection) tomboSection.classList.add('hidden');
@@ -2247,6 +2821,7 @@
                 if(spongeBasketSection) spongeBasketSection.classList.add('hidden');
                 if(unitToggleSection) unitToggleSection.classList.add('hidden');
                 if(step3Wrapper) step3Wrapper.classList.add('hidden');
+                
                 
                 document.querySelectorAll('.dynamic-section input').forEach(input => input.required = false);
             }
@@ -2268,6 +2843,7 @@
                 if (value === 'chop-simple' && simpleSection) simpleSection.classList.remove('hidden');
                 else if (value === 'chop-complex' && complexSection) complexSection.classList.remove('hidden');
                 else if (value === 'custom-stl' && stlSection) stlSection.classList.remove('hidden');
+                else if (value === 'custom-design' && customDesignSection) customDesignSection.classList.remove('hidden');
                 else if (value === 'roller-4in' && roller4Section) roller4Section.classList.remove('hidden');
                 else if (value === 'roller-10in' && roller10Section) roller10Section.classList.remove('hidden');
                 else if (value === 'tombo' && tomboSection) tomboSection.classList.remove('hidden');
@@ -2286,54 +2862,75 @@
                 }
                 
                 const selectedOption = productSelect.options[productSelect.selectedIndex];
-                const price = selectedOption.getAttribute('data-price') || "TBD";
+                
+                // Fetch pricing dataset
+                const basePrice = parseFloat(selectedOption.getAttribute('data-base')) || 0;
+                const designRate = parseFloat(selectedOption.getAttribute('data-design')) || 0;
+                const printRate = parseFloat(selectedOption.getAttribute('data-print')) || 0;
                 const name = selectedOption.getAttribute('data-name') || selectedOption.text;
 
                 sumName.textContent = name;
-                
-                let baseCostNum = parseFloat(price);
-                let totalCostNum = isNaN(baseCostNum) ? 0 : baseCostNum;
+
+                let totalCostNum = basePrice;
+                let displayHtml = `$${basePrice.toFixed(2)} Base <br>`;
+
+                // Averages for standard tools
+                const avgDesignHours = 0.5; // 30 minutes
+                const avgPrintHours = 1.25; // 75 minutes
 
                 if (productSelect.value === 'custom-stl') {
+                    // Custom STL calculates based on uploaded file size
                     if (estimatedPrintTimeHours > 0) {
-                        const baseFee = 5.00;
-                        const addedTimeCost = estimatedPrintTimeHours * 1.00;
-                        totalCostNum = baseFee + addedTimeCost;
-                        
-                        let displayHtml = `$5.00 Base <br><span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ ~$${addedTimeCost.toFixed(2)} Est. Print Time (${estimatedPrintTimeHours.toFixed(1)} hrs)</span>`;
-                        if (isRushRequested) {
-                            totalCostNum += 10;
-                            displayHtml += `<br><span style="font-size:0.8rem; color:#d9534f; font-weight:bold;">+ $10.00 Rush Priority</span>`;
-                        }
-                        
-                        sumPrice.innerHTML = displayHtml;
-                        sumTotal.textContent = `~$${totalCostNum.toFixed(2)}`;
+                        const addedTimeCost = estimatedPrintTimeHours * printRate;
+                        totalCostNum += addedTimeCost;
+                        displayHtml += `<span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ ~$${addedTimeCost.toFixed(2)} Est. Print (${estimatedPrintTimeHours.toFixed(1)} hrs @ $${printRate.toFixed(2)}/hr)</span><br>`;
                     } else {
-                        let text = "$5.00 Base (Upload STL for estimate)";
-                        if(isRushRequested) text += "<br><span style='color:#d9534f; font-size:0.8rem; font-weight:bold;'>+ $10.00 Rush Priority</span>";
-                        sumPrice.innerHTML = text;
-                        sumTotal.textContent = "TBD";
+                        displayHtml += `<span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ Print Time ($${printRate.toFixed(2)}/hr)</span><br>`;
+                    }
+                    if (designRate > 0) {
+                        displayHtml += `<span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ Design Time ($${designRate.toFixed(2)}/hr)</span>`;
                     }
                 } else {
-                    if (isRushRequested) {
-                        totalCostNum += 10;
-                        let displayHtml = `$${baseCostNum.toFixed(2)} Base <br><span style="font-size:0.8rem; color:#d9534f; font-weight:bold;">+ $10.00 Rush Priority</span>`;
-                        sumPrice.innerHTML = displayHtml;
-                    } else {
-                        sumPrice.textContent = price.includes('$') ? price : `$${price}`;
-                    }
+                    // Standard Tools use the averages
+                    const estDesignCost = designRate * avgDesignHours;
+                    const estPrintCost = printRate * avgPrintHours;
+                    
+                    totalCostNum += estDesignCost + estPrintCost;
 
-                    if (!isNaN(totalCostNum) && totalCostNum > 0) {
-                        sumTotal.textContent = `$${totalCostNum.toFixed(2)}`;
-                    } else {
-                        sumTotal.textContent = price.includes('$') ? price : `$${price}`;
-                    }
+                    displayHtml += `<span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ ~$${estDesignCost.toFixed(2)} Est. Design (30m @ $${designRate.toFixed(2)}/hr)</span><br>`;
+                    displayHtml += `<span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ ~$${estPrintCost.toFixed(2)} Est. Print (75m @ $${printRate.toFixed(2)}/hr)</span>`;
+                }
+
+                if (isRushRequested) {
+                    totalCostNum += 10;
+                    displayHtml += `<br><span style="font-size:0.8rem; color:#d9534f; font-weight:bold;">+ $10.00 Rush Priority</span>`;
+                }
+                
+                sumPrice.innerHTML = displayHtml;
+                
+                // Set the total and append the disclaimer
+                if (productSelect.value !== 'custom-stl' || estimatedPrintTimeHours > 0) {
+                    sumTotal.innerHTML = `
+                        <div style="text-align: right;">
+                            ~$${totalCostNum.toFixed(2)}
+                            <span style="font-size:0.65rem; color:var(--tcl-text-muted); font-weight:normal; display:block; margin-top:6px; max-width: 180px; line-height: 1.3;">
+                                *This price is just an estimate. Final prices will vary due to complexity and difficulty.
+                            </span>
+                        </div>`;
+                } else {
+                    sumTotal.innerHTML = `
+                        <div style="text-align: right;">
+                            TBD based on time
+                            <span style="font-size:0.65rem; color:var(--tcl-text-muted); font-weight:normal; display:block; margin-top:6px; max-width: 180px; line-height: 1.3;">
+                                *This price is just an estimate. Final prices will vary due to complexity and difficulty.
+                            </span>
+                        </div>`;
                 }
 
                 if(sumEmpty) sumEmpty.classList.add('hidden');
                 if(sumDetails) sumDetails.classList.remove('hidden');
 
-                // DYNAMIC PREVIEW LOGIC
+                // Update the preview image in the summary
                 const imageUrl = selectedOption.getAttribute('data-image');
                 const previewSection = document.getElementById('summary-preview-section');
                 const previewImg = document.getElementById('summary-preview-img');
@@ -2493,6 +3090,8 @@
                         specString = `Texture: ${data.rollerTexture10in || 'Pending Selection'}`;
                     } else if (data.productSelect === 'custom-stl') {
                         specString = `Material: ${data.stlMaterial}`;
+                    } else if (data.productSelect === 'custom-design') {
+                        specString = `Design Request: ${data.customDesignDesc ? data.customDesignDesc.substring(0, 150) + '...' : 'See Reference/Notes'}`;
                     } else if (data.productSelect === 'tombo') {
                         specString = `Pan Type: ${data.tomboPanType}`;
                     } else if (data.productSelect === 'mandrel') {
@@ -2515,13 +3114,16 @@
 
                     const logoInput = document.getElementById('logoUpload');
                     const stlInput = document.getElementById('stlUpload');
+                    const refInput = document.getElementById('referenceUpload');
                     let fileToUpload = null;
                     
                     if (data.productSelect === 'chop-complex' && logoInput && logoInput.files.length > 0) {
                         fileToUpload = logoInput.files[0];
                     } else if (data.productSelect === 'custom-stl' && stlInput && stlInput.files.length > 0) {
                         fileToUpload = stlInput.files[0];
-                    }
+                    } else if (data.productSelect === 'custom-design' && refInput && refInput.files.length > 0) { // <--- ADD THIS BLOCK
+    fileToUpload = refInput.files[0];
+}
 
                     if (fileToUpload) {
                         const reader = new FileReader();
@@ -2758,7 +3360,6 @@
             if (e.target.tagName && e.target.tagName.toLowerCase() === 'img') {
                 const img = e.target;
                 
-                // Skip STL auto-loads
                 if (img.src && img.src.toLowerCase().endsWith('.stl')) return;
 
                 if (!img.dataset.fallbackAttempted) {
