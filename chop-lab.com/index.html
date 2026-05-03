@@ -1016,7 +1016,7 @@
         <div class="info-intro reveal" style="text-align: center; border-bottom: none; margin-bottom: 0;">
             <div class="container">
                 <h1>Studio Tools.</h1>
-                <p>Engineered for the messy world of clay.</p>
+                <p>Engineered for the messy world of clay. <br> <em>(Click on the boxed numbers to see whats inside!)</em></p>
             </div>
         </div>
 
@@ -1223,19 +1223,7 @@
                         <p style="color: var(--tcl-text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Currently prototyping and testing.</p>
                     </div>
 
-                    <div class="product-grid" style="opacity: 0.85;">
-                        <div class="art-card" style="box-shadow: none;">
-                            <div class="art-image-wrapper">
-                                <img src="https://chop-lab.com/assets/images/stencils.JPG" alt="Flexible Stencils" class="art-image">
-                            </div>
-                            <div class="art-info">
-                                <h3>Flexible Sgraffito Stencils</h3>
-                                <span class="price">Est. $8.00</span>
-                                <p class="desc">Ultra-thin prints that bend seamlessly around curved mugs/bowls to guide intricate scratching patterns.</p>
-                                <span style="display:inline-block; margin-top:auto; font-size:0.75rem; font-weight:700; color:var(--tcl-primary); text-transform:uppercase; letter-spacing:1px; padding-top: 20px; border-top: 1px solid var(--tcl-border);">In Development</span>
-                            </div>
-                        </div>
-                    </div>
+                
                 </div>
 
             </div>
@@ -1758,11 +1746,10 @@ mesh.updateMatrix();
                                     <option value="bevel-cutter" data-base="3.00" data-design="12.00" data-print="2.00" data-name="Dual Bevel Cutter" data-image="https://chop-lab.com/assets/files/Bevel Cutter.stl">Dual Bevel Cutter (45°/60°)</option>
                                     <option value="extruder-dies" data-base="5.00" data-design="3.00" data-print="2.00" data-name="Custom Extruder Dies">Custom Extruder Dies</option>
                                     <option value="sponge-basket" data-base="12.00" data-design="2.00" data-print="3.00" data-name="Sponge Basket" data-image="https://chop-lab.com/assets/files/Sponge-Basket.stl">Sponge Basket</option>
-                                    <option value="sgraffito-stencil" data-base="5.00" data-design="7.00" data-print="4.00" data-name="Flexible Sgraffito Stencils">Flexible Sgraffito Stencils</option>
                                 </optgroup>
                                 <optgroup label="3D Printing">
-    <option value="custom-stl" data-base="3.00" data-design="20.00" data-print="2.00" data-name="3D Print (Full Custom)">Custom STL Print / 3D Print</option>
-    <option value="custom-design" data-base="3.00" data-design="20.00" data-print="2.00" data-name="Custom CAD Design">Custom CAD Design (We design it)</option>
+                                    <option value="custom-stl" data-base="3.00" data-design="20.00" data-print="2.00" data-name="3D Print (Full Custom)">Custom STL Print / 3D Print</option>
+                                    <option value="custom-design" data-base="3.00" data-design="20.00" data-print="2.00" data-name="Custom CAD Design">Custom CAD Design (We design it)</option>
 </optgroup>
                             </select>
                         </div>
@@ -2049,22 +2036,7 @@ mesh.updateMatrix();
                         </div>
                     </div>
 
-                    <div class="weekly-drop-widget">
-                        <span class="drop-eyebrow">The Lab Newsletter</span>
-                        <h4>Weekly Drop ☕</h4>
-                        <p>Get a behind-the-scenes video of our process every Monday morning — straight from the lab floor.</p>
-
-                        <input type="email" id="weekly-sub-email" placeholder="Enter your email" autocomplete="email">
-
-                        <button class="btn-drop" id="btn-weekly-sub" onclick="submitWeeklySubscription()">
-                            Join the List
-                        </button>
-
-                        <div id="drop-success" class="drop-success">
-                            <strong>You're in. See you Monday. ☕</strong>
-                            Check your inbox for a confirmation.
-                        </div>
-                    </div>
+                    
                 </div>
 
             </form>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chop Lab | Invoice Engine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background-color: #09090b; color: #f4f4f5; }
+    
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #18181b; }
+    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+
+    .input-field {
+      width: 100%; padding: 0.75rem; background-color: #18181b; border: 1px solid #27272a; 
+      border-radius: 0.5rem; color: #fff; font-size: 0.875rem; transition: all 0.2s;
+    }
+    .input-field:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 1px #10b981; }
+    .label-text { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #a1a1aa; margin-bottom: 0.25rem; margin-top: 1rem;}
+    
+    /* Range Slider Styling */
+    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #10b981; cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+    input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #27272a; border-radius: 2px; }
+  </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden relative">
+
+  <header class="bg-zinc-950 border-b border-zinc-800 p-4 flex justify-between items-center shrink-0">
+    <div>
+      <h1 class="text-xl font-black tracking-widest uppercase text-white">Chop Lab</h1>
+      <p class="text-xs text-emerald-500 font-semibold tracking-wider">Invoice Engine</p>
+    </div>
+  </header>
+
+  <main class="flex-1 overflow-hidden relative flex flex-col md:flex-row">
+
+    <section class="w-full md:w-1/2 lg:w-1/3 bg-zinc-900 border-r border-zinc-800 overflow-y-auto p-6">
+      
+      <div class="mb-8">
+        <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2 text-emerald-400">
+          <i data-lucide="book-open" class="w-5 h-5"></i> Catalog Selection
+        </h2>
+        <label class="label-text mt-0">Load Item Preset</label>
+        <select id="inv-catalog-dropdown" class="input-field cursor-pointer border-emerald-900 focus:border-emerald-500 bg-emerald-950/20">
+          <option value="">-- Manual Entry / Custom Order --</option>
+          <option value="loading" disabled>Scraping Chop-Lab.com...</option>
+        </select>
+        <p id="catalog-error" class="text-xs text-red-400 mt-2 font-semibold hidden"></p>
+      </div>
+
+      <div class="mb-8">
+        <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
+          <i data-lucide="user" class="w-5 h-5 text-zinc-400"></i> Client Details
+        </h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="label-text mt-0">Client Name</label>
+            <input type="text" id="inv-name" class="input-field calc-trigger" placeholder="e.g. Jane Doe">
+          </div>
+          <div>
+            <label class="label-text mt-0">Email Address</label>
+            <input type="email" id="inv-email" class="input-field calc-trigger" placeholder="jane@example.com">
+          </div>
+        </div>
+        
+        <label class="label-text">Item / Project Name</label>
+        <input type="text" id="inv-project" class="input-field calc-trigger" placeholder="e.g. Custom Matte Black Case" value="Custom Chop Lab Order">
+
+        <label class="label-text flex justify-between">
+            <span>Optional Item Image</span>
+            <span id="img-source-badge" class="text-xs text-emerald-500 hidden">(Loaded from Catalog)</span>
+        </label>
+        <input type="file" id="inv-image-upload" accept="image/*" class="block w-full text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-zinc-800 file:text-zinc-300 hover:file:bg-zinc-700 cursor-pointer mt-2">
+      </div>
+
+      <div class="mb-8">
+        <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
+          <i data-lucide="tags" class="w-5 h-5 text-zinc-400"></i> Rates & Base Price
+        </h2>
+        <label class="label-text mt-0">Base Item Price ($)</label>
+        <input type="number" id="inv-base-price" class="input-field calc-trigger text-emerald-400 font-bold" placeholder="0.00" min="0" step="1" value="0">
+        
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <div>
+            <label class="label-text mt-0">Design Rate ($/hr)</label>
+            <input type="number" id="inv-design-rate" class="input-field calc-trigger" placeholder="15" min="0" step="1" value="15">
+          </div>
+          <div>
+            <label class="label-text mt-0">Print Rate ($/hr)</label>
+            <input type="number" id="inv-print-rate" class="input-field calc-trigger" placeholder="2" min="0" step="0.5" value="2">
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
+          <i data-lucide="clock" class="w-5 h-5 text-zinc-400"></i> Logged Time
+        </h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="label-text mt-0">Design Hours</label>
+            <input type="number" id="inv-design-hrs" class="input-field calc-trigger" placeholder="0" min="0" step="0.25" value="0">
+          </div>
+          <div>
+            <label class="label-text mt-0">Print Hours</label>
+            <input type="number" id="inv-print-hrs" class="input-field calc-trigger" placeholder="0" min="0" step="0.5" value="0">
+          </div>
+        </div>
+        <label class="label-text mt-4">Extra Costs / Hardware ($)</label>
+        <input type="number" id="inv-extra-cost" class="input-field calc-trigger" placeholder="0.00" step="1" value="0">
+      </div>
+
+      <div class="mb-8">
+        <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2 text-red-400">
+          <i data-lucide="percent" class="w-5 h-5"></i> Discount
+        </h2>
+        <div class="grid grid-cols-3 gap-4 items-end">
+          <div class="col-span-1">
+            <label class="label-text mt-0">Type</label>
+            <select id="inv-discount-type" class="input-field calc-trigger">
+              <option value="flat">Amount ($)</option>
+              <option value="percent">Percent (%)</option>
+            </select>
+          </div>
+          <div class="col-span-2">
+            <label class="label-text mt-0 flex justify-between">
+              <span>Value</span>
+              <span id="discount-display" class="font-bold text-red-400">0</span>
+            </label>
+            <div class="flex items-center gap-3 mt-1">
+                <input type="range" id="inv-discount-slider" class="flex-1" min="0" max="100" step="1" value="0">
+                <input type="number" id="inv-discount-val" class="input-field text-red-400 font-bold w-20 text-center calc-trigger p-2" min="0" step="1" value="0">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
+          <i data-lucide="wallet" class="w-5 h-5 text-zinc-400"></i> Payment & Notes
+        </h2>
+        <label class="label-text mt-0">Venmo Username (Without @)</label>
+        <input type="text" id="inv-venmo" class="input-field calc-trigger" placeholder="your-venmo-handle" value="tmcarleton">
+        <label class="label-text">Custom Message / Notes</label>
+        <textarea id="inv-notes" class="input-field calc-trigger h-24" placeholder="Notes for the customer...">Thanks for trusting The Chop Lab. I can't wait to see the crisp impressions it leaves on your pottery!</textarea>
+      </div>
+    </section>
+
+    <section class="w-full md:w-1/2 lg:w-2/3 bg-zinc-950 overflow-y-auto p-4 md:p-8 flex justify-center items-start">
+      <div class="w-full max-w-2xl bg-zinc-100 rounded-xl shadow-2xl overflow-hidden border border-zinc-800 flex flex-col" id="invoice-preview-wrapper">
+        
+        <div class="bg-zinc-200 border-b border-zinc-300 p-4 shrink-0 flex justify-between items-center">
+          <button id="btn-inv-send" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded text-sm font-bold shadow transition flex items-center gap-2">
+            <i data-lucide="send" class="w-4 h-4"></i> Send to Client
+          </button>
+          <div class="text-right">
+             <div class="text-xs font-bold text-zinc-500 uppercase">To: <span id="inv-out-email" class="text-zinc-800 normal-case bg-white px-1 rounded ml-1"></span></div>
+             <div class="text-xs font-bold text-zinc-500 uppercase mt-1">Subj: <span id="inv-out-subject" class="text-zinc-800 normal-case bg-white px-1 rounded ml-1"></span></div>
+          </div>
+        </div>
+
+        <div class="bg-[#F4F4F6] p-4 md:p-10 flex-1">
+          <div id="invoice-html-payload" style="width: 100%; max-width: 600px; background-color: #FFFFFF; padding: 40px; border-top: 6px solid #D86A46; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #3A3F42;">
+            <h1 style="margin-top: 0; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; color: #3A3F42; font-size: 24px;">The Chop Lab.</h1>
+            <p style="color: #D86A46; font-weight: 600; font-size: 14px; margin-top: -10px;">CAD meets Clay.</p>
+            
+            <hr style="border: 0; border-top: 1px solid #E5E5E5; margin: 40px 0;">
+            
+            <table style="width: 100%; border-collapse: collapse;"><tr>
+              <td style="padding: 0; vertical-align: top;">
+                 <h2 style="font-weight: 400; color: #3A3F42; margin-bottom: 5px; font-size: 18px;">Invoice / Receipt</h2>
+                 <p style="font-size: 16px; margin-top: 0; color: #3A3F42;"><strong>Billed To:</strong> <span id="inv-out-name">Client</span></p>
+              </td>
+              <td style="padding: 0; text-align: right; vertical-align: top;">
+                 <p style="font-size: 14px; color: #7da5a8; margin:0;"><strong>Date:</strong><br><span id="inv-out-date"></span></p>
+              </td>
+            </tr></table>
+
+            <div id="inv-img-container" style="display: none; text-align: center; margin-top: 30px;">
+              <img id="inv-out-image" src="" alt="Project Image" style="max-width: 100%; height: auto; max-height: 250px; object-fit: contain; border-radius: 8px; border: 1px solid #E5E5E5;">
+            </div>
+
+            <p style="color: #3A3F42; font-size: 14px; line-height: 1.5; margin-top: 30px; white-space: pre-wrap;" id="inv-out-notes"></p>
+
+            <table style="width: 100%; margin-top: 30px; border-collapse: collapse; background-color: #FAFAFB; border: 1px solid #E5E5E5;">
+              <thead>
+                <tr style="background-color: #F4F4F6;">
+                   <th style="padding: 12px; border-bottom: 2px solid #3A3F42; font-size: 12px; text-transform: uppercase; color: #7da5a8; text-align: left;">Description</th>
+                   <th style="padding: 12px; border-bottom: 2px solid #3A3F42; font-size: 12px; text-transform: uppercase; color: #7da5a8; text-align: right; width: 100px;">Total</th>
+                </tr>
+              </thead>
+              <tbody id="inv-tbody">
+                </tbody>
+            </table>
+
+            <h3 style="text-align: right; margin-top: 30px; font-size: 24px; color: #D86A46;">Amount Due: <span id="inv-out-total">$0.00</span></h3>
+            
+            <div style="background-color: #F0F8FF; border: 1px solid #BFE0FF; padding: 20px; text-align: center; margin-top: 40px; border-radius: 8px;">
+               <p style="margin-top: 0; font-size: 14px; color: #3A3F42; font-weight: 600;">Settle this invoice securely via Venmo:</p>
+               <a href="#" id="inv-venmo-link" target="_blank" style="display: inline-block; background-color: #008CFF; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 30px; font-weight: bold; font-size: 14px; margin: 10px 0;">
+                 Pay <span id="inv-venmo-btn-amt">$0.00</span>
+               </a>
+               <p style="margin-bottom: 0; font-size: 12px; color: #7da5a8;">@<span id="inv-venmo-handle">tmcarleton</span></p>
+            </div>
+
+            <p style="font-size: 14px; color: #7da5a8; text-align: center; margin-top: 40px; margin-bottom: 0;">Thank you for trusting The Chop Lab.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    lucide.createIcons();
+    const CLOUDFLARE_WORKER_URL = "https://video-intake-engine.tmcarleton11.workers.dev/";
+
+    // =====================================
+    // 1. DYNAMIC CATALOG SCRAPING
+    // =====================================
+    window.catalogItems = {};
+    let catalogImageBase64 = null;
+    let manualImageBase64 = null;
+
+    async function loadCatalog() {
+      const dropdown = document.getElementById('inv-catalog-dropdown');
+      const errBox = document.getElementById('catalog-error');
+      
+      try {
+        // We try a direct fetch. If CORS blocks it, we fallback to a safe proxy to parse the HTML.
+        let htmlText = "";
+        try {
+            const res = await fetch('https://chop-lab.com');
+            if(!res.ok) throw new Error('Direct fetch failed');
+            htmlText = await res.text();
+        } catch(e) {
+            const proxyRes = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://chop-lab.com')}`);
+            if(!proxyRes.ok) throw new Error("Proxy fetch failed");
+            const proxyData = await proxyRes.json();
+            htmlText = proxyData.contents;
+        }
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlText, 'text/html');
+        
+        const productSelect = doc.getElementById('productSelect');
+        if (!productSelect) throw new Error("Could not locate #productSelect on chop-lab.com");
+
+        const options = productSelect.querySelectorAll('option:not([disabled])');
+        
+        dropdown.innerHTML = '<option value="">-- Manual Entry / Custom Order --</option>';
+
+        options.forEach(opt => {
+           const val = opt.value;
+           if(!val) return;
+           
+           window.catalogItems[val] = {
+             name: opt.getAttribute('data-name') || opt.innerText,
+             base: opt.getAttribute('data-base') || "0",
+             design: opt.getAttribute('data-design') || "0",
+             print: opt.getAttribute('data-print') || "0",
+             img: opt.getAttribute('data-image') || ""
+           };
+
+           const newOpt = document.createElement('option');
+           newOpt.value = val;
+           newOpt.innerText = window.catalogItems[val].name;
+           dropdown.appendChild(newOpt);
+        });
+
+      } catch(err) {
+        console.error(err);
+        errBox.innerText = `⚠ Catalog Sync Failed: ${err.message}`;
+        errBox.classList.remove('hidden');
+        dropdown.innerHTML = '<option value="">-- Manual Entry Only (Sync Failed) --</option>';
+      }
+    }
+
+    // Initialize Catalog Fetch
+    loadCatalog();
+
+    // Handle Catalog Dropdown Change
+    document.getElementById('inv-catalog-dropdown').addEventListener('change', (e) => {
+        const val = e.target.value;
+        const badge = document.getElementById('img-source-badge');
+        
+        if(val && window.catalogItems[val]) {
+            const item = window.catalogItems[val];
+            inputs.project.value = item.name;
+            inputs.basePrice.value = item.base;
+            inputs.designRate.value = item.design;
+            inputs.printRate.value = item.print;
+            
+            if(item.img) {
+                catalogImageBase64 = item.img;
+                badge.classList.remove('hidden');
+            } else {
+                catalogImageBase64 = null;
+                badge.classList.add('hidden');
+            }
+        } else {
+            // Manual mode reset
+            catalogImageBase64 = null;
+            badge.classList.add('hidden');
+        }
+        updateInvoicePreview();
+    });
+
+
+    // =====================================
+    // 2. DISCOUNT SLIDER LOGIC
+    // =====================================
+    const discountType = document.getElementById('inv-discount-type');
+    const discountVal = document.getElementById('inv-discount-val');
+    const discountSlider = document.getElementById('inv-discount-slider');
+    const discountDisplay = document.getElementById('discount-display');
+
+    function syncDiscount(source) {
+        let val = parseFloat(source.value) || 0;
+        
+        if (discountType.value === 'percent') {
+            val = Math.min(val, 100);
+            discountDisplay.innerText = val + '%';
+        } else {
+            discountDisplay.innerText = '$' + val;
+        }
+
+        if(source.id === 'inv-discount-slider') discountVal.value = val;
+        if(source.id === 'inv-discount-val') discountSlider.value = val;
+        
+        updateInvoicePreview();
+    }
+
+    discountSlider.addEventListener('input', (e) => syncDiscount(e.target));
+    discountVal.addEventListener('input', (e) => syncDiscount(e.target));
+    
+    discountType.addEventListener('change', () => {
+        if(discountType.value === 'percent') {
+            discountSlider.max = 100;
+            if(discountVal.value > 100) discountVal.value = 100;
+        } else {
+            discountSlider.max = 200; // Arbitrary max for slider in flat mode, input can go higher
+        }
+        syncDiscount(discountVal);
+    });
+
+    // =====================================
+    // 3. UI STATE & CALCULATION LOGIC
+    // =====================================
+    document.getElementById('inv-out-date').innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    const formatMoney = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+
+    const inputs = {
+      name: document.getElementById('inv-name'),
+      email: document.getElementById('inv-email'),
+      project: document.getElementById('inv-project'),
+      basePrice: document.getElementById('inv-base-price'),
+      designRate: document.getElementById('inv-design-rate'),
+      printRate: document.getElementById('inv-print-rate'),
+      designHrs: document.getElementById('inv-design-hrs'),
+      printHrs: document.getElementById('inv-print-hrs'),
+      extraCost: document.getElementById('inv-extra-cost'),
+      venmo: document.getElementById('inv-venmo'),
+      notes: document.getElementById('inv-notes')
+    };
+
+    // Manual Image Upload
+    document.getElementById('inv-image-upload').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          manualImageBase64 = event.target.result;
+          document.getElementById('img-source-badge').innerText = "(Custom Uploaded)";
+          document.getElementById('img-source-badge').classList.remove('hidden');
+          updateInvoicePreview();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        manualImageBase64 = null;
+        if(catalogImageBase64) {
+            document.getElementById('img-source-badge').innerText = "(Loaded from Catalog)";
+        } else {
+            document.getElementById('img-source-badge').classList.add('hidden');
+        }
+        updateInvoicePreview();
+      }
+    });
+
+    function updateInvoicePreview() {
+      const projName = inputs.project.value.trim() || "Chop Lab Order";
+      const clientName = inputs.name.value.trim() || inputs.email.value.split('@')[0] || "Client";
+      
+      document.getElementById('inv-out-email').innerText = inputs.email.value || "customer@example.com";
+      document.getElementById('inv-out-subject').innerText = projName;
+      document.getElementById('inv-out-name').innerText = clientName;
+      document.getElementById('inv-out-notes').innerText = inputs.notes.value || "";
+      document.getElementById('inv-venmo-handle').innerText = inputs.venmo.value || "tmcarleton";
+
+      // Display Image logic (Manual overrides Catalog)
+      const imgContainer = document.getElementById('inv-img-container');
+      const imgElement = document.getElementById('inv-out-image');
+      const activeImage = manualImageBase64 || catalogImageBase64;
+      
+      if (activeImage) {
+        imgElement.src = activeImage;
+        imgContainer.style.display = "block";
+      } else {
+        imgContainer.style.display = "none";
+      }
+
+      let tbodyHTML = ""; 
+      let subTotal = 0;
+
+      // 1. Base Price
+      const basePrice = parseFloat(inputs.basePrice.value) || 0;
+      if (basePrice > 0) {
+        subTotal += basePrice;
+        tbodyHTML += `<tr>
+          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;">
+            <strong style="color: #3A3F42;">${projName}</strong><br>
+            <span style="font-size:12px;color:#7da5a8;">Base Item / Deposit</span>
+          </td>
+          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color: #3A3F42;">${formatMoney(basePrice)}</td>
+        </tr>`;
+      }
+
+      // 2. Design Time
+      const dHrs = parseFloat(inputs.designHrs.value) || 0;
+      const dRate = parseFloat(inputs.designRate.value) || 0;
+      if (dHrs > 0) {
+        const dTotal = dHrs * dRate;
+        subTotal += dTotal;
+        tbodyHTML += `<tr>
+          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;">
+            <strong style="color: #3A3F42;">Design & CAD Labor</strong><br>
+            <span style="font-size:12px;color:#7da5a8;">${dHrs} hrs @ ${formatMoney(dRate)}/hr</span>
+          </td>
+          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color: #3A3F42;">${formatMoney(dTotal)}</td>
+        </tr>`;
+      }
+
+      // 3. Print Time
+      const pHrs = parseFloat(inputs.printHrs.value) || 0;
+      const pRate = parseFloat(inputs.printRate.value) || 0;
+      if (pHrs > 0) {
+        const pTotal = pHrs * pRate;
+        subTotal += pTotal;
+        tbodyHTML += `<tr>
+          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;">
+            <strong style="color: #3A3F42;">3D Printing Time</strong><br>
+            <span style="font-size:12px;color:#7da5a8;">${pHrs} hrs @ ${formatMoney(pRate)}/hr</span>
+          </td>
+          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color: #3A3F42;">${formatMoney(pTotal)}</td>
+        </tr>`;
+      }
+
+      // 4. Extras
+      const extras = parseFloat(inputs.extraCost.value) || 0;
+      if (extras > 0) { 
+        subTotal += extras; 
+        tbodyHTML += `<tr>
+          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;">
+            <strong style="color: #3A3F42;">Hardware / Extra Materials</strong>
+          </td>
+          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color: #3A3F42;">${formatMoney(extras)}</td>
+        </tr>`; 
+      }
+
+      // 5. Discount
+      let grandTotal = subTotal;
+      const dVal = parseFloat(discountVal.value) || 0;
+      
+      if (dVal > 0) {
+        let discountAmount = 0;
+        let discountLabel = "";
+        
+        if(discountType.value === 'percent') {
+            discountAmount = subTotal * (dVal / 100);
+            discountLabel = `Discount (${dVal}%)`;
+        } else {
+            discountAmount = dVal;
+            discountLabel = `Discount Applied`;
+        }
+        
+        discountAmount = Math.min(discountAmount, subTotal); // Prevent negative totals
+        grandTotal -= discountAmount;
+        
+        if (discountAmount > 0) {
+            tbodyHTML += `<tr>
+              <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;">
+                <strong style="color: #3A3F42;">${discountLabel}</strong>
+              </td>
+              <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color:#ef4444;">-${formatMoney(discountAmount)}</td>
+            </tr>`;
+        }
+      }
+
+      // Empty State
+      if (tbodyHTML === "") {
+        tbodyHTML = `<tr><td colspan="2" style="padding: 15px 12px; text-align: center; color: #a1a1aa; font-size: 12px;">Add base price, design time, or print time to generate line items.</td></tr>`;
+      }
+
+      document.getElementById('inv-tbody').innerHTML = tbodyHTML;
+      
+      const totalStr = formatMoney(grandTotal);
+      document.getElementById('inv-out-total').innerText = totalStr;
+      document.getElementById('inv-venmo-btn-amt').innerText = totalStr;
+      
+      document.getElementById('inv-venmo-link').href = `https://venmo.com/?txn=pay&audience=private&recipients=${(inputs.venmo.value.replace('@','').trim() || 'tmcarleton')}&amount=${grandTotal.toFixed(2)}&note=${encodeURIComponent(`Invoice for ${projName} via Chop Lab`)}`;
+    }
+
+    document.querySelectorAll('.calc-trigger').forEach(input => { input.addEventListener('input', updateInvoicePreview); });
+    updateInvoicePreview(); // Run once
+
+    // =====================================
+    // 4. DISPATCH EMAIL LOGIC
+    // =====================================
+    document.getElementById('btn-inv-send').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-inv-send');
+      const emailTo = inputs.email.value;
+      if(!emailTo) return alert("Please enter a customer email address.");
+
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Sending...`; 
+      btn.disabled = true;
+
+      try {
+        const innerContent = document.getElementById('invoice-html-payload').innerHTML;
+        const finalEmailHTML = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="margin: 0; padding: 40px 20px; background-color: #F4F4F6; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 40px; border-top: 6px solid #D86A46; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+              ${innerContent}
+            </div>
+          </body>
+          </html>
+        `;
+
+        const response = await fetch(CLOUDFLARE_WORKER_URL, {
+          method: "POST", 
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            action: "send_invoice", 
+            toEmail: emailTo, 
+            subject: document.getElementById('inv-out-subject').innerText, 
+            htmlBody: finalEmailHTML 
+          })
+        });
+        
+        if (!response.ok) throw new Error("Worker Error");
+        btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Sent!`; 
+        btn.classList.replace('bg-emerald-600', 'bg-zinc-700');
+        
+      } catch (error) {
+        btn.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i> Failed`; 
+        btn.classList.replace('bg-emerald-600', 'bg-red-600');
+        alert("Make sure your Cloudflare Worker is active and configured.");
+      } finally {
+        setTimeout(() => { 
+          btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Send to Client`; 
+          btn.classList.remove('bg-zinc-700', 'bg-red-600'); 
+          btn.classList.add('bg-emerald-600'); 
+          btn.disabled = false; 
+          lucide.createIcons(); 
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>
