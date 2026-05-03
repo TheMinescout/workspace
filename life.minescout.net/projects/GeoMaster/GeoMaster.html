@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoMaster Pro</title>
+    <title>GeoMaster Pro - Africa Edition</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Leaflet CSS & JS (School WiFi Fix: jsDelivr) -->
+    <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -108,7 +108,7 @@
             <div class="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden shrink-0">
                 <div class="p-6 bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-between">
                     <h3 class="text-2xl font-black tracking-tight flex items-center gap-2">
-                        <i class="ph-fill ph-globe-hemisphere-west text-3xl text-blue-300"></i>
+                        <i class="ph-fill ph-globe-hemisphere-east text-3xl text-blue-300"></i>
                         GeoMaster
                     </h3>
                     <span class="text-[10px] bg-white/20 px-2.5 py-1 rounded-full uppercase tracking-widest font-bold backdrop-blur-sm">Pro</span>
@@ -118,9 +118,7 @@
                     <div class="space-y-3">
                         <label class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Study Sets</label>
                         <div class="flex gap-2 overflow-x-auto pb-1">
-                            <button onclick="window.loadPreset('Caribbean')" class="shrink-0 text-[10px] font-bold uppercase bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🏝️ Caribbean</button>
-                            <button onclick="window.loadPreset('Central America')" class="shrink-0 text-[10px] font-bold uppercase bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🌎 Central Am.</button>
-                            <button onclick="window.loadPreset('South America')" class="shrink-0 text-[10px] font-bold uppercase bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🏔️ South Am.</button>
+                            <button onclick="window.loadPreset('Africa')" class="shrink-0 text-[10px] font-bold uppercase bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🌍 Africa</button>
                         </div>
 
                         <textarea id="rawInput" class="w-full rounded-2xl border-2 border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-blue-500 focus:bg-white transition-colors font-medium min-h-[160px] resize-none" placeholder="1 location per line..."></textarea>
@@ -173,7 +171,7 @@
                     </div>
                     <div class="flex flex-col items-end text-right hidden sm:flex">
                         <span class="text-[10px] text-slate-400 font-bold uppercase mb-0.5">Status</span>
-                        <span id="header-status-msg" class="text-lg font-black text-white">Select Region</span>
+                        <span id="header-status-msg" class="text-lg font-black text-white">Ready to Learn</span>
                     </div>
                 </div>
 
@@ -243,9 +241,7 @@
         };
 
         const PRESETS = {
-            "Caribbean": "Antigua and Barbuda\nBahamas\nBarbados\nCuba\nDominica\nDominican Republic\nGrenada\nHaiti\nJamaica\nPuerto Rico\nSaint Kitts and Nevis\nSaint Lucia\nSt. Vincent and Grenadines\nTrinidad and Tobago",
-            "Central America": "Belize\nCosta Rica\nEl Salvador\nGuatemala\nHonduras\nMexico\nNicaragua\nPanama",
-            "South America": "Argentina\nBolivia\nBrazil\nChile\nColombia\nEcuador\nFrench Guiana\nGuyana\nParaguay\nPeru\nSuriname\nUruguay\nVenezuela"
+            "Africa": "Algeria\nAngola\nBenin\nBotswana\nBurkina Faso\nBurundi\nCameroon\nCape Verde\nCentral African Republic\nChad\nComoros\nDemocratic Republic of the Congo\nDjibouti\nEgypt\nEquatorial Guinea\nEritrea\nEswatini\nEthiopia\nGabon\nGhana\nGuinea\nGuinea-Bissau\nIvory Coast\nKenya\nLesotho\nLiberia\nLibya\nMadagascar\nMalawi\nMali\nMauritania\nMauritius\nMorocco\nMozambique\nNamibia\nNiger\nNigeria\nRepublic of the Congo\nRwanda\nSenegal\nSeychelles\nSierra Leone\nSomalia\nSouth Africa\nSouth Sudan\nSudan\nSão Tomé and Príncipe\nTanzania\nThe Gambia\nTogo\nTunisia\nUganda\nWestern Sahara\nZambia\nZimbabwe"
         };
 
         // PERFORMANCE: Map store to avoid destruction/recreation
@@ -336,10 +332,10 @@
         function init() {
             if (typeof L === 'undefined') { setTimeout(init, 200); return; }
             if (mapInstance) return;
-            if (!document.getElementById('rawInput').value.trim()) window.loadPreset('Caribbean');
+            if (!document.getElementById('rawInput').value.trim()) window.loadPreset('Africa');
 
             mapInstance = L.map('map', { 
-                center: [15, -70], zoom: 3, minZoom: 2, worldCopyJump: true, zoomControl: false,
+                center: [0, 20], zoom: 3, minZoom: 2, worldCopyJump: true, zoomControl: false,
                 maxBounds: [[-90, -180], [90, 180]]
             });
             
@@ -387,7 +383,8 @@
                         results.push(fd); geoCache[targetName] = fd;
                     } else { geoCache[targetName] = "NOT_FOUND"; }
                     localStorage.setItem('geomaster-cache-v7', JSON.stringify(geoCache));
-                    await new Promise(r => setTimeout(r, 400));
+                    // Respectful API request rate
+                    await new Promise(r => setTimeout(r, 800));
                 } catch (e) {}
             }
             
