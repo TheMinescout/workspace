@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minescout AI - Funnel Simulator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0F172A; 
+      --secondary: #2563EB; 
+      --accent: #F59E0B; 
+      --bg: #F8FAFC;
+      --surface: #FFFFFF;
+      --text: #334155;
+      --muted: #94A3B8;
+      --border: #E2E8F0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Jost', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .simulator-card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.05);
+      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .simulator-card { grid-template-columns: 1fr; }
+    }
+
+    h2 { font-size: 1.8rem; font-weight: 800; color: var(--primary); margin-bottom: 8px; line-height: 1.2; }
+    p.subtitle { font-size: 0.95rem; color: var(--muted); margin-bottom: 30px; }
+
+    .input-group { margin-bottom: 20px; }
+    .input-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    
+    select {
+      width: 100%; padding: 14px; font-size: 1rem; font-family: inherit; font-weight: 600;
+      color: var(--primary); border: 2px solid var(--border); border-radius: 8px;
+      background-color: var(--bg); outline: none; transition: border-color 0.2s;
+      cursor: pointer;
+    }
+    select:focus { border-color: var(--secondary); background-color: var(--surface); }
+
+    /* Funnel Visualization */
+    .funnel-container {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 30px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .funnel-step {
+      margin-bottom: 20px;
+    }
+    .funnel-step:last-child { margin-bottom: 0; }
+
+    .step-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .bar-wrapper {
+      width: 100%;
+      background: var(--border);
+      height: 24px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--muted);
+      border-radius: 12px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.5s;
+    }
+
+    #bar-traffic { width: 100%; background: var(--primary); }
+    #bar-engaged { width: 15%; background: var(--secondary); }
+    #bar-leads { width: 5%; background: var(--accent); }
+
+    .insight-box {
+      margin-top: 30px;
+      padding: 15px;
+      border-left: 4px solid var(--secondary);
+      background: #EFF6FF;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="simulator-card">
+    <div>
+      <h2>Lead Capture Simulator</h2>
+      <p class="subtitle">Adjust the AI's behavior and offer to see how it impacts your monthly leads (based on 1,000 visitors).</p>
+
+      <div class="input-group">
+        <label>1. AI Tone & Engagement</label>
+        <select id="sim-tone" onchange="calculateFunnel()">
+          <option value="0.05">Passive (Waits to be clicked in corner)</option>
+          <option value="0.15" selected>Proactive (Pops up with greeting)</option>
+          <option value="0.25">Aggressive (Pops up with immediate offer)</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>2. Lead Magnet (The Reward)</label>
+        <select id="sim-offer" onchange="calculateFunnel()">
+          <option value="1">None (Just asks "How can I help?")</option>
+          <option value="2">Free PDF Guide</option>
+          <option value="4" selected>Instant Custom Quote / Audit</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>3. Required Data (The Friction)</label>
+        <select id="sim-friction" onchange="calculateFunnel()">
+          <option value="1">Email Only</option>
+          <option value="2" selected>Name & Email</option>
+          <option value="4">Name, Email, Phone, & Full Details</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="funnel-container">
+      <div class="funnel-step">
+        <div class="step-label"><span>Monthly Traffic</span> <span id="val-traffic">1,000</span></div>
+        <div class="bar-wrapper"><div class="bar-fill" id="bar-traffic"></div></div>
+      </div>
+
+      <div class="funnel-step">
+        <div class="step-label"><span>Engaged with AI</span> <span id="val-engaged">150</span></div>
+        <div class="bar-wrapper"><div class="bar-fill" id="bar-engaged"></div></div>
+      </div>
+
+      <div class="funnel-step">
+        <div class="step-label"><span style="color: var(--accent);">Captured Leads</span> <span id="val-leads" style="color: var(--accent); font-size: 1.2rem;">30</span></div>
+        <div class="bar-wrapper"><div class="bar-fill" id="bar-leads"></div></div>
+      </div>
+
+      <div class="insight-box" id="insight-text">
+        Proactive engagement captures attention, and balancing a high-value quote with moderate friction yields solid results.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function calculateFunnel() {
+      const traffic = 1000;
+      
+      const toneVal = parseFloat(document.getElementById('sim-tone').value);
+      const offerVal = parseFloat(document.getElementById('sim-offer').value);
+      const frictionVal = parseFloat(document.getElementById('sim-friction').value);
+
+      // 1. Calculate Engaged Users
+      const engaged = Math.round(traffic * toneVal);
+
+      // 2. Calculate Conversion Rate of engaged users (Reward / Friction ratio)
+      // Base conversion multiplier is 10%. 
+      let conversionRate = (offerVal / frictionVal) * 0.10;
+      
+      // Cap conversion rate between 1% and 40% for realism
+      if (conversionRate > 0.40) conversionRate = 0.40;
+      if (conversionRate < 0.01) conversionRate = 0.01;
+
+      // 3. Calculate Final Leads
+      const leads = Math.round(engaged * conversionRate);
+
+      // 4. Update UI Values
+      document.getElementById('val-engaged').innerText = engaged;
+      document.getElementById('val-leads').innerText = leads;
+
+      // 5. Update UI Bars
+      document.getElementById('bar-engaged').style.width = (engaged / traffic * 100) + '%';
+      
+      // To make the leads bar visible, we scale it relative to the engaged bar
+      const leadPercentage = (leads / traffic * 100);
+      document.getElementById('bar-leads').style.width = Math.max(leadPercentage, 1) + '%';
+
+      // 6. Generate Insight Text
+      let insight = "";
+      
+      if (frictionVal === 4 && offerVal === 1) {
+        insight = "High friction with no reward. Users are abandoning the chat because you are asking for their phone number without offering them any value in return.";
+      } else if (toneVal === 0.05 && offerVal === 4) {
+        insight = "You have a great offer, but no one is seeing it because the AI is too passive. Try making the bot pop up proactively.";
+      } else if (frictionVal === 1 && offerVal === 4) {
+        insight = "Maximum conversion! You are offering immense value (an instant quote) and making it incredibly easy to opt-in (Email only).";
+      } else if (toneVal === 0.25 && frictionVal === 4) {
+        insight = "You are grabbing their attention aggressively, but hitting them with a massive form. Expect high engagement but high drop-off.";
+      } else {
+        insight = "A balanced approach. To increase leads further, try lowering the required data (friction) or increasing the value of the lead magnet (reward).";
+      }
+
+      document.getElementById('insight-text').innerText = insight;
+    }
+
+    // Run once on load
+    calculateFunnel();
+  </script>
+</body>
+</html>
