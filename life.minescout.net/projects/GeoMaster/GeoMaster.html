@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoMaster Pro - Africa Edition</title>
+    <title>GeoMaster Pro</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
     
     <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
@@ -16,19 +19,24 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Lexend:wght@400;500;600;700;800;900&display=swap');
         
-        body { font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; }
+        :root { --app-font: 'Inter', sans-serif; }
+        .dyslexic-font { --app-font: 'Lexend', sans-serif !important; }
+
+        body { font-family: var(--app-font); height: 100vh; overflow: hidden; }
         
         #map { 
             width: 100%; 
             height: 100%; 
-            background-color: #d4dae0; 
+            background-color: #f1f5f9; 
             min-height: 400px;
+            transition: background-color 0.3s;
         }
+        .dark #map { background-color: #0f172a; }
 
-        .leaflet-container { font-family: 'Inter', sans-serif; }
-        .leaflet-interactive { transition: fill-opacity 0.2s, stroke-width 0.2s, r 0.2s, fill 0.2s; }
+        .leaflet-container { font-family: var(--app-font); }
+        .leaflet-interactive { transition: fill-opacity 0.2s, stroke-width 0.2s, r 0.2s, fill 0.2s, stroke 0.2s; }
         
         /* Non-Blocking Labels with Leader Lines */
         .leaflet-tooltip.map-label {
@@ -40,54 +48,151 @@
             color: #1e293b;
             padding: 2px 7px;
             border-radius: 4px;
-            pointer-events: none !important; /* Click-through */
+            pointer-events: none !important;
             user-select: none;
             white-space: nowrap;
+        }
+        .dark .leaflet-tooltip.map-label {
+            background: rgba(30, 41, 59, 0.98);
+            border-color: #475569;
+            color: #f8fafc;
         }
         
         .leaflet-tooltip.map-label::before {
             content: '';
             position: absolute;
             background: #94a3b8;
-            width: 30px; /* Long leader line */
+            width: 30px;
             height: 1px;
             top: 50%;
             left: -30px;
         }
+        .dark .leaflet-tooltip.map-label::before { background: #475569; }
 
-        .leaflet-tooltip-top:before, .leaflet-tooltip-bottom:before, 
-        .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { display: none !important; }
-        
         .hidden { display: none !important; }
         
+        @keyframes pulse-blue {
+            0% { fill-opacity: 0.1; stroke-width: 2; filter: drop-shadow(0 0 0px #3b82f6); }
+            50% { fill-opacity: 0.6; stroke-width: 6; filter: drop-shadow(0 0 12px #60a5fa); }
+            100% { fill-opacity: 0.1; stroke-width: 2; filter: drop-shadow(0 0 0px #3b82f6); }
+        }
+        .animate-pulse-geo { animation: pulse-blue 2s infinite ease-in-out; stroke: #3b82f6 !important; stroke-opacity: 1 !important; }
+
+        @keyframes success-green {
+            0% { fill-opacity: 0.6; stroke-width: 6; filter: drop-shadow(0 0 12px #10b981); }
+            100% { fill-opacity: 0.2; stroke-width: 3; filter: drop-shadow(0 0 0px #10b981); }
+        }
+        .animate-success-geo { animation: success-green 1.5s ease-out forwards; stroke: #10b981 !important; stroke-opacity: 1 !important; fill: #34d399 !important; }
+
         @keyframes popIn {
             0% { opacity: 0; transform: scale(0.95); }
             100% { opacity: 1; transform: scale(1); }
         }
         .animate-pop { animation: popIn 0.2s ease-out forwards; }
 
+        .shape-option:hover { transform: translateY(-4px); border-color: #3b82f6; }
+        .shape-option.wrong { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        .shape-option.correct { border-color: #10b981 !important; background-color: #ecfdf5 !important; }
+        
+        .dark .shape-option.wrong { background-color: #450a0a !important; }
+        .dark .shape-option.correct { background-color: #064e3b !important; }
+
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
 
         .toggle-dot { transition: all 0.2s ease-in-out; }
         input:checked ~ .toggle-dot { transform: translateX(100%); }
-        input:checked ~ .toggle-bg { background-color: #2563eb; }
+        input:checked ~ .toggle-bg { background-color: #3b82f6; }
+        
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer; opacity: 0.6; transition: 0.2s;
+        }
+        .dark input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+        
+        /* AI Typing Effect styling */
+        .ai-loading { color: #8b5cf6; font-weight: bold; animation: pulse 1.5s infinite; }
+        .chat-bubble { max-width: 85%; word-wrap: break-word; }
     </style>
 </head>
-<body class="min-h-screen bg-slate-100 p-4 md:p-6 lg:p-8 text-slate-900 relative selection:bg-blue-200">
+<body class="min-h-screen bg-slate-100 dark:bg-slate-950 p-4 md:p-6 lg:p-8 text-slate-900 dark:text-slate-100 relative selection:bg-blue-200 transition-colors duration-300">
 
-    <!-- OVERLAYS -->
-    <div id="loading-overlay" class="fixed inset-0 z-[9999] bg-slate-900/95 backdrop-blur-md flex flex-col items-center justify-center text-white hidden">
+    <!-- AI CHAT FAB -->
+    <button id="ai-chat-fab" onclick="window.toggleChat()" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.3)] flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all z-[6000]">
+        <i class="ph-bold ph-robot text-2xl"></i>
+        <!-- Notification dot -->
+        <span id="ai-chat-badge" class="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 hidden animate-pulse"></span>
+    </button>
+
+    <!-- AI CHAT WINDOW -->
+    <div id="ai-chat-window" class="fixed bottom-24 right-6 w-80 max-w-[calc(100vw-3rem)] h-[400px] max-h-[60vh] bg-white dark:bg-slate-900 rounded-2xl shadow-[0_20px_50px_rgba(8,_112,_184,_0.2)] dark:shadow-[0_20px_50px_rgba(0,_0,_0,_0.5)] border border-slate-200 dark:border-slate-700 flex flex-col z-[6000] hidden transition-all duration-300 origin-bottom-right scale-95 opacity-0">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-3 px-4 rounded-t-2xl flex justify-between items-center text-white shrink-0">
+            <span class="text-xs font-bold uppercase tracking-widest flex items-center gap-1.5"><i class="ph-bold ph-robot text-base"></i> Study Coach</span>
+            <div class="flex gap-2">
+                <button onclick="window.clearChatHistory()" class="text-white/80 hover:text-white transition-colors" title="Clear Memory"><i class="ph-bold ph-trash"></i></button>
+                <button onclick="window.toggleChat()" class="text-white/80 hover:text-white transition-colors"><i class="ph-bold ph-x"></i></button>
+            </div>
+        </div>
+        <!-- History -->
+        <div id="ai-chat-history" class="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col bg-slate-50 dark:bg-slate-800/50">
+            <!-- Injected Messages go here -->
+        </div>
+        <!-- Input -->
+        <div class="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 flex gap-2 shrink-0 rounded-b-2xl">
+            <input type="text" id="ai-chat-input" onkeypress="if(event.key === 'Enter') window.sendChatMessage()" class="flex-1 text-xs bg-slate-100 dark:bg-slate-800 rounded-xl px-3 py-2 outline-none focus:ring-2 ring-indigo-500/50 text-slate-700 dark:text-slate-200 font-medium transition-all" placeholder="Ask for a hint...">
+            <button onclick="window.sendChatMessage()" class="bg-indigo-600 text-white rounded-xl px-4 hover:bg-indigo-500 active:scale-95 transition-all flex items-center justify-center shadow-md">
+                <i class="ph-bold ph-paper-plane-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- LOADING OVERLAY -->
+    <div id="loading-overlay" class="fixed inset-0 z-[4000] bg-slate-900/95 backdrop-blur-md flex flex-col items-center justify-center text-white hidden">
         <div class="relative w-24 h-24 mb-6">
             <div class="absolute inset-0 border-4 border-slate-700 rounded-full"></div>
             <div class="absolute inset-0 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
             <i class="ph-bold ph-globe absolute inset-0 flex items-center justify-center text-3xl text-blue-400"></i>
         </div>
-        <h2 class="text-2xl font-black mb-2">Syncing Data</h2>
+        <h2 class="text-2xl font-black mb-2">Syncing Maps</h2>
         <p id="loading-msg" class="text-blue-300 font-medium text-sm animate-pulse">Initializing map...</p>
         <div class="w-64 h-2 bg-slate-800 rounded-full mt-6 overflow-hidden border border-slate-700">
             <div id="loading-progress" class="h-full bg-blue-500 transition-all duration-300 w-0"></div>
+        </div>
+    </div>
+
+    <!-- SHAPE MATCH OVERLAY (Active Learn Mode) -->
+    <div id="shape-match-overlay" class="fixed inset-0 z-[5000] bg-white dark:bg-slate-900 flex flex-col items-center justify-center hidden transition-colors duration-300">
+        <div class="max-w-4xl w-full px-6 text-center">
+            <h2 class="text-4xl font-black text-slate-900 dark:text-white mb-2" id="shape-target-name">Country Name</h2>
+            <p class="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm mb-12">Select the correct border shape</p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="shape-options-grid">
+                <!-- Distractor shapes injected here -->
+            </div>
+
+            <div class="mt-12">
+                <div class="flex gap-2 justify-center mb-4">
+                    <div id="shape-attempt-1" class="w-4 h-4 rounded-full bg-blue-500"></div>
+                    <div id="shape-attempt-2" class="w-4 h-4 rounded-full bg-blue-500"></div>
+                </div>
+                <p id="shape-feedback" class="text-sm font-bold text-slate-400 dark:text-slate-500">You have 2 attempts</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- REVIEW MODAL -->
+    <div id="review-modal" class="fixed inset-0 z-[5000] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh]" id="review-content">
+            <div class="p-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center shrink-0">
+                <h2 class="text-2xl font-black mb-1">Session Review</h2>
+                <p class="text-blue-200 text-sm font-medium">Areas to focus on for your next run.</p>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 bg-slate-50 dark:bg-slate-800" id="review-list"></div>
+            <div class="p-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-end shrink-0 gap-3" id="review-footer">
+                <!-- Buttons injected dynamically -->
+            </div>
         </div>
     </div>
 
@@ -104,66 +209,177 @@
     <div class="max-w-[1440px] mx-auto grid lg:grid-cols-12 gap-6 lg:gap-8 h-full">
         
         <!-- SIDEBAR -->
-        <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6 h-full overflow-y-auto">
-            <div class="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden shrink-0">
-                <div class="p-6 bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-between">
-                    <h3 class="text-2xl font-black tracking-tight flex items-center gap-2">
-                        <i class="ph-fill ph-globe-hemisphere-east text-3xl text-blue-300"></i>
-                        GeoMaster
+        <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6 h-full overflow-y-auto pb-4">
+            
+            <!-- PROGRESS TRACKER & AI STUDY PLAN -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden shrink-0 transition-colors flex flex-col">
+                <div class="p-6 bg-gradient-to-br from-slate-700 to-slate-900 dark:from-slate-800 dark:to-slate-950 text-white flex items-center justify-between shrink-0">
+                    <h3 class="text-xl font-black tracking-tight flex items-center gap-2">
+                        <i class="ph-fill ph-student text-2xl text-emerald-400"></i>
+                        My Journey
                     </h3>
-                    <span class="text-[10px] bg-white/20 px-2.5 py-1 rounded-full uppercase tracking-widest font-bold backdrop-blur-sm">Pro</span>
                 </div>
                 
-                <div class="p-6 space-y-6">
-                    <div class="space-y-3">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Study Sets</label>
-                        <div class="flex gap-2 overflow-x-auto pb-1">
-                            <button onclick="window.loadPreset('Africa')" class="shrink-0 text-[10px] font-bold uppercase bg-slate-100 hover:bg-blue-50 hover:text-blue-600 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors">🌍 Africa</button>
-                        </div>
-
-                        <textarea id="rawInput" class="w-full rounded-2xl border-2 border-slate-200 bg-slate-50 px-4 py-3 text-sm focus:border-blue-500 focus:bg-white transition-colors font-medium min-h-[160px] resize-none" placeholder="1 location per line..."></textarea>
-                        
-                        <div class="grid grid-cols-2 gap-3 pt-2">
-                            <button onclick="window.prepareGame('playing')" class="flex flex-col items-center justify-center gap-1 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition-all shadow-md py-3">
-                                <i class="ph-bold ph-target text-xl"></i>
-                                <span class="text-xs font-bold uppercase tracking-wide">Quiz Mode</span>
-                            </button>
-                            <button onclick="window.prepareGame('learning')" class="flex flex-col items-center justify-center gap-1 rounded-2xl bg-slate-100 text-slate-700 hover:bg-slate-200 active:scale-95 transition-all py-3 border border-slate-200">
-                                <i class="ph-bold ph-book-open text-xl"></i>
-                                <span class="text-xs font-bold uppercase tracking-wide">Learn Mode</span>
-                            </button>
-                        </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <div class="flex justify-between items-end mb-2">
+                        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Mastered items</span>
+                        <span class="text-2xl font-black text-emerald-500" id="mastery-count">0/0</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-6">
+                        <div id="mastery-bar" class="h-full bg-emerald-500 transition-all duration-1000 w-0"></div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="window.startJourney('five')" class="flex-1 flex flex-col items-center justify-center gap-1 rounded-2xl bg-emerald-600 text-white hover:bg-emerald-500 active:scale-95 transition-all shadow-md py-3 font-bold text-[11px] uppercase tracking-wide">
+                            <i class="ph-bold ph-lightning text-lg"></i>
+                            Learn 5
+                        </button>
+                        <button onclick="window.startJourney('all')" class="flex-1 flex flex-col items-center justify-center gap-1 rounded-2xl bg-teal-600 text-white hover:bg-teal-500 active:scale-95 transition-all shadow-md py-3 font-bold text-[11px] uppercase tracking-wide">
+                            <i class="ph-bold ph-books text-lg"></i>
+                            Learn All
+                        </button>
                     </div>
 
-                    <hr class="border-slate-100" />
-
-                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                        <div class="flex flex-col">
-                            <span class="text-sm font-bold text-slate-700">Auto-Advance</span>
-                            <span class="text-[10px] text-slate-500 font-medium">Fast transition</span>
-                        </div>
-                        <label class="flex items-center cursor-pointer">
-                            <div class="relative">
-                                <input type="checkbox" id="autoNextToggle" class="sr-only" checked onchange="window.toggleAutoNext(this.checked)">
-                                <div class="toggle-bg block bg-slate-300 w-12 h-6 rounded-full"></div>
-                                <div class="toggle-dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition shadow-sm"></div>
+                    <!-- EXAM/GOAL PLANNER -->
+                    <div class="mt-6 pt-5 border-t border-slate-200 dark:border-slate-800 flex-1 flex flex-col">
+                        <div id="no-goal-ui">
+                            <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-2">Set Test/Exam Date</label>
+                            <div class="flex gap-2">
+                                <input type="date" id="goal-date" class="flex-1 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm px-3 py-2 text-slate-700 dark:text-slate-300 outline-none focus:border-indigo-500 transition-colors">
+                                <button onclick="window.saveGoal()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold text-xs hover:bg-indigo-500 active:scale-95 transition-all shadow-sm">Set</button>
                             </div>
-                        </label>
+                        </div>
+                        
+                        <div id="active-goal-ui" class="hidden h-full flex flex-col">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Study Schedule</span>
+                                <button onclick="window.clearGoal()" class="text-[10px] font-bold text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1"><i class="ph-bold ph-x"></i> Clear</button>
+                            </div>
+                            
+                            <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl p-4 border border-indigo-100 dark:border-indigo-800/50 mb-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i class="ph-fill ph-calendar-check text-indigo-500 text-lg"></i>
+                                    <p class="text-xs text-indigo-800 dark:text-indigo-300 font-bold" id="goal-days-left">Test in 5 days</p>
+                                </div>
+                                <div class="flex items-end justify-between mt-3">
+                                    <div class="flex flex-col">
+                                        <span class="text-[10px] uppercase font-bold text-indigo-400 dark:text-indigo-500 tracking-wider">Today's Goal</span>
+                                        <p class="text-lg font-black text-indigo-900 dark:text-indigo-100 leading-none mt-0.5">Learn <span id="goal-daily-target">0</span></p>
+                                    </div>
+                                    <div class="text-right flex flex-col items-end">
+                                        <span id="goal-status" class="text-xs font-black text-indigo-600 dark:text-indigo-400">0 done</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- LIBRARY & QUIZ -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden shrink-0 transition-colors">
+                <div class="p-6 space-y-6">
+                    <div class="space-y-3">
+                        <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest block">Quick Load Regions</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="window.loadPreset('All Africa')" class="text-[10px] font-bold uppercase bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 hover:bg-blue-50 px-3 py-2 rounded-lg border dark:border-slate-700 transition-colors">🌍 All Africa</button>
+                            <button onclick="window.loadPreset('North Africa')" class="text-[10px] font-bold uppercase bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 hover:bg-blue-50 px-3 py-2 rounded-lg border dark:border-slate-700 transition-colors">🏜️ North</button>
+                            <button onclick="window.loadPreset('West Africa')" class="text-[10px] font-bold uppercase bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 hover:bg-blue-50 px-3 py-2 rounded-lg border dark:border-slate-700 transition-colors">🌴 West</button>
+                            <button onclick="window.loadPreset('South Africa Region')" class="text-[10px] font-bold uppercase bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 hover:bg-blue-50 px-3 py-2 rounded-lg border dark:border-slate-700 transition-colors">🦁 South</button>
+                        </div>
+
+                        <textarea id="rawInput" class="w-full rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-3 text-sm focus:border-blue-500 dark:focus:border-blue-400 focus:bg-white dark:focus:bg-slate-900 transition-colors font-medium min-h-[100px] resize-none" placeholder="Paste locations here..."></textarea>
+                        
+                        <div class="grid grid-cols-1 gap-3 pt-2">
+                            <button onclick="window.prepareGame('playing')" class="flex flex-col items-center justify-center gap-1 rounded-2xl bg-blue-600 text-white hover:bg-blue-500 active:scale-95 transition-all shadow-md py-3">
+                                <i class="ph-bold ph-target text-xl"></i>
+                                <span class="text-xs font-bold uppercase tracking-wide">Test Yourself (Quiz)</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden shrink-0 transition-colors">
+                <div class="p-6">
+                    <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-4 border-b border-slate-100 dark:border-slate-800 pb-2">Settings</h4>
+                    
+                    <div class="space-y-4">
+                        <!-- Dark Mode Toggle -->
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-200">Dark Mode</span>
+                            <label class="flex items-center cursor-pointer">
+                                <div class="relative">
+                                    <input type="checkbox" id="toggle-dark" class="sr-only" onchange="window.toggleDarkMode(this.checked)">
+                                    <div class="toggle-bg block bg-slate-300 dark:bg-slate-600 w-10 h-5 rounded-full"></div>
+                                    <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition shadow-sm"></div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Sound Toggle -->
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-200">Sound Effects</span>
+                            <label class="flex items-center cursor-pointer">
+                                <div class="relative">
+                                    <input type="checkbox" id="toggle-audio" class="sr-only" onchange="window.toggleAudio(this.checked)">
+                                    <div class="toggle-bg block bg-slate-300 dark:bg-slate-600 w-10 h-5 rounded-full"></div>
+                                    <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition shadow-sm"></div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Dyslexia Font -->
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-200">Dyslexia Font</span>
+                            <label class="flex items-center cursor-pointer">
+                                <div class="relative">
+                                    <input type="checkbox" id="toggle-font" class="sr-only" onchange="window.toggleDyslexia(this.checked)">
+                                    <div class="toggle-bg block bg-slate-300 dark:bg-slate-600 w-10 h-5 rounded-full"></div>
+                                    <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition shadow-sm"></div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Quick Facts -->
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-200">Quick Facts (Wiki)</span>
+                            <label class="flex items-center cursor-pointer">
+                                <div class="relative">
+                                    <input type="checkbox" id="toggle-facts" class="sr-only" onchange="window.toggleFacts(this.checked)">
+                                    <div class="toggle-bg block bg-slate-300 dark:bg-slate-600 w-10 h-5 rounded-full"></div>
+                                    <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition shadow-sm"></div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- AI Coach -->
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-200">AI Coach (Chat)</span>
+                            <label class="flex items-center cursor-pointer">
+                                <div class="relative">
+                                    <input type="checkbox" id="toggle-ai" class="sr-only" onchange="window.toggleAiCoach(this.checked)">
+                                    <div class="toggle-bg block bg-slate-300 dark:bg-slate-600 w-10 h-5 rounded-full"></div>
+                                    <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition shadow-sm"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- MAIN AREA -->
         <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-5 h-full relative">
             
             <!-- PERFORMANCE BAR -->
-            <div id="performance-dashboard" class="bg-slate-900 text-white px-6 py-4 rounded-3xl shadow-lg border border-slate-800 shrink-0 relative overflow-hidden min-h-[5.5rem] flex items-center justify-center z-[1000]">
+            <div id="performance-dashboard" class="bg-slate-900 dark:bg-slate-950 text-white px-6 py-4 rounded-3xl shadow-lg border border-slate-800 dark:border-slate-800/50 shrink-0 relative overflow-hidden min-h-[5.5rem] flex items-center justify-center z-[1000]">
                 <i class="ph-fill ph-trophy absolute -right-2 -top-6 text-8xl text-white/5 pointer-events-none"></i>
 
                 <div id="perf-overview" class="flex items-center justify-between w-full">
                     <div class="flex items-center gap-5">
-                        <div id="accuracy-grade" class="w-14 h-14 bg-slate-800 rounded-xl flex items-center justify-center text-3xl font-black text-slate-500 border-2 border-slate-700 rotate-3">-</div>
+                        <div id="accuracy-grade" class="w-14 h-14 bg-slate-800 dark:bg-slate-900 rounded-xl flex items-center justify-center text-3xl font-black text-slate-500 border-2 border-slate-700 dark:border-slate-800 rotate-3">-</div>
                         <div class="flex flex-col">
                             <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest mb-0.5">Accuracy</span>
                             <span id="accuracy-score" class="text-3xl font-black text-white leading-none">0%</span>
@@ -171,7 +387,7 @@
                     </div>
                     <div class="flex flex-col items-end text-right hidden sm:flex">
                         <span class="text-[10px] text-slate-400 font-bold uppercase mb-0.5">Status</span>
-                        <span id="header-status-msg" class="text-lg font-black text-white">Ready to Learn</span>
+                        <span id="header-status-msg" class="text-lg font-black text-white">Ready to Start</span>
                     </div>
                 </div>
 
@@ -181,16 +397,16 @@
                             <span class="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Progress</span>
                             <span class="text-xl font-black text-white leading-none"><span id="hud-progress">0</span><span class="text-slate-500 text-sm mx-1">/</span><span id="hud-total">0</span></span>
                         </div>
-                        <div class="flex flex-col hidden sm:flex">
+                        <div id="score-block" class="flex flex-col hidden sm:flex">
                             <span class="text-[10px] font-bold text-emerald-400 uppercase mb-0.5">Score</span>
                             <span id="hud-score" class="text-xl font-black text-white leading-none">0%</span>
                         </div>
                     </div>
                     
                     <div class="absolute left-1/2 -translate-x-1/2 flex flex-col items-center w-full max-w-[200px] sm:max-w-[300px]">
-                        <span id="hud-verb" class="text-[10px] text-slate-400 font-bold uppercase mb-1">Click on</span>
+                        <span id="hud-verb" class="text-[10px] text-slate-400 font-bold uppercase mb-1">Target</span>
                         <div class="bg-blue-600 px-6 py-1.5 rounded-xl shadow-[0_4px_0_#1e3a8a] border border-blue-400 w-full text-center">
-                            <span id="hud-target-name" class="text-xl font-black text-white truncate block">Target</span>
+                            <span id="hud-target-name" class="text-xl font-black text-white truncate block">Location</span>
                         </div>
                     </div>
                     
@@ -205,426 +421,937 @@
             </div>
 
             <!-- MAP CONTAINER -->
-            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 flex flex-col flex-1 relative overflow-hidden">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-800 flex flex-col flex-1 relative overflow-hidden transition-colors">
                 <div class="flex-1 relative z-0">
                     <div id="map"></div>
                     
+                    <!-- FLOATING MAP CONTROLS -->
+                    <div class="absolute top-4 right-4 z-[1000] flex flex-col gap-2">
+                        <button onclick="window.resetMapView()" class="w-10 h-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-blue-600 transition-colors" title="Recenter Map">
+                            <i class="ph-bold ph-corners-out text-xl"></i>
+                        </button>
+                    </div>
+
                     <!-- Wiki Fact Box -->
-                    <div id="fact-box" class="absolute bottom-4 left-4 z-[1000] bg-white/95 backdrop-blur border border-slate-200 p-4 rounded-2xl shadow-xl max-w-[320px] hidden animate-pop">
-                        <h4 class="text-[10px] font-black text-blue-600 uppercase mb-1 border-b pb-1" id="fact-title">Location</h4>
-                        <p id="fact-text" class="text-xs text-slate-700 leading-relaxed max-h-32 overflow-y-auto italic">Loading summary...</p>
+                    <div id="fact-box" class="absolute bottom-4 left-4 z-[1000] bg-white/95 dark:bg-slate-800/95 backdrop-blur border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-xl max-w-[320px] hidden animate-pop">
+                        <h4 class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase mb-1 border-b dark:border-slate-700 pb-1" id="fact-title">Location</h4>
+                        <p id="fact-text" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed max-h-32 overflow-y-auto italic">Loading...</p>
                     </div>
                 </div>
 
-                <div id="footer-prompt" class="px-6 py-4 bg-white border-t border-slate-100 flex justify-between items-center z-[1000] min-h-[72px]">
-                </div>
+                <div id="footer-prompt" class="px-6 py-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center z-[1000] min-h-[72px] transition-colors"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // ARCHITECTURE: Unified State Object
+        console.log("%c GeoMaster Pro v1.10.0 - Floating AI Chat Update ", "background: #10b981; color: #ffffff; font-weight: bold; border-radius: 4px; padding: 2px;");
+        
         const state = {
-            places: [],
-            quizSequence: [],
-            round: 0,
-            attempts: 0,
-            gameState: "setup", 
-            time: 0,
-            autoNext: true,
-            hintUsedThisRound: false,
-            isWaitingForNext: false,
-            completed: {}, // name -> { attemptsUsed, score }
-            wrongGuessesThisRound: [],
-            missedClicks: [], // Per-round miss markers
-            lastFramedRound: -1
+            places: [], quizSequence: [], round: 0, attempts: 0,
+            gameState: "setup", time: 0, hardMode: false,
+            darkMode: localStorage.getItem('geomaster-dark') === 'true',
+            audioEnabled: localStorage.getItem('geomaster-audio') !== 'false',
+            factsEnabled: localStorage.getItem('geomaster-facts') !== 'false',
+            aiEnabled: localStorage.getItem('geomaster-ai') !== 'false',
+            dyslexiaEnabled: localStorage.getItem('geomaster-dyslexia') === 'true',
+            completed: {}, mistakes: {}, wrongGuessesThisRound: [],
+            isWaitingForNext: false, learningPhase: "map", // "intro", "shape", "locate"
+            shapeAttempts: 0, hasShownReview: false
         };
 
         const PRESETS = {
-            "Africa": "Algeria\nAngola\nBenin\nBotswana\nBurkina Faso\nBurundi\nCameroon\nCape Verde\nCentral African Republic\nChad\nComoros\nDemocratic Republic of the Congo\nDjibouti\nEgypt\nEquatorial Guinea\nEritrea\nEswatini\nEthiopia\nGabon\nGhana\nGuinea\nGuinea-Bissau\nIvory Coast\nKenya\nLesotho\nLiberia\nLibya\nMadagascar\nMalawi\nMali\nMauritania\nMauritius\nMorocco\nMozambique\nNamibia\nNiger\nNigeria\nRepublic of the Congo\nRwanda\nSenegal\nSeychelles\nSierra Leone\nSomalia\nSouth Africa\nSouth Sudan\nSudan\nSão Tomé and Príncipe\nTanzania\nThe Gambia\nTogo\nTunisia\nUganda\nWestern Sahara\nZambia\nZimbabwe"
+            "All Africa": "Algeria\nAngola\nBenin\nBotswana\nBurkina Faso\nBurundi\nCameroon\nCape Verde\nCentral African Republic\nChad\nComoros\nDemocratic Republic of the Congo\nDjibouti\nEgypt\nEquatorial Guinea\nEritrea\nEswatini\nEthiopia\nGabon\nGhana\nGuinea\nGuinea-Bissau\nIvory Coast\nKenya\nLesotho\nLiberia\nLibya\nMadagascar\nMalawi\nMali\nMauritania\nMauritius\nMorocco\nMozambique\nNamibia\nNiger\nNigeria\nRepublic of the Congo\nRwanda\nSenegal\nSeychelles\nSierra Leone\nSomalia\nSouth Africa\nSouth Sudan\nSudan\nSão Tomé and Príncipe\nTanzania\nThe Gambia\nTogo\nTunisia\nUganda\nWestern Sahara\nZambia\nZimbabwe",
+            "North Africa": "Algeria\nEgypt\nLibya\nMorocco\nSudan\nTunisia\nWestern Sahara",
+            "West Africa": "Benin\nBurkina Faso\nCape Verde\nIvory Coast\nThe Gambia\nGhana\nGuinea\nGuinea-Bissau\nLiberia\nMali\nMauritania\nNiger\nNigeria\nSenegal\nSierra Leone\nTogo",
+            "South Africa Region": "Angola\nBotswana\nEswatini\nLesotho\nMalawi\nMozambique\nNamibia\nSouth Africa\nZambia\nZimbabwe"
         };
 
-        // PERFORMANCE: Map store to avoid destruction/recreation
+        let mapInstance = null, activeTileLayer = null, timerInterval = null, audioCtx = null;
         const placeLayers = new Map();
-        let mapInstance = null;
-        let activeTileLayer = null;
-        let timerInterval = null;
-        let audioCtx = null;
-        let missMarkers = [];
-
-        const geoCache = JSON.parse(localStorage.getItem('geomaster-cache-v7')) || {};
-        const wikiCache = JSON.parse(localStorage.getItem('geomaster-wiki-v2')) || {};
-
-        // --- Core Helpers ---
-
-        window.loadPreset = (key) => {
-            document.getElementById('rawInput').value = PRESETS[key] || "";
-            document.getElementById('rawInput').classList.add('bg-blue-50');
-            setTimeout(() => document.getElementById('rawInput').classList.remove('bg-blue-50'), 300);
+        
+        // Progress & Cache Storage
+        const geoCache = JSON.parse(localStorage.getItem('geomaster-cache-v10')) || {};
+        const wikiCache = JSON.parse(localStorage.getItem('geomaster-wiki-v3')) || {};
+        const userProgress = JSON.parse(localStorage.getItem('geomaster-progress-v1')) || {};
+        const allTimeMistakes = JSON.parse(localStorage.getItem('geomaster-all-mistakes-v1')) || {};
+        let aiMemory = JSON.parse(localStorage.getItem('geomaster-ai-memory-v1')) || [];
+        
+        // Study Scheduler Storage
+        const goalState = JSON.parse(localStorage.getItem('geomaster-goal-v1')) || {
+            targetDate: null,
+            dateString: new Date().toDateString(),
+            masteredToday: 0
         };
 
-        window.toggleAutoNext = (val) => { state.autoNext = val; window.updateUI(false); };
-
-        window.formatTime = (s) => {
-            const mins = Math.floor(s / 60);
-            const secs = s % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        };
-
-        window.isTooSmall = (p) => {
-            if (!p.bbox) return false;
-            const latDiff = Math.abs(p.bbox[1] - p.bbox[0]);
-            const lonDiff = Math.abs(p.bbox[3] - p.bbox[2]);
-            return (latDiff + lonDiff) < 1.3;
-        };
-
-        window.playSound = (type) => {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            try {
-                const osc = audioCtx.createOscillator(), gainNode = audioCtx.createGain();
-                osc.connect(gainNode); gainNode.connect(audioCtx.destination);
-                const now = audioCtx.currentTime;
-                if (type === 'correct') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now); osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.1);
-                    gainNode.gain.setValueAtTime(0.3, now); gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                } else {
-                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
-                    gainNode.gain.setValueAtTime(0.2, now); gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                }
-                osc.start(now); osc.stop(now + 0.3);
-            } catch (e) {}
-        };
-
-        window.fetchWikiFact = async (targetName) => {
-            if (wikiCache[targetName]) return wikiCache[targetName];
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000); 
-                const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(targetName)}`, { signal: controller.signal });
-                const data = await res.json();
-                clearTimeout(timeoutId);
-                const text = data.extract || "No summary available.";
-                wikiCache[targetName] = text;
-                localStorage.setItem('geomaster-wiki-v2', JSON.stringify(wikiCache));
-                return text;
-            } catch (e) { return "Summary restricted on this network."; }
-        };
-
-        function addReliableTileLayer() {
-            const sources = [
-                { url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', options: { attribution: '&copy; CARTO', subdomains: 'abcd', maxZoom: 20 } },
-                { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', options: { attribution: '&copy; OSM', maxZoom: 19 } },
-                { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', options: { attribution: '&copy; Esri', maxZoom: 16 } }
-            ];
-
-            let index = 0;
-            const trySource = () => {
-                if (index >= sources.length) return;
-                if (activeTileLayer) mapInstance.removeLayer(activeTileLayer);
-                const src = sources[index];
-                activeTileLayer = L.tileLayer(src.url, src.options);
-                activeTileLayer.on('tileerror', () => { index++; trySource(); });
-                activeTileLayer.addTo(mapInstance);
-            };
-            trySource();
+        // Reset daily progress if it's a new day
+        const todayStr = new Date().toDateString();
+        if (goalState.dateString !== todayStr) {
+            goalState.dateString = todayStr;
+            goalState.masteredToday = 0;
+            localStorage.setItem('geomaster-goal-v1', JSON.stringify(goalState));
         }
+
+        // Apply Initial Settings to DOM
+        if (state.darkMode) document.getElementById('html-root').classList.add('dark');
+        if (state.dyslexiaEnabled) document.body.classList.add('dyslexic-font');
+        
+        // Bind UI Toggles to Settings
+        function syncSettingsUI() {
+            document.getElementById('toggle-dark').checked = state.darkMode;
+            document.getElementById('toggle-audio').checked = state.audioEnabled;
+            document.getElementById('toggle-font').checked = state.dyslexiaEnabled;
+            document.getElementById('toggle-facts').checked = state.factsEnabled;
+            document.getElementById('toggle-ai').checked = state.aiEnabled;
+            
+            document.getElementById('ai-chat-fab').style.display = state.aiEnabled ? 'flex' : 'none';
+        }
+
+        window.toggleDyslexia = (enabled) => {
+            state.dyslexiaEnabled = enabled;
+            localStorage.setItem('geomaster-dyslexia', enabled);
+            document.body.classList.toggle('dyslexic-font', enabled);
+        };
+        
+        window.toggleAudio = (enabled) => { 
+            state.audioEnabled = enabled; 
+            localStorage.setItem('geomaster-audio', enabled);
+        };
+
+        window.toggleDarkMode = (enabled) => {
+            state.darkMode = enabled;
+            document.getElementById('html-root').classList.toggle('dark', enabled);
+            localStorage.setItem('geomaster-dark', enabled);
+            updateMapTiles();
+            renderMap();
+        };
+
+        window.toggleFacts = (enabled) => {
+            state.factsEnabled = enabled;
+            localStorage.setItem('geomaster-facts', enabled);
+            if (!enabled) document.getElementById('fact-box').classList.add('hidden');
+        };
+
+        window.toggleAiCoach = (enabled) => {
+            state.aiEnabled = enabled;
+            localStorage.setItem('geomaster-ai', enabled);
+            document.getElementById('ai-chat-fab').style.display = enabled ? 'flex' : 'none';
+            if (!enabled) {
+                document.getElementById('ai-chat-window').classList.add('hidden');
+            }
+        };
+
+        function updateMapTiles() {
+            if (!mapInstance) return;
+            if (activeTileLayer) mapInstance.removeLayer(activeTileLayer);
+            const url = state.darkMode 
+                ? 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png'
+                : 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png';
+            activeTileLayer = L.tileLayer(url).addTo(mapInstance);
+        }
+
+        window.loadPreset = (key) => { 
+            document.getElementById('rawInput').value = PRESETS[key] || ""; 
+            document.getElementById('rawInput').classList.add('bg-blue-50', 'dark:bg-blue-900/50'); 
+            setTimeout(() => {
+                document.getElementById('rawInput').classList.remove('bg-blue-50', 'dark:bg-blue-900/50');
+                window.refreshProgressUI();
+            }, 300); 
+        };
+
+        window.saveGoal = () => {
+            const d = document.getElementById('goal-date').value;
+            if (!d) return;
+            goalState.targetDate = d;
+            localStorage.setItem('geomaster-goal-v1', JSON.stringify(goalState));
+            window.refreshProgressUI();
+        };
+
+        window.clearGoal = () => {
+            goalState.targetDate = null;
+            localStorage.setItem('geomaster-goal-v1', JSON.stringify(goalState));
+            window.refreshProgressUI();
+        };
+
+        window.markMastered = (name) => {
+            if (!userProgress[name]) {
+                userProgress[name] = true;
+                localStorage.setItem('geomaster-progress-v1', JSON.stringify(userProgress));
+                goalState.masteredToday++;
+                localStorage.setItem('geomaster-goal-v1', JSON.stringify(goalState));
+            }
+        };
+
+        window.refreshProgressUI = () => {
+            const raw = document.getElementById('rawInput').value;
+            const items = raw ? raw.split('\n').map(s=>s.trim()).filter(Boolean) : [];
+            const uniqueItems = [...new Set(items)];
+            
+            let mastered = 0;
+            uniqueItems.forEach(c => { if (userProgress[c]) mastered++; });
+            
+            const total = uniqueItems.length;
+            document.getElementById('mastery-count').innerText = `${mastered}/${total}`;
+            const pct = total > 0 ? Math.round((mastered / total) * 100) : 0;
+            document.getElementById('mastery-bar').style.width = `${pct}%`;
+
+            // Study Scheduler UI
+            if (goalState.targetDate) {
+                document.getElementById('no-goal-ui').classList.add('hidden');
+                document.getElementById('active-goal-ui').classList.remove('hidden');
+                
+                // Set to noon to avoid timezone jump issues
+                const targetDateParts = goalState.targetDate.split('-');
+                const targetTime = new Date(targetDateParts[0], targetDateParts[1] - 1, targetDateParts[2], 12, 0, 0).getTime();
+                const nowTime = new Date().getTime();
+                
+                const daysLeft = Math.max(1, Math.ceil((targetTime - nowTime) / (1000 * 60 * 60 * 24)));
+                document.getElementById('goal-days-left').innerText = `Test in ${daysLeft} day${daysLeft > 1 ? 's' : ''}`;
+                
+                const leftToMaster = Math.max(0, total - mastered);
+                const targetPerDay = Math.ceil(leftToMaster / daysLeft);
+                
+                document.getElementById('goal-daily-target').innerText = targetPerDay;
+                
+                const doneToday = goalState.masteredToday;
+                const statusEl = document.getElementById('goal-status');
+                
+                if (leftToMaster === 0 && total > 0) {
+                    statusEl.innerText = "All mastered!";
+                    statusEl.className = "text-xs font-black text-emerald-500 animate-pulse";
+                } else if (doneToday >= targetPerDay && targetPerDay > 0) {
+                    statusEl.innerText = "🔥 Done!";
+                    statusEl.className = "text-xs font-black text-amber-500";
+                } else {
+                    statusEl.innerText = `${doneToday}/${targetPerDay} done`;
+                    statusEl.className = "text-xs font-bold text-indigo-600 dark:text-indigo-400";
+                }
+            } else {
+                document.getElementById('no-goal-ui').classList.remove('hidden');
+                document.getElementById('active-goal-ui').classList.add('hidden');
+            }
+        };
+
+        // --- INTERACTIVE AI CHAT & MEMORY ---
+        window.toggleChat = () => {
+            const win = document.getElementById('ai-chat-window');
+            const isHidden = win.classList.contains('hidden');
+            if (isHidden) {
+                win.classList.remove('hidden');
+                setTimeout(() => {
+                    win.classList.remove('opacity-0', 'scale-95');
+                    win.classList.add('opacity-100', 'scale-100');
+                    document.getElementById('ai-chat-input').focus();
+                    document.getElementById('ai-chat-badge').classList.add('hidden');
+                }, 10);
+                window.renderAIChat(); // Ensure scrolled to bottom
+            } else {
+                win.classList.add('opacity-0', 'scale-95');
+                win.classList.remove('opacity-100', 'scale-100');
+                setTimeout(() => win.classList.add('hidden'), 300);
+            }
+        };
+
+        window.renderAIChat = () => {
+            const chatBox = document.getElementById('ai-chat-history');
+            let html = `
+                <div class="flex flex-col items-start gap-1">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest pl-1">Coach</span>
+                    <div class="bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-[11px] p-2.5 px-3 rounded-2xl rounded-tl-sm border border-slate-200 dark:border-slate-600 shadow-sm chat-bubble">
+                        Hi! I'm your AI study coach. Feel free to ask me geography questions or ask for a study tip! I track the locations you miss the most so I can help you memorize them.
+                    </div>
+                </div>
+            `;
+            
+            aiMemory.forEach(msg => {
+                if (msg.role === 'user') {
+                    html += `
+                    <div class="flex flex-col items-end gap-1">
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest pr-1">You</span>
+                        <div class="bg-indigo-600 text-white text-[11px] p-2.5 px-3 rounded-2xl rounded-tr-sm shadow-sm chat-bubble">
+                            ${msg.content}
+                        </div>
+                    </div>`;
+                } else {
+                    html += `
+                    <div class="flex flex-col items-start gap-1">
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest pl-1">Coach</span>
+                        <div class="bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-[11px] p-2.5 px-3 rounded-2xl rounded-tl-sm border border-slate-200 dark:border-slate-600 shadow-sm chat-bubble">
+                            ${msg.content.replace(/\n/g, '<br/>')}
+                        </div>
+                    </div>`;
+                }
+            });
+            
+            chatBox.innerHTML = html;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
+
+        window.clearChatHistory = () => {
+            aiMemory = [];
+            localStorage.setItem('geomaster-ai-memory-v1', JSON.stringify(aiMemory));
+            window.renderAIChat();
+        };
+
+        window.sendChatMessage = () => {
+            const input = document.getElementById('ai-chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // 1. Add User Message
+            aiMemory.push({ role: "user", content: message });
+            // Cap memory at last 10 messages to save tokens and prevent huge local storage
+            if (aiMemory.length > 10) aiMemory.splice(0, aiMemory.length - 10);
+            
+            localStorage.setItem('geomaster-ai-memory-v1', JSON.stringify(aiMemory));
+            input.value = '';
+            window.renderAIChat();
+            
+            // 2. Add Loading Bubble
+            const chatBox = document.getElementById('ai-chat-history');
+            const loadingId = 'loading-' + Date.now();
+            chatBox.innerHTML += `
+                <div class="flex flex-col items-start gap-1" id="${loadingId}">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest pl-1">Coach</span>
+                    <div class="bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-[11px] p-2.5 px-3 rounded-2xl rounded-tl-sm border border-slate-200 dark:border-slate-600 shadow-sm chat-bubble">
+                        <span class="ai-loading">Typing...</span>
+                    </div>
+                </div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // 3. Build Dynamic Real-time System Context
+            const raw = document.getElementById('rawInput').value;
+            const items = raw ? raw.split('\n').map(s=>s.trim()).filter(Boolean) : [];
+            const uniqueItems = [...new Set(items)];
+            let mastered = 0;
+            uniqueItems.forEach(c => { if (userProgress[c]) mastered++; });
+            const total = uniqueItems.length;
+            const doneToday = goalState.masteredToday;
+            
+            let daysLeft = 'Not set';
+            let targetPerDay = 'Not set';
+            
+            if (goalState.targetDate) {
+                const targetDateParts = goalState.targetDate.split('-');
+                const targetTime = new Date(targetDateParts[0], targetDateParts[1] - 1, targetDateParts[2], 12, 0, 0).getTime();
+                const nowTime = new Date().getTime();
+                daysLeft = Math.max(1, Math.ceil((targetTime - nowTime) / (1000 * 60 * 60 * 24)));
+                targetPerDay = Math.ceil((total - mastered) / daysLeft);
+            }
+
+            // Figure out what they struggle with most
+            const topMistakes = Object.entries(allTimeMistakes).sort((a,b)=>b[1]-a[1]).slice(0, 3).map(e=>e[0]);
+            const strugglesStr = topMistakes.length > 0 ? topMistakes.join(', ') : 'None yet!';
+
+            const prompt = `You are a supportive, enthusiastic, and age-appropriate geography study coach helping a student learn using an app called GeoMaster Pro.
+            The student's real-time stats:
+            - Studying: ${total} total locations
+            - Mastered so far: ${mastered}
+            - Days left until test: ${daysLeft}
+            - Goal for today: Master ${targetPerDay} locations
+            - Mastered today: ${doneToday}
+            - The student's biggest historical struggles: ${strugglesStr}
+
+            Guidelines:
+            1. Keep your answers brief (1-3 sentences max).
+            2. Be encouraging and highly positive. If they ask for help with their struggles, give them a specific mnemonic or visual tip!
+            3. Answer any geography-related questions they ask clearly and simply.
+            4. Do not use markdown headers, bold text, or formal greetings. Treat this like an SMS chat.
+            5. If they tell you their name or something about themselves, remember it.`;
+
+            // 4. Fetch Response from AI
+            fetch('https://thomas-chat.tmcarleton11.workers.dev/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: aiMemory, 
+                    system_override: prompt,
+                    temperature: 0.6 
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const text = data.content || "Oops, I lost my train of thought! Keep up the great studying though!";
+                document.getElementById(loadingId).remove();
+                aiMemory.push({ role: "assistant", content: text });
+                localStorage.setItem('geomaster-ai-memory-v1', JSON.stringify(aiMemory));
+                
+                // Show badge if window was closed while generating
+                if (document.getElementById('ai-chat-window').classList.contains('hidden')) {
+                    document.getElementById('ai-chat-badge').classList.remove('hidden');
+                } else {
+                    window.renderAIChat();
+                }
+            })
+            .catch(err => {
+                document.getElementById(loadingId).remove();
+                aiMemory.push({ role: "assistant", content: "I'm having a little trouble connecting to my brain right now, but you're doing great! Keep it up." });
+                localStorage.setItem('geomaster-ai-memory-v1', JSON.stringify(aiMemory));
+                
+                if (document.getElementById('ai-chat-window').classList.contains('hidden')) {
+                    document.getElementById('ai-chat-badge').classList.remove('hidden');
+                } else {
+                    window.renderAIChat();
+                }
+            });
+        };
+
+        window.startJourney = async (mode = 'five') => {
+            const raw = document.getElementById('rawInput').value;
+            const items = raw ? raw.split('\n').map(s=>s.trim()).filter(Boolean) : [];
+            const uniqueItems = [...new Set(items)];
+            
+            if (uniqueItems.length === 0) {
+                alert("Please add some locations to your list first!");
+                return;
+            }
+            
+            let unmastered = uniqueItems.filter(c => !userProgress[c]);
+            
+            if (unmastered.length === 0) {
+                alert("Incredible! You have mastered every location in your current list!");
+                return;
+            }
+
+            if (mode === 'five') {
+                unmastered = unmastered.slice(0, 5);
+            }
+            
+            await window.prepareGame('learning', unmastered);
+        };
+
+        window.startReview = () => {
+            const struggles = Object.entries(state.completed)
+                .filter(([name, data]) => data.score < 100)
+                .map(([name]) => name);
+            
+            if (struggles.length > 0) {
+                window.closeReview();
+                setTimeout(() => {
+                    window.prepareGame('learning', struggles);
+                }, 300);
+            }
+        };
+
+        window.formatTime = (s) => `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+        window.resetMapView = () => { if (mapInstance) mapInstance.flyTo([0, 20], 3); };
 
         function init() {
             if (typeof L === 'undefined') { setTimeout(init, 200); return; }
-            if (mapInstance) return;
-            if (!document.getElementById('rawInput').value.trim()) window.loadPreset('Africa');
-
-            mapInstance = L.map('map', { 
-                center: [0, 20], zoom: 3, minZoom: 2, worldCopyJump: true, zoomControl: false,
-                maxBounds: [[-90, -180], [90, 180]]
-            });
+            mapInstance = L.map('map', { center: [0, 20], zoom: 3, zoomControl: false });
+            updateMapTiles();
             
-            addReliableTileLayer();
-            mapInstance.on('zoomend', () => window.updateUI(false));
+            syncSettingsUI();
+            window.renderAIChat(); // Render memory on load
             
+            document.getElementById('rawInput').addEventListener('input', window.refreshProgressUI);
+            window.refreshProgressUI();
             window.updateUI();
-            setTimeout(() => mapInstance.invalidateSize(), 500);
-            new ResizeObserver(() => { if (mapInstance) mapInstance.invalidateSize(); }).observe(document.getElementById('map'));
         }
 
-        // --- Game Setup ---
+        window.closeReview = () => {
+            const modal = document.getElementById('review-modal');
+            modal.classList.add('opacity-0');
+            document.getElementById('review-content').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
 
-        window.prepareGame = async (mode) => {
-            const rawLines = document.getElementById('rawInput').value.split("\n").map(s => s.trim()).filter(Boolean);
-            if (rawLines.length === 0) return;
+        window.showReview = () => {
+            const list = document.getElementById('review-list');
+            const struggles = Object.entries(state.completed)
+                .filter(([name, data]) => data.score < 100)
+                .sort((a, b) => a[1].score - b[1].score);
+            
+            let footerHtml = `<button onclick="window.closeReview()" class="px-6 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-300 dark:hover:bg-slate-600 active:scale-95 transition-all shadow-md">Close</button>`;
+
+            if (struggles.length === 0) {
+                list.innerHTML = `<div class="text-center text-slate-500 py-8"><i class="ph-fill ph-star text-5xl text-emerald-400 mb-3"></i><p class="font-black text-xl text-slate-800 dark:text-white">Perfect Run!</p></div>`;
+            } else {
+                let html = `<p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">Locations removed from Mastery</p><ul class="space-y-3">`;
+                struggles.forEach(([name, data]) => {
+                    html += `<li class="flex items-center justify-between p-3.5 bg-white dark:bg-slate-700 rounded-2xl border border-slate-200 dark:border-slate-600">
+                        <span class="font-bold text-slate-700 dark:text-slate-200">${name}</span>
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400">Mastery Lost</span>
+                    </li>`;
+                });
+                html += `</ul>`;
+                list.innerHTML = html;
+                
+                footerHtml = `
+                    <button onclick="window.closeReview()" class="px-6 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-300 dark:hover:bg-slate-600 active:scale-95 transition-all shadow-md">Close</button>
+                    <button onclick="window.startReview()" class="px-6 py-2.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-500 active:scale-95 transition-all shadow-md">Review Now</button>
+                `;
+            }
+
+            document.getElementById('review-footer').innerHTML = footerHtml;
+
+            const modal = document.getElementById('review-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                document.getElementById('review-content').classList.remove('scale-95');
+            }, 10);
+        };
+
+        const mapAliases = {
+            "Eswatini": ["Swaziland"],
+            "São Tomé and Príncipe": ["Sao Tome and Principe", "São Tomé and Principe"],
+            "The Gambia": ["Gambia"],
+            "Ivory Coast": ["Côte d'Ivoire", "Cote d'Ivoire", "Cote d`Ivoire"],
+            "Democratic Republic of the Congo": ["Dem. Rep. Congo", "Congo, The Democratic Republic of the", "Democratic Republic of Congo"],
+            "Republic of the Congo": ["Congo", "Congo, Republic of the", "Republic of Congo"],
+            "Tanzania": ["United Republic of Tanzania"],
+            "Cape Verde": ["Cabo Verde"]
+        };
+
+        window.prepareGame = async (mode, customList = null) => {
+            const rawLines = customList || document.getElementById('rawInput').value.split("\n").map(s => s.trim()).filter(Boolean);
+            if (!rawLines.length) return;
 
             document.getElementById('loading-overlay').classList.remove('hidden');
-            state.gameState = "setup"; 
-            document.getElementById('fact-box').classList.add('hidden');
-            state.time = 0; state.round = 0; state.attempts = 0;
-            state.completed = {}; state.wrongGuessesThisRound = [];
-            state.hintUsedThisRound = false; state.isWaitingForNext = false; state.lastFramedRound = -1;
+            state.gameState = "setup"; state.round = 0; state.completed = {}; state.hasShownReview = false;
+            state.mistakes = {};
             
-            clearMissMarkers();
-
             const results = [], uniqueLines = [...new Set(rawLines)];
 
+            let worldGeoJson = geoCache['WORLD_GEO_CACHE'];
+            if (!worldGeoJson) {
+                try {
+                    document.getElementById('loading-msg').innerText = `Downloading global map...`;
+                    const res = await fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json');
+                    worldGeoJson = await res.json();
+                    geoCache['WORLD_GEO_CACHE'] = worldGeoJson;
+                    localStorage.setItem('geomaster-cache-v10', JSON.stringify(geoCache));
+                } catch(e) { console.warn("Could not load bulk geojson"); }
+            }
+
             for (let i = 0; i < uniqueLines.length; i++) {
-                const targetName = uniqueLines[i];
-                document.getElementById('loading-msg').innerText = `Searching: ${targetName}`;
-                // PERFORMANCE: Correct progress logic
-                document.getElementById('loading-progress').style.width = `${((i + 1) / uniqueLines.length) * 100}%`;
+                const target = uniqueLines[i];
+                document.getElementById('loading-msg').innerText = `Syncing: ${target}`;
+                document.getElementById('loading-progress').style.width = `${((i+1)/uniqueLines.length)*100}%`;
                 
-                if (geoCache[targetName] && geoCache[targetName] !== "NOT_FOUND") {
-                    results.push(geoCache[targetName]); continue; 
+                if (worldGeoJson && worldGeoJson.features) {
+                    const feature = worldGeoJson.features.find(f => {
+                        const geoName = f.properties.name.toLowerCase();
+                        return geoName === target.toLowerCase() || 
+                               (mapAliases[target] && mapAliases[target].some(alias => alias.toLowerCase() === geoName));
+                    });
+
+                    if (feature) {
+                        const tempLayer = L.geoJSON(feature.geometry);
+                        const center = tempLayer.getBounds().getCenter();
+                        results.push({
+                            name: target, lat: center.lat, lon: center.lng, geojson: feature.geometry
+                        });
+                        continue;
+                    }
                 }
 
+                if (geoCache[target]) { results.push(geoCache[target]); continue; }
                 try {
-                    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(targetName)}&polygon_geojson=1&polygon_threshold=0.01`);
+                    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(target)}&polygon_geojson=1&limit=1`);
                     const data = await res.json();
-                    const f = data?.[0];
-                    if (f) {
-                        const fd = { name: targetName, lat: Number(f.lat), lon: Number(f.lon), bbox: f.boundingbox.map(Number), geojson: f.geojson, isCity: ['city', 'town', 'village', 'point'].includes(f.type || f.addresstype || "") };
-                        results.push(fd); geoCache[targetName] = fd;
-                    } else { geoCache[targetName] = "NOT_FOUND"; }
-                    localStorage.setItem('geomaster-cache-v7', JSON.stringify(geoCache));
-                    // Respectful API request rate
-                    await new Promise(r => setTimeout(r, 800));
-                } catch (e) {}
+                    if (data?.[0]) {
+                        const fd = { name: target, lat: Number(data[0].lat), lon: Number(data[0].lon), geojson: data[0].geojson };
+                        results.push(fd); 
+                        geoCache[target] = fd;
+                        localStorage.setItem('geomaster-cache-v10', JSON.stringify(geoCache));
+                    }
+                    await new Promise(r => setTimeout(r, 1500)); 
+                } catch(e){}
             }
-            
+
             document.getElementById('loading-overlay').classList.add('hidden');
             state.places = results;
-            state.quizSequence = mode === "playing" ? [...results].sort(() => Math.random() - 0.5) : [...results];
             
-            if (results.length > 0) { 
-                state.gameState = mode; 
-                buildLayersOnce();
-                window.startTimer(); 
-            }
+            // Randomize the sequence EVERY TIME to truly test knowledge without predictable ordering
+            state.quizSequence = [...results].sort(() => Math.random() - 0.5);
+            
+            state.gameState = mode;
+            state.learningPhase = "intro"; 
+            buildLayersOnce();
+            window.startTimer();
             window.updateUI();
+            
+            if (placeLayers.size > 0) {
+                const group = new L.featureGroup(Array.from(placeLayers.values()));
+                mapInstance.flyToBounds(group.getBounds(), { padding: [20, 20] });
+            }
         };
 
         function buildLayersOnce() {
             placeLayers.forEach(l => mapInstance.removeLayer(l));
             placeLayers.clear();
+            
+            const baseStyle = { color: '#64748b', fillColor: '#94a3b8', fillOpacity: 0, weight: 1.5 };
 
             state.places.forEach(p => {
-                const small = window.isTooSmall(p);
-                // Fix: Interaction enabled for both modes
-                const isInteractive = state.gameState === "playing" || state.gameState === "learning";
-                let layer;
+                const layer = L.geoJSON(p.geojson || { "type": "Point", "coordinates": [p.lon, p.lat] }, { 
+                    style: baseStyle,
+                    pointToLayer: function (feature, latlng) {
+                        return L.circleMarker(latlng, { radius: 6, ...baseStyle, fillOpacity: 0.8 });
+                    }
+                });
 
-                const baseStyle = { color: '#64748b', fillColor: '#94a3b8', fillOpacity: 0, weight: 1.5 };
-
-                if (p.isCity || small) {
-                    layer = L.circleMarker([p.lat, p.lon], { ...baseStyle, interactive: isInteractive });
-                } else if (p.geojson) {
-                    layer = L.geoJSON(p.geojson, { style: baseStyle, interactive: isInteractive });
-                }
-
-                if (layer) {
-                    layer.on('mouseover', () => {
-                        if (state.gameState === "setup" || state.isWaitingForNext || state.completed[p.name]) return;
-                        layer.setStyle({ fillOpacity: 0.3 });
-                        if (p.isCity || small) layer.setRadius(7);
+                layer.on('mouseover', () => {
+                    const isLocatePhase = state.gameState === "learning" && state.learningPhase === "locate";
+                    if (state.gameState === "setup" || state.isWaitingForNext) return;
+                    if (state.completed[p.name] && state.completed[p.name].done) return;
+                    
+                    layer.setStyle({ 
+                        fillOpacity: 0.4, 
+                        fillColor: state.darkMode ? '#3b82f6' : '#2563eb' 
                     });
-                    layer.on('mouseout', () => {
-                        if (!state.completed[p.name]) {
-                            layer.setStyle({ fillOpacity: 0 });
-                            if (p.isCity || small) layer.setRadius(window.calculateDotRadius(p));
+                });
+
+                layer.on('mouseout', () => {
+                    renderMap(); 
+                });
+
+                layer.on('click', (e) => {
+                    L.DomEvent.stopPropagation(e);
+                    const current = state.quizSequence[state.round];
+                    
+                    if (state.gameState === "learning") {
+                        if (state.learningPhase === "intro" && p.name === current.name) {
+                            startShapeQuiz();
+                        } else if (state.learningPhase === "locate") {
+                            window.handleLocateGuess(p.name);
                         }
-                    });
-                    layer.on('click', (e) => {
-                        L.DomEvent.stopPropagation(e);
-                        if (state.gameState === "learning") {
-                            if (state.autoNext) window.handleNext();
-                        } else {
-                            window.submitGuess(p.name, e.latlng);
-                        }
-                    });
-                    layer.addTo(mapInstance);
-                    placeLayers.set(p.name, layer);
-                }
+                    } else if (state.gameState === "playing") {
+                        window.submitGuess(p.name, e.latlng);
+                    }
+                });
+                layer.addTo(mapInstance);
+                placeLayers.set(p.name, layer);
             });
         }
 
-        function clearMissMarkers() {
-            missMarkers.forEach(m => mapInstance.removeLayer(m));
-            missMarkers = [];
+        async function startShapeQuiz() {
+            state.learningPhase = "shape";
+            state.shapeAttempts = 0;
+            const current = state.quizSequence[state.round];
+            
+            document.getElementById('shape-match-overlay').classList.remove('hidden');
+            document.getElementById('shape-target-name').innerText = current.name;
+            document.getElementById('shape-attempt-1').className = "w-4 h-4 rounded-full bg-blue-500";
+            document.getElementById('shape-attempt-2').className = "w-4 h-4 rounded-full bg-blue-500";
+            document.getElementById('shape-feedback').innerText = "Pick the correct border shape";
+
+            const distractors = state.places.filter(p => p.name !== current.name).sort(() => Math.random() - 0.5).slice(0, 3);
+            const options = [...distractors, current].sort(() => Math.random() - 0.5);
+
+            const grid = document.getElementById('shape-options-grid');
+            grid.innerHTML = options.map(opt => `
+                <button onclick="window.submitShapeChoice('${opt.name}')" id="shape-${opt.name}" class="shape-option bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-3xl p-6 transition-all flex flex-col items-center justify-center aspect-square">
+                    <svg viewBox="0 0 100 100" class="w-full h-full text-slate-700 dark:text-slate-300 fill-current opacity-80">
+                        <path d="${generatePathFromGeoJSON(opt.geojson)}" transform="scale(0.8) translate(10, 10)"></path>
+                    </svg>
+                </button>
+            `).join('');
+            
+            window.updateUI();
         }
 
-        // --- Interaction ---
-
-        window.submitGuess = async (guessedName, clickLatLng) => {
-            if (state.gameState !== "playing" || state.isWaitingForNext) return;
+        window.submitShapeChoice = (name) => {
             const current = state.quizSequence[state.round];
-            if (!current) return;
-
-            if (guessedName !== current.name) {
+            const btn = document.getElementById(`shape-${name}`);
+            
+            if (name === current.name) {
+                window.playSound('correct');
+                btn.classList.add('correct');
+                setTimeout(() => {
+                    document.getElementById('shape-match-overlay').classList.add('hidden');
+                    state.learningPhase = "locate";
+                    state.attempts = 0;
+                    window.updateUI();
+                }, 800);
+            } else {
                 window.playSound('wrong');
-                if (state.attempts < 2) {
-                    state.attempts++;
-                    if (guessedName && !state.wrongGuessesThisRound.includes(guessedName)) state.wrongGuessesThisRound.push(guessedName);
-                    // UX: Red point miss marker
-                    const m = L.circleMarker(clickLatLng, { radius: 3, color: '#ef4444', fillColor: '#ef4444', fillOpacity: 1, interactive: false }).addTo(mapInstance);
-                    missMarkers.push(m);
-                    window.updateUI(); 
-                } else {
-                    // Strikee 3
-                    state.completed[current.name] = { attemptsUsed: 4, score: 0 };
-                    state.isWaitingForNext = true; 
-                    window.updateUI(); 
-                    setTimeout(() => { 
-                        state.isWaitingForNext = false; state.round++; state.attempts = 0; state.wrongGuessesThisRound = []; 
-                        clearMissMarkers(); window.updateUI(); 
-                    }, 1200);
+                btn.classList.add('wrong');
+                state.shapeAttempts++;
+                if (state.shapeAttempts <= 2) document.getElementById(`shape-attempt-${state.shapeAttempts}`).className = "w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700";
+                
+                if (state.shapeAttempts >= 2) {
+                    document.getElementById('shape-feedback').innerText = "We'll review this later. Back to map!";
+                    setTimeout(() => {
+                        document.getElementById('shape-match-overlay').classList.add('hidden');
+                        const failed = state.quizSequence.splice(state.round, 1)[0];
+                        state.quizSequence.push(failed);
+                        state.learningPhase = "intro";
+                        window.updateUI();
+                    }, 1500);
+                }
+            }
+        };
+
+        window.handleLocateGuess = (name) => {
+            const current = state.quizSequence[state.round];
+            if (name === current.name) {
+                window.playSound('correct');
+                
+                // Track mistakes for color feedback, but guarantee done state
+                const mistakes = state.mistakes[current.name] || 0;
+                const newScore = mistakes > 0 ? 0 : 100;
+                state.completed[current.name] = { score: newScore, done: true };
+                
+                // SAVE MASTERY PROGRESS ONLY IF PERFECT
+                if (newScore === 100) {
+                    window.markMastered(current.name);
+                } else if (userProgress[current.name]) {
+                    delete userProgress[current.name];
+                    localStorage.setItem('geomaster-progress-v1', JSON.stringify(userProgress));
+                }
+                window.refreshProgressUI();
+
+                // SUCCESS CELEBRATION ANIMATION
+                document.getElementById('footer-prompt').innerHTML = `<p class="text-emerald-500 font-black uppercase text-sm w-full text-center animate-bounce">🎉 Secured ${current.name}!</p>`;
+                
+                const layer = placeLayers.get(current.name);
+                if (layer) {
+                    layer.setStyle({ stroke: true, color: '#10b981', weight: 4, fillOpacity: 0.6, fillColor: '#34d399' });
+                    if (layer.eachLayer) layer.eachLayer(l => { const el = l.getElement && l.getElement(); if (el) el.classList.add('animate-success-geo'); });
+                }
+
+                setTimeout(() => {
+                    state.round++;
+                    state.learningPhase = "intro";
+                    state.attempts = 0;
+                    window.updateUI();
+                }, 1500);
+
+            } else {
+                window.playSound('wrong');
+                state.attempts++;
+                state.mistakes[current.name] = (state.mistakes[current.name] || 0) + 1;
+                
+                // Track global mistake for AI Coach
+                allTimeMistakes[current.name] = (allTimeMistakes[current.name] || 0) + 1;
+                localStorage.setItem('geomaster-all-mistakes-v1', JSON.stringify(allTimeMistakes));
+                
+                if (state.attempts === 1) {
+                    // Sonar Flash Hint with animation for emphasis
+                    document.getElementById('footer-prompt').innerHTML = `<p class="text-amber-500 font-bold uppercase text-xs w-full text-center animate-bounce"><i class="ph-bold ph-eye"></i> Hint: Watch the map carefully for a flash!</p>`;
+                    
+                    const layer = placeLayers.get(current.name);
+                    if (layer) {
+                        layer.setStyle({ stroke: true, color: '#f59e0b', weight: 4, fillOpacity: 0.3 });
+                        if (layer.eachLayer) layer.eachLayer(l => { const el = l.getElement && l.getElement(); if (el) el.classList.add('animate-pulse-geo'); });
+                        
+                        setTimeout(() => {
+                            if (state.gameState === "learning" && state.learningPhase === "locate") {
+                                renderMap(); 
+                                window.updateUI(false); 
+                            }
+                        }, 1500);
+                    }
+                } else if (state.attempts >= 2) {
+                    document.getElementById('footer-prompt').innerHTML = `<p class="text-amber-500 font-bold w-full text-center">Let's review this shape again later.</p>`;
+                    setTimeout(() => {
+                        const failed = state.quizSequence.splice(state.round, 1)[0];
+                        state.quizSequence.push(failed);
+                        state.learningPhase = "intro";
+                        state.attempts = 0;
+                        window.updateUI();
+                    }, 1500);
+                }
+            }
+        };
+
+        function generatePathFromGeoJSON(geo) {
+            if (!geo || !geo.coordinates) return "M 10,10 L 90,10 L 90,90 L 10,90 Z";
+            let coords = geo.coordinates;
+            if (geo.type === "MultiPolygon") {
+                let maxLen = 0, biggestPoly = coords[0];
+                for (let poly of coords) { if (poly[0].length > maxLen) { maxLen = poly[0].length; biggestPoly = poly; } }
+                coords = biggestPoly[0];
+            } else if (geo.type === "Polygon") { coords = coords[0]; } 
+            else { return "M 10,10 L 90,10 L 90,90 L 10,90 Z"; }
+
+            const minX = Math.min(...coords.map(c => c[0])), maxX = Math.max(...coords.map(c => c[0]));
+            const minY = Math.min(...coords.map(c => c[1])), maxY = Math.max(...coords.map(c => c[1]));
+            const scale = 100 / Math.max(maxX - minX || 1, maxY - minY || 1);
+            return "M " + coords.map(c => `${(c[0] - minX) * scale} ${(maxY - c[1]) * scale}`).join(" L ");
+        }
+
+        window.submitGuess = async (name, latlng) => {
+            const current = state.quizSequence[state.round];
+            if (name !== current.name) {
+                window.playSound('wrong');
+                state.attempts++;
+                state.mistakes[current.name] = (state.mistakes[current.name] || 0) + 1;
+                
+                // Track global mistake for AI Coach
+                allTimeMistakes[current.name] = (allTimeMistakes[current.name] || 0) + 1;
+                localStorage.setItem('geomaster-all-mistakes-v1', JSON.stringify(allTimeMistakes));
+                
+                if (state.attempts >= 3) {
+                    const failed = state.quizSequence.splice(state.round, 1)[0];
+                    state.quizSequence.push(failed);
+                    state.completed[failed.name] = { score: 0, done: false }; 
+                    state.attempts = 0;
+                    
+                    // Remove from mastery
+                    if (userProgress[failed.name]) {
+                        delete userProgress[failed.name];
+                        localStorage.setItem('geomaster-progress-v1', JSON.stringify(userProgress));
+                        window.refreshProgressUI();
+                    }
+
+                    document.getElementById('footer-prompt').innerHTML = `<p class="text-amber-500 font-bold w-full text-center">We will review that one later.</p>`;
+                    setTimeout(() => window.updateUI(), 1500);
+                    return;
                 }
             } else {
                 window.playSound('correct');
-                // ARCHITECTURE: New granular scoring
-                const finalScore = 100 - (state.attempts * 25) - (state.hintUsedThisRound ? 15 : 0);
-                state.completed[current.name] = { attemptsUsed: state.attempts + 1, score: Math.max(0, finalScore) };
+                const prevScore = state.completed[current.name]?.score;
+                const newScore = (prevScore !== undefined && prevScore === 0) ? 0 : Math.max(0, 100 - (state.attempts * 30));
                 
-                document.getElementById('fact-box').classList.remove('hidden'); 
-                document.getElementById('fact-title').innerText = current.name; 
-                document.getElementById('fact-text').innerText = "Loading summary...";
-                const summary = await window.fetchWikiFact(current.name);
-                if (document.getElementById('fact-title').innerText === current.name) document.getElementById('fact-text').innerText = summary;
-
-                clearMissMarkers();
-                state.round++; state.attempts = 0; state.wrongGuessesThisRound = []; state.hintUsedThisRound = false; 
-                window.updateUI();
-            }
-        };
-
-        window.handleNext = () => {
-            state.attempts = 0; state.wrongGuessesThisRound = [];
-            clearMissMarkers();
-            if (state.round < state.quizSequence.length - 1) state.round++;
-            else state.round = state.quizSequence.length;
-            window.updateUI();
-        };
-
-        window.useHint = () => {
-            if (state.hintUsedThisRound || state.gameState !== "playing") return;
-            state.hintUsedThisRound = true; if (state.attempts < 2) state.attempts++;
-            const current = state.quizSequence[state.round];
-            if (current) {
-                mapInstance.flyTo([current.lat, current.lon], 5, { duration: 1 });
-                state.lastFramedRound = state.round;
+                state.completed[current.name] = { score: newScore, done: true };
+                
+                if (newScore === 100) {
+                    window.markMastered(current.name);
+                } else if (newScore < 100 && userProgress[current.name]) {
+                    delete userProgress[current.name];
+                    localStorage.setItem('geomaster-progress-v1', JSON.stringify(userProgress));
+                }
+                
+                window.refreshProgressUI();
+                state.round++; state.attempts = 0;
             }
             window.updateUI();
         };
 
-        window.clearSession = () => {
-            state.places = []; state.quizSequence = []; state.round = 0; state.gameState = "setup"; state.completed = {};
-            state.wrongGuessesThisRound = []; state.attempts = 0; state.time = 0; 
-            document.getElementById('rawInput').value = "";
-            document.getElementById('fact-box').classList.add('hidden'); 
-            window.stopTimer(); 
-            placeLayers.forEach(l => mapInstance.removeLayer(l));
-            placeLayers.clear(); clearMissMarkers(); window.updateUI();
+        window.fetchWikiFact = async (targetName) => {
+            if (!state.factsEnabled) return "Quick facts are disabled in settings.";
+            if (wikiCache[targetName]) return wikiCache[targetName];
+            try {
+                const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(targetName)}`);
+                const data = await res.json();
+                const text = data.extract || "No summary available.";
+                wikiCache[targetName] = text;
+                localStorage.setItem('geomaster-wiki-v3', JSON.stringify(wikiCache));
+                return text;
+            } catch (e) { return "Summary restricted on this network."; }
         };
 
-        window.startTimer = () => { window.stopTimer(); if (state.gameState === "playing") timerInterval = setInterval(() => { state.time++; document.getElementById('hud-timer').innerText = window.formatTime(state.time); }, 1000); };
-        window.stopTimer = () => { if (timerInterval) clearInterval(timerInterval); };
+        window.startTimer = () => { if(timerInterval) clearInterval(timerInterval); timerInterval = setInterval(() => { state.time++; document.getElementById('hud-timer').innerText = window.formatTime(state.time); }, 1000); };
 
-        window.calculateDotRadius = (p) => {
-            const zoom = mapInstance ? mapInstance.getZoom() : 3;
-            const multiplier = window.isTooSmall(p) ? 2.5 : 1.5;
-            return Math.max(2, (zoom / 4) * multiplier);
-        };
-
-        // --- View Logic ---
-
-        window.updateUI = (fullRender = true) => {
-            const current = state.quizSequence[state.round], isFinished = state.quizSequence.length > 0 && state.round >= state.quizSequence.length;
-            const completedCount = Object.keys(state.completed).length;
-            const earned = Object.values(state.completed).reduce((acc, curr) => acc + curr.score, 0);
-            const avgScore = completedCount > 0 ? Math.round((earned / (completedCount * 100)) * 100) : 0;
+        window.updateUI = async (fullRender = true) => {
+            const current = state.quizSequence[state.round], isFinished = state.round > 0 && state.round >= state.quizSequence.length;
+            const completedCount = Object.values(state.completed).filter(c => c.done).length;
+            const earned = Object.values(state.completed).reduce((a,c)=>a+(c.score || 0),0);
+            const score = state.round > 0 ? Math.round(earned/state.round) : 0; 
 
             if (state.gameState !== "setup" && !isFinished) {
-                document.getElementById('perf-overview').classList.add('hidden'); 
+                document.getElementById('perf-overview').classList.add('hidden');
                 document.getElementById('perf-gameplay').classList.remove('hidden');
-                document.getElementById('hud-progress').innerText = completedCount; 
+                document.getElementById('hud-progress').innerText = state.round;
                 document.getElementById('hud-total').innerText = state.quizSequence.length;
-                document.getElementById('hud-score').innerText = `${avgScore}%`;
-                if (current) { 
-                    document.getElementById('hud-verb').innerText = state.gameState === "learning" ? "Study" : "Click on"; 
-                    document.getElementById('hud-target-name').innerText = current.name; 
+                document.getElementById('hud-score').innerText = `${score}%`;
+                document.getElementById('score-block').classList.toggle('hidden', state.gameState === "learning");
+                if (current) {
+                    document.getElementById('hud-target-name').innerText = current.name;
+                    
+                    let verb = "Click on";
+                    if (state.gameState === "learning") {
+                        verb = state.learningPhase === "locate" ? "Find on Map" : "Meet & Learn";
+                    }
+                    document.getElementById('hud-verb').innerText = verb;
+                    
+                    if (state.gameState === "learning" && state.learningPhase === "intro" && state.factsEnabled) {
+                        document.getElementById('fact-box').classList.remove('hidden');
+                        document.getElementById('fact-title').innerText = current.name;
+                        document.getElementById('fact-text').innerText = "Loading summary...";
+                        const txt = await window.fetchWikiFact(current.name);
+                        document.getElementById('fact-text').innerText = txt;
+                    } else {
+                        document.getElementById('fact-box').classList.add('hidden');
+                    }
                 }
             } else {
-                document.getElementById('perf-gameplay').classList.add('hidden'); 
+                document.getElementById('perf-gameplay').classList.add('hidden');
                 document.getElementById('perf-overview').classList.remove('hidden');
-                document.getElementById('accuracy-score').innerText = `${avgScore}%`;
-                document.getElementById('header-status-msg').innerText = isFinished ? "Session Complete" : "Select Region";
-                const gradeEl = document.getElementById('accuracy-grade');
-                if(completedCount === 0) gradeEl.innerText = '-';
-                else if(avgScore >= 90) gradeEl.innerText = 'S';
-                else if(avgScore >= 80) gradeEl.innerText = 'A';
-                else gradeEl.innerText = avgScore >= 60 ? 'B' : 'F';
+                document.getElementById('accuracy-score').innerText = `${score}%`;
+                document.getElementById('header-status-msg').innerText = isFinished ? "Great Work!" : "Select a Region";
             }
 
-            const btnBase = "inline-flex items-center justify-center rounded-2xl text-sm font-black transition-all active:scale-95 px-6 py-3 shadow-sm ";
-            let footerHtml = '';
-            if (state.gameState === "playing" && !isFinished) {
-                let dotsHtml = `<div class="flex gap-1.5 mr-4">`;
-                for (let i = 0; i < 3; i++) dotsHtml += `<div class="w-3 h-3 rounded-full transition-all ${i < (3 - state.attempts) ? 'bg-blue-500' : 'bg-slate-200'}"></div>`;
-                dotsHtml += `</div>`;
-                const hintBtn = `<button onclick="window.useHint()" class="${btnBase} ${state.hintUsedThisRound ? 'bg-slate-100 text-slate-400 border cursor-not-allowed' : 'bg-amber-100 text-amber-700 border border-amber-300'} ml-auto" ${state.hintUsedThisRound ? 'disabled' : ''}>Hint</button>`;
-                footerHtml = `<div class="flex items-center justify-between w-full"><div class="flex items-center">${dotsHtml}<div class="text-slate-500 font-bold uppercase text-xs hidden sm:block">Find target</div></div>${hintBtn}</div>`;
-            } else if (state.gameState === "learning" && !isFinished) {
-                footerHtml = state.autoNext ? `<div class="text-slate-400 font-bold uppercase text-xs w-full text-center animate-pulse">Click target to advance</div>` : `<button onclick="window.handleNext()" class="${btnBase} bg-blue-600 text-white mx-auto">Next Target</button>`;
-            } else if (isFinished) {
-                footerHtml = `<div class="flex gap-3 w-full justify-center items-center"><button onclick="window.prepareGame('playing')" class="${btnBase} bg-blue-600 text-white">Restart Quiz</button><button onclick="window.clearSession()" class="${btnBase} bg-white border border-slate-300 text-slate-700">New Set</button></div>`;
-            } else footerHtml = `<div class="text-slate-400 font-bold uppercase tracking-widest text-[10px] w-full text-center">Ready to Start</div>`;
-            
-            document.getElementById('footer-prompt').innerHTML = footerHtml;
-            if (fullRender) window.renderMap();
+            let footer = '';
+            if (isFinished) {
+                footer = `<div class="flex gap-3 w-full justify-center"><button onclick="window.prepareGame('playing')" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-500">Restart</button><button onclick="window.showReview()" class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-6 py-2 rounded-xl font-bold hover:bg-slate-300 dark:hover:bg-slate-600">Review</button></div>`;
+                if (!state.hasShownReview && state.gameState === "playing") { state.hasShownReview = true; setTimeout(window.showReview, 500); }
+                window.refreshProgressUI(); 
+            } else if (state.gameState === "learning") {
+                if (state.learningPhase === "intro") {
+                    footer = `<p class="text-blue-500 animate-pulse font-bold uppercase text-xs w-full text-center"><i class="ph-bold ph-hand-tap"></i> Click the pulsing shape to memorize it</p>`;
+                } else if (state.learningPhase === "locate") {
+                    footer = `<p class="text-emerald-500 font-bold uppercase text-xs w-full text-center">Location Check: Click the blank map where ${current.name} is</p>`;
+                }
+            } else if (state.gameState === "playing") {
+                footer = `<p class="text-slate-500 dark:text-slate-400 font-bold uppercase text-xs w-full text-center">Quiz Mode: Find the target</p>`;
+            }
+            if(fullRender || document.getElementById('footer-prompt').innerHTML === '') document.getElementById('footer-prompt').innerHTML = footer;
+            if(fullRender) renderMap();
         };
 
-        window.renderMap = () => {
-            if (!mapInstance || typeof L === 'undefined') return;
+        function renderMap() {
+            if (!mapInstance) return;
             const current = state.quizSequence[state.round];
-            
-            // Learning mode Smooth Auto-Pan
-            if (state.gameState === "learning" && current) {
-                if (!mapInstance.getBounds().pad(-0.2).contains([current.lat, current.lon])) {
-                    mapInstance.flyTo([current.lat, current.lon], 5, { duration: 1.2 });
-                }
-            }
-
             placeLayers.forEach((layer, name) => {
-                const p = state.places.find(pl => pl.name === name);
-                const isDone = !!state.completed[name];
-                const isWrong = state.wrongGuessesThisRound.includes(name);
-                const isFailReveal = state.isWaitingForNext && current && name === current.name;
-                const isLearn = state.gameState === "learning" && current && name === current.name;
-                const data = state.completed[name];
                 
-                let style;
-                if (isDone) {
-                    let fill = '#ffffff'; // White for 1st
-                    if (data.attemptsUsed === 2) fill = '#fef08a'; // Yellow
-                    if (data.attemptsUsed === 3) fill = '#f97316'; // Orange
-                    style = { color: '#94a3b8', fillColor: fill, fillOpacity: 0.95, weight: 1.5 };
-                } 
-                else if (isFailReveal) style = { color: '#7f1d1d', fillColor: '#ef4444', fillOpacity: 0.9, weight: 3, className: 'animate-pulse' };
-                else if (isLearn) style = { color: '#2563eb', fillColor: '#60a5fa', fillOpacity: 0.6, weight: 3, dashArray: '5, 5', className: 'animate-pulse' };
-                else if (isWrong) style = { color: '#ef4444', fillColor: 'url(#stripes)', fillOpacity: 1, weight: 2 }; 
-                else style = { color: '#64748b', fillOpacity: 0, weight: 1.5 }; // Initial empty
-
-                layer.setStyle(style);
-                if (layer.setRadius) layer.setRadius(isDone || isFailReveal || isWrong ? window.calculateDotRadius(p) + 2 : window.calculateDotRadius(p));
-                
-                if (isDone || isFailReveal) {
-                    if (!layer.getTooltip()) {
-                        layer.bindTooltip(name, { 
-                            permanent: true, direction: 'right', className: 'map-label', 
-                            offset: [40, 0] // Leader line gap
-                        });
-                    }
-                } else if (layer.getTooltip()) {
-                    layer.unbindTooltip();
+                if (layer.eachLayer) {
+                    layer.eachLayer(l => {
+                        const el = l.getElement && l.getElement();
+                        if (el) el.classList.remove('animate-pulse-geo', 'animate-success-geo');
+                    });
                 }
-                if (isLearn || isFailReveal || isDone) layer.bringToFront();
+                
+                const isDark = state.darkMode;
+                let style = { color: isDark ? '#475569' : '#cbd5e1', fillColor: isDark ? '#1e293b' : '#f1f5f9', fillOpacity: 0.1, weight: 1.5 };
+                let shouldPulse = false;
+
+                if (current && name === current.name && state.learningPhase === "intro" && state.gameState === "learning") {
+                    style = { color: '#3b82f6', weight: 4, fillOpacity: 0.2 };
+                    shouldPulse = true;
+                    if(state.attempts === 0) mapInstance.flyTo([current.lat, current.lon], 4);
+                } else if (state.completed[name] && state.completed[name].done) { 
+                    
+                    // Mistake Heatmap Coloring
+                    const mistakes = state.mistakes[name] || 0;
+                    let fill = isDark ? '#334155' : '#ffffff'; // 0 mistakes = Perfect
+                    
+                    if (mistakes === 1) fill = isDark ? '#ca8a04' : '#fef08a'; // Yellow
+                    else if (mistakes === 2) fill = isDark ? '#ea580c' : '#fed7aa'; // Orange
+                    else if (mistakes >= 3) fill = isDark ? '#9f1239' : '#fecaca'; // Red
+
+                    style = { color: isDark ? '#64748b' : '#94a3b8', fillColor: fill, fillOpacity: 0.8, weight: 1 };
+                }
+                
+                const isLocatePhase = state.gameState === "learning" && state.learningPhase === "locate";
+                if ((state.hardMode || isLocatePhase) && !(state.completed[name] && state.completed[name].done) && (!current || name !== current.name || isLocatePhase)) {
+                    style.stroke = false;
+                    style.fillOpacity = 0; 
+                }
+                
+                layer.setStyle(style);
+
+                if (shouldPulse && layer.eachLayer) {
+                    layer.eachLayer(l => {
+                        const el = l.getElement && l.getElement();
+                        if (el) el.classList.add('animate-pulse-geo');
+                    });
+                }
             });
+        }
+
+        window.playSound = (type) => {
+            if (!state.audioEnabled) return;
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.setValueAtTime(type === 'correct' ? 523 : 150, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
         };
 
         document.addEventListener('DOMContentLoaded', init);
