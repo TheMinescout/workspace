@@ -1,1 +1,255 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minescout AI — V3 Contract Compiler</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <style>
+    :root { --bg: #ffffff; --fg: #0a2540; --accent: #c9a96e; --danger: #ef4444; --muted: #64748b; --light: #f8fafc; --border: #e2e8f0; --serif: 'Libre Baskerville', serif; --sans: 'Jost', sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #f1f5f9; color: var(--fg); font-family: var(--sans); line-height: 1.6; padding: 40px 20px; -webkit-font-smoothing: antialiased; }
+
+    /* UI Controls (Hidden on Print) */
+    .app-header { max-width: 900px; margin: 0 auto 30px auto; background: var(--bg); padding: 25px; border-radius: 6px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px; }
+    .toolbar-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 5px;}
+    
+    .console-input { width: 100%; height: 300px; background: #1e293b; color: #38bdf8; font-family: monospace; font-size: 0.9rem; padding: 15px; border: none; border-radius: 4px; resize: vertical; outline: none; line-height: 1.5; }
+    .console-input:focus { box-shadow: 0 0 0 2px var(--accent); }
+    
+    .btn { background: var(--fg); color: white; border: none; padding: 10px 20px; border-radius: 4px; font-family: var(--sans); font-weight: 600; cursor: pointer; transition: 0.2s; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.8rem; }
+    .btn:hover { background: var(--accent); }
+    
+    /* PDF Canvas */
+    .plan-container { background: var(--bg); max-width: 900px; margin: 0 auto; padding: 80px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border-radius: 4px; position: relative; }
+    .status-stamp { position: absolute; top: 50px; right: 80px; border: 2px solid var(--fg); color: var(--fg); padding: 6px 15px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; transform: rotate(4deg); }
+    
+    header { border-bottom: 3px solid var(--fg); padding-bottom: 30px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+    .brand h1 { font-family: var(--serif); font-size: 2.2rem; line-height: 1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: -0.02em; }
+    .brand p { font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+    
+    .target-meta { background: var(--light); border: 1px solid var(--border); border-left: 4px solid var(--fg); padding: 20px; margin-bottom: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-radius: 2px; }
+    .meta-block label { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; display: block; margin-bottom: 5px; }
+    .meta-block div { font-family: var(--serif); font-size: 1.2rem; color: var(--fg); font-weight: 700; }
+
+    h2 { font-family: var(--serif); font-size: 1.4rem; margin-bottom: 1.5rem; margin-top: 3rem; display: flex; align-items: center; gap: 15px; color: var(--fg); }
+    h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    p { margin-bottom: 1.25rem; font-size: 1rem; color: #334155; }
+    ul { margin-left: 20px; margin-bottom: 1.5rem; color: #334155; }
+    li { margin-bottom: 0.5rem; }
+
+    /* SIGNATURE BLOCK */
+    .signature-section { margin-top: 50px; background: var(--light); padding: 30px; border: 1px solid var(--border); border-radius: 4px; page-break-inside: avoid; }
+    .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+    .sig-line { border-bottom: 1px solid var(--fg); height: 40px; margin-bottom: 10px; }
+    .sig-name { font-family: var(--serif); font-weight: 700; color: var(--fg); font-size: 1.1rem; }
+    .sig-date { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 5px; }
+
+    @media print {
+      body { background: white; padding: 0; margin: 0; }
+      .app-header { display: none !important; }
+      .plan-container { box-shadow: none; max-width: 100%; padding: 0.5in; }
+      .status-stamp { right: 0.5in; top: 0.5in; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-header no-print">
+    <div class="toolbar-top">
+      <div>
+        <h2 style="font-family: var(--serif); font-size: 1.2rem; margin: 0; line-height: 1; border:none; padding:0; color: var(--fg);">V3 Contract Compiler</h2>
+        <p style="margin: 0; font-size: 0.75rem; color: var(--muted);">Paste raw text. System will auto-parse variables.</p>
+      </div>
+      <div>
+        <button class="btn" onclick="compileDocument()" style="background: var(--accent); color: var(--fg); margin-right: 10px;">Compile Document</button>
+        <button class="btn" onclick="window.print()">Export PDF</button>
+      </div>
+    </div>
+    
+    <textarea id="raw-data" class="console-input" spellcheck="false">
+DOCUMENT TYPE: Master Service Agreement
+PARTY A: Minescout AI
+PARTY B: Client Name
+EFFECTIVE DATE: May 12, 2026
+TERMS & SCOPE:
+- Replace this text with your terms.
+- Use dashes to create bullet points.
+COMPENSATION:
+- Detail the costs here.
+SIGNATURES:
+By signing below, both parties agree to the terms outlined.
+    </textarea>
+  </div>
+
+  <div class="plan-container" contenteditable="true">
+    <div class="status-stamp" id="doc-stamp">Agreement</div>
+    
+    <header>
+      <div class="brand">
+        <h1>Minescout AI</h1>
+        <p id="out-doc-type">Legal Document</p>
+      </div>
+      <div style="text-align: right; font-size: 0.85rem; line-height: 1.5;">
+        <strong>Generated by:</strong> Minescout Engine<br>
+        <strong>Date:</strong> <span id="auto-date"></span>
+      </div>
+    </header>
+
+    <div class="target-meta">
+      <div class="meta-block">
+        <label>Party A (Provider)</label>
+        <div id="out-party-a">Pending...</div>
+      </div>
+      <div class="meta-block">
+        <label>Party B (Client/Partner)</label>
+        <div id="out-party-b">Pending...</div>
+      </div>
+      <div class="meta-block" style="grid-column: span 2;">
+        <label>Effective Date</label>
+        <div id="out-date">Pending...</div>
+      </div>
+    </div>
+
+    <div id="dynamic-content">
+      </div>
+
+    <div class="signature-section">
+      <div id="out-sig-text" style="font-size: 0.95rem; color: var(--muted); margin-bottom: 20px;"></div>
+      <div class="sig-grid">
+        <div>
+          <div class="sig-line"></div>
+          <div class="sig-name" id="sig-party-a">Party A</div>
+          <div class="sig-date">Date: _________________</div>
+        </div>
+        <div>
+          <div class="sig-line"></div>
+          <div class="sig-name" id="sig-party-b">Party B</div>
+          <div class="sig-date">Date: _________________</div>
+        </div>
+      </div>
+    </div>
+
+    <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
+      <div>Authorized by Minescout Lead Architect</div>
+      <div>minescout.net/legal</div>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('auto-date').innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    function parseTextToHTML(text) {
+      if(!text) return "";
+      let lines = text.split('\n');
+      let html = '';
+      let inList = false;
+      
+      lines.forEach(line => {
+        let trimmed = line.trim();
+        if(trimmed.startsWith('-')) {
+          if(!inList) { html += '<ul>'; inList = true; }
+          // Handle bolding if there is a colon (e.g., "- UPFRONT BOUNTY: ...")
+          let listContent = trimmed.substring(1).trim();
+          if (listContent.includes(':')) {
+            let parts = listContent.split(':');
+            listContent = `<strong>${parts[0]}:</strong>${parts.slice(1).join(':')}`;
+          }
+          html += `<li>${listContent}</li>`;
+        } else {
+          if(inList) { html += '</ul>'; inList = false; }
+          if(trimmed !== '') html += `<p>${trimmed}</p>`;
+        }
+      });
+      if(inList) html += '</ul>';
+      return html;
+    }
+
+    function extractValue(text, keyword) {
+      const regex = new RegExp(`${keyword}:\\s*([\\s\\S]*?)(?=\\n[A-Z\\s&\\(\\)]+:|$)`, 'i');
+      const match = text.match(regex);
+      return match ? match[1].trim() : null;
+    }
+
+    function compileDocument() {
+      const rawText = document.getElementById('raw-data').value;
+
+      // Extract Metadata
+      const docType = extractValue(rawText, 'DOCUMENT TYPE') || 'Agreement';
+      const partyA = extractValue(rawText, 'PARTY A') || 'Minescout AI';
+      const partyB = extractValue(rawText, 'PARTY B') || 'Client';
+      const effDate = extractValue(rawText, 'EFFECTIVE DATE') || 'TBD';
+      const signatures = extractValue(rawText, 'SIGNATURES') || 'By signing below, both parties agree to the terms.';
+
+      // Inject Metadata
+      document.getElementById('out-doc-type').innerText = docType;
+      document.getElementById('out-party-a').innerText = partyA;
+      document.getElementById('out-party-b').innerText = partyB;
+      document.getElementById('out-date').innerText = effDate;
+      
+      document.getElementById('sig-party-a').innerText = partyA;
+      document.getElementById('sig-party-b').innerText = partyB;
+      document.getElementById('out-sig-text').innerText = signatures;
+
+      // Dynamic Body Generation (Finds all all-caps headers not in our standard metadata list)
+      const excludeKeys = ['DOCUMENT TYPE', 'PARTY A', 'PARTY B', 'EFFECTIVE DATE', 'SIGNATURES'];
+      const sectionRegex = /^([A-Z\s&\(\)]+):\s*$/gm;
+      let sections = [];
+      let match;
+      
+      // Reset regex index
+      sectionRegex.lastIndex = 0;
+      
+      // We will parse the raw text manually to handle dynamic headers like "COMPENSATION (OPTION B)"
+      let lines = rawText.split('\n');
+      let currentHeader = null;
+      let currentBody = [];
+      
+      let dynamicHtml = "";
+
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        let headerMatch = line.match(/^([A-Z\s&\(\)]+):(.*)$/);
+        
+        if (headerMatch && !line.startsWith('-')) {
+          let hName = headerMatch[1].trim();
+          if (!excludeKeys.includes(hName)) {
+            // New body section found!
+            if (currentHeader) {
+               dynamicHtml += `<h2>${currentHeader}</h2>${parseTextToHTML(currentBody.join('\n'))}`;
+            }
+            currentHeader = hName;
+            currentBody = [];
+            if (headerMatch[2].trim() !== "") currentBody.push(headerMatch[2].trim());
+            continue;
+          }
+        }
+        
+        // If we are currently inside a dynamic section, collect the text
+        if (currentHeader && (!headerMatch || excludeKeys.includes(headerMatch[1].trim()))) {
+          if (headerMatch && excludeKeys.includes(headerMatch[1].trim())) {
+             // We hit a metadata key, stop collecting for this body section
+             dynamicHtml += `<h2>${currentHeader}</h2>${parseTextToHTML(currentBody.join('\n'))}`;
+             currentHeader = null;
+          } else {
+             currentBody.push(line);
+          }
+        }
+      }
+      // Catch the last section if the file ends on one
+      if (currentHeader) {
+         dynamicHtml += `<h2>${currentHeader}</h2>${parseTextToHTML(currentBody.join('\n'))}`;
+      }
+
+      document.getElementById('dynamic-content').innerHTML = dynamicHtml;
+    }
+
+    window.onload = compileDocument;
+  </script>
+</body>
+</html>
