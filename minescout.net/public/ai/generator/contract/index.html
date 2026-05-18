@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minescout AI — V3 Contract Compiler</title>
+  <title>Minescout AI — Universal Document Compiler</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,7 +18,7 @@
     .app-header { max-width: 900px; margin: 0 auto 30px auto; background: var(--bg); padding: 25px; border-radius: 6px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px; }
     .toolbar-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 5px;}
     
-    .console-input { width: 100%; height: 300px; background: #1e293b; color: #38bdf8; font-family: monospace; font-size: 0.9rem; padding: 15px; border: none; border-radius: 4px; resize: vertical; outline: none; line-height: 1.5; }
+    .console-input { width: 100%; height: 300px; background: #1e293b; color: #38bdf8; font-family: monospace; font-size: 0.9rem; padding: 15px; border: none; border-radius: 4px; resize: vertical; outline: none; line-height: 1.5; white-space: pre; overflow-wrap: normal; overflow-x: auto;}
     .console-input:focus { box-shadow: 0 0 0 2px var(--accent); }
     
     .btn { background: var(--fg); color: white; border: none; padding: 10px 20px; border-radius: 4px; font-family: var(--sans); font-weight: 600; cursor: pointer; transition: 0.2s; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.8rem; }
@@ -29,23 +28,30 @@
     .plan-container { background: var(--bg); max-width: 900px; margin: 0 auto; padding: 80px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border-radius: 4px; position: relative; }
     .status-stamp { position: absolute; top: 50px; right: 80px; border: 2px solid var(--fg); color: var(--fg); padding: 6px 15px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; transform: rotate(4deg); }
     
-    header { border-bottom: 3px solid var(--fg); padding-bottom: 30px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+    header { border-bottom: 3px solid var(--fg); padding-bottom: 30px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; }
     .brand h1 { font-family: var(--serif); font-size: 2.2rem; line-height: 1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: -0.02em; }
     .brand p { font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
     
-    .target-meta { background: var(--light); border: 1px solid var(--border); border-left: 4px solid var(--fg); padding: 20px; margin-bottom: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-radius: 2px; }
+    /* Dynamic Meta Grid */
+    .target-meta { background: var(--light); border: 1px solid var(--border); border-left: 4px solid var(--fg); padding: 20px; margin-bottom: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; border-radius: 2px; }
     .meta-block label { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; display: block; margin-bottom: 5px; }
-    .meta-block div { font-family: var(--serif); font-size: 1.2rem; color: var(--fg); font-weight: 700; }
+    .meta-block div { font-family: var(--serif); font-size: 1.1rem; color: var(--fg); font-weight: 700; }
 
-    h2 { font-family: var(--serif); font-size: 1.4rem; margin-bottom: 1.5rem; margin-top: 3rem; display: flex; align-items: center; gap: 15px; color: var(--fg); }
+    /* Dynamic Content Styles */
+    h2 { font-family: var(--serif); font-size: 1.25rem; margin-bottom: 1.2rem; margin-top: 2.5rem; display: flex; align-items: center; gap: 15px; color: var(--fg); text-transform: uppercase; letter-spacing: 0.05em; }
     h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
     p { margin-bottom: 1.25rem; font-size: 1rem; color: #334155; }
     ul { margin-left: 20px; margin-bottom: 1.5rem; color: #334155; }
     li { margin-bottom: 0.5rem; }
+    
+    /* Custom Checkbox Support */
+    .checkbox-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; color: #334155; font-size: 0.95rem;}
+    .checkbox-item .box { width: 18px; height: 18px; border: 2px solid var(--fg); border-radius: 3px; margin-top: 3px; flex-shrink: 0; position: relative; background: #fff;}
+    .checkbox-item p { margin: 0; }
 
-    /* SIGNATURE BLOCK */
-    .signature-section { margin-top: 50px; background: var(--light); padding: 30px; border: 1px solid var(--border); border-radius: 4px; page-break-inside: avoid; }
-    .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+    /* Dynamic SIGNATURE BLOCK */
+    .signature-section { margin-top: 50px; background: var(--light); padding: 30px; border: 1px solid var(--border); border-radius: 4px; page-break-inside: avoid; display: none; }
+    .sig-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-top: 20px; }
     .sig-line { border-bottom: 1px solid var(--fg); height: 40px; margin-bottom: 10px; }
     .sig-name { font-family: var(--serif); font-weight: 700; color: var(--fg); font-size: 1.1rem; }
     .sig-date { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 5px; }
@@ -63,8 +69,8 @@
   <div class="app-header no-print">
     <div class="toolbar-top">
       <div>
-        <h2 style="font-family: var(--serif); font-size: 1.2rem; margin: 0; line-height: 1; border:none; padding:0; color: var(--fg);">V3 Contract Compiler</h2>
-        <p style="margin: 0; font-size: 0.75rem; color: var(--muted);">Paste raw text. System will auto-parse variables.</p>
+        <h2 style="font-family: var(--serif); font-size: 1.2rem; margin: 0; line-height: 1; border:none; padding:0; color: var(--fg); text-transform: none;">Universal Document Compiler (V4)</h2>
+        <p style="margin: 0; font-size: 0.75rem; color: var(--muted); margin-top: 5px;">Paste any Minescout text block. Automatically formats Meta-Grids, Checkboxes, and Signatures.</p>
       </div>
       <div>
         <button class="btn" onclick="compileDocument()" style="background: var(--accent); color: var(--fg); margin-right: 10px;">Compile Document</button>
@@ -73,22 +79,37 @@
     </div>
     
     <textarea id="raw-data" class="console-input" spellcheck="false">
-DOCUMENT TYPE: Master Service Agreement
-PARTY A: Minescout AI
-PARTY B: Client Name
-EFFECTIVE DATE: May 12, 2026
-TERMS & SCOPE:
-- Replace this text with your terms.
-- Use dashes to create bullet points.
-COMPENSATION:
-- Detail the costs here.
-SIGNATURES:
-By signing below, both parties agree to the terms outlined.
+MINESCOUT AI
+MASTER SERVICE AGREEMENT
+
+Date: May 15, 2026
+Provider: Thomas Carleton (Minescout AI)
+Client: [Client Name]
+
+1. NATURE OF AGREEMENT
+Minescout AI operates as an informal, student-run technology project based in Sammamish, WA, managed by Thomas Carleton. By engaging Minescout AI, the Client acknowledges they are partnering with an independent student developer for digital infrastructure services. 
+
+2. PROJECT SCOPE & PRICING
+The Client has selected the following service package (indicated by "X"):
+
+[ ] Starter Site ($499 One-Time): A brand-new, fast, mobile-first website built from scratch.
+[ ] Digital Remodel ($599 One-Time): A complete overhaul and speed optimization of the existing site.
+[ ] Full AI Upgrade ($799 Setup + $59/Month): Digital Remodel plus a custom-trained Llama-3 AI assistant, Managed Training Bridge, and after-hours lead capture.
+[ ] Custom Widget ($150 One-Time): A custom drop-in tool (calculator, lead form, etc.) for the existing site.
+[ ] Charter Partner ($0 Setup & $0/Month): Full AI Upgrade provided at no cost in exchange for a published case study, signed testimonial, and 12 months of product feedback.
+
+AUTHORIZED SIGNATURES
+
+___________________________
+Thomas Carleton, Lead Architect
+
+___________________________
+[Client Name], Authorized Signatory
     </textarea>
   </div>
 
   <div class="plan-container" contenteditable="true">
-    <div class="status-stamp" id="doc-stamp">Agreement</div>
+    <div class="status-stamp" id="doc-stamp">DOCUMENT</div>
     
     <header>
       <div class="brand">
@@ -96,44 +117,19 @@ By signing below, both parties agree to the terms outlined.
         <p id="out-doc-type">Legal Document</p>
       </div>
       <div style="text-align: right; font-size: 0.85rem; line-height: 1.5;">
-        <strong>Generated by:</strong> Minescout Engine<br>
+        <strong>Compiled by:</strong> Minescout Engine<br>
         <strong>Date:</strong> <span id="auto-date"></span>
       </div>
     </header>
 
-    <div class="target-meta">
-      <div class="meta-block">
-        <label>Party A (Provider)</label>
-        <div id="out-party-a">Pending...</div>
+    <div class="target-meta" id="dynamic-meta" style="display: none;">
       </div>
-      <div class="meta-block">
-        <label>Party B (Client/Partner)</label>
-        <div id="out-party-b">Pending...</div>
-      </div>
-      <div class="meta-block" style="grid-column: span 2;">
-        <label>Effective Date</label>
-        <div id="out-date">Pending...</div>
-      </div>
-    </div>
 
     <div id="dynamic-content">
       </div>
 
-    <div class="signature-section">
-      <div id="out-sig-text" style="font-size: 0.95rem; color: var(--muted); margin-bottom: 20px;"></div>
-      <div class="sig-grid">
-        <div>
-          <div class="sig-line"></div>
-          <div class="sig-name" id="sig-party-a">Party A</div>
-          <div class="sig-date">Date: _________________</div>
-        </div>
-        <div>
-          <div class="sig-line"></div>
-          <div class="sig-name" id="sig-party-b">Party B</div>
-          <div class="sig-date">Date: _________________</div>
-        </div>
+    <div class="signature-section" id="signature-section">
       </div>
-    </div>
 
     <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
       <div>Authorized by Minescout Lead Architect</div>
@@ -142,113 +138,166 @@ By signing below, both parties agree to the terms outlined.
   </div>
 
   <script>
+    // Set current date in header
     document.getElementById('auto-date').innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-    function parseTextToHTML(text) {
-      if(!text) return "";
-      let lines = text.split('\n');
-      let html = '';
-      let inList = false;
-      
-      lines.forEach(line => {
-        let trimmed = line.trim();
-        if(trimmed.startsWith('-')) {
-          if(!inList) { html += '<ul>'; inList = true; }
-          // Handle bolding if there is a colon (e.g., "- UPFRONT BOUNTY: ...")
-          let listContent = trimmed.substring(1).trim();
-          if (listContent.includes(':')) {
-            let parts = listContent.split(':');
-            listContent = `<strong>${parts[0]}:</strong>${parts.slice(1).join(':')}`;
-          }
-          html += `<li>${listContent}</li>`;
-        } else {
-          if(inList) { html += '</ul>'; inList = false; }
-          if(trimmed !== '') html += `<p>${trimmed}</p>`;
-        }
-      });
-      if(inList) html += '</ul>';
-      return html;
-    }
-
-    function extractValue(text, keyword) {
-      const regex = new RegExp(`${keyword}:\\s*([\\s\\S]*?)(?=\\n[A-Z\\s&\\(\\)]+:|$)`, 'i');
-      const match = text.match(regex);
-      return match ? match[1].trim() : null;
-    }
-
     function compileDocument() {
-      const rawText = document.getElementById('raw-data').value;
+      const rawText = document.getElementById('raw-data').value.trim();
+      const lines = rawText.split('\n').map(l => l.trim());
+      if(lines.length === 0) return;
 
-      // Extract Metadata
-      const docType = extractValue(rawText, 'DOCUMENT TYPE') || 'Agreement';
-      const partyA = extractValue(rawText, 'PARTY A') || 'Minescout AI';
-      const partyB = extractValue(rawText, 'PARTY B') || 'Client';
-      const effDate = extractValue(rawText, 'EFFECTIVE DATE') || 'TBD';
-      const signatures = extractValue(rawText, 'SIGNATURES') || 'By signing below, both parties agree to the terms.';
+      // 1. EXTRACT TITLE & BRANDING
+      let docTitle = "DOCUMENT";
+      let startIndex = 0;
+      
+      if (lines[0].toUpperCase().includes("MINESCOUT AI")) {
+          docTitle = lines[1];
+          startIndex = 2;
+      } else {
+          docTitle = lines[0];
+          startIndex = 1;
+      }
 
-      // Inject Metadata
-      document.getElementById('out-doc-type').innerText = docType;
-      document.getElementById('out-party-a').innerText = partyA;
-      document.getElementById('out-party-b').innerText = partyB;
-      document.getElementById('out-date').innerText = effDate;
-      
-      document.getElementById('sig-party-a').innerText = partyA;
-      document.getElementById('sig-party-b').innerText = partyB;
-      document.getElementById('out-sig-text').innerText = signatures;
+      document.getElementById('out-doc-type').innerText = docTitle.toUpperCase();
+      let titleWords = docTitle.split(' ');
+      document.getElementById('doc-stamp').innerText = titleWords[titleWords.length - 1].toUpperCase();
 
-      // Dynamic Body Generation (Finds all all-caps headers not in our standard metadata list)
-      const excludeKeys = ['DOCUMENT TYPE', 'PARTY A', 'PARTY B', 'EFFECTIVE DATE', 'SIGNATURES'];
-      const sectionRegex = /^([A-Z\s&\(\)]+):\s*$/gm;
-      let sections = [];
-      let match;
+      // 2. EXTRACT METADATA GRID (Reads until it hits a blank line or a header)
+      let metaHtml = "";
+      let metaCount = 0;
       
-      // Reset regex index
-      sectionRegex.lastIndex = 0;
-      
-      // We will parse the raw text manually to handle dynamic headers like "COMPENSATION (OPTION B)"
-      let lines = rawText.split('\n');
-      let currentHeader = null;
-      let currentBody = [];
-      
-      let dynamicHtml = "";
-
-      for (let i = 0; i < lines.length; i++) {
-        let line = lines[i];
-        let headerMatch = line.match(/^([A-Z\s&\(\)]+):(.*)$/);
-        
-        if (headerMatch && !line.startsWith('-')) {
-          let hName = headerMatch[1].trim();
-          if (!excludeKeys.includes(hName)) {
-            // New body section found!
-            if (currentHeader) {
-               dynamicHtml += `<h2>${currentHeader}</h2>${parseTextToHTML(currentBody.join('\n'))}`;
-            }
-            currentHeader = hName;
-            currentBody = [];
-            if (headerMatch[2].trim() !== "") currentBody.push(headerMatch[2].trim());
-            continue;
-          }
-        }
-        
-        // If we are currently inside a dynamic section, collect the text
-        if (currentHeader && (!headerMatch || excludeKeys.includes(headerMatch[1].trim()))) {
-          if (headerMatch && excludeKeys.includes(headerMatch[1].trim())) {
-             // We hit a metadata key, stop collecting for this body section
-             dynamicHtml += `<h2>${currentHeader}</h2>${parseTextToHTML(currentBody.join('\n'))}`;
-             currentHeader = null;
+      while (startIndex < lines.length) {
+          let line = lines[startIndex];
+          
+          if (line === "") { startIndex++; continue; }
+          
+          // If it looks like a header instead of metadata, stop meta extraction
+          if ((line === line.toUpperCase() && line.length > 5) || /^\d+\.\s+[A-Z]/.test(line)) break;
+          
+          if (line.includes(":")) {
+              // Handle multiple meta blocks on one line (e.g., "Date: May | Architect: Thomas")
+              let items = line.split("|");
+              items.forEach(item => {
+                  let parts = item.split(":");
+                  if(parts.length >= 2) {
+                      let key = parts[0].trim();
+                      let val = parts.slice(1).join(":").trim();
+                      metaHtml += `<div class="meta-block"><label>${key}</label><div>${val}</div></div>`;
+                      metaCount++;
+                  }
+              });
           } else {
-             currentBody.push(line);
+             break; // Stop if we hit normal text
           }
-        }
+          startIndex++;
       }
-      // Catch the last section if the file ends on one
-      if (currentHeader) {
-         dynamicHtml += `<h2>${currentHeader}</h2>${parseTextToHTML(currentBody.join('\n'))}`;
+      
+      const metaContainer = document.getElementById('dynamic-meta');
+      if (metaCount > 0) {
+          metaContainer.innerHTML = metaHtml;
+          metaContainer.style.display = "grid";
+      } else {
+          metaContainer.style.display = "none";
       }
 
-      document.getElementById('dynamic-content').innerHTML = dynamicHtml;
+      // 3. PARSE BODY TEXT (Headers, Paragraphs, Checkboxes, Lists)
+      let bodyHtml = "";
+      let inList = false;
+      let hasSignatures = false;
+      let signatures = [];
+
+      for (let i = startIndex; i < lines.length; i++) {
+          let line = lines[i];
+          if (line === "") continue;
+
+          // TRIGGER: Signatures Block
+          if (line.toUpperCase() === "AUTHORIZED SIGNATURES" || line.toUpperCase() === "SIGNATURES") {
+              hasSignatures = true;
+              for(let j = i + 1; j < lines.length; j++) {
+                  let sigLine = lines[j];
+                  if(sigLine.match(/^[a-zA-Z\[]/) && !sigLine.includes("___")) {
+                     signatures.push(sigLine);
+                  }
+              }
+              break; // Stop body parsing, hand off to signature renderer
+          }
+
+          let isHeader = false;
+          let upperLine = line.toUpperCase();
+          
+          // Logic: Is it all caps? (Ignore bullets/checkboxes)
+          if (line === upperLine && line.length > 4 && !line.startsWith("•") && !line.startsWith("-") && !line.startsWith("[ ]")) {
+              isHeader = true;
+          }
+          // Logic: Does it start with a number like "1. NATURE OF AGREEMENT"?
+          if (/^\d+\.\s+[A-Z]/.test(line) || /^PHASE\s+\d+/.test(line)) {
+              isHeader = true;
+          }
+
+          // Render Elements
+          if (isHeader) {
+              if (inList) { bodyHtml += '</ul>'; inList = false; }
+              bodyHtml += `<h2>${line}</h2>`;
+          }
+          else if (line.startsWith("•") || line.startsWith("-")) {
+              if (!inList) { bodyHtml += '<ul>'; inList = true; }
+              // Bold text before a colon for list items if it exists
+              let content = line.substring(1).trim();
+              if(content.includes(":") && !content.includes("http")) {
+                 let parts = content.split(":");
+                 content = `<strong>${parts[0]}:</strong>${parts.slice(1).join(":")}`;
+              }
+              bodyHtml += `<li>${content}</li>`;
+          }
+          else if (line.startsWith("[ ]")) {
+              if (inList) { bodyHtml += '</ul>'; inList = false; }
+              let content = line.substring(3).trim();
+              if(content.includes(":") && !content.includes("http")) {
+                 let parts = content.split(":");
+                 content = `<strong>${parts[0]}:</strong>${parts.slice(1).join(":")}`;
+              }
+              bodyHtml += `<div class="checkbox-item"><div class="box"></div><p>${content}</p></div>`;
+          }
+          else {
+              if (inList) { bodyHtml += '</ul>'; inList = false; }
+              // Auto-bold the prefix if it's a short label (e.g. "Project Setup Fee: $799")
+              if(line.includes(":") && !line.includes("http")) {
+                 let parts = line.split(":");
+                 if (parts[0].split(" ").length <= 6) {
+                     bodyHtml += `<p><strong>${parts[0]}:</strong>${parts.slice(1).join(":")}</p>`;
+                 } else {
+                     bodyHtml += `<p>${line}</p>`;
+                 }
+              } else {
+                 bodyHtml += `<p>${line}</p>`;
+              }
+          }
+      }
+      if (inList) bodyHtml += '</ul>';
+      document.getElementById('dynamic-content').innerHTML = bodyHtml;
+
+      // 4. RENDER SIGNATURES
+      const sigSection = document.getElementById('signature-section');
+      if (hasSignatures && signatures.length > 0) {
+          sigSection.style.display = "block";
+          let sigHtml = '<div class="sig-grid">';
+          signatures.forEach(sig => {
+              sigHtml += `
+                <div>
+                  <div class="sig-line"></div>
+                  <div class="sig-name">${sig}</div>
+                  <div class="sig-date">Date: _________________</div>
+                </div>
+              `;
+          });
+          sigHtml += '</div>';
+          sigSection.innerHTML = sigHtml;
+      } else {
+          sigSection.style.display = "none";
+      }
     }
 
+    // Run compiler automatically on load
     window.onload = compileDocument;
   </script>
 </body>

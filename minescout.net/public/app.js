@@ -1,8 +1,36 @@
 // app.js — Application Logic & Routing
 
-import { views } from './views.js?v=3';
+import { views } from './views.js?v=4.1';
 
-// ── 1. SIDEBAR CONFIGURATION ──────────────────────────────────────
+// ── 1. GLOBAL FIREBASE INITIALIZATION (Fixes memory leaks) ─────────
+let globalFirebaseApp = null;
+let fbDb = null;
+let fbAuth = null;
+
+async function getFirebaseApp() {
+  if (globalFirebaseApp) return { app: globalFirebaseApp, db: fbDb, auth: fbAuth };
+  try {
+    const { getApp, getApps, initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    const { getFirestore } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const { getAuth } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAmZbRI37rbHWGaOSVomMdcG-IvHMf6S3Y",
+      authDomain: "minescout-5533a.firebaseapp.com",
+      projectId: "minescout-5533a"
+    };
+    
+    globalFirebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+    fbDb = getFirestore(globalFirebaseApp);
+    fbAuth = getAuth(globalFirebaseApp);
+    return { app: globalFirebaseApp, db: fbDb, auth: fbAuth };
+  } catch (e) {
+    console.error("Firebase init failed:", e);
+    return { app: null, db: null, auth: null };
+  }
+}
+
+// ── 2. SIDEBAR CONFIGURATION ──────────────────────────────────────
 const MAIN_MENU = [
   { label: 'Home',   href: '/' },
   { label: 'Work',   href: '/work' },
@@ -120,13 +148,10 @@ function initSidebar() {
   window.addEventListener('resize', () => { if (window.innerWidth > 768) closeSidebarNav(); });
 }
 
-// ── 2. PAGE INITIALIZERS ────────────────────────────────────────
+// ── 3. PAGE INITIALIZERS ────────────────────────────────────────
 
-let fbDb = null;
-let askKnowledgeBase = "";
 let askHistory = [];
 
-    // 3. Connect to Firebase for Live Overrides
 async function initAskChat() {
   const input = document.getElementById('chat-input');
   const sendBtn = document.getElementById('chat-send');
@@ -134,42 +159,20 @@ async function initAskChat() {
   const chatWin = document.getElementById('chat-window');
   if (!input) return;
 
-  // Restore history if user navigated back
   if (askHistory.length > 0) {
     const emptyState = document.getElementById('chat-empty');
     if (emptyState) emptyState.remove();
     askHistory.forEach(msg => addMessage(msg.role, msg.content, chatWin));
   }
 
+  await getFirebaseApp(); // Initialize globally
+  
   if (fbDb) {
     input.disabled = false; sendBtn.disabled = false;
+    input.placeholder = "Ask Sentry AI anything...";
     badge.innerText = "● Sentry AI: Online";
     badge.className = "status-badge status-online";
     setupChatListeners(input, sendBtn, chatWin);
-    return;
-  }
-
-  try {
-    const { getApp, getApps, initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-    const { getFirestore } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAmZbRI37rbHWGaOSVomMdcG-IvHMf6S3Y",
-      authDomain: "minescout-5533a.firebaseapp.com",
-      projectId: "minescout-5533a"
-    };
-    
-    const fbApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-    fbDb = getFirestore(fbApp);
-
-    input.disabled = false; 
-    sendBtn.disabled = false;
-    input.placeholder = "Ask Sentry AI anything...";
-    badge.innerText = "● Sentry AI: Online"; 
-    badge.className = "status-badge status-online";
-    setupChatListeners(input, sendBtn, chatWin);
-  } catch(e) { 
-    console.error("Initialization Error:", e);
   }
 }
 
@@ -178,7 +181,6 @@ function setupChatListeners(input, sendBtn, chatWin) {
     const text = input.value.trim();
     if (!text || sendBtn.disabled) return;
 
-    // --- RAG: Context Retrieval (Keep this, it's your AI's brain) ---
     const searchTerms = text.toLowerCase().split(' ').filter(word => word.length > 3);
     let dynamicContext = "";
     const priorityRoutes = ['/', '/resume', '/ai', '/ai/pricing', '/ai/clients'];
@@ -194,19 +196,14 @@ function setupChatListeners(input, sendBtn, chatWin) {
       }
     });
 
-    // --- SYSTEM PROMPT (Simplified for Reliability) ---
     const finalSystemPrompt = `STRICT SYSTEM ROLE: You are Sentry AI, the autonomous representative for Thomas Carleton and Minescout AI.
-    
     CORE RULE: You cannot book appointments. 
     If a user wants to schedule, book, or get a recap, say: 
     "To keep things organized and ensure 100% accuracy, Thomas handles all scheduling and detailed follow-ups personally. Please head to minescout.net/contact to drop your details—he usually responds within the hour."
-
     TONE: Professional, direct, and elite. No fluff.
-
     LOCAL CONTEXT:
     ${dynamicContext || "General portfolio and AI infrastructure info."}`;
 
-    // UI Updates
     const emptyState = document.getElementById('chat-empty');
     if (emptyState) emptyState.remove();
 
@@ -235,7 +232,6 @@ function setupChatListeners(input, sendBtn, chatWin) {
       const msgEl = addMessage('assistant', '', chatWin);
       const bubble = msgEl.querySelector('.msg-bubble');
       
-      // Typing Effect
       let currentHTML = '';
       for (let i = 0; i < responseText.length; i++) {
         currentHTML += responseText[i] === '\n' ? '<br/>' : responseText[i];
@@ -272,23 +268,15 @@ function addTyping(chatWin) {
 
 async function initGuestbook() {
   try {
-    const { getApp, getApps, initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
-    const { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAmZbRI37rbHWGaOSVomMdcG-IvHMf6S3Y",
-      authDomain: "minescout-5533a.firebaseapp.com",
-      projectId: "minescout-5533a",
-    };
-    const fbApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-    const gbDb = getFirestore(fbApp);
+    await getFirebaseApp();
+    const { collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
 
     function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
     async function loadEntries() {
       const container = document.getElementById('gb-entries');
       if (!container) return; 
-      const q = query(collection(gbDb, 'guestbook'), orderBy('timestamp', 'desc'));
+      const q = query(collection(fbDb, 'guestbook'), orderBy('timestamp', 'desc'));
       const snap = await getDocs(q);
       if (snap.empty) { container.innerHTML = '<p class="gb-empty">No entries yet — be the first!</p>'; return; }
       container.innerHTML = '';
@@ -317,7 +305,7 @@ async function initGuestbook() {
         if (!name || !message) return alert('Name and message required.');
         submitBtn.disabled = true; submitBtn.textContent = 'Posting...';
         try {
-          await addDoc(collection(gbDb, 'guestbook'), { name, location, message, timestamp: serverTimestamp() });
+          await addDoc(collection(fbDb, 'guestbook'), { name, location, message, timestamp: serverTimestamp() });
           document.getElementById('gb-name').value = ''; document.getElementById('gb-location').value = ''; document.getElementById('gb-message').value = '';
           await loadEntries();
         } catch (err) { alert('Something went wrong.'); }
@@ -327,7 +315,7 @@ async function initGuestbook() {
 
     window._deleteEntry = async (id, btn) => {
       if (!confirm('Delete this entry?')) return;
-      try { await deleteDoc(doc(gbDb, 'guestbook', id)); btn.closest('.gb-entry').remove(); }
+      try { await deleteDoc(doc(fbDb, 'guestbook', id)); btn.closest('.gb-entry').remove(); }
       catch (err) { alert('Could not delete.'); }
     };
 
@@ -601,7 +589,7 @@ function initROI() {
     - Payback Period: ${payback}
 
     Write exactly 1 short paragraph analyzing these numbers. 
-    CRITICAL INSTRUCTION: Be brutally honest and objective. Ensure your analysis perfectly aligns with the selected plan rules: 1. Digital Remodel ($499 + $29/mo), 2. Full AI Upgrade ($749 + $59/mo).
+    CRITICAL INSTRUCTION: Be brutally honest and objective. Ensure your analysis perfectly aligns with the selected plan rules: 1. Starter Site ($499 one-time), 2. Digital Remodel ($599 one-time), 3. Full AI Upgrade ($799 + $59/mo), 4. Widget ($150 one-time).
     If the "Projected Net Monthly Value" is negative (shows a loss), you MUST politely advise them that Minescout AI is NOT a good financial fit for them right now, explaining that their current traffic/inquiry volume doesn't justify the infrastructure cost yet. Tell them to wait until they scale.
     If the net value is positive, write a compelling summary of why they should upgrade, focusing on the financial ROI, payback period, and hours reclaimed. 
     Speak directly and professionally to the client ("you"). Do not use markdown headers or greetings. Make it candid and sharp.`;
@@ -632,7 +620,7 @@ function initROI() {
     .catch(async err => {
       let fallbackText = isNegative 
         ? `Based on your inputs, upgrading right now would result in a net loss of ${netMonthly}. Your current traffic and inquiry volume do not justify the cost of this infrastructure. We recommend holding off until your operation scales further.`
-        : `Based on your inputs, generating ${netMonthly} in net monthly value makes the ${planName.split('—')[0]} a highly logical choice. You recover your costs rapidly while reclaiming ${hoursSaved} hours a month.`;
+        : `Based on your inputs, the ${planName.split('—')[0]} is a strong fit. You recover your costs while reclaiming ${hoursSaved} hours a month and generating ${netMonthly} in net monthly value.`;
         
       vt.innerHTML = '<strong>Architect\'s Assessment:</strong> <span id="roi-typing"></span>';
       const typeSpan = document.getElementById('roi-typing');
@@ -809,12 +797,6 @@ function initAudit() {
 }
 
 function initIntake() {
-  if (!window.html2pdf) {
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-    document.head.appendChild(script);
-  }
-
   const dateEl = document.getElementById('p_date');
   if (dateEl) {
     dateEl.innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -841,44 +823,88 @@ function initIntake() {
     document.body.style.overflow = 'auto';
   };
 
+  window.closeIntakeSuccess = function() {
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('previewModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    navigate('/ai'); 
+  };
+
   window.submitIntakeToCloudflare = async function() {
     document.getElementById('previewModal').style.display = 'none';
     document.getElementById('loading-screen').style.display = 'block';
 
-    const element = document.getElementById('pdfDocument');
-    element.setAttribute('contenteditable', 'false');
+    const business = document.getElementById('f_business').value;
+    const contact = document.getElementById('f_contact').value;
+    const email = document.getElementById('f_email').value;
+    const phone = document.getElementById('f_phone').value;
+    const website = document.getElementById('f_website').value || 'N/A';
+    
+    const faqs = document.getElementById('f_faqs').value;
+    const pricing = document.getElementById('f_pricing').value;
+    const logistics = document.getElementById('f_logistics').value;
+    const tone = document.getElementById('f_tone').value;
 
-    const opt = {
-      margin:       0.5,
-      filename:     'Minescout_Intelligence_File.pdf',
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    // Build the formatted email payload to send to the GAS webhook
+    const htmlBody = `
+      <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e8e4dd; border-radius: 8px; overflow: hidden;">
+        <div style="background-color: #1a1916; padding: 20px; text-align: center;">
+          <h2 style="margin: 0; color: #ffffff; font-family: Georgia, serif; letter-spacing: 0.1em; text-transform: uppercase; font-size: 16px;">Minescout Intelligence File</h2>
+        </div>
+        <div style="padding: 30px 20px; color: #1a1916;">
+          <h1 style="margin-top: 0; font-size: 20px; border-bottom: 2px solid #ff4d1c; padding-bottom: 10px;">Part 01: The Basics</h1>
+          <p><strong>Business Name:</strong> ${business}</p>
+          <p><strong>Primary Contact:</strong> ${contact}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Phone:</strong> ${phone}</p>
+          <p><strong>Website URL:</strong> ${website}</p>
+
+          <h1 style="margin-top: 30px; font-size: 20px; border-bottom: 2px solid #ff4d1c; padding-bottom: 10px;">Part 02: Knowledge Base</h1>
+          <p><strong>The Time-Wasters (FAQs):</strong></p>
+          <div style="background-color: #f9f8f6; padding: 15px; border-left: 3px solid #e8e4dd; white-space: pre-wrap; font-size: 14px;">${faqs}</div>
+          
+          <p><strong>Pricing Structure:</strong></p>
+          <div style="background-color: #f9f8f6; padding: 15px; border-left: 3px solid #e8e4dd; white-space: pre-wrap; font-size: 14px;">${pricing}</div>
+          
+          <p><strong>Logistics, Hours, & Policies:</strong></p>
+          <div style="background-color: #f9f8f6; padding: 15px; border-left: 3px solid #e8e4dd; white-space: pre-wrap; font-size: 14px;">${logistics}</div>
+
+          <h1 style="margin-top: 30px; font-size: 20px; border-bottom: 2px solid #ff4d1c; padding-bottom: 10px;">Part 03: Conversion & Voice</h1>
+          <p><strong>Tone & Objectives:</strong></p>
+          <div style="background-color: #f9f8f6; padding: 15px; border-left: 3px solid #e8e4dd; white-space: pre-wrap; font-size: 14px;">${tone}</div>
+          
+          <p style="margin-top: 40px; font-size: 12px; color: #66625a; text-align: center;">Minescout Engine — Auto-Generated Report</p>
+        </div>
+      </div>
+    `;
+
+    // Uses the EXACT SAME Google Apps Script webhook from your Contact Form
+    const payload = {
+      action: "intake",
+      to: ["tmcarleton11@gmail.com", email], // Emails Thomas AND the client
+      subject: `Minescout Intelligence File: ${business}`,
+      htmlBody: htmlBody,
+      fromName: "Minescout Operations",
+      sheetData: { business, contact, email, phone, website } // Passed in case you want to append to Matrix later
     };
 
     try {
-      if (!window.html2pdf) throw new Error("PDF Library is still loading...");
-
-      const pdfBase64 = await html2pdf().set(opt).from(element).outputPdf('datauristring');
-      
-      const clientEmail = document.getElementById('f_email').value;
-      const clientName = document.getElementById('f_business').value;
-      const WORKER_URL = 'https://thomas-chat.tmcarleton11.workers.dev/intake'; 
-
-      const response = await fetch(WORKER_URL, {
+      const res = await fetch("https://script.google.com/macros/s/AKfycbz7MJE7mNY1A-SvbdHGV3yI6-ftBElB1wOth4MqEABvJXLI5SNzeqiG2r7PJBpWvcAiOg/exec", {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          clientName: clientName,
-          clientEmail: clientEmail,
-          pdfAttachment: pdfBase64 
-        })
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
       });
 
+      if (!res.ok) throw new Error("GAS Script rejected.");
+
       document.getElementById('loading-screen').innerHTML = `
-        <h2 style="font-family: var(--serif); color: #10b981; margin-bottom: 10px;">Transmission Complete</h2>
-        <p style="color: var(--muted);">Your Intelligence File has been securely submitted to the Minescout Engine.</p>
-        <p style="color: var(--muted);">A confirmation copy has been sent to ${clientEmail}.</p>
+        <div style="max-width: 450px; margin: 0 auto; text-align: center;">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+          <h2 style="font-family: var(--serif); color: #10b981; margin-bottom: 15px;">Transmission Complete</h2>
+          <p style="color: var(--muted); margin-bottom: 10px;">Your Intelligence File has been securely submitted to the Minescout Engine.</p>
+          <p style="color: var(--muted); margin-bottom: 30px;">A confirmation copy has been sent to <strong>${email}</strong>.</p>
+          <button class="btn-primary" onclick="window.closeIntakeSuccess()" style="width: 100%;">Return to Dashboard</button>
+        </div>
       `;
 
     } catch (err) {
@@ -886,13 +912,11 @@ function initIntake() {
       alert("There was an issue connecting to the edge network. Please try again.");
       document.getElementById('loading-screen').style.display = 'none';
       document.getElementById('previewModal').style.display = 'flex';
-      element.setAttribute('contenteditable', 'true');
     }
   };
 }
 
 function initPricing() {
-  // 1. FAQ Toggle Logic
   window.toggleFaq = function(btn) {
     const item = btn.closest('.faq-item');
     const wasOpen = item.classList.contains('open');
@@ -904,7 +928,6 @@ function initPricing() {
   const planQuizEl = document.getElementById('plan-quiz');
   const openQuizBtn = document.getElementById('open-plan-quiz');
 
-  // Open Quiz Button
   if (openQuizBtn && planQuizEl) {
     openQuizBtn.addEventListener('click', function () {
       planQuizEl.classList.remove('is-hidden');
@@ -954,7 +977,6 @@ function initPricing() {
     if (quizResult) quizResult.classList.add('active');
     if (progressFill) progressFill.style.width = '100%';
 
-    // Initialize Scores
     let remodelScore = 0;
     let aiScore = 0;
     let widgetScore = 0;
@@ -975,13 +997,13 @@ function initPricing() {
     if (resultDesc) resultDesc.innerHTML = '';
     if (resultCta) resultCta.style.display = 'none';
 
-    // Determine the winning plan locally first
     const scores = { 
+      'Starter Site': selections[1]?.starter || 0,
       'Digital Remodel': remodelScore, 
       'Full AI Upgrade': aiScore, 
-      'Lead-Gen Widget (Beta)': widgetScore, 
-      'Internal Ops AI (Beta)': opsScore 
+      'Widget': widgetScore
     };
+
     
     const topPlan = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
 
@@ -989,10 +1011,10 @@ function initPricing() {
     Based on their answers, explain why "${topPlan}" is the perfect fit.
     
     PLANS TO REFERENCE:
-    1. Digital Remodel ($499): Fast, high-end site. Best for those who just need a modern presence.
-    2. Full AI Upgrade ($749 + $59/mo): Customer-facing AI. Best for high inquiry volume and after-hours support.
-    3. Lead-Gen Widget ($299 Beta): Custom calculators/quotes. Best for businesses needing higher conversion from current traffic.
-    4. Internal Ops AI ($449 Beta): Secure staff bot. Best for automating SOPs and employee training.
+    1. Starter Site ($499): Brand new site from scratch. Best for businesses with no site or one that needs replacing entirely.
+    2. Digital Remodel ($599): Full overhaul of an existing site. Best for businesses with a site that needs modernizing.
+    3. Full AI Upgrade ($799 + $59/mo): Remodel plus custom AI assistant. Best for high inquiry volume and after-hours lead capture.
+    4. Widget ($150): Drop-in tool for any existing site. Best for businesses needing a specific calculator or lead form.
 
     Format your response EXACTLY like this:
     PLAN: [The Exact Plan Name]
@@ -1034,7 +1056,6 @@ function initPricing() {
       }
     })
     .catch(err => {
-      // Fallback if AI fails
       if (resultTitle) resultTitle.textContent = topPlan;
       if (resultDesc) resultDesc.textContent = "Based on your focus on efficiency and growth, the " + topPlan + " is your best path forward. Contact us to discuss the next steps.";
       if (resultCta) {
@@ -1055,7 +1076,6 @@ function initPricing() {
     goToStep(1);
   }
 
-  // Quiz Event Listener
   if (planQuizEl) {
     planQuizEl.addEventListener('click', function(e) {
       var opt = e.target.closest('.plan-quiz-opt');
@@ -1104,35 +1124,16 @@ function initLegal() {
 }
 function initResume() {
   window.downloadResume = function() {
-    // 1. Save the original page title
     const originalTitle = document.title;
-    
-    // 2. Set the title to the exact file name you want the PDF to save as
     document.title = "Thomas Carleton Resume";
-    
-    // 3. Trigger the browser's native, ATS-friendly print dialog
     window.print();
-    
-    // 4. Restore the original website title after the dialog closes
-    setTimeout(() => {
-      document.title = originalTitle;
-    }, 1000);
+    setTimeout(() => { document.title = originalTitle; }, 1000);
   };
 }
 async function initAdmin() {
-  const { getApp, getApps, initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-  const { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-  const { getFirestore, doc, getDoc, setDoc, addDoc, getDocs, collection, query, where, deleteDoc, serverTimestamp, limit, updateDoc, writeBatch } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAmZbRI37rbHWGaOSVomMdcG-IvHMf6S3Y",
-    authDomain: "minescout-5533a.firebaseapp.com",
-    projectId: "minescout-5533a"
-  };
-
-  const app  = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
+  await getFirebaseApp();
+  const { onAuthStateChanged, signInWithEmailAndPassword, signOut } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+  const { doc, getDoc, setDoc, addDoc, getDocs, collection, query, where, deleteDoc, serverTimestamp, limit, updateDoc, writeBatch } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
 
   let currentAdmin = null;
   let allClients   = [];
@@ -1173,7 +1174,7 @@ async function initAdmin() {
     if (!email || !pass) { showErr('Enter email and password.'); return; }
     btn.disabled = true; btn.textContent = 'Signing in...'; err.style.display = 'none';
     try {
-      await signInWithEmailAndPassword(auth, email, pass);
+      await signInWithEmailAndPassword(fbAuth, email, pass);
     } catch (e) {
       btn.disabled = false; btn.textContent = 'Sign In';
       showErr("Sign-in failed. Try again.");
@@ -1182,18 +1183,18 @@ async function initAdmin() {
   
   document.addEventListener('keydown', e => { if (e.key === 'Enter') window.doLogin?.(); });
 
-  window.doSignOut = async function() { await signOut(auth); window.location.reload(); };
+  window.doSignOut = async function() { await signOut(fbAuth); window.location.reload(); };
 
   async function loadAll() { await loadClients(); await loadAllCorrections(); }
 
   async function loadClients() {
     try {
-      const snap = await getDocs(collection(db, 'clients'));
+      const snap = await getDocs(collection(fbDb, 'clients'));
       allClients = [];
       for (const d of snap.docs) {
-        const bizSnap   = await getDoc(doc(db, 'clients', d.id, 'data', 'businessInfo'));
-        const statsSnap = await getDoc(doc(db, 'clients', d.id, 'data', 'stats'));
-        const faqSnap   = await getDocs(collection(db, 'clients', d.id, 'faqs'));
+        const bizSnap   = await getDoc(doc(fbDb, 'clients', d.id, 'data', 'businessInfo'));
+        const statsSnap = await getDoc(doc(fbDb, 'clients', d.id, 'data', 'stats'));
+        const faqSnap   = await getDocs(collection(fbDb, 'clients', d.id, 'faqs'));
         const biz       = bizSnap.exists()   ? bizSnap.data()   : {};
         const stats     = statsSnap.exists() ? statsSnap.data() : {};
         allClients.push({ uid: d.id, email: biz.email || '', name: biz.name || 'Unnamed client', plan: biz.plan || 'Unknown', total: stats.total || 0, faqCount: faqSnap.size, biz });
@@ -1206,7 +1207,7 @@ async function initAdmin() {
     try {
       let all = [];
       for (const client of allClients) {
-        const corrSnap = await getDocs(query(collection(db, 'clients', client.uid, 'corrections'), where('status', '==', 'pending'), limit(50)));
+        const corrSnap = await getDocs(query(collection(fbDb, 'clients', client.uid, 'corrections'), where('status', '==', 'pending'), limit(50)));
         corrSnap.forEach(d => all.push({ id: d.id, clientId: client.uid, clientName: client.name, ...d.data() }));
       }
       renderCorrections(all);
@@ -1260,7 +1261,7 @@ async function initAdmin() {
     document.getElementById('cm-email').textContent = c.email || '(no email stored)';
     document.getElementById('cm-plan').textContent  = c.plan;
     document.getElementById('cm-convos').textContent = c.total;
-    const faqSnap = await getDocs(collection(db, 'clients', uid, 'faqs'));
+    const faqSnap = await getDocs(collection(fbDb, 'clients', uid, 'faqs'));
     const faqs = [];
     faqSnap.forEach(d => faqs.push(d.data()));
     document.getElementById('cm-faqs').innerHTML = faqs.length ? faqs.map(f => `<div style="margin-bottom:0.5rem;"><strong style="color:var(--fg);">Q:</strong> ${esc(f.question)}<br><strong style="color:var(--fg);">A:</strong> ${esc(f.answer)}</div>`).join('') : '<span style="color:var(--muted);">No FAQs yet.</span>';
@@ -1279,13 +1280,13 @@ async function initAdmin() {
     try {
       const subcols = ['faqs', 'corrections', 'conversations'];
       for (const col of subcols) {
-        const snap = await getDocs(collection(db, 'clients', uid, col));
-        const batch = writeBatch(db);
+        const snap = await getDocs(collection(fbDb, 'clients', uid, col));
+        const batch = writeBatch(fbDb);
         snap.forEach(d => batch.delete(d.ref));
         await batch.commit();
       }
-      for (const docName of ['businessInfo', 'stats']) await deleteDoc(doc(db, 'clients', uid, 'data', docName)).catch(() => {});
-      await deleteDoc(doc(db, 'clients', uid)).catch(() => {});
+      for (const docName of ['businessInfo', 'stats']) await deleteDoc(doc(fbDb, 'clients', uid, 'data', docName)).catch(() => {});
+      await deleteDoc(doc(fbDb, 'clients', uid)).catch(() => {});
       closeModal('delete-modal'); closeModal('client-modal');
       showToast('Client data deleted.', 'ok');
       allClients = allClients.filter(c => c.uid !== uid);
@@ -1295,7 +1296,7 @@ async function initAdmin() {
 
   window.markApplied = async function(clientId, corrId) {
     try {
-      await updateDoc(doc(db, 'clients', clientId, 'corrections', corrId), { status: 'applied' });
+      await updateDoc(doc(fbDb, 'clients', clientId, 'corrections', corrId), { status: 'applied' });
       document.getElementById('corr-row-' + corrId)?.remove();
       showToast('Marked as applied ✓', 'ok');
       const pendingRows = document.querySelectorAll('#corrections-list .corr-row').length;
@@ -1346,7 +1347,7 @@ async function initAdmin() {
 
     try {
       step('⏳', 'Creating Firebase account...');
-      const apiKey  = firebaseConfig.apiKey;
+      const apiKey  = "AIzaSyAmZbRI37rbHWGaOSVomMdcG-IvHMf6S3Y";
       const signUpRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password: pass, returnSecureToken: false })
@@ -1358,12 +1359,12 @@ async function initAdmin() {
       step('✅', `Account created (UID: ${uid.slice(0,8)}...)`);
 
       step('⏳', 'Writing business info to Firestore...');
-      await setDoc(doc(db, 'clients', uid, 'data', 'businessInfo'), {
+      await setDoc(doc(fbDb, 'clients', uid, 'data', 'businessInfo'), {
         name, phone, address: addr, website: site, plan, hours, description: desc, services: svc, email, createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
       });
       step('✅', 'Business info saved.');
 
-      await setDoc(doc(db, 'clients', uid, 'data', 'stats'), { total: 0, thumbsUp: 0, thumbsDown: 0 });
+      await setDoc(doc(fbDb, 'clients', uid, 'data', 'stats'), { total: 0, thumbsUp: 0, thumbsDown: 0 });
 
       const faqContainer = document.getElementById('nc-faqs');
       const faqRows = faqContainer.querySelectorAll('[id^="nc-faq-"]');
@@ -1373,13 +1374,13 @@ async function initAdmin() {
         const q  = document.getElementById('nc-faq-q-' + id)?.value.trim();
         const a  = document.getElementById('nc-faq-a-' + id)?.value.trim();
         if (q && a) {
-          await addDoc(collection(db, 'clients', uid, 'faqs'), { question: q, answer: a, createdAt: serverTimestamp() });
+          await addDoc(collection(fbDb, 'clients', uid, 'faqs'), { question: q, answer: a, createdAt: serverTimestamp() });
           faqCount++;
         }
       }
       if (faqCount > 0) step('✅', `${faqCount} FAQ(s) seeded.`);
 
-      await setDoc(doc(db, 'clients', uid), { createdAt: serverTimestamp() });
+      await setDoc(doc(fbDb, 'clients', uid), { createdAt: serverTimestamp() });
 
       step('🎉', `Done! Send ${email} their temp password: ${pass}`);
       showToast('Client created successfully ✓', 'ok');
@@ -1393,39 +1394,29 @@ async function initAdmin() {
     finally { btn.disabled = false; btn.textContent = 'Create client account'; }
   };
 
-  onAuthStateChanged(auth, async user => {
+  onAuthStateChanged(fbAuth, async user => {
     if (bypassAuthCheck) return;
     if (!user) { hideLoading(); showLoginScreen(); return; }
 
     try {
-      const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+      const adminDoc = await getDoc(doc(fbDb, 'admins', user.uid));
       if (!adminDoc.exists()) {
-        hideLoading(); await signOut(auth); window.location.href = '/portal'; return;
+        hideLoading(); await signOut(fbAuth); window.location.href = '/portal'; return;
       }
       currentAdmin = user;
       const aul = document.getElementById('admin-user-label');
       if(aul) aul.textContent = user.email;
       hideLoading(); showAdmin(); await loadAll();
     } catch (e) {
-      hideLoading(); await signOut(auth); showLoginScreen(); showErr('Access denied. This page is admin-only.');
+      hideLoading(); await signOut(fbAuth); showLoginScreen(); showErr('Access denied. This page is admin-only.');
     }
   });
 }
 
 async function initPortal() {
-  const { getApp, getApps, initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-  const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-  const { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAmZbRI37rbHWGaOSVomMdcG-IvHMf6S3Y",
-    authDomain: "minescout-5533a.firebaseapp.com",
-    projectId: "minescout-5533a"
-  };
-
-  const app  = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
+  await getFirebaseApp();
+  const { signInWithEmailAndPassword, signOut, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
+  const { doc, getDoc, collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
 
   let currentClientUid = null;
 
@@ -1439,7 +1430,7 @@ async function initPortal() {
     
     btn.disabled = true; btn.innerText = "Verifying..."; err.style.display = "none";
     try {
-      await signInWithEmailAndPassword(auth, email, pass);
+      await signInWithEmailAndPassword(fbAuth, email, pass);
     } catch (e) {
       btn.disabled = false; btn.innerText = "Sign In";
       err.innerText = "Invalid credentials. Contact Minescout support."; err.style.display = "block";
@@ -1447,7 +1438,7 @@ async function initPortal() {
   };
 
   window.portalSignOut = async function() {
-    await signOut(auth);
+    await signOut(fbAuth);
     window.location.reload();
   };
 
@@ -1461,7 +1452,7 @@ async function initPortal() {
     
     btn.disabled = true; btn.innerText = "Submitting...";
     try {
-      await addDoc(collection(db, 'clients', currentClientUid, 'corrections'), {
+      await addDoc(collection(fbDb, 'clients', currentClientUid, 'corrections'), {
         question: q,
         correction: a,
         status: 'pending',
@@ -1477,15 +1468,15 @@ async function initPortal() {
     btn.disabled = false; btn.innerText = "Submit to Minescout";
   };
 
-  onAuthStateChanged(auth, async user => {
+  onAuthStateChanged(fbAuth, async user => {
     if (user) {
       currentClientUid = user.uid;
       document.getElementById('portal-login').style.display = 'none';
       document.getElementById('portal-dash').style.display = 'block';
 
       try {
-        const bizSnap = await getDoc(doc(db, 'clients', user.uid, 'data', 'businessInfo'));
-        const statsSnap = await getDoc(doc(db, 'clients', user.uid, 'data', 'stats'));
+        const bizSnap = await getDoc(doc(fbDb, 'clients', user.uid, 'data', 'businessInfo'));
+        const statsSnap = await getDoc(doc(fbDb, 'clients', user.uid, 'data', 'stats'));
         
         if (bizSnap.exists()) {
           document.getElementById('pd-name').innerText = bizSnap.data().name;
@@ -1503,8 +1494,7 @@ async function initPortal() {
   });
 }
 
-
-// ── 3. BOOTSTRAP ROUTER ──────────────────────────────────────────────────
+// ── 4. BOOTSTRAP ROUTER ──────────────────────────────────────────────────
 let appElement;
 
 function render(path) {
@@ -1552,7 +1542,6 @@ function initRouter() {
     }
   });
 
-  // Handle Contact Form inside SPA
   document.addEventListener('submit', async (e) => {
     if (e.target && e.target.id === 'contact-form') {
       e.preventDefault();

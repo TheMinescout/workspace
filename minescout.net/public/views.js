@@ -84,7 +84,7 @@ export const views = {
       <div class="page-content" style="max-width: 720px;">
         <div class="print-header">
           <h1 class="print-name">Thomas Carleton</h1>
-          <div class="print-contact">Sammamish, WA &nbsp;|&nbsp; 425-520-8683 &nbsp;|&nbsp; tmcarleton11@gmail.com &nbsp;|&nbsp; minescout.net</div>
+          <div class="print-contact">Sammamish, WA &nbsp;|&nbsp; 425-520-8683 &nbsp;|&nbsp; thomas@minescout.net &nbsp;|&nbsp; minescout.net</div>
         </div>
         <p class="page-label">Resume</p>
         <h1 class="page-title">Experience &amp; Leadership</h1>
@@ -194,7 +194,7 @@ export const views = {
         <div class="ai-stats">
           <div class="ai-stat"><span class="ai-stat-val">3</span><span class="ai-stat-label">Charter Spots Open</span></div>
           <div class="ai-stat"><span class="ai-stat-val">100<em>%</em></span><span class="ai-stat-label">Edge Serverless</span></div>
-          <div class="ai-stat"><span class="ai-stat-val">$<em>0</em></span><span class="ai-stat-label">Financial Risk</span></div>
+          <div class="ai-stat"><span class="ai-stat-val">&lt;1<em>wk</em></span><span class="ai-stat-label">From Call to Live</span></div>
         </div>
         <div class="ai-section-label">Production Components</div>
         <div class="ai-features">
@@ -214,13 +214,14 @@ export const views = {
         </div>
         <div class="ai-section-label">Managed Service Access</div>
         <div class="ai-pricing">
-          <div class="ai-price-tier"><div class="ai-price-name">Digital Remodel</div><div class="ai-price-amount">$<em>499</em></div><div class="ai-price-desc">Complete site modernization and speed optimization.</div></div>
-          <div class="ai-price-tier"><div class="ai-price-name">Full AI Upgrade</div><div class="ai-price-amount">$<em>749</em></div><div class="ai-price-desc">Custom AI Assistant, RAG training, & automated feedback loops.</div></div>
-          <div class="ai-price-tier"><div class="ai-price-name">Charter Partner</div><div class="ai-price-amount">$<em>0</em></div><div class="ai-price-desc">Full stack waived for 3 local businesses. Invite only.</div></div>
+          <div class="ai-price-tier"><div class="ai-price-name">Starter Site</div><div class="ai-price-amount">$<em>499</em></div><div class="ai-price-desc">New site from scratch. Fast, modern, mobile-first.</div></div>
+          <div class="ai-price-tier"><div class="ai-price-name">Digital Remodel</div><div class="ai-price-amount">$<em>599</em></div><div class="ai-price-desc">Full overhaul of your existing site.</div></div>
+          <div class="ai-price-tier"><div class="ai-price-name">Full AI Upgrade</div><div class="ai-price-amount">$<em>799</em></div><div class="ai-price-desc">Remodel + custom-trained AI assistant, 24/7.</div></div>
+          <div class="ai-price-tier"><div class="ai-price-name">Widget</div><div class="ai-price-amount">$<em>150</em></div><div class="ai-price-desc">Drop-in calculator or lead tool for any site.</div></div>
         </div>
         <div class="ai-cta-group">
-          <a href="/ai/intake" target="_blank" class="btn-primary">Request a Technical Audit</a>
-          <a href="/ai/demo/index.html" target="_blank" class="btn-ghost">Try the Live AI Demo &rarr;</a>
+          <a href="/ai/intake" class="btn-primary">Request a Technical Audit</a>
+          <a href="/ai/demo/index.html" class="btn-ghost">Try the Live AI Demo &rarr;</a>
         </div>
         <p class="ai-disclaimer">Minescout AI is built and operated by <a href="/">Thomas Carleton</a>, a systems engineer at Eastlake HS. All operations are strictly capped at 5 hours weekly to maintain a 4.0 GPA standing. For collaboration or inquiries, <a href="/ai/intake">initiate a project request here</a>.</p>
       </div>
@@ -282,7 +283,7 @@ export const views = {
           </div>
         </div>
         <div class="clients-cta" style="margin-top: 3rem;">
-          <a href="/ai/intake" target="_blank" class="btn-primary">Apply for Q2 Charter Program</a>
+          <a href="/ai/intake" class="btn-primary">Apply for Q2 Charter Program</a>
         </div>
       </div>
     </div>
@@ -421,7 +422,7 @@ export const views = {
         </div>
         <div class="legal-contact">
           <div class="legal-contact-title">Questions about these terms?</div>
-          <div class="legal-contact-body">Reach out directly &mdash; happy to clarify anything. <a href="/contact">Contact page</a> or <a href="mailto:tmcarleton11&#64;gmail.com">tmcarleton11&#64;gmail.com</a>.</div>
+          <div class="legal-contact-body">Reach out directly &mdash; happy to clarify anything. <a href="/contact">Contact page</a> or <a href="mailto:thomas@minescout.net">thomas@minescout.net</a>.</div>
         </div>
       </div>
     </div>
@@ -550,31 +551,33 @@ export const views = {
             <div class="verdict-text" id="verdict-text">Enter your numbers below to see your estimated ROI.</div>
             <button type="button" class="btn-ghost" id="ai-verdict-btn" onclick="window.getAIVerdict()" style="margin-top: 1rem; font-size: 0.7rem; padding: 0.5rem 1rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">✨ Generate AI Analysis</button>
           </div>
-          <a href="/ai/intake" target="_blank" class="verdict-cta">Get started</a>
+          <a href="/ai/intake" class="verdict-cta">Get started</a>
         </div>
 
         <div class="calc-container">
           <div class="input-section">
             <h3 style="margin-bottom: 1.5rem; font-family: var(--serif);">Efficiency Metrics</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-              <div class="input-group"><label>Weekly Inquiries (Email/Phone)</label><input type="number" id="volume" value="50" oninput="window.calcROI()"></div>
-              <div class="input-group"><label>Avg. Time per Response (Minutes)</label><input type="number" id="time" value="8" oninput="window.calcROI()"></div>
+              <div class="form-group"><label>Weekly Inquiries (Email/Phone)</label><input type="number" id="volume" value="50" oninput="window.calcROI()"></div>
+              <div class="form-group"><label>Avg. Time per Response (Minutes)</label><input type="number" id="time" value="8" oninput="window.calcROI()"></div>
             </div>
             <h3 style="margin: 2.5rem 0 1.5rem; font-family: var(--serif);">Growth Metrics</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-              <div class="input-group"><label>Estimated Monthly Website Visitors</label><input type="number" id="traffic" value="800" oninput="window.calcROI()"></div>
-              <div class="input-group"><label>Avg. Customer Value ($)</label><input type="number" id="value" value="250" oninput="window.calcROI()"></div>
+              <div class="form-group"><label>Estimated Monthly Website Visitors</label><input type="number" id="traffic" value="800" oninput="window.calcROI()"></div>
+              <div class="form-group"><label>Avg. Customer Value ($)</label><input type="number" id="value" value="250" oninput="window.calcROI()"></div>
             </div>
             <h3 style="margin: 2.5rem 0 1.5rem; font-family: var(--serif);">Minescout Plan</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-              <div class="input-group">
+              <div class="form-group">
                 <label>Select Plan Tier</label>
-                <select id="plan" onchange="window.calcROI()">
-                  <option value="59" data-setup="749">Full AI Upgrade — $749 setup + $59/mo</option>
-                  <option value="29" data-setup="499">Digital Remodel — $499 setup + $29/mo</option>
-                </select>
-              </div>
-              <div class="input-group"><label>AI Coverage (Est. % of questions handled)</label><input type="number" id="aiCoverage" value="80" min="10" max="100" oninput="window.calcROI()"></div>
+                <select id="plan" onchange="window.calcROI()" style="width: 100%; padding: 14px 16px; border: 1px solid #e0dbd3; border-radius: 6px; font-family: var(--sans); font-size: 0.95rem; background: #faf9f8; outline: none; appearance: none; transition: 0.2s;">
+                  <option value="59" data-setup="799">Full AI Upgrade — $799 setup + $59/mo</option>
+                  <option value="0" data-setup="599">Digital Remodel — $599 one-time</option>
+                  <option value="0" data-setup="499">Starter Site — $499 one-time</option>
+                  <option value="0" data-setup="150">Widget — $150 one-time</option>
+                  </select>
+                </div>
+              <div class="form-group"><label>AI Coverage (Est. % of questions handled)</label><input type="number" id="aiCoverage" value="80" min="10" max="100" oninput="window.calcROI()"></div>
             </div>
           </div>
           <div class="output-section">
@@ -623,10 +626,10 @@ export const views = {
           <div class="modal-content">
             <div class="modal-actions">
               <button class="btn-outline" onclick="window.closeIntakePreview()">← Edit Answers</button>
-              <span style="font-weight: 600; color: var(--fg);">Preview Mode (Click text to edit)</span>
-              <button class="btn-submit" onclick="window.submitIntakeToCloudflare()">Approve & Submit Data</button>
+              <span style="font-weight: 600; color: var(--fg);">Review Data</span>
+              <button class="btn-submit" onclick="window.submitIntakeToCloudflare()">Approve & Submit</button>
             </div>
-            <div class="plan-container" id="pdfDocument" contenteditable="true">
+            <div class="plan-container" id="pdfDocument">
               <div class="status-stamp">Client Intake</div>
               <div class="pdf-header">
                 <div class="brand"><h1>Minescout AI</h1><p>Custom Intelligence File</p></div>
@@ -669,7 +672,7 @@ export const views = {
         <div id="loading-screen">
           <div class="spinner"></div>
           <h2 style="font-family: var(--serif); color: var(--fg);">Encrypting & Transmitting</h2>
-          <p style="color: var(--muted);">Generating PDF and routing via Minescout Edge Network...</p>
+          <p style="color: var(--muted);">Routing data via Minescout Edge Network...</p>
         </div>
       </div>
     </div>
@@ -749,7 +752,7 @@ export const views = {
       <div id="login-screen">
         <div class="login-box">
           <div class="login-box-title">Admin Sign In</div><div class="login-box-sub">minescout.net/ai/admin</div>
-          <div class="lf"><label>Email</label><input type="email" id="l-email" placeholder="tmcarleton11@gmail.com" /></div>
+          <div class="lf"><label>Email</label><input type="email" id="l-email" placeholder="thomas@minescout.net" /></div>
           <div class="lf"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" /></div>
           <button class="login-btn" id="l-btn" onclick="doLogin()">Sign In</button>
           <div class="login-err" id="l-err"></div>
@@ -824,8 +827,10 @@ export const views = {
                         <label>Plan</label>
                         <select id="nc-plan">
                           <option value="Charter Partner">Charter Partner (Free)</option>
-                          <option value="Full AI Upgrade">Full AI Upgrade ($749 + $59/mo)</option>
-                          <option value="Digital Remodel">Digital Remodel ($499)</option>
+                          <option value="Full AI Upgrade">Full AI Upgrade ($799 + $59/mo)</option>
+                          <option value="Digital Remodel">Digital Remodel ($599)</option>
+                          <option value="Starter Site">Starter Site ($499)</option>
+                          <option value="Widget">Widget ($150)</option>
                         </select>
                       </div>
                     </div>
@@ -933,14 +938,14 @@ export const views = {
         <p class="contact-alt">
           You can also reach me directly via email or find my work at
           <a href="https://minescout.net" target="_blank">minescout.net</a> and
-          <a href="https://github.com" target="_blank">GitHub</a>.
+          <a href="https://github.com/Theminescout" target="_blank">GitHub</a>.
         </p>
       </div>
     </div>
   `,
   '/guestbook': `
     <div class="main--page">
-      <div class="page-content guestbook-wrap">
+      <div class="page-content guestbook-wrap" id="gb-wrap">
         <p class="page-label">Guestbook</p>
         <h1 class="page-title">Say Hello</h1>
         <p class="gb-intro">
@@ -1005,8 +1010,8 @@ export const views = {
         <h1 style="font-family: var(--serif); font-size: 1.5rem; color: var(--fg); margin-bottom: 0.5rem;">Client Portal</h1>
         <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem;">Log in to manage your Minescout AI integration.</p>
         <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom:1.5rem;">
-          <div><label style="font-size:0.7rem; font-weight:600; text-transform:uppercase;">Email</label><br><input type="email" id="p-email" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:4px; margin-top:0.25rem;"></div>
-          <div><label style="font-size:0.7rem; font-weight:600; text-transform:uppercase;">Password</label><br><input type="password" id="p-pass" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:4px; margin-top:0.25rem;"></div>
+          <div class="form-group"><label>Email</label><input type="email" id="p-email"></div>
+          <div class="form-group"><label>Password</label><input type="password" id="p-pass"></div>
         </div>
         <button class="btn-primary" id="p-login-btn" style="width:100%;" onclick="window.portalLogin()">Sign In</button>
         <div id="p-err" style="color:var(--accent); font-size:0.75rem; margin-top:1rem; display:none;"></div>
@@ -1035,9 +1040,9 @@ export const views = {
         <div style="border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; margin-bottom: 2rem;">
           <h3 style="font-size: 1rem; color: var(--fg); margin-bottom: 0.5rem;">Submit a Correction</h3>
           <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem;">Did the AI answer something incorrectly? Tell us what the user asked, and what the correct answer should be. We will update the Training Bridge within 48 hours.</p>
-          <div style="display:flex; flex-direction:column; gap:1rem;">
-            <input type="text" id="corr-q" placeholder="What did the customer ask?" style="padding: 0.75rem; border: 1px solid var(--border); border-radius: 4px; width: 100%;">
-            <textarea id="corr-a" placeholder="What is the correct factual answer?" style="padding: 0.75rem; border: 1px solid var(--border); border-radius: 4px; width: 100%; min-height: 80px; font-family: var(--sans);"></textarea>
+          <div style="display:flex; flex-direction:column; gap:1rem;" class="form-group">
+            <input type="text" id="corr-q" placeholder="What did the customer ask?">
+            <textarea id="corr-a" placeholder="What is the correct factual answer?"></textarea>
             <button class="btn-primary" id="corr-submit" style="align-self: flex-start;" onclick="window.submitCorrection()">Submit to Minescout</button>
             <div id="corr-msg" style="font-size:0.75rem; color:#4caf82; display:none;">Correction submitted securely.</div>
           </div>
@@ -1049,194 +1054,191 @@ export const views = {
     <div class="main--page">
       <div class="page-content pricing-wrap">
         <p class="page-label">Minescout AI</p>
-        <h1 class="page-title">Pricing & Beta Programs</h1>
+        <h1 class="page-title">Pricing</h1>
 
-        <div class="anchor-bar">
+        <div class="anchor-bar" style="opacity:0;animation:fadeUp 0.5s ease 0.15s forwards;">
           <div class="anchor-bar-icon">&#128161;</div>
           <div class="anchor-bar-text">
             A standard agency website redesign costs <strong>$5,000&ndash;$10,000</strong>.
-            Minescout AI starts at <strong>$499</strong>.
+            Minescout AI starts at <strong>$499</strong> &mdash; built and maintained by one person, no overhead.
           </div>
         </div>
 
-        <div class="tiers" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-top: 2rem;">
-          
-          <div class="tier" style="flex: 1 1 220px; max-width: 260px;">
-            <div class="tier-name">Digital Remodel</div>
-            <div class="tier-price">$<em>499</em></div>
-            <div class="tier-price-sub">one-time setup</div>
-            <div class="tier-price-sub">+ $0 or $29/mo hosting</div>
-            <p class="tier-target">A fast, high-end &ldquo;front door&rdquo; for businesses that need a modern site without AI &mdash; yet.</p>
-            <hr class="tier-divider" />
-            <ul class="tier-features">
-              <li class="tier-feature">Playfair Display typography</li>
-              <li class="tier-feature">Mobile-first responsive</li>
-              <li class="tier-feature">Sub-second load times</li>
-              <li class="tier-feature">SEO metadata &amp; schema</li>
-            </ul>
-            <div style="display: flex; gap: 8px;">
-              <a href="/contact" class="tier-cta" style="flex: 1; padding: 0.8rem 0;">Get started</a>
-              <a href="/ai/demo/assessment-ex.html" target="_blank" class="tier-cta" style="flex: 1; padding: 0.8rem 0; background: transparent; color: var(--fg); border: 1px solid var(--border);">View Demo</a>
+        <div class="tiers" style="display:flex;flex-direction:column;gap:1.25rem;margin-top:2rem;">
+
+          <div class="tier tier--horizontal" style="opacity:0;animation:fadeUp 0.5s ease 0.2s forwards;">
+            <div class="tier-h-left">
+              <div class="tier-name">Starter Site</div>
+              <div class="tier-price">$<em>499</em></div>
+              <div class="tier-price-sub">one-time &middot; no monthly fee</div>
+            </div>
+            <div class="tier-h-body">
+              <p class="tier-target">A brand-new, fast, mobile-first website built from scratch. For businesses that don&rsquo;t have a site yet &mdash; or whose current one is embarrassing them.</p>
+              <ul class="tier-features tier-features--row">
+                <li class="tier-feature">Built from scratch</li>
+                <li class="tier-feature">Mobile-first responsive</li>
+                <li class="tier-feature">Sub-second load times</li>
+                <li class="tier-feature">SEO metadata &amp; schema</li>
+              </ul>
+            </div>
+            <div class="tier-h-cta">
+              <a href="/contact" class="tier-cta btn-ghost">Get started</a>
             </div>
           </div>
 
-          <div class="tier" style="flex: 1 1 220px; max-width: 260px;">
-            <span class="tier-badge" style="background: #fff4f1; color: var(--accent); border: 1px solid #ffd5c8;">Beta — 50% Off</span>
-            <div class="tier-name">Lead-Gen Widget</div>
-            <div class="tier-price">$<em>299</em></div>
-            <div class="tier-price-sub"><span style="text-decoration: line-through; opacity: 0.6;">$599</span> one-time setup</div>
-            <div class="tier-price-sub">+ $15 per month</div>
-            <p class="tier-target">Custom calculators or quote engines. 50% off for early adopters who help refine the product.</p>
-            <hr class="tier-divider" />
-            <ul class="tier-features">
-              <li class="tier-feature">Interactive logic/math</li>
-              <li class="tier-feature">Instant lead capture</li>
-              <li class="tier-feature">Data routed to your email</li>
-              <li class="tier-feature">Co-development process</li>
-            </ul>
-            <div style="display: flex; gap: 8px;">
-              <a href="/contact" class="tier-cta" style="flex: 1; padding: 0.8rem 0; background: var(--light); color: var(--fg); border: 1px solid var(--border);">Claim Beta</a>
-              <a href="/ai/demo/lead-gen-ex.html" target="_blank" class="tier-cta" style="flex: 1; padding: 0.8rem 0; background: transparent; color: var(--fg); border: 1px solid var(--border);">View Demo</a>
+          <div class="tier tier--horizontal" style="opacity:0;animation:fadeUp 0.5s ease 0.27s forwards;">
+            <div class="tier-h-left">
+              <div class="tier-name">Digital Remodel</div>
+              <div class="tier-price">$<em>599</em></div>
+              <div class="tier-price-sub">one-time &middot; no monthly fee</div>
+            </div>
+            <div class="tier-h-body">
+              <p class="tier-target">A complete overhaul of your existing site. Same modern speed and design quality &mdash; but we start from what you already have rather than a blank canvas.</p>
+              <ul class="tier-features tier-features--row">
+                <li class="tier-feature">Redesigned UI &amp; layout</li>
+                <li class="tier-feature">Mobile-first responsive</li>
+                <li class="tier-feature">Sub-second load times</li>
+                <li class="tier-feature">SEO metadata &amp; schema</li>
+              </ul>
+            </div>
+            <div class="tier-h-cta">
+              <a href="/contact" class="tier-cta btn-ghost">Get started</a>
             </div>
           </div>
 
-          <div class="tier tier--featured" style="flex: 1 1 220px; max-width: 260px;">
-            <span class="tier-badge">Most Popular</span>
-            <div class="tier-name">Full AI Upgrade</div>
-            <div class="tier-price">$<em>749</em></div>
-            <div class="tier-price-sub">one-time setup</div>
-            <div class="tier-price-sub">+ $59 per month</div>
-            <div class="tier-was">Standard agency build: $5,000+</div>
-            <p class="tier-target">Complete remodel plus a custom-trained AI assistant. The full package for growth-stage local businesses.</p>
-            <hr class="tier-divider" />
-            <ul class="tier-features">
-              <li class="tier-feature">Everything in Remodel</li>
-              <li class="tier-feature">Custom-trained AI assistant</li>
-              <li class="tier-feature">Managed Training Bridge</li>
-              <li class="tier-feature">After-hours coverage</li>
-            </ul>
-            <div style="display: flex; gap: 8px;">
-              <a href="/contact" class="tier-cta" style="flex: 1; padding: 0.8rem 0;">Get started</a>
-              <a href="/ai/demo/assessment-ex.html" target="_blank" class="tier-cta" style="flex: 1; padding: 0.8rem 0; background: transparent; color: var(--fg); border: 1px solid var(--border);">View Demo</a>
+          <div class="tier tier--horizontal tier--featured" style="opacity:0;animation:fadeUp 0.5s ease 0.34s forwards;">
+            <div class="tier-h-left">
+              <span class="tier-badge">Most Popular</span>
+              <div class="tier-name">Full AI Upgrade</div>
+              <div class="tier-price">$<em>799</em></div>
+              <div class="tier-price-sub">one-time setup</div>
+              <div class="tier-price-sub">+ $59 / month</div>
+              <div class="tier-was">Agency equivalent: $5,000+</div>
+            </div>
+            <div class="tier-h-body">
+              <p class="tier-target">Everything in the Remodel, plus a custom-trained AI assistant that answers your customers 24/7 &mdash; handling FAQs, hours, pricing, and lead triage so you don&rsquo;t have to.</p>
+              <ul class="tier-features tier-features--row">
+                <li class="tier-feature">Everything in Remodel</li>
+                <li class="tier-feature">Custom-trained AI assistant</li>
+                <li class="tier-feature">Managed Training Bridge</li>
+                <li class="tier-feature">After-hours lead capture</li>
+                <li class="tier-feature">Monthly performance review</li>
+                <li class="tier-feature">Client portal access</li>
+              </ul>
+            </div>
+            <div class="tier-h-cta">
+              <a href="/contact" class="tier-cta btn-primary">Get started</a>
             </div>
           </div>
 
-          <div class="tier" style="flex: 1 1 220px; max-width: 260px;">
-            <span class="tier-badge" style="background: #fff4f1; color: var(--accent); border: 1px solid #ffd5c8;">Beta — 50% Off</span>
-            <div class="tier-name">Internal Ops AI</div>
-            <div class="tier-price">$<em>449</em></div>
-            <div class="tier-price-sub"><span style="text-decoration: line-through; opacity: 0.6;">$899</span> one-time setup</div>
-            <div class="tier-price-sub">+ $39 per month</div>
-            <p class="tier-target">A secure "Staff Bot" trained on your private SOPs and handbooks. Discounted as we perfect the system.</p>
-            <hr class="tier-divider" />
-            <ul class="tier-features">
-              <li class="tier-feature">Private &amp; secure access</li>
-              <li class="tier-feature">Trained on internal docs</li>
-              <li class="tier-feature">Instant HR/SOP answers</li>
-              <li class="tier-feature">Co-development process</li>
-            </ul>
-            <div style="display: flex; gap: 8px;">
-              <a href="/contact" class="tier-cta" style="flex: 1; padding: 0.8rem 0; background: var(--light); color: var(--fg); border: 1px solid var(--border);">Claim Beta</a>
-              <a href="/ai/demo/ops-bot-ex.html" target="_blank" class="tier-cta" style="flex: 1; padding: 0.8rem 0; background: transparent; color: var(--fg); border: 1px solid var(--border);">View Demo</a>
+          <div class="tier tier--horizontal" style="opacity:0;animation:fadeUp 0.5s ease 0.41s forwards;">
+            <div class="tier-h-left">
+              <div class="tier-name">Widget</div>
+              <div class="tier-price">$<em>150</em></div>
+              <div class="tier-price-sub">one-time &middot; no monthly fee</div>
+            </div>
+            <div class="tier-h-body">
+              <p class="tier-target">A custom drop-in tool for your existing site &mdash; quote calculators, lead capture forms, booking helpers. Built and embedded in under a week.</p>
+              <ul class="tier-features tier-features--row">
+                <li class="tier-feature">Interactive logic &amp; math</li>
+                <li class="tier-feature">Instant lead capture</li>
+                <li class="tier-feature">Results to your email</li>
+                <li class="tier-feature">Embeds on any site</li>
+              </ul>
+            </div>
+            <div class="tier-h-cta">
+              <a href="/contact" class="tier-cta btn-ghost">Get started</a>
             </div>
           </div>
 
-          <div class="tier tier--charter" style="flex: 1 1 220px; max-width: 260px;">
-            <span class="tier-badge tier-badge--charter">Invite Only</span>
-            <div class="tier-name">Charter Partner</div>
-            <div class="tier-price" style="font-size:1.5rem;color:var(--muted);">$<em style="color:var(--muted);">0</em></div>
-            <div class="tier-price-sub">setup &amp; hosting waived</div>
-            <div class="tier-was">Valued at $749 + $59/mo</div>
-            <p class="tier-target">For select beta partners. The full stack free in exchange for a signed testimonial. 3 spots available.</p>
-            <hr class="tier-divider" />
-            <ul class="tier-features">
-              <li class="tier-feature">Full AI Upgrade at no cost</li>
-              <li class="tier-feature">Signed testimonial required</li>
-              <li class="tier-feature">12 months of feedback</li>
-            </ul>
-            <a href="/contact" class="tier-cta">Request an invite</a>
+          <div class="tier tier--horizontal tier--charter" style="opacity:0;animation:fadeUp 0.5s ease 0.48s forwards;">
+            <div class="tier-h-left">
+              <span class="tier-badge tier-badge--charter">Invite Only</span>
+              <div class="tier-name">Charter Partner</div>
+              <div class="tier-price" style="color:var(--muted);">$<em style="color:var(--muted);">0</em></div>
+              <div class="tier-price-sub">setup &amp; monthly waived</div>
+              <div class="tier-was">Valued at $799 + $59/mo</div>
+            </div>
+            <div class="tier-h-body">
+              <p class="tier-target">The full AI Upgrade at no cost for 3 local businesses willing to co-develop the product. You get a world-class AI assistant free. I get a real-world case study and testimonial.</p>
+              <ul class="tier-features tier-features--row">
+                <li class="tier-feature">Full AI Upgrade at no cost</li>
+                <li class="tier-feature">Signed testimonial required</li>
+                <li class="tier-feature">Published case study</li>
+                <li class="tier-feature">12 months of feedback</li>
+              </ul>
+            </div>
+            <div class="tier-h-cta">
+              <a href="/contact" class="tier-cta btn-ghost">Request invite</a>
+            </div>
           </div>
 
         </div>
 
-        <div class="pricing-section-label" style="--ad:0.26s;">Not sure what plan?</div>
+        <div class="pricing-section-label" style="--ad:0.5s;">Not sure what plan?</div>
         <div style="font-size:0.78rem;color:var(--muted);line-height:1.7;margin-bottom:1.25rem;">
           Not sure which plan is right for you?
-          <button type="button" class="btn-ghost" id="open-plan-quiz" style="margin-left:0.5rem;">Take a quick quiz</button>
+          <button type="button" class="btn-ghost" id="open-plan-quiz" style="margin-left:0.5rem; padding: 0.5rem 1rem;">Take a quick quiz</button>
         </div>
 
         <div class="plan-quiz is-hidden" id="plan-quiz">
           <div class="plan-quiz-header">
             <div class="plan-quiz-title">Find your plan</div>
-            <div class="plan-quiz-desc">Answer 4 questions and we'll suggest the best Beta or standard tier for you.</div>
+            <div class="plan-quiz-desc">Answer 4 questions and we&rsquo;ll suggest the best plan for you.</div>
           </div>
           <div class="plan-quiz-progress"><div class="plan-quiz-progress-fill" id="quiz-progress"></div></div>
           <div class="plan-quiz-body" id="quiz-body">
             <div class="plan-quiz-step active" data-step="1">
-              <div class="plan-quiz-q">What is your biggest priority right now?</div>
+              <div class="plan-quiz-q">What best describes your situation?</div>
               <div class="plan-quiz-options">
-                <button type="button" class="plan-quiz-opt" data-remodel="2">I need a brand new, fast website</button>
-                <button type="button" class="plan-quiz-opt" data-widget="2">I want to get more leads/emails from my current site</button>
-                <button type="button" class="plan-quiz-opt" data-ai="2">I want a 24/7 AI to talk to my customers</button>
-                <button type="button" class="plan-quiz-opt" data-ops="2">I want to automate my internal staff questions/SOPs</button>
+                <button type="button" class="plan-quiz-opt" data-starter="2">I don&rsquo;t have a website yet</button>
+                <button type="button" class="plan-quiz-opt" data-remodel="2">I have a site but it needs a serious upgrade</button>
+                <button type="button" class="plan-quiz-opt" data-ai="2">I have a decent site but I want an AI on it</button>
+                <button type="button" class="plan-quiz-opt" data-widget="2">I just need a specific tool or form added</button>
               </div>
             </div>
             <div class="plan-quiz-step" data-step="2">
               <div class="plan-quiz-q">How do you currently handle customer questions?</div>
               <div class="plan-quiz-options">
-                <button type="button" class="plan-quiz-opt" data-remodel="1">I answer them manually, and it's fine</button>
-                <button type="button" class="plan-quiz-opt" data-ai="2">I miss leads because I can't answer fast enough</button>
-                <button type="button" class="plan-quiz-opt" data-widget="2">I need a calculator/tool to give them instant quotes</button>
+                <button type="button" class="plan-quiz-opt" data-starter="1" data-remodel="1">Phone or email — I answer them myself</button>
+                <button type="button" class="plan-quiz-opt" data-ai="2">I miss leads because I can&rsquo;t respond fast enough</button>
+                <button type="button" class="plan-quiz-opt" data-widget="2">I need an instant quote or calculator tool</button>
               </div>
             </div>
             <div class="plan-quiz-step" data-step="3">
-              <div class="plan-quiz-q">How much time do you spend training staff or answering repetitive team questions?</div>
+              <div class="plan-quiz-q">How important is after-hours customer coverage to you?</div>
               <div class="plan-quiz-options">
-                <button type="button" class="plan-quiz-opt" data-remodel="1">Not much, we are a small team</button>
-                <button type="button" class="plan-quiz-opt" data-ops="2">A lot &mdash; I wish they could just "Ask" our handbook</button>
-                <button type="button" class="plan-quiz-opt" data-ai="1">Some, but I'm more worried about customers</button>
+                <button type="button" class="plan-quiz-opt" data-starter="1" data-remodel="1">Not very — I can follow up next day</button>
+                <button type="button" class="plan-quiz-opt" data-ai="2">Very — I lose jobs when I don&rsquo;t respond fast</button>
+                <button type="button" class="plan-quiz-opt" data-widget="1">Somewhat — a form would help capture leads</button>
               </div>
             </div>
             <div class="plan-quiz-step" data-step="4">
-              <div class="plan-quiz-q">Are you open to being a "Beta Partner" for a 50% discount?</div>
+              <div class="plan-quiz-q">What&rsquo;s your priority right now?</div>
               <div class="plan-quiz-options">
-                <button type="button" class="plan-quiz-opt" data-widget="1" data-ops="1">Yes! I'd love to help co-develop a new tool</button>
-                <button type="button" class="plan-quiz-opt" data-remodel="1" data-ai="1">I prefer a finished, standard product</button>
+                <button type="button" class="plan-quiz-opt" data-starter="2" data-remodel="1">Looking professional online</button>
+                <button type="button" class="plan-quiz-opt" data-ai="2">Automating customer questions and lead capture</button>
+                <button type="button" class="plan-quiz-opt" data-widget="2">Adding a specific interactive feature to my site</button>
               </div>
             </div>
           </div>
           <div class="plan-quiz-nav" style="padding: 0 1.5rem 1.5rem;">
             <button type="button" class="plan-quiz-back" id="quiz-back" style="visibility: hidden;">&larr; Back</button>
-            <button type="button" class="plan-quiz-next" id="quiz-next" disabled>Next Step</button>
+            <button type="button" class="plan-quiz-next btn-primary" id="quiz-next" disabled>Next Step</button>
           </div>
           <div class="plan-quiz-result" id="quiz-result">
             <div class="plan-quiz-result-label">Our recommendation</div>
             <div class="plan-quiz-result-title" id="quiz-result-title"></div>
             <div class="plan-quiz-result-desc" id="quiz-result-desc"></div>
-            <a href="/contact" class="plan-quiz-result-cta" id="quiz-result-cta">Get started</a>
+            <a href="/contact" class="plan-quiz-result-cta btn-primary" id="quiz-result-cta">Get started</a>
             <button type="button" class="plan-quiz-retry" id="quiz-retry">Take the quiz again</button>
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; text-align: center; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 2.5rem 0; margin: 3rem 0; opacity: 0; animation: fadeUp 0.5s ease 0.35s forwards;">
-          <div>
-            <div style="font-family: var(--serif); font-size: 2.4rem; font-weight: 700; color: var(--fg); line-height: 1;">40<em style="color: var(--accent); font-style: normal; font-size: 1.4rem; margin-left: 2px;">hrs</em></div>
-            <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 0.75rem;">Saved per month<br>in manual Q&amp;A</div>
-          </div>
-          <div>
-            <div style="font-family: var(--serif); font-size: 2.4rem; font-weight: 700; color: var(--fg); line-height: 1;">24<em style="color: var(--accent); font-style: normal; font-size: 1.4rem; margin-left: 2px;">/7</em></div>
-            <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 0.75rem;">After-hours coverage<br>&amp; automated triage</div>
-          </div>
-          <div>
-            <div style="font-family: var(--serif); font-size: 2.4rem; font-weight: 700; color: var(--fg); line-height: 1;">&lt;1<em style="color: var(--accent); font-style: normal; font-size: 1.4rem; margin-left: 2px;">wk</em></div>
-            <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 0.75rem;">From first call<br>to live widget</div>
           </div>
         </div>
 
         <div class="pricing-section-label" style="--ad:0.38s;">What the monthly fee covers</div>
         <div class="faq-list" style="margin-bottom:2rem;opacity:0;animation:fadeUp 0.5s ease 0.4s forwards;">
           <div style="padding:1rem 1.25rem;font-size:0.78rem;color:var(--muted);line-height:1.8;border-bottom:1px solid var(--border);">
-            <strong style="color:var(--fg);">Standard rate: $59 per month.</strong> The fee is not a subscription for access &mdash; it covers four real costs:
+            <strong style="color:var(--fg);">$59 per month</strong> (Full AI Upgrade only). The fee covers four real operating costs:
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);">
             <div style="padding:1rem 1.25rem;border-right:1px solid var(--border);">
@@ -1245,7 +1247,7 @@ export const views = {
             </div>
             <div style="padding:1rem 1.25rem;">
               <div style="font-size:0.7rem;font-weight:600;color:var(--fg);margin-bottom:0.3rem;">Edge Hosting &amp; SSL</div>
-              <div style="font-size:0.72rem;color:var(--muted);line-height:1.6;">Hosted on Cloudflare&rsquo;s global edge network. 99.9% uptime, sub-second latency, and SSL included.</div>
+              <div style="font-size:0.72rem;color:var(--muted);line-height:1.6;">Hosted on Cloudflare&rsquo;s global edge network. 99.9% uptime, sub-second latency, SSL included.</div>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;">
@@ -1267,13 +1269,11 @@ export const views = {
           </div>
           <div class="pricing-cta-btns">
             <a href="/contact" class="btn-primary">Get in touch</a>
-            <a href="/ai/demo/" class="btn-ghost">See demo directory</a>
           </div>
         </div>
 
         <p class="pricing-disclaimer">
           Minescout AI is operated by Thomas Carleton, a student developer in Sammamish, WA.
-          Total infrastructure risk is $0 &mdash; all tools run on free developer tiers.
           Charter Partner spots are limited and invite-only.
           <a href="/contact">Questions? Reach out directly.</a>
         </p>

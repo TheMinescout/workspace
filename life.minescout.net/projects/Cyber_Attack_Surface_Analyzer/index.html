@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Attack Surface Analyzer</title>
+    <!-- Favicon -->
+    <link rel="icon" href="https://i.postimg.cc/zvkjFtJ9/Immediate-Actions-to-Reduce-the-Cyber-Attack-Surface-modified.png" type="image/png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Marked.js for Markdown Parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Robust Markdown rendering styles */
+        .prose h2 { font-size: 1.5rem; font-weight: 700; color: #38bdf8; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem;}
+        .prose h3 { font-size: 1.25rem; font-weight: 600; color: #7dd3fc; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1.25rem; color: #cbd5e1; line-height: 1.7; }
+        .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: #cbd5e1; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose strong { color: #f8fafc; font-weight: 600; }
+        
+        /* Table Styling Fixes */
+        .prose table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; margin-bottom: 2rem; background-color: #1e293b; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .prose th { background-color: #0f172a; border-bottom: 2px solid #334155; padding: 1rem; text-align: left; color: #38bdf8; font-weight: 700; }
+        .prose td { border-bottom: 1px solid #334155; padding: 1rem; color: #cbd5e1; }
+        .prose tr:last-child td { border-bottom: none; }
+        
+        .fade-in { animation: fadeIn 0.4s ease-in-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans min-h-screen p-6 flex flex-col items-center justify-center">
+
+    <div class="max-w-3xl w-full">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">
+                Minescout Security Audit
+            </h1>
+            <p class="text-slate-400">Interactive Threat Modeling</p>
+        </header>
+
+        <!-- PHASE 1: Wizard Container -->
+        <div id="quiz-container" class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl min-h-[300px] flex flex-col justify-center transition-all">
+            <div id="progress-text" class="text-xs text-cyan-500 font-mono mb-4 uppercase tracking-wider">Step 1: Baseline Context</div>
+            <h2 id="question-text" class="text-2xl font-semibold text-white mb-8 leading-tight">Loading...</h2>
+            <div id="options-container" class="space-y-3"></div>
+        </div>
+
+        <!-- PHASE 1.5: Ethics & Transparency Brief -->
+        <div id="ethics-container" class="hidden bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl transition-all">
+            <div class="text-xs text-indigo-400 font-mono mb-4 uppercase tracking-wider flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                AI Ethics & Data Transparency
+            </div>
+            
+            <h2 class="text-2xl font-semibold text-white mb-6 leading-tight">Before the AI Analyzes Your Setup...</h2>
+            
+            <div class="space-y-6 text-slate-300">
+                <div class="bg-slate-900/50 p-5 rounded-lg border border-slate-700">
+                    <h3 class="text-lg font-bold text-cyan-400 mb-2">1. Data Privacy (Zero Retention)</h3>
+                    <p class="text-sm">This tool collects absolutely no data. Your threat profile lives exclusively in your browser's temporary memory. Once you close this tab, your data vanishes. There are no databases, tracking cookies, or analytics.</p>
+                </div>
+
+                <div class="bg-slate-900/50 p-5 rounded-lg border border-slate-700">
+                    <h3 class="text-lg font-bold text-cyan-400 mb-2">2. Ethical Objective (White Hat AI)</h3>
+                    <p class="text-sm">This AI is strictly programmed for defensive threat modeling. It analyzes vulnerabilities to help you secure your digital footprint, adhering to ethical cybersecurity practices. It will not execute code, test your network, or ask for sensitive passwords.</p>
+                </div>
+
+                <div class="bg-slate-900/50 p-5 rounded-lg border border-slate-700">
+                    <h3 class="text-lg font-bold text-cyan-400 mb-2">3. Architecture & Accessibility</h3>
+                    <p class="text-sm">Individually coded for the Scouting AI Merit Badge, this project leverages completely free, self-sufficient infrastructure. It interfaces with an open-source Large Language Model (Llama-3) via Cloudflare Workers to provide advanced analysis at zero cost.</p>
+                </div>
+            </div>
+
+            <button onclick="fetchBatchedAiQuestions()" class="w-full mt-8 bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-lg transition-colors shadow-lg">
+                I Understand. Begin AI Analysis
+            </button>
+        </div>
+
+        <!-- PHASE 2: Dynamic Chat Container -->
+        <div id="chat-container" class="hidden bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl transition-all">
+            <div class="text-xs text-cyan-500 font-mono mb-4 uppercase tracking-wider flex justify-between">
+                <span id="ai-progress-text">Phase 2: Deep Dive</span>
+                <span class="text-slate-400">Powered by Llama-3</span>
+            </div>
+            
+            <div class="bg-slate-900 p-6 rounded-lg border border-slate-700 mb-6 shadow-inner min-h-[200px]">
+                <div class="flex items-start gap-4 border-b border-slate-800 pb-4">
+                    <div class="text-3xl mt-1">🤖</div>
+                    <h3 id="ai-question-title" class="text-xl font-medium text-white leading-relaxed">
+                        Loading...
+                    </h3>
+                </div>
+                
+                <div id="ai-options-container" class="space-y-4 mt-4"></div>
+            </div>
+
+            <div id="chat-controls" class="flex flex-wrap gap-3 mt-6">
+                <button onclick="skipAiQuestion()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-4 rounded-lg transition-colors border border-slate-600">Skip Question</button>
+                <button onclick="finalizeReport()" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-lg border border-indigo-400/30">🏁 Generate Report Early</button>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading-state" class="hidden flex-col items-center justify-center space-y-4 py-12">
+            <svg class="animate-spin h-10 w-10 text-cyan-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p id="loading-text" class="text-cyan-400 font-mono animate-pulse">Thinking...</p>
+        </div>
+
+        <!-- PHASE 3: Results Container -->
+        <div id="results-container" class="hidden bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl mt-8 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
+            <div id="ai-output" class="prose max-w-none"></div>
+            <button onclick="location.reload()" class="mt-8 text-sm text-cyan-400 hover:text-cyan-300 underline">Start New Audit</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. SECURE LINK DECRYPTION ---
+        const ENCODED_URL = "0d111115165f4a4a110d0a08041648060d04114b11080604170900110a0b54544b120a170e0017164b010013";
+        const URL_KEY = 101;
+
+        function getApiUrl() {
+            let decoded = "";
+            for (let i = 0; i < ENCODED_URL.length; i += 2) {
+                let hexPair = ENCODED_URL.substr(i, 2);
+                let charCode = parseInt(hexPair, 16) ^ URL_KEY;
+                decoded += String.fromCharCode(charCode);
+            }
+            return decoded;
+        }
+        const API_URL = getApiUrl();
+
+        // --- 2. SYSTEM PROMPTS ---
+        const PROMPT_BATCH_QUESTIONS = `You are an elite cybersecurity analyst interviewing a client. You MUST read their accumulated profile closely. DO NOT forget their previous answers.
+        
+        CRITICAL RULE 1: IDENTIFY WEAK LINKS. Analyze the user's FULL accumulated setup profile provided. Identify their weakest security links. Pick ONE specific vulnerability category based on those links. Ask exactly 3 deep-dive multiple choice questions focusing ONLY on that category. Do not repeat a category you previously asked about.
+        
+        CRITICAL RULE 2: DO NOT ASK QUIZ OR TRIVIA QUESTIONS. You are an investigator asking about THEIR actual habits, configurations, or hardware. 
+        Example BAD Question: "What is the primary risk of cloud sync?"
+        Example GOOD Question: "How do you handle Two-Factor Authentication (2FA) for your primary email account?"
+
+        CRITICAL RULE 3: You MUST output your response as a RAW JSON ARRAY containing EXACTLY 3 objects. Do not include markdown formatting like \`\`\`json. No text before or after the array.
+        
+        Format EXACTLY like this:
+        [
+          {
+            "question": "First investigative question digging into the chosen weak link?",
+            "options": [
+              { "label": "Option text representing a choice they might make", "explanation": "Why this specific setup matters.", "record": "What this choice reveals about their attack surface." }
+            ]
+          },
+          { "question": "Second investigative question about the same weak link...", "options": [...] },
+          { "question": "Third investigative question about the same weak link...", "options": [...] }
+        ]
+        Provide 2 to 4 options per question.`;
+
+        const PROMPT_REPORT_MODE = `You are a top-tier cybersecurity analyst compiling a threat report FOR the user. Write it IN THE FIRST PERSON from their perspective (use "I", "my", "me"). Read their ENTIRE accumulated profile carefully to assign accurate risk ratings.
+        
+        CRITICAL OUTPUT FORMAT RULES:
+        1. You MUST put a BLANK LINE before and after the table so it renders correctly.
+        2. You MUST use exactly this table format. Assign emojis based on their accumulated answers: 🔴 for High Risk, 🟡 for Med Risk, 🟢 for Low Risk.
+        
+        | Category | Risk Level | Primary Threat | Quick Fix |
+        | :--- | :--- | :--- | :--- |
+        | [Category] | 🔴 High | [Threat] | [Fix] |
+        
+        3. Below the table, provide a detailed, categorized list mapping directly to the answers they provided:
+        
+        ### 1. Physical Hardware & Endpoints
+        * **[Device Type]:** * **Access Vector:** [Explain how attackers might get in based on their setup]
+        
+        Speak entirely in the first person ("My attack surface includes..."). Ensure no data or known weak links from their profile are forgotten.`;
+
+        // --- 3. STATE MANAGEMENT ---
+        let userProfile = [];
+        let conversationHistory = []; 
+        let questionCounter = 1;
+        
+        // Chat Phase State (Batches)
+        let batchedAiQuestions = [];
+        let currentAiIndex = 0;
+        let totalAiQuestionsAsked = 0;
+        let currentBatchCount = 1;
+        const MAX_BATCHES = 5; // 5 batches total (15 questions)
+        
+        let fetchRetryCount = 0;
+        const MAX_RETRIES = 2; // Up to 3 attempts total per batch fetch
+        
+        // DOM Elements
+        const quizContainer = document.getElementById('quiz-container');
+        const ethicsContainer = document.getElementById('ethics-container');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const progressText = document.getElementById('progress-text');
+        
+        const chatContainer = document.getElementById('chat-container');
+        const aiQuestionTitle = document.getElementById('ai-question-title');
+        const aiOptionsContainer = document.getElementById('ai-options-container');
+        const aiProgressText = document.getElementById('ai-progress-text');
+        
+        const loadingState = document.getElementById('loading-state');
+        const loadingText = document.getElementById('loading-text');
+        const resultsContainer = document.getElementById('results-container');
+        const aiOutput = document.getElementById('ai-output');
+
+        // --- 4. PHASE 1: WIZARD ---
+        const questions = {
+            'start': {
+                text: "Do you use a smartphone as part of your daily routine?",
+                options: [
+                    { label: "Yes", next: 'phoneOS', record: "Uses a smartphone." },
+                    { label: "No", next: 'computers', record: "Does not use a smartphone." }
+                ]
+            },
+            'phoneOS': {
+                text: "Which ecosystem does your phone run on?",
+                options: [
+                    { label: "Android", next: 'computers', record: "Phone OS: Android." },
+                    { label: "iOS (Apple)", next: 'computers', record: "Phone OS: iOS." },
+                    { label: "Other / Custom ROM", next: 'computers', record: "Phone OS: Custom/Other." }
+                ]
+            },
+            'computers': {
+                text: "What types of computers are on your primary network?",
+                options: [
+                    { label: "Only personal (Linux/Windows/Mac)", next: 'iot', record: "Network: Personal computers only." },
+                    { label: "Managed school/work devices (Monitored)", next: 'iot', record: "Network: Contains managed/monitored school/work devices." },
+                    { label: "A mix of personal and managed devices", next: 'iot', record: "Network: Mixed environment." }
+                ]
+            },
+            'iot': {
+                text: "Do you have Smart/IoT devices at home (smart locks, cameras, smart bulbs)?",
+                options: [
+                    { label: "Yes, heavily integrated", next: 'passwordManager', record: "IoT: Heavily integrated smart home." },
+                    { label: "A few basic devices", next: 'passwordManager', record: "IoT: A few basic smart devices." },
+                    { label: "No IoT devices", next: 'passwordManager', record: "IoT: No smart home devices." }
+                ]
+            },
+            'passwordManager': {
+                text: "Do you use a Password Manager (like Bitwarden, 1Password, or LastPass)?",
+                options: [
+                    { label: "Yes", next: 'sharedPassword', record: "Credentials: Uses a password manager." },
+                    { label: "No, I memorize or write them down", next: 'cloud', record: "Credentials: Does not use a password manager." },
+                    { label: "No, I reuse a few passwords", next: 'cloud', record: "Credentials: Reuses passwords across sites." }
+                ]
+            },
+            'sharedPassword': {
+                text: "Is the Master Password for your vault shared with or known by anyone else?",
+                options: [
+                    { label: "Yes, someone else knows it", next: 'cloud', record: "Vault Risk: Master password is known by another person." },
+                    { label: "No, strictly private", next: 'cloud', record: "Vault Risk: Master password is strictly private." }
+                ]
+            },
+            'cloud': {
+                text: "Do you use automatic Cloud Synchronization (Google Drive, OneDrive)?",
+                options: [
+                    { label: "Yes, files sync automatically", next: 'gaming', record: "Cloud: Automatic cloud synchronization enabled." },
+                    { label: "No, I manage backups manually", next: 'gaming', record: "Cloud: Manual backups only." }
+                ]
+            },
+            'gaming': {
+                text: "Do you download game mods or use third-party game launchers?",
+                options: [
+                    { label: "Yes, frequently", next: 'show_ethics', record: "Supply Chain: Frequently downloads game mods/third-party launchers." },
+                    { label: "Rarely / No", next: 'show_ethics', record: "Supply Chain: Low risk gaming/modding habits." }
+                ]
+            }
+        };
+
+        let currentQuestionId = 'start';
+
+        function loadWizardQuestion(id) {
+            if (id === 'show_ethics') {
+                quizContainer.classList.add('hidden');
+                ethicsContainer.classList.remove('hidden');
+                return;
+            }
+            
+            optionsContainer.innerHTML = '';
+            questionText.classList.remove('fade-in');
+            optionsContainer.classList.remove('fade-in');
+            void questionText.offsetWidth; 
+            questionText.classList.add('fade-in');
+            optionsContainer.classList.add('fade-in');
+
+            const q = questions[id];
+            questionText.textContent = q.text;
+            progressText.textContent = `Baseline Phase: Step ${questionCounter} of 8`;
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-slate-700 hover:bg-cyan-600 transition-colors duration-200 border border-slate-600 rounded-lg p-4 text-slate-100 font-medium focus:outline-none focus:ring-2 focus:ring-cyan-500";
+                btn.textContent = opt.label;
+                btn.onclick = () => {
+                    if (opt.record) userProfile.push(opt.record);
+                    questionCounter++;
+                    loadWizardQuestion(opt.next);
+                };
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        // --- 5. PHASE 2: BATCHED AI CHAT ---
+        async function fetchBatchedAiQuestions() {
+            chatContainer.classList.add('hidden');
+            ethicsContainer.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            loadingState.classList.add('flex');
+            
+            if (fetchRetryCount > 0) {
+                loadingText.innerText = `AI JSON formatting error... Retrying (${fetchRetryCount}/${MAX_RETRIES})...`;
+            } else {
+                loadingText.innerText = `Drafting Question Batch ${currentBatchCount} of ${MAX_BATCHES}...`;
+            }
+
+            currentAiIndex = 0;
+            batchedAiQuestions = [];
+
+            const baseContext = userProfile.join('\n- ');
+            
+            let userMessage = `=== ACCUMULATED USER PROFILE ===\n- ${baseContext}\n================================\n\nReview the ENTIRE accumulated profile above. Identify my weakest security links, and pick ONE specific category of vulnerability to focus on for this batch. Generate exactly 3 NEW JSON-formatted investigative questions digging deep into that specific weak link. Pick a DIFFERENT weak link category than previous batches.`;
+            
+            if (fetchRetryCount > 0) {
+                userMessage += "\n\nCRITICAL SYSTEM WARNING: Your last response contained a JSON syntax error. You MUST ensure your output is perfectly formatted JSON with correct brackets and commas, or the system will crash.";
+            }
+            
+            const outgoingMessages = [...conversationHistory, { role: 'user', content: userMessage }];
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        client_id: 'attack-surface-tool',
+                        system_override: PROMPT_BATCH_QUESTIONS,
+                        temperature: 0.4, 
+                        messages: outgoingMessages
+                    })
+                });
+
+                if (!response.ok) throw new Error(`HTTP Status: ${response.status}`);
+                const data = await response.json();
+                
+                const jsonMatch = data.content.match(/\[[\s\S]*\]/);
+                if (!jsonMatch) throw new Error("AI did not return a valid JSON array");
+                
+                batchedAiQuestions = JSON.parse(jsonMatch[0]);
+                
+                fetchRetryCount = 0;
+                // Add successful prompt to history to maintain context
+                conversationHistory.push({
+                    role: 'user', 
+                    content: `=== ACCUMULATED USER PROFILE ===\n- ${baseContext}\n================================\n\nReview the ENTIRE accumulated profile above. Identify my weakest security links, and pick ONE specific category of vulnerability to focus on for this batch. Generate exactly 3 NEW JSON-formatted investigative questions digging deep into that specific weak link. Pick a DIFFERENT weak link category than previous batches.`
+                });
+                
+                loadingState.classList.add('hidden');
+                chatContainer.classList.remove('hidden');
+                renderNextAiQuestion();
+
+            } catch (error) {
+                console.error('Batch Fetch Error:', error);
+                
+                if (fetchRetryCount < MAX_RETRIES) {
+                    fetchRetryCount++;
+                    console.warn(`Retrying fetch... Attempt ${fetchRetryCount} of ${MAX_RETRIES}`);
+                    setTimeout(fetchBatchedAiQuestions, 1000); 
+                } else {
+                    fetchRetryCount = 0; 
+                    alert("The AI encountered an unrecoverable formatting error after multiple attempts. Proceeding to the final report.");
+                    finalizeReport(); 
+                }
+            }
+        }
+
+        function renderNextAiQuestion() {
+            // Check if we need a new batch, and enforce the 5 batch max limit
+            if (currentAiIndex >= batchedAiQuestions.length) {
+                if (currentBatchCount >= MAX_BATCHES) {
+                    return finalizeReport(); // Limit reached, generate final report
+                } else {
+                    currentBatchCount++;
+                    return fetchBatchedAiQuestions(); // Fetch next batch
+                }
+            }
+
+            totalAiQuestionsAsked++;
+
+            aiQuestionTitle.classList.remove('fade-in');
+            aiOptionsContainer.classList.remove('fade-in');
+            void aiQuestionTitle.offsetWidth; 
+            aiQuestionTitle.classList.add('fade-in');
+            aiOptionsContainer.classList.add('fade-in');
+
+            const currentQ = batchedAiQuestions[currentAiIndex];
+            aiProgressText.innerText = `Phase 2: Deep Dive (Batch ${currentBatchCount}/${MAX_BATCHES} - Question ${totalAiQuestionsAsked})`;
+            aiQuestionTitle.innerText = currentQ.question;
+            aiOptionsContainer.innerHTML = '';
+
+            currentQ.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-slate-800 hover:bg-slate-700 transition-colors duration-200 border border-slate-600 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-cyan-500 group";
+                btn.innerHTML = `
+                    <div class="text-cyan-400 font-bold mb-1 text-lg group-hover:text-cyan-300 transition-colors">${opt.label}</div>
+                    <div class="text-slate-400 text-sm leading-relaxed">${opt.explanation}</div>
+                `;
+                btn.onclick = () => {
+                    userProfile.push(opt.record); 
+                    currentAiIndex++;
+                    renderNextAiQuestion(); 
+                };
+                aiOptionsContainer.appendChild(btn);
+            });
+        }
+
+        function skipAiQuestion() {
+            const questionTextLog = aiQuestionTitle.innerText;
+            userProfile.push(`Interrogation Detail -> Question: "${questionTextLog}" | Answer: "Skipped"`);
+            currentAiIndex++;
+            renderNextAiQuestion(); 
+        }
+
+        // --- 6. PHASE 3: FINAL REPORT ---
+        async function finalizeReport() {
+            chatContainer.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            loadingState.classList.add('flex');
+            loadingText.innerText = "Compiling Final Threat Report...";
+
+            const finalContext = userProfile.join('\n- ');
+            const finalMessages = [
+                { role: 'user', content: `=== FINAL ACCUMULATED PROFILE ===\n- ${finalContext}\n=================================\n\nPlease output my final markdown attack surface infographic and detailed access vector list. Do not forget any of the details listed above.` }
+            ];
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        client_id: 'attack-surface-tool',
+                        system_override: PROMPT_REPORT_MODE,
+                        temperature: 0.2, // Keep low for markdown formatting stability
+                        messages: finalMessages
+                    })
+                });
+
+                if (!response.ok) throw new Error(`HTTP Status: ${response.status}`);
+                const data = await response.json();
+                
+                loadingState.classList.add('hidden');
+                resultsContainer.classList.remove('hidden');
+                aiOutput.innerHTML = marked.parse(data.content);
+                resultsContainer.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('Report Error:', error);
+                alert('Connection to Minescout AI failed during final report generation.');
+                loadingState.classList.add('hidden');
+                chatContainer.classList.remove('hidden');
+            }
+        }
+
+        window.onload = () => {
+            loadWizardQuestion(currentQuestionId);
+        };
+    </script>
+</body>
+</html>
