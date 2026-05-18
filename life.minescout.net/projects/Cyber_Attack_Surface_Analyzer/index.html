@@ -10,6 +10,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Marked.js for Markdown Parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Chart.js for Dynamic Dashboards -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Robust Markdown rendering styles */
         .prose h2 { font-size: 1.5rem; font-weight: 700; color: #38bdf8; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem;}
@@ -30,11 +32,43 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Particle Canvas Styling */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* Keep content above particles */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Chat Scroll Area */
+        #post-report-chat-history {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        /* Custom scrollbar for chat */
+        #post-report-chat-history::-webkit-scrollbar { width: 6px; }
+        #post-report-chat-history::-webkit-scrollbar-track { background: #1e293b; border-radius: 4px; }
+        #post-report-chat-history::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-200 font-sans min-h-screen p-6 flex flex-col items-center justify-center">
+<body class="bg-slate-900 text-slate-200 font-sans min-h-screen p-6 flex flex-col items-center justify-center relative">
 
-    <div class="max-w-3xl w-full">
+    <!-- Particle Background -->
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="max-w-4xl w-full content-wrapper my-8">
         <!-- Header -->
         <header class="text-center mb-8">
             <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">
@@ -44,14 +78,14 @@
         </header>
 
         <!-- PHASE 1: Wizard Container -->
-        <div id="quiz-container" class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl min-h-[300px] flex flex-col justify-center transition-all">
+        <div id="quiz-container" class="bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl min-h-[300px] flex flex-col justify-center transition-all bg-opacity-90 backdrop-blur-sm">
             <div id="progress-text" class="text-xs text-cyan-500 font-mono mb-4 uppercase tracking-wider">Step 1: Baseline Context</div>
             <h2 id="question-text" class="text-2xl font-semibold text-white mb-8 leading-tight">Loading...</h2>
             <div id="options-container" class="space-y-3"></div>
         </div>
 
         <!-- PHASE 1.5: Ethics & Transparency Brief -->
-        <div id="ethics-container" class="hidden bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl transition-all">
+        <div id="ethics-container" class="hidden bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl transition-all bg-opacity-90 backdrop-blur-sm">
             <div class="text-xs text-indigo-400 font-mono mb-4 uppercase tracking-wider flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                 AI Ethics & Data Transparency
@@ -60,35 +94,35 @@
             <h2 class="text-2xl font-semibold text-white mb-6 leading-tight">Before the AI Analyzes Your Setup...</h2>
             
             <div class="space-y-6 text-slate-300">
-                <div class="bg-slate-900/50 p-5 rounded-lg border border-slate-700">
+                <div class="bg-slate-900/70 p-5 rounded-lg border border-slate-700">
                     <h3 class="text-lg font-bold text-cyan-400 mb-2">1. Data Privacy (Zero Retention)</h3>
                     <p class="text-sm">This tool collects absolutely no data. Your threat profile lives exclusively in your browser's temporary memory. Once you close this tab, your data vanishes. There are no databases, tracking cookies, or analytics.</p>
                 </div>
 
-                <div class="bg-slate-900/50 p-5 rounded-lg border border-slate-700">
+                <div class="bg-slate-900/70 p-5 rounded-lg border border-slate-700">
                     <h3 class="text-lg font-bold text-cyan-400 mb-2">2. Ethical Objective (White Hat AI)</h3>
                     <p class="text-sm">This AI is strictly programmed for defensive threat modeling. It analyzes vulnerabilities to help you secure your digital footprint, adhering to ethical cybersecurity practices. It will not execute code, test your network, or ask for sensitive passwords.</p>
                 </div>
 
-                <div class="bg-slate-900/50 p-5 rounded-lg border border-slate-700">
+                <div class="bg-slate-900/70 p-5 rounded-lg border border-slate-700">
                     <h3 class="text-lg font-bold text-cyan-400 mb-2">3. Architecture & Accessibility</h3>
                     <p class="text-sm">Individually coded for the Scouting AI Merit Badge, this project leverages completely free, self-sufficient infrastructure. It interfaces with an open-source Large Language Model (Llama-3) via Cloudflare Workers to provide advanced analysis at zero cost.</p>
                 </div>
             </div>
 
-            <button onclick="fetchBatchedAiQuestions()" class="w-full mt-8 bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-lg transition-colors shadow-lg">
+            <button onclick="startAiChat()" class="w-full mt-8 bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-lg transition-colors shadow-lg">
                 I Understand. Begin AI Analysis
             </button>
         </div>
 
-        <!-- PHASE 2: Dynamic Chat Container -->
-        <div id="chat-container" class="hidden bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl transition-all">
+        <!-- PHASE 2: Conversational Chat Container -->
+        <div id="chat-container" class="hidden bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl transition-all bg-opacity-90 backdrop-blur-sm">
             <div class="text-xs text-cyan-500 font-mono mb-4 uppercase tracking-wider flex justify-between">
                 <span id="ai-progress-text">Phase 2: Deep Dive</span>
                 <span class="text-slate-400">Powered by Llama-3</span>
             </div>
             
-            <div class="bg-slate-900 p-6 rounded-lg border border-slate-700 mb-6 shadow-inner min-h-[200px]">
+            <div class="bg-slate-900/80 p-6 rounded-lg border border-slate-700 mb-6 shadow-inner min-h-[150px]">
                 <div class="flex items-start gap-4 border-b border-slate-800 pb-4">
                     <div class="text-3xl mt-1">🤖</div>
                     <h3 id="ai-question-title" class="text-xl font-medium text-white leading-relaxed">
@@ -96,17 +130,20 @@
                     </h3>
                 </div>
                 
-                <div id="ai-options-container" class="space-y-4 mt-4"></div>
+                <div class="mt-4 flex gap-3">
+                    <input type="text" id="user-chat-input" class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="Type your answer (e.g., 'Yes', 'No', 'Sometimes')..." autocomplete="off">
+                    <button onclick="submitChatAnswer()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 px-6 rounded-lg transition-colors">Send</button>
+                </div>
             </div>
 
             <div id="chat-controls" class="flex flex-wrap gap-3 mt-6">
-                <button onclick="skipAiQuestion()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-4 rounded-lg transition-colors border border-slate-600">Skip Question</button>
+                <button onclick="skipAiQuestion()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-4 rounded-lg transition-colors border border-slate-600">Skip Topic</button>
                 <button onclick="finalizeReport()" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-lg border border-indigo-400/30">🏁 Generate Report Early</button>
             </div>
         </div>
 
         <!-- Loading Spinner -->
-        <div id="loading-state" class="hidden flex-col items-center justify-center space-y-4 py-12">
+        <div id="loading-state" class="hidden flex-col items-center justify-center space-y-4 py-12 bg-slate-800/90 rounded-xl backdrop-blur-sm border border-slate-700 shadow-2xl">
             <svg class="animate-spin h-10 w-10 text-cyan-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -115,14 +152,202 @@
         </div>
 
         <!-- PHASE 3: Results Container -->
-        <div id="results-container" class="hidden bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl mt-8 relative overflow-hidden">
+        <div id="results-container" class="hidden bg-slate-800 border border-slate-700 rounded-xl p-8 shadow-2xl relative overflow-hidden bg-opacity-95 backdrop-blur-md">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
-            <div id="ai-output" class="prose max-w-none"></div>
-            <button onclick="location.reload()" class="mt-8 text-sm text-cyan-400 hover:text-cyan-300 underline">Start New Audit</button>
+            
+            <!-- Dashboard Charts Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 pb-8 border-b border-slate-700">
+                <!-- Speedometer -->
+                <div class="flex flex-col items-center">
+                    <h3 class="text-lg font-semibold text-cyan-400 mb-4 tracking-wide uppercase text-center">Security Posture Score</h3>
+                    <div class="w-full max-w-[250px] relative h-[150px]">
+                        <canvas id="gaugeChart"></canvas>
+                        <div id="gaugeScoreText" class="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-4xl font-bold text-white mb-2">0</div>
+                    </div>
+                </div>
+                <!-- Bell Curve -->
+                <div class="flex flex-col items-center w-full">
+                    <h3 class="text-lg font-semibold text-cyan-400 mb-4 tracking-wide uppercase text-center">Global Percentile Rank</h3>
+                    <div class="w-full h-[150px] relative">
+                        <canvas id="bellCurveChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Output -->
+            <div id="ai-output" class="prose max-w-none border-b border-slate-700 pb-8 mb-8"></div>
+
+            <!-- Post-Report Interactive Chat -->
+            <div id="post-report-chat-container">
+                <div class="text-center mb-6">
+                    <h3 class="text-xl font-bold text-white mb-2">Have questions about your report?</h3>
+                    <p class="text-slate-400 text-sm">Ask the AI about your score, why certain threats apply to you, or how to implement next steps.</p>
+                </div>
+                
+                <div id="post-report-chat-history" class="space-y-4 mb-4 pr-2">
+                    <!-- Chat messages will inject here -->
+                </div>
+
+                <div class="flex gap-3 mt-4">
+                    <input type="text" id="post-chat-input" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., 'How do I fix my IoT vulnerability?'" autocomplete="off">
+                    <button onclick="submitPostReportChat()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center min-w-[100px]">
+                        <span id="post-chat-btn-text">Ask AI</span>
+                        <svg id="post-chat-spinner" class="hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="mt-10 w-full text-center text-sm text-cyan-500 hover:text-cyan-400 transition-colors uppercase tracking-widest py-4 border border-cyan-500/30 rounded-lg bg-slate-900/50">Start New Audit From Scratch</button>
+            <p class="text-center text-xs text-slate-500 mt-4 flex items-center justify-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                We never save data. All conversation history and scores will be permanently lost upon leaving this page.
+            </p>
         </div>
     </div>
 
     <script>
+        // --- 0. ADVANCED PARTICLE BACKGROUND ENGINE ---
+        const particleCanvas = document.getElementById('particle-canvas');
+        const pCtx = particleCanvas.getContext('2d');
+        let particlesArray = [];
+        let isParticlesActive = true; 
+        
+        let mouse = { x: null, y: null, radius: 180 };
+
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        // Clear mouse position when leaving window to stop gravity pull
+        window.addEventListener('mouseout', function() {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x; this.y = y;
+                this.directionX = directionX; this.directionY = directionY;
+                this.baseSize = size; 
+                this.size = size;
+                this.color = color;
+                // Twinkle properties
+                this.pulseSpeed = (Math.random() * 0.05) + 0.01;
+                this.pulseAngle = Math.random() * Math.PI * 2;
+            }
+            draw() {
+                pCtx.beginPath();
+                pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                pCtx.fillStyle = this.color;
+                pCtx.fill();
+            }
+            update() {
+                // Bounce off edges
+                if (this.x > particleCanvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > particleCanvas.height || this.y < 0) this.directionY = -this.directionY;
+
+                // Collision detection / Mouse interactivity
+                if (mouse.x != null && mouse.y != null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (distance < mouse.radius) {
+                        // Repel particles slightly away from mouse
+                        const forceDirectionX = dx / distance;
+                        const forceDirectionY = dy / distance;
+                        const maxDistance = mouse.radius;
+                        const force = (maxDistance - distance) / maxDistance;
+                        const directionX = forceDirectionX * force * 2;
+                        const directionY = forceDirectionY * force * 2;
+
+                        this.x -= directionX;
+                        this.y -= directionY;
+                    }
+                }
+
+                // Twinkle effect (pulsing size)
+                this.pulseAngle += this.pulseSpeed;
+                this.size = this.baseSize + Math.sin(this.pulseAngle) * 1.5;
+                if (this.size < 0.5) this.size = 0.5; // Prevent negative size
+
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            // Calculate based on screen size, but CAP at 120 to protect system performance
+            let calculatedCount = Math.floor((particleCanvas.height * particleCanvas.width) / 9000);
+            let numberOfParticles = Math.min(calculatedCount, 120); 
+            
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1.5;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                // Slower, smoother movement
+                let directionX = (Math.random() * 1) - 0.5;
+                let directionY = (Math.random() * 1) - 0.5;
+                let color = '#38bdf8'; // brighter cyan
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        function animateParticles() {
+            if (!isParticlesActive) return;
+            requestAnimationFrame(animateParticles);
+            pCtx.clearRect(0, 0, innerWidth, innerHeight);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connectParticles();
+        }
+
+        function connectParticles() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                // Connect to mouse
+                if (mouse.x != null && mouse.y != null) {
+                    let mouseDistance = Math.sqrt(Math.pow(particlesArray[a].x - mouse.x, 2) + Math.pow(particlesArray[a].y - mouse.y, 2));
+                    if (mouseDistance < mouse.radius) {
+                        opacityValue = 1 - (mouseDistance / mouse.radius);
+                        pCtx.strokeStyle = 'rgba(56, 189, 248,' + (opacityValue * 0.8) + ')';
+                        pCtx.lineWidth = 1.5;
+                        pCtx.beginPath();
+                        pCtx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        pCtx.lineTo(mouse.x, mouse.y);
+                        pCtx.stroke();
+                    }
+                }
+
+                // Connect to other particles
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = Math.pow(particlesArray[a].x - particlesArray[b].x, 2) + Math.pow(particlesArray[a].y - particlesArray[b].y, 2);
+                    let maxConnectDistance = (particleCanvas.width/7) * (particleCanvas.height/7);
+                    
+                    if (distance < maxConnectDistance) {
+                        opacityValue = 1 - (distance / maxConnectDistance);
+                        pCtx.strokeStyle = 'rgba(14, 165, 233,' + (opacityValue * 0.4) + ')'; // Deeper blue, lower opacity
+                        pCtx.lineWidth = 1;
+                        pCtx.beginPath();
+                        pCtx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        pCtx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        pCtx.stroke();
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('resize', function() {
+            particleCanvas.width = innerWidth;
+            particleCanvas.height = innerHeight;
+            initParticles();
+        });
+
+
         // --- 1. SECURE LINK DECRYPTION ---
         const ENCODED_URL = "0d111115165f4a4a110d0a08041648060d04114b11080604170900110a0b54544b120a170e0017164b010013";
         const URL_KEY = 101;
@@ -139,60 +364,40 @@
         const API_URL = getApiUrl();
 
         // --- 2. SYSTEM PROMPTS ---
-        const PROMPT_BATCH_QUESTIONS = `You are an elite cybersecurity analyst interviewing a client. You MUST read their accumulated profile closely. DO NOT forget their previous answers.
+        const PROMPT_CHAT_MODE = `You are a clinical, professional cybersecurity auditor evaluating a client.
         
-        CRITICAL RULE 1: IDENTIFY WEAK LINKS. Analyze the user's FULL accumulated setup profile provided. Identify their weakest security links. Pick ONE specific vulnerability category based on those links. Ask exactly 3 deep-dive multiple choice questions focusing ONLY on that category. Do not repeat a category you previously asked about.
-        
-        CRITICAL RULE 2: DO NOT ASK QUIZ OR TRIVIA QUESTIONS. You are an investigator asking about THEIR actual habits, configurations, or hardware. 
-        Example BAD Question: "What is the primary risk of cloud sync?"
-        Example GOOD Question: "How do you handle Two-Factor Authentication (2FA) for your primary email account?"
+        CRITICAL RULE 1: BE PROFESSIONAL. Do not be overly friendly, personal, or creepy. Be clinical and direct.
+        CRITICAL RULE 2: MOVE ON. Identify ONE weak link in their profile that hasn't been asked about. Ask exactly ONE question about it. NEVER ask about the same topic twice in a row.
+        CRITICAL RULE 3: Output ONLY the question text (1-2 sentences maximum). No greetings, no JSON, just the question.`;
 
-        CRITICAL RULE 3: You MUST output your response as a RAW JSON ARRAY containing EXACTLY 3 objects. Do not include markdown formatting like \`\`\`json. No text before or after the array.
+        const PROMPT_REPORT_MODE = `You are a clinical cybersecurity auditor compiling a final threat report. Write it IN THE FIRST PERSON from the user's perspective (use "I", "my").
         
-        Format EXACTLY like this:
-        [
-          {
-            "question": "First investigative question digging into the chosen weak link?",
-            "options": [
-              { "label": "Option text representing a choice they might make", "explanation": "Why this specific setup matters.", "record": "What this choice reveals about their attack surface." }
-            ]
-          },
-          { "question": "Second investigative question about the same weak link...", "options": [...] },
-          { "question": "Third investigative question about the same weak link...", "options": [...] }
-        ]
-        Provide 2 to 4 options per question.`;
-
-        const PROMPT_REPORT_MODE = `You are a top-tier cybersecurity analyst compiling a threat report FOR the user. Write it IN THE FIRST PERSON from their perspective (use "I", "my", "me"). Read their ENTIRE accumulated profile carefully to assign accurate risk ratings.
+        CRITICAL RULE 1: THE DASHBOARD JSON. At the VERY END of your response, you MUST append a JSON string containing their estimated security score (0-100) and public percentile (0-100) based strictly on their answers. Use this EXACT format:
+        {"score": 65, "percentile": 42}
         
-        CRITICAL OUTPUT FORMAT RULES:
-        1. You MUST put a BLANK LINE before and after the table so it renders correctly.
-        2. You MUST use exactly this table format. Assign emojis based on their accumulated answers: 🔴 for High Risk, 🟡 for Med Risk, 🟢 for Low Risk.
+        CRITICAL RULE 2: TABLE FORMAT. You MUST use exactly this table format with a blank line before and after. Use emojis: 🔴 High Risk, 🟡 Med Risk, 🟢 Low Risk.
         
         | Category | Risk Level | Primary Threat | Quick Fix |
         | :--- | :--- | :--- | :--- |
         | [Category] | 🔴 High | [Threat] | [Fix] |
         
-        3. Below the table, provide a detailed, categorized list mapping directly to the answers they provided:
+        CRITICAL RULE 3: DETAILED LIST. Below the table, list their access vectors:
         
         ### 1. Physical Hardware & Endpoints
-        * **[Device Type]:** * **Access Vector:** [Explain how attackers might get in based on their setup]
-        
-        Speak entirely in the first person ("My attack surface includes..."). Ensure no data or known weak links from their profile are forgotten.`;
+        * **[Device Type]:** * **Access Vector:** [Explain based on setup]`;
+
+        const PROMPT_POST_REPORT_CHAT = `You are a professional cybersecurity auditor. The user has just finished their threat modeling audit and is looking at their final report and Security Posture Score. 
+        Answer their questions about WHY they received their score, or HOW to implement specific quick fixes you suggested. 
+        Be concise, highly actionable, and professional. Output standard conversational text (1-3 paragraphs max). Do not generate JSON or tables.`;
 
         // --- 3. STATE MANAGEMENT ---
         let userProfile = [];
         let conversationHistory = []; 
+        let postReportConversationHistory = []; // Separate history for the post-report discussion
         let questionCounter = 1;
         
-        // Chat Phase State (Batches)
-        let batchedAiQuestions = [];
-        let currentAiIndex = 0;
-        let totalAiQuestionsAsked = 0;
-        let currentBatchCount = 1;
-        const MAX_BATCHES = 5; // 5 batches total (15 questions)
-        
-        let fetchRetryCount = 0;
-        const MAX_RETRIES = 2; // Up to 3 attempts total per batch fetch
+        let currentPhase2Question = 1;
+        const MAX_PHASE2_QUESTIONS = 10; 
         
         // DOM Elements
         const quizContainer = document.getElementById('quiz-container');
@@ -203,13 +408,30 @@
         
         const chatContainer = document.getElementById('chat-container');
         const aiQuestionTitle = document.getElementById('ai-question-title');
-        const aiOptionsContainer = document.getElementById('ai-options-container');
+        const userChatInput = document.getElementById('user-chat-input');
         const aiProgressText = document.getElementById('ai-progress-text');
         
         const loadingState = document.getElementById('loading-state');
         const loadingText = document.getElementById('loading-text');
         const resultsContainer = document.getElementById('results-container');
         const aiOutput = document.getElementById('ai-output');
+        
+        const postChatInput = document.getElementById('post-chat-input');
+        const postChatHistory = document.getElementById('post-report-chat-history');
+
+        userChatInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                submitChatAnswer();
+            }
+        });
+
+        postChatInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                submitPostReportChat();
+            }
+        });
 
         // --- 4. PHASE 1: WIZARD ---
         const questions = {
@@ -308,31 +530,28 @@
             });
         }
 
-        // --- 5. PHASE 2: BATCHED AI CHAT ---
-        async function fetchBatchedAiQuestions() {
-            chatContainer.classList.add('hidden');
+        // --- 5. PHASE 2: CONVERSATIONAL AI CHAT ---
+        async function startAiChat() {
             ethicsContainer.classList.add('hidden');
-            loadingState.classList.remove('hidden');
-            loadingState.classList.add('flex');
-            
-            if (fetchRetryCount > 0) {
-                loadingText.innerText = `AI JSON formatting error... Retrying (${fetchRetryCount}/${MAX_RETRIES})...`;
-            } else {
-                loadingText.innerText = `Drafting Question Batch ${currentBatchCount} of ${MAX_BATCHES}...`;
+            fetchNextAiQuestion();
+        }
+
+        async function fetchNextAiQuestion() {
+            if (currentPhase2Question > MAX_PHASE2_QUESTIONS) {
+                return finalizeReport();
             }
 
-            currentAiIndex = 0;
-            batchedAiQuestions = [];
+            chatContainer.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            loadingState.classList.add('flex');
+            loadingText.innerText = "Auditing your profile...";
 
             const baseContext = userProfile.join('\n- ');
             
-            let userMessage = `=== ACCUMULATED USER PROFILE ===\n- ${baseContext}\n================================\n\nReview the ENTIRE accumulated profile above. Identify my weakest security links, and pick ONE specific category of vulnerability to focus on for this batch. Generate exactly 3 NEW JSON-formatted investigative questions digging deep into that specific weak link. Pick a DIFFERENT weak link category than previous batches.`;
+            let instructionText = `Based on the user's answers, identify the most critical un-discussed weak link and ask ONE direct, clinical question about it. Do not repeat topics.`;
+            const userMessageContent = `=== PROFILE ===\n- ${baseContext}\n================\n\nINSTRUCTION: ${instructionText}`;
             
-            if (fetchRetryCount > 0) {
-                userMessage += "\n\nCRITICAL SYSTEM WARNING: Your last response contained a JSON syntax error. You MUST ensure your output is perfectly formatted JSON with correct brackets and commas, or the system will crash.";
-            }
-            
-            const outgoingMessages = [...conversationHistory, { role: 'user', content: userMessage }];
+            const outgoingMessages = [...conversationHistory, { role: 'user', content: userMessageContent }];
 
             try {
                 const response = await fetch(API_URL, {
@@ -340,8 +559,8 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         client_id: 'attack-surface-tool',
-                        system_override: PROMPT_BATCH_QUESTIONS,
-                        temperature: 0.4, 
+                        system_override: PROMPT_CHAT_MODE,
+                        temperature: 0.5, 
                         messages: outgoingMessages
                     })
                 });
@@ -349,94 +568,60 @@
                 if (!response.ok) throw new Error(`HTTP Status: ${response.status}`);
                 const data = await response.json();
                 
-                const jsonMatch = data.content.match(/\[[\s\S]*\]/);
-                if (!jsonMatch) throw new Error("AI did not return a valid JSON array");
-                
-                batchedAiQuestions = JSON.parse(jsonMatch[0]);
-                
-                fetchRetryCount = 0;
-                // Add successful prompt to history to maintain context
-                conversationHistory.push({
-                    role: 'user', 
-                    content: `=== ACCUMULATED USER PROFILE ===\n- ${baseContext}\n================================\n\nReview the ENTIRE accumulated profile above. Identify my weakest security links, and pick ONE specific category of vulnerability to focus on for this batch. Generate exactly 3 NEW JSON-formatted investigative questions digging deep into that specific weak link. Pick a DIFFERENT weak link category than previous batches.`
-                });
+                const aiQuestion = data.content.trim();
+                conversationHistory.push({ role: 'assistant', content: aiQuestion });
                 
                 loadingState.classList.add('hidden');
                 chatContainer.classList.remove('hidden');
-                renderNextAiQuestion();
+                
+                aiProgressText.innerText = `Phase 2: Deep Dive (Question ${currentPhase2Question})`;
+                
+                aiQuestionTitle.classList.remove('fade-in');
+                void aiQuestionTitle.offsetWidth;
+                aiQuestionTitle.classList.add('fade-in');
+                aiQuestionTitle.innerText = aiQuestion;
+                
+                userChatInput.value = '';
+                userChatInput.focus();
 
             } catch (error) {
-                console.error('Batch Fetch Error:', error);
-                
-                if (fetchRetryCount < MAX_RETRIES) {
-                    fetchRetryCount++;
-                    console.warn(`Retrying fetch... Attempt ${fetchRetryCount} of ${MAX_RETRIES}`);
-                    setTimeout(fetchBatchedAiQuestions, 1000); 
-                } else {
-                    fetchRetryCount = 0; 
-                    alert("The AI encountered an unrecoverable formatting error after multiple attempts. Proceeding to the final report.");
-                    finalizeReport(); 
-                }
+                console.error('Chat Fetch Error:', error);
+                alert("The AI encountered a connection error. Generating the report early.");
+                finalizeReport(); 
             }
         }
 
-        function renderNextAiQuestion() {
-            // Check if we need a new batch, and enforce the 5 batch max limit
-            if (currentAiIndex >= batchedAiQuestions.length) {
-                if (currentBatchCount >= MAX_BATCHES) {
-                    return finalizeReport(); // Limit reached, generate final report
-                } else {
-                    currentBatchCount++;
-                    return fetchBatchedAiQuestions(); // Fetch next batch
-                }
-            }
+        function submitChatAnswer() {
+            const answer = userChatInput.value.trim();
+            if (!answer) return;
 
-            totalAiQuestionsAsked++;
-
-            aiQuestionTitle.classList.remove('fade-in');
-            aiOptionsContainer.classList.remove('fade-in');
-            void aiQuestionTitle.offsetWidth; 
-            aiQuestionTitle.classList.add('fade-in');
-            aiOptionsContainer.classList.add('fade-in');
-
-            const currentQ = batchedAiQuestions[currentAiIndex];
-            aiProgressText.innerText = `Phase 2: Deep Dive (Batch ${currentBatchCount}/${MAX_BATCHES} - Question ${totalAiQuestionsAsked})`;
-            aiQuestionTitle.innerText = currentQ.question;
-            aiOptionsContainer.innerHTML = '';
-
-            currentQ.options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = "w-full text-left bg-slate-800 hover:bg-slate-700 transition-colors duration-200 border border-slate-600 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-cyan-500 group";
-                btn.innerHTML = `
-                    <div class="text-cyan-400 font-bold mb-1 text-lg group-hover:text-cyan-300 transition-colors">${opt.label}</div>
-                    <div class="text-slate-400 text-sm leading-relaxed">${opt.explanation}</div>
-                `;
-                btn.onclick = () => {
-                    userProfile.push(opt.record); 
-                    currentAiIndex++;
-                    renderNextAiQuestion(); 
-                };
-                aiOptionsContainer.appendChild(btn);
-            });
+            const questionTextLog = aiQuestionTitle.innerText;
+            userProfile.push(`Interrogation Detail -> Question: "${questionTextLog}" | Answer: "${answer}"`);
+            conversationHistory.push({ role: 'user', content: answer });
+            
+            currentPhase2Question++;
+            fetchNextAiQuestion(); 
         }
 
         function skipAiQuestion() {
             const questionTextLog = aiQuestionTitle.innerText;
             userProfile.push(`Interrogation Detail -> Question: "${questionTextLog}" | Answer: "Skipped"`);
-            currentAiIndex++;
-            renderNextAiQuestion(); 
+            conversationHistory.push({ role: 'user', content: "Skipped. Ask a completely different topic." });
+            
+            currentPhase2Question++;
+            fetchNextAiQuestion(); 
         }
 
-        // --- 6. PHASE 3: FINAL REPORT ---
+        // --- 6. PHASE 3: FINAL REPORT & DASHBOARDS ---
         async function finalizeReport() {
             chatContainer.classList.add('hidden');
             loadingState.classList.remove('hidden');
             loadingState.classList.add('flex');
-            loadingText.innerText = "Compiling Final Threat Report...";
+            loadingText.innerText = "Compiling Final Threat Report & Benchmarks...";
 
             const finalContext = userProfile.join('\n- ');
             const finalMessages = [
-                { role: 'user', content: `=== FINAL ACCUMULATED PROFILE ===\n- ${finalContext}\n=================================\n\nPlease output my final markdown attack surface infographic and detailed access vector list. Do not forget any of the details listed above.` }
+                { role: 'user', content: `=== FINAL ACCUMULATED PROFILE ===\n- ${finalContext}\n=================================\n\nPlease output my final markdown attack surface infographic, detailed access vector list, and the mandatory JSON block at the end.` }
             ];
 
             try {
@@ -446,7 +631,7 @@
                     body: JSON.stringify({
                         client_id: 'attack-surface-tool',
                         system_override: PROMPT_REPORT_MODE,
-                        temperature: 0.2, // Keep low for markdown formatting stability
+                        temperature: 0.3,
                         messages: finalMessages
                     })
                 });
@@ -454,9 +639,41 @@
                 if (!response.ok) throw new Error(`HTTP Status: ${response.status}`);
                 const data = await response.json();
                 
+                let rawText = data.content;
+                let score = 50;
+                let percentile = 50;
+
+                // Extremely robust JSON parsing: Hunts for {"score": X, "percentile": Y} anywhere in output
+                try {
+                    const jsonMatch = rawText.match(/\{[^{}]*"score"\s*:\s*\d+[^{}]*"percentile"\s*:\s*\d+[^{}]*\}/i);
+                    if (jsonMatch) {
+                        const stats = JSON.parse(jsonMatch[0]);
+                        score = stats.score || 50;
+                        percentile = stats.percentile || 50;
+                        
+                        // Strip out the JSON from the user's view
+                        rawText = rawText.replace(/```json[\s\S]*?```/gi, ''); 
+                        rawText = rawText.replace(jsonMatch[0], ''); 
+                    } else {
+                        console.warn("No JSON match found in AI output. Using defaults.");
+                    }
+                } catch (e) { 
+                    console.error("Failed to parse AI JSON stats block:", e); 
+                }
+
+                // Seed the post-report discussion history so the AI has context for the chat
+                postReportConversationHistory.push({ role: 'user', content: `Here is the report you generated for me:\n${rawText}\n\nMy Score: ${score}, Percentile: ${percentile}` });
+
                 loadingState.classList.add('hidden');
                 resultsContainer.classList.remove('hidden');
-                aiOutput.innerHTML = marked.parse(data.content);
+                
+                // Allow CSS to render container before drawing charts
+                setTimeout(() => {
+                    drawSpeedometer(score);
+                    drawBellCurve(percentile);
+                }, 100);
+                
+                aiOutput.innerHTML = marked.parse(rawText.trim());
                 resultsContainer.scrollIntoView({ behavior: 'smooth' });
 
             } catch (error) {
@@ -467,7 +684,167 @@
             }
         }
 
+        // --- 7. PHASE 4: POST-REPORT DISCUSSION ---
+        async function submitPostReportChat() {
+            const inputField = document.getElementById('post-chat-input');
+            const userText = inputField.value.trim();
+            if (!userText) return;
+
+            // UI Updates
+            inputField.value = '';
+            document.getElementById('post-chat-btn-text').classList.add('hidden');
+            document.getElementById('post-chat-spinner').classList.remove('hidden');
+            
+            // Append User message to UI
+            appendChatBubble('You', userText, 'bg-cyan-600 ml-auto');
+
+            postReportConversationHistory.push({ role: 'user', content: userText });
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        client_id: 'attack-surface-tool',
+                        system_override: PROMPT_POST_REPORT_CHAT,
+                        temperature: 0.6,
+                        messages: postReportConversationHistory
+                    })
+                });
+
+                if (!response.ok) throw new Error(`HTTP Status: ${response.status}`);
+                const data = await response.json();
+                
+                const aiReply = data.content.trim();
+                postReportConversationHistory.push({ role: 'assistant', content: aiReply });
+                
+                // Append AI message to UI
+                appendChatBubble('Auditor', aiReply, 'bg-slate-700 mr-auto');
+
+            } catch (error) {
+                console.error('Post Chat Error:', error);
+                appendChatBubble('System', 'Connection error. Please try again.', 'bg-red-600 mr-auto');
+            } finally {
+                document.getElementById('post-chat-btn-text').classList.remove('hidden');
+                document.getElementById('post-chat-spinner').classList.add('hidden');
+            }
+        }
+
+        function appendChatBubble(sender, text, classes) {
+            const historyDiv = document.getElementById('post-report-chat-history');
+            const bubble = document.createElement('div');
+            bubble.className = `max-w-[85%] rounded-lg p-3 text-sm text-white mb-2 ${classes}`;
+            bubble.innerHTML = `<strong>${sender}:</strong> ${marked.parseInline(text)}`;
+            historyDiv.appendChild(bubble);
+            historyDiv.scrollTop = historyDiv.scrollHeight; // Auto-scroll to bottom
+        }
+
+        // --- 8. CHART.JS RENDERING ---
+        function drawSpeedometer(score) {
+            const ctx = document.getElementById('gaugeChart').getContext('2d');
+            document.getElementById('gaugeScoreText').innerText = score;
+            
+            // Map score 0-100 to gauge colors
+            const remaining = 100 - score;
+            let color = '#ef4444'; // Red
+            if (score > 33) color = '#eab308'; // Yellow
+            if (score > 66) color = '#22c55e'; // Green
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [score, remaining],
+                        backgroundColor: [color, '#334155'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    circumference: 180,
+                    rotation: 270,
+                    cutout: '80%',
+                    plugins: { tooltip: { enabled: false }, legend: { display: false } },
+                    animation: { animateRotate: true, duration: 1500 }
+                }
+            });
+        }
+
+        function drawBellCurve(userPercentile) {
+            const ctx = document.getElementById('bellCurveChart').getContext('2d');
+            
+            const labels = [];
+            const dataPoints = [];
+            let pointColors = [];
+            let pointRadii = [];
+
+            const mean = 50;
+            const stdDev = 15;
+            
+            for (let i = 0; i <= 100; i += 2) {
+                labels.push(i);
+                let y = (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((i - mean) / stdDev, 2));
+                dataPoints.push(y);
+                
+                // Find closest point to user percentile to highlight
+                if (Math.abs(i - userPercentile) <= 1.5) {
+                    pointColors.push('#38bdf8');
+                    pointRadii.push(6);
+                } else {
+                    pointColors.push('rgba(0,0,0,0)');
+                    pointRadii.push(0);
+                }
+            }
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Distribution',
+                        data: dataPoints,
+                        borderColor: '#1e293b',
+                        backgroundColor: 'rgba(30, 41, 59, 0.5)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: pointColors,
+                        pointRadius: pointRadii,
+                        pointHoverRadius: pointRadii
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.rawIndex !== undefined && pointRadii[context.dataIndex] > 0) {
+                                        return `You are in the ${userPercentile}th percentile`;
+                                    }
+                                    return '';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { display: false }, 
+                        y: { display: false, min: 0 }
+                    }
+                }
+            });
+        }
+
+        // Initialize Application
         window.onload = () => {
+            particleCanvas.width = innerWidth;
+            particleCanvas.height = innerHeight;
+            particleCanvas.style.opacity = '0.35';
+            initParticles();
+            animateParticles();
             loadWizardQuestion(currentQuestionId);
         };
     </script>
