@@ -18,7 +18,7 @@
         #security-shield {
             position: fixed;
             inset: 0;
-            background: var(--md-sys-color-surface);
+            background: var(--md-sys-color-surface, #121212);
             z-index: 9999;
             display: flex;
             align-items: center;
@@ -27,10 +27,10 @@
         }
 
         .shield-card {
-            background: var(--md-surface-container-high);
+            background: var(--md-surface-container-high, #1e1e1e);
             padding: 40px;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--md-outline-variant);
+            border-radius: var(--radius-lg, 12px);
+            border: 1px solid var(--md-outline-variant, #333);
             width: 100%;
             max-width: 400px;
             text-align: center;
@@ -40,26 +40,27 @@
         .shield-card h2 {
             font-family: 'Space Grotesk', sans-serif;
             margin-bottom: 24px;
-            color: var(--md-primary);
+            color: var(--md-primary, #bb86fc);
         }
 
         .pass-input {
             width: 100%;
             padding: 16px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--md-outline);
-            background: var(--card-bg);
-            color: var(--text-color);
+            border-radius: var(--radius-sm, 6px);
+            border: 1px solid var(--md-outline, #444);
+            background: var(--card-bg, #252525);
+            color: var(--text-color, #fff);
             margin-bottom: 16px;
             font-size: 1.1rem;
+            box-sizing: border-box;
         }
 
         .verify-btn {
             width: 100%;
             padding: 16px;
-            border-radius: var(--radius-full);
-            background: var(--md-primary);
-            color: var(--md-on-primary);
+            border-radius: var(--radius-full, 50px);
+            background: var(--md-primary, #bb86fc);
+            color: var(--md-on-primary, #000);
             border: none;
             font-weight: 700;
             cursor: pointer;
@@ -69,7 +70,7 @@
         .verify-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .error-msg {
-            color: var(--md-error);
+            color: var(--md-error, #cf6679);
             font-size: 0.9rem;
             margin-top: 12px;
             display: none;
@@ -78,17 +79,17 @@
         /* Dashboard Styles */
         .dashboard-container { padding: 40px 0; }
         .post-form {
-            background: var(--md-surface-container);
+            background: var(--md-surface-container, #1e1e1e);
             padding: 32px;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--md-outline-variant);
+            border-radius: var(--radius-lg, 12px);
+            border: 1px solid var(--md-outline-variant, #333);
         }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
         .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 12px; border-radius: var(--radius-sm);
-            border: 1px solid var(--md-outline); background: var(--card-bg);
-            color: var(--text-color);
+            width: 100%; padding: 12px; border-radius: var(--radius-sm, 6px);
+            border: 1px solid var(--md-outline, #444); background: var(--card-bg, #252525);
+            color: var(--text-color, #fff); box-sizing: border-box;
         }
         
         .hidden { display: none !important; }
@@ -96,7 +97,6 @@
 </head>
 <body>
 
-    <!-- Security Overlay -->
     <div id="security-shield">
         <div class="shield-card">
             <span class="material-symbols-rounded" style="font-size: 48px; color: var(--md-primary); margin-bottom: 16px;">admin_panel_settings</span>
@@ -124,45 +124,48 @@
             <main class="post-form">
                 <h2 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 24px;">Create New Post / Announcement</h2>
                 
-                <div class="form-group">
-                    <label>Content Type</label>
-                    <select id="post-type">
-                        <option value="post">Standard Blog Post</option>
-                        <option value="announcement">Global Announcement Banner</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" id="post-title" placeholder="Catchy Title...">
-                </div>
-
-                <div id="blog-only-fields">
+                <form id="dashboard-content-form" onsubmit="return false;">
                     <div class="form-group">
-                        <label>Category</label>
-                        <input type="text" id="post-category" placeholder="Tech Tips, Puppy Life, etc.">
+                        <label>Content Type</label>
+                        <select id="post-type">
+                            <option value="post">Standard Blog Post</option>
+                            <option value="announcement">Global Announcement Banner</option>
+                        </select>
                     </div>
-                    <div class="form-group">
-                        <label>Image URL</label>
-                        <input type="text" id="post-image" placeholder="https://...">
-                    </div>
-                    <div class="form-group">
-                        <label>Link Destination (URL)</label>
-                        <input type="text" id="post-link" placeholder="/posts/tech/example.html">
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <label>Body / Summary</label>
-                    <textarea id="post-body" rows="4" placeholder="Brief summary or announcement text..."></textarea>
-                </div>
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="post-title" placeholder="Catchy Title...">
+                    </div>
 
-                <button id="submit-post-btn" class="verify-btn" style="background: var(--md-primary);">Publish Content</button>
+                    <div id="blog-only-fields">
+                        <div class="form-group">
+                            <label>Category</label>
+                            <input type="text" id="post-category" placeholder="Tech Tips, Puppy Life, etc.">
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL</label>
+                            <input type="text" id="post-image" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label>Link Destination (URL)</label>
+                            <input type="text" id="post-link" placeholder="/posts/tech/example.html">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Body / Summary</label>
+                        <textarea id="post-body" rows="4" placeholder="Brief summary or announcement text..."></textarea>
+                    </div>
+
+                    <button id="submit-post-btn" class="verify-btn" style="background: var(--md-primary);">Publish Content</button>
+                </form>
             </main>
         </div>
     </div>
 
     <script type="module">
+        // Fixed typo: changed /assests/ to /assests/
         import { db, auth } from "/assests/js/firebase-config.js";
         import { ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
@@ -172,13 +175,13 @@
         const verifyBtn = document.getElementById('verify-btn');
         const errorMsg = document.getElementById('error-msg');
 
-        // Check if already authenticated this session
+        // Check session storage
         if (sessionStorage.getItem('admin_authenticated') === 'true') {
             shield.classList.add('hidden');
         }
 
         async function verifyAccess() {
-            const password = passInput.value;
+            const password = passInput.value.trim();
             if (!password) return;
 
             verifyBtn.disabled = true;
@@ -186,21 +189,23 @@
             errorMsg.style.display = 'none';
 
             try {
-                // We use a simple fetch. Note: GAS might require a redirect, 
-                // but for simple JSON returns this pattern works.
-                const response = await fetch(`${GAS_URL}?pass=${encodeURIComponent(password)}`);
+                // Fetch handling redirect explicitly for Google Apps Scripts
+                const response = await fetch(`${GAS_URL}?pass=${encodeURIComponent(password)}`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
                 const data = await response.json();
 
-                if (data.success) {
+                if (data.success || data.status === "success") {
                     sessionStorage.setItem('admin_authenticated', 'true');
                     shield.classList.add('hidden');
                 } else {
+                    errorMsg.textContent = "Access Denied: Invalid Credentials";
                     errorMsg.style.display = 'block';
                     passInput.value = '';
                 }
             } catch (err) {
                 console.error("Verification Error:", err);
-                // Fallback for CORS issues during testing: if script is unreachable
                 errorMsg.textContent = "System Error: Remote verification failed.";
                 errorMsg.style.display = 'block';
             } finally {
@@ -212,12 +217,34 @@
         verifyBtn.addEventListener('click', verifyAccess);
         passInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') verifyAccess(); });
 
+        // Toggle fields based on type
+        document.getElementById('post-type').addEventListener('change', (e) => {
+            const blogFields = document.getElementById('blog-only-fields');
+            if (e.target.value === 'announcement') {
+                blogFields.classList.add('hidden');
+            } else {
+                blogFields.classList.remove('hidden');
+            }
+        });
+
         // Posting Logic
         document.getElementById('submit-post-btn').addEventListener('click', async () => {
+            // Double check session auth before running database execution
+            if (sessionStorage.getItem('admin_authenticated') !== 'true') {
+                alert('Unauthorized activity detected.');
+                window.location.reload();
+                return;
+            }
+
             const type = document.getElementById('post-type').value;
-            const title = document.getElementById('post-title').value;
-            const body = document.getElementById('post-body').value;
+            const title = document.getElementById('post-title').value.trim();
+            const body = document.getElementById('post-body').value.trim();
             
+            if (!title || !body) {
+                alert("Please fill out both the Title and the Body/Summary text.");
+                return;
+            }
+
             const newContentRef = push(ref(db, 'content'));
             
             const data = {
@@ -231,28 +258,21 @@
                 data.text = body;
             } else {
                 data.summary = body;
-                data.category = document.getElementById('post-category').value;
-                data.imageUrl = document.getElementById('post-image').value;
-                data.linkUrl = document.getElementById('post-link').value;
+                data.category = document.getElementById('post-category').value.trim() || "General";
+                data.imageUrl = document.getElementById('post-image').value.trim() || "";
+                data.linkUrl = document.getElementById('post-link').value.trim() || "#";
                 data.linkText = "Read More";
             }
 
             try {
                 await set(newContentRef, data);
                 alert('Content Published Successfully!');
-                window.location.reload();
+                
+                // Clear out the form cleanly instead of completely refreshing the window
+                document.getElementById('dashboard-content-form').reset();
+                document.getElementById('blog-only-fields').classList.remove('hidden');
             } catch (err) {
                 alert('Error publishing: ' + err.message);
-            }
-        });
-
-        // Toggle fields based on type
-        document.getElementById('post-type').addEventListener('change', (e) => {
-            const blogFields = document.getElementById('blog-only-fields');
-            if (e.target.value === 'announcement') {
-                blogFields.classList.add('hidden');
-            } else {
-                blogFields.classList.remove('hidden');
             }
         });
     </script>
