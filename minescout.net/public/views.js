@@ -311,28 +311,28 @@ export const views = {
               <ul class="phase-deliverables"><li>FAQ document (any format)</li><li>Business hours &amp; contact info</li><li>Services or menu with pricing</li><li>Anything customers frequently ask about</li></ul>
             </div>
           </div>
-          <div class="phase" style="--d:0.46s;">
+          <div class="phase" style="--d:0.50s;">
             <div class="phase-dot">03</div>
             <div class="phase-content">
-              <div class="phase-header"><div class="phase-title">AI training &amp; build</div><span class="phase-timeline-tag">Day 2&ndash;5</span></div>
-              <p class="phase-desc">I train the AI on your documents, write the system prompt (the instructions that tell it how to behave), set up guardrails to keep it on-topic, and deploy it to Cloudflare's global edge network. I also set up your Google Sheets Training Bridge so every conversation is logged.</p>
-              <ul class="phase-deliverables"><li>AI trained on your business content</li><li>System prompt written and tested</li><li>Google Sheets Training Bridge live</li><li>Widget tested across browsers</li></ul>
+              <div class="phase-header"><div class="phase-title">AI training & infrastructure</div><span class="phase-timeline-tag">Day 2–5</span></div>
+              <p class="phase-desc">I train the AI on your documents, write the system prompt (the instructions that tell it how to behave), set up guardrails to keep it on-topic, and deploy it to Cloudflare's global edge network. I also provision your secure Admin Portal so you have full visibility into your AI.</p>
+              <ul class="phase-deliverables"><li>AI trained on your business content</li><li>System prompt written and tested</li><li>Secure Admin Portal live</li><li>Widget tested across browsers</li></ul>
             </div>
           </div>
           <div class="phase" style="--d:0.54s;">
             <div class="phase-dot">04</div>
             <div class="phase-content">
-              <div class="phase-header"><div class="phase-title">Review &amp; launch</div><span class="phase-timeline-tag">Day 5&ndash;7</span></div>
+              <div class="phase-header"><div class="phase-title">Review & launch</div><span class="phase-timeline-tag">Day 5–7</span></div>
               <p class="phase-desc">You test the AI yourself, ask it your hardest questions, and tell me anything it got wrong. I fix it. Once you're happy, I give you a single line of code to paste into your website — or I add it for you if you share access. The AI goes live within 24 hours of your approval.</p>
-              <ul class="phase-deliverables"><li>Test session with you</li><li>Corrections applied within 24hrs</li><li>Embed code delivered</li><li>AI goes live on your site</li></ul>
+              <ul class="phase-deliverables"><li>Test session with you</li><li>Admin Portal credentials delivered</li><li>Embed code delivered</li><li>AI goes live on your site</li></ul>
             </div>
           </div>
           <div class="phase" style="--d:0.58s;">
             <div class="phase-dot">05</div>
             <div class="phase-content">
               <div class="phase-header"><div class="phase-title">Ongoing maintenance</div><span class="phase-timeline-tag">Monthly</span></div>
-              <p class="phase-desc">Every month I review your Training Bridge sheet, apply any corrections you've submitted, update the AI with new business info (changed hours, new services, price updates), and send you a short summary of the AI's performance. You can submit corrections anytime — I respond within 48 hours.</p>
-              <ul class="phase-deliverables"><li>Monthly performance summary</li><li>Content updates applied</li><li>Correction submissions reviewed</li><li>API &amp; security monitoring</li></ul>
+              <p class="phase-desc">You have 24/7 access to your Admin Portal to update the AI's instructions, tweak pricing, or change business hours instantly. On my end, I actively monitor the API infrastructure, optimize backend latency, and send you a short summary of the AI's performance to ensure zero downtime.</p>
+              <ul class="phase-deliverables"><li>24/7 Admin Portal access</li><li>Monthly performance summary</li><li>Backend infrastructure scaling</li><li>API & security monitoring</li></ul>
             </div>
           </div>
         </div>
