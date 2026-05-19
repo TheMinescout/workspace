@@ -1,4 +1,0 @@
-<Files "app-release.apk">
-  Header set Content-Disposition "attachment; filename=\"MinescoutLife.apk\""
-  Header set Content-Type "application/vnd.android.package-archive"
-</Files>
