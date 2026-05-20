@@ -1,4 +1,4 @@
-// app.js — Application Logic & Routing (Consolidated Single Page Application)
+// app.js — Application Logic & Routing (Manual Post Hybrid & Direct Cloudflare Comments)
 
 // ── 0. MODULE CONFIGURATION & RUNTIME DEFINITIONS ─────────────────
 const views = {
@@ -40,8 +40,43 @@ const views = {
   `
 };
 
-// ── 1. BULLETPROOF ASYNCHRONOUS IMPORT LOADER ──────────────────────
-// This guarantees the app boots up even if files are missing or renamed!
+// ── 1. MANUALLY MANAGED POSTS DATABASE ─────────────────────────────
+// Edit, add, or remove items from this list whenever you make a new post!
+const SYSTEM_POSTS = [
+  {
+    "id": "gemini3-vs-chatgpt-battle",
+    "title": "Gemini 3 Pro vs. ChatGPT: The Ultimate Showdown",
+    "category": "Tech Tips",
+    "timestamp": 1764720000000,
+    "summary": "Google just released Gemini 3 Pro, and everyone is asking: Is it finally better than ChatGPT? I put both models through three rigorous tests to find out.",
+    "imageUrl": "assests/images/tech/gemini3-vs-chatgpt/Title.png",
+    "linkUrl": "/tech/gemini3-vs-chatgpt",
+    "linkText": "Read Article →"
+  },
+  {
+    "id": "snack-guard",
+    "title": "SnackGuard Pro: AI-Powered Theft Detection",
+    "category": "Tech Tips",
+    "timestamp": 1765152000000,
+    "summary": "Tired of your snacks mysteriously disappearing from your desk? Meet SnackGuard Pro, an experimental AI-powered computer vision system designed to detect and log any unauthorized hands reaching for your treats.",
+    "imageUrl": "assests/images/tech/snackguard/Title.png",
+    "linkUrl": "/tech/snack-guard",
+    "linkText": "Read Article →"
+  },
+  {
+    "id": "montys-life",
+    "title": "The Resilience of Monty: A Documentary Journey",
+    "category": "Puppy Life",
+    "timestamp": 1760662400000,
+    "summary": "In the quiet corners of the Carleton home, a survivor reigns supreme. Monty, a dog who has faced the trials of a 'rough patch' in 2022, has emerged not just as a pet, but as a legend of domestic resilience.",
+    "imageUrl": "assests/images/puppy-life/Monty-Life-Homepage.png",
+    "linkUrl": "/puppy/monty",
+    "linkText": "Read Documentary →"
+  }
+];
+
+// ── 2. BULLETPROOF ASYNCHRONOUS IMPORT LOADER ──────────────────────
+// Dynamically loads page layouts without breaking if files are missing
 async function loadModules() {
   const modulesToLoad = [
     { path: './views/posts/view-posts-updates.js', name: 'postsUpdatesViews' },
@@ -65,29 +100,18 @@ async function loadModules() {
         Object.assign(views, importedModule[mod.name]);
       }
     } catch (err) {
-      // Gracefully catches broken file names, bad directories, or syntax errors!
       console.warn(`[Module Loader Warning] Skipping unresolvable file: "${mod.path}". Mainframe remains stable.`, err);
     }
   }
 }
 
-// ── 2. CLOUDFLARE KV REST CLIENTS ──────────────────────────────────
-// Fetches your logs from Cloudflare KV Worker endpoint instead of Firebase
-async function fetchFromCloudflareKV() {
-  try {
-    const response = await fetch('/api/content'); // Queries Worker wrapper namespace
-    if (!response.ok) throw new Error('KV network response was not successful');
-    return await response.json();
-  } catch (err) {
-    console.error('[Cloudflare KV Error] Connection failed:', err);
-    return []; // Returns safe empty block instead of throwing runtime errors
-  }
-}
+// ── 3. CLOUDFLARE WORKER DIRECT ENDPOINTS ─────────────────────────
+const CLOUDFLARE_API_BASE = 'https://minescout-api.tmcarleton11.workers.dev';
 
 // Fetches comments associated with a specific postId
 async function fetchComments(postId) {
   try {
-    const res = await fetch(`/api/comments?postId=${encodeURIComponent(postId)}`);
+    const res = await fetch(`${CLOUDFLARE_API_BASE}/api/comments?postId=${encodeURIComponent(postId)}`);
     if (!res.ok) throw new Error('Failed to fetch comments');
     return await res.json();
   } catch (err) {
@@ -99,7 +123,7 @@ async function fetchComments(postId) {
 // Sends a new comment payload to Cloudflare KV Namespace
 async function postComment(postId, name, text) {
   try {
-    const res = await fetch('/api/comments', {
+    const res = await fetch(`${CLOUDFLARE_API_BASE}/api/comments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ postId, name, text, timestamp: Date.now() })
@@ -111,7 +135,7 @@ async function postComment(postId, name, text) {
   }
 }
 
-// ── 3. INTERACTIVE DISCUSSION ELEMENT SETUP ───────────────────────
+// ── 4. INTERACTIVE DISCUSSION ELEMENT SETUP ───────────────────────
 const COMMENTS_TEMPLATE = `
   <section class="comments-section" style="margin-top: 60px; border-top: 1px solid var(--md-outline-variant); padding-top: 40px;">
       <h2 style="font-size: 1.5rem; margin-bottom: 25px; color: var(--text-color); font-family: 'Space Grotesk', sans-serif; font-weight: 700;">Discussion</h2>
@@ -205,7 +229,7 @@ async function setupComments(postContainer, postId) {
   }
 }
 
-// ── 4. SIDEBAR NAVIGATION ─────────────────────────────────────────
+// ── 5. SIDEBAR NAVIGATION ─────────────────────────────────────────
 const MAIN_MENU = [
   { label: 'Home',    href: '/' },
   { label: 'Updates', href: '/Footer/updates.html' },
@@ -299,12 +323,7 @@ function ensureHeaderToggle() {
   }
 }
 
-// ── 5. DYNAMIC ARCHIVE INITIALIZERS ──────────────────────────────
-const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June", 
-  "July", "August", "September", "October", "November", "December"
-];
-
+// ── 6. DYNAMIC ARCHIVE INITIALIZERS ──────────────────────────────
 function initArchiveYear() {
   const container = document.getElementById('month-cards-container');
   if (!container) return;
@@ -356,61 +375,52 @@ async function initArchiveMonth() {
   document.getElementById('month-tagline').innerText = `Calendar logs matching ${monthName} ${year}`;
   document.getElementById('month-back-link').setAttribute('href', `/archive/${year}`);
 
-  container.innerHTML = '<div class="empty-state"><h3>Searching nodes...</h3><p>Connecting to Cloudflare KV...</p></div>';
+  let html = '';
+  let matchesCount = 0;
 
-  try {
-    const posts = await fetchFromCloudflareKV();
+  SYSTEM_POSTS.forEach(post => {
+    const dateObj = new Date(post.timestamp);
     
-    let html = '';
-    let matchesCount = 0;
-
-    posts.forEach(post => {
-      const dateObj = new Date(post.timestamp);
+    if (dateObj.getFullYear() === year && (dateObj.getMonth() + 1) === monthNum) {
+      matchesCount++;
+      const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       
-      if (dateObj.getFullYear() === year && (dateObj.getMonth() + 1) === monthNum) {
-        matchesCount++;
-        const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        
-        const imgHtml = post.imageUrl 
-          ? `<div class="post-image-wrapper"><img src="${post.imageUrl}" onerror="this.onerror=null; this.src='https://placehold.co/600x400/e0e0e0/333333?text=Image+Unavailable';" alt="" /></div>` 
-          : `<div class="post-image-wrapper" style="background: var(--md-surface-container); display:flex; align-items:center; justify-content:center; color: var(--md-outline);"><span class="material-symbols-rounded" style="font-size:48px;">article</span></div>`;
+      const imgHtml = post.imageUrl 
+        ? `<div class="post-image-wrapper"><img src="${post.imageUrl}" onerror="this.onerror=null; this.src='https://placehold.co/600x400/e0e0e0/333333?text=Image+Unavailable';" alt="" /></div>` 
+        : `<div class="post-image-wrapper" style="background: var(--md-surface-container); display:flex; align-items:center; justify-content:center; color: var(--md-outline);"><span class="material-symbols-rounded" style="font-size:48px;">article</span></div>`;
 
-        html += `
-          <article class="post-card" data-post-id="${post.id || 'dynamic-post'}">
-            ${imgHtml}
-            <div class="post-card-content">
-              <span class="category-pill">${post.category || 'General'}</span>
-              <h3 class="post-title"><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3>
-              <div class="post-meta">${dateStr}</div>
-              <p class="post-excerpt">${post.summary || 'No summary provided.'}</p>
-              <div style="margin-top:auto;">
-                 <a href="${post.linkUrl || '#'}" class="read-more" style="color: var(--md-primary); font-weight: bold; text-decoration: none;">
-                      ${post.linkText || 'Read More →'}
-                 </a>
-              </div>
+      html += `
+        <article class="post-card" data-post-id="${post.id || 'dynamic-post'}">
+          ${imgHtml}
+          <div class="post-card-content">
+            <span class="category-pill">${post.category || 'General'}</span>
+            <h3 class="post-title"><a href="${post.linkUrl || '#'}">${post.title || 'Untitled Post'}</a></h3>
+            <div class="post-meta">${dateStr}</div>
+            <p class="post-excerpt">${post.summary || 'No summary provided.'}</p>
+            <div style="margin-top:auto;">
+               <a href="${post.linkUrl || '#'}" class="read-more" style="color: var(--md-primary); font-weight: bold; text-decoration: none;">
+                    ${post.linkText || 'Read More →'}
+               </a>
             </div>
-          </article>
-        `;
-      }
-    });
-
-    if (matchesCount === 0) {
-      container.innerHTML = `
-        <div class="empty-state">
-          <h3>No Entries Logged</h3>
-          <p>No content logs were published to life.minescout.net in ${monthName} ${year}.</p>
-        </div>
+          </div>
+        </article>
       `;
-    } else {
-      container.innerHTML = html;
     }
-  } catch (err) {
-    console.error("Archive compile failure:", err);
-    container.innerHTML = '<div class="empty-state"><h3>Fatal Execution Error</h3><p>An error occurred compiling directory nodes.</p></div>';
+  });
+
+  if (matchesCount === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <h3>No Entries Logged</h3>
+        <p>No content logs were published to life.minescout.net in ${monthName} ${year}.</p>
+      </div>
+    `;
+  } else {
+    container.innerHTML = html;
   }
 }
 
-// ── 6. BOOTSTRAP ROUTER ──────────────────────────────────────────────────
+// ── 7. BOOTSTRAP ROUTER ──────────────────────────────────────────────────
 let appElement;
 
 function render(path) {
@@ -477,7 +487,7 @@ function initRouter() {
 async function boot() {
   initSidebar();
   initRouter();
-  await loadModules(); // Safely bootstrap all templates (ignores missing/broken files)
+  await loadModules(); // Safely bootstrap all templates
   render(window.location.pathname);
 }
 
