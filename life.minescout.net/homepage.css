@@ -11,31 +11,32 @@
    ──────────────────────────────────────────────────────────── */
 
 :root {
-  /* Legacy Master Variables */
-  --bg-void:       #080810;
-  --bg-deep:       #0d0d1a;
-  --bg-card:       #111120;
-  --bg-card-hover: #161628;
-  --bg-glass:      rgba(255, 255, 255, 0.04);
-  --bg-glass-md:   rgba(255, 255, 255, 0.07);
-  --border:        rgba(255, 255, 255, 0.07);
-  --border-glow:   rgba(120, 90, 255, 0.35);
-  --accent-1:      #7c5aff;
-  --accent-2:      #a855f7;
-  --accent-3:      #06b6d4;
-  --accent-grad:   linear-gradient(135deg, #7c5aff 0%, #a855f7 100%);
-  --shadow-glow:   0 0 20px rgba(124, 90, 255, 0.15);
+  /* Legacy Master Variables Overhauled with Favicon Sage & Forest Greens */
+  --bg-void:       #090e0c; /* Deep forest charcoal black */
+  --bg-deep:       #0f1512; /* Mossy dark forest */
+  --bg-card:       #151e1a; /* Dark pine-tinted slate */
+  --bg-card-hover: #1c2822;
+  --bg-glass:      rgba(93, 140, 88, 0.06);
+  --bg-glass-md:   rgba(93, 140, 88, 0.12);
+  --border:        rgba(114, 140, 105, 0.12);
+  --border-glow:   rgba(93, 140, 88, 0.35);
+  --accent-1:      #5d8c58; /* Signature Favicon Sage Green */
+  --accent-2:      #7ea875; /* Soft Olive Sage */
+  --accent-3:      #8eb75e; /* Vibrant Low-Poly Grass Green */
+  --accent-grad:   linear-gradient(135deg, #5d8c58 0%, #8eb75e 100%);
+  --shadow-glow:   0 0 20px rgba(93, 140, 88, 0.15);
 
   /* Modern Material 3 Mapping */
-  --md-primary: #7c5aff;
+  --md-primary: #5d8c58;
   --md-on-primary: #ffffff;
-  --md-primary-container: rgba(124, 90, 255, 0.1);
-  --md-on-primary-container: #a855f7;
-  --md-surface-container: #111120;
-  --md-outline: rgba(255, 255, 255, 0.15);
-  --md-outline-variant: rgba(255, 255, 255, 0.08);
-  --card-bg: #111120;
-  --text-color: #f3f4f6;
+  --md-primary-container: rgba(93, 140, 88, 0.12);
+  --md-on-primary-container: #8eb75e;
+  --md-surface-container: #151e1a;
+  --md-outline: rgba(114, 140, 105, 0.25);
+  --md-outline-variant: rgba(114, 140, 105, 0.12);
+  --card-bg: #151e1a;
+  --text-color: #f0f5f1;
+  --heading-color: #ffffff;
   --md-success: #10b981;
   
   /* Layout Metrics */
@@ -51,8 +52,36 @@
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+html[data-theme="light"] {
+  --bg-void:       #f4f7f5; /* Fresh slate green-tinted light gray */
+  --bg-deep:       #e8eee9; /* Cool sage organic white */
+  --bg-card:       #ffffff;
+  --bg-card-hover: #f1f6f2;
+  --bg-glass:      rgba(93, 140, 88, 0.04);
+  --bg-glass-md:   rgba(93, 140, 88, 0.08);
+  --border:        rgba(93, 140, 88, 0.12);
+  --border-glow:   rgba(93, 140, 88, 0.25);
+
+  --md-primary: #5d8c58;
+  --md-on-primary: #ffffff;
+  --md-primary-container: rgba(93, 140, 88, 0.12);
+  --md-on-primary-container: #3d6339;
+  --md-surface-container: #ffffff;
+  --md-outline: rgba(93, 140, 88, 0.25);
+  --md-outline-variant: rgba(93, 140, 88, 0.12);
+  --card-bg: #ffffff;
+  --text-color: #0f1912;
+  --heading-color: #0f1912;
+  --md-success: #10b981;
+}
+
 * {
   box-sizing: border-box;
+}
+
+/* Transitions for seamless light/dark mode */
+body, .main-header, .sidebar-nav-left, .article-card, .notice-box, .download-section, .portfolio-announcement, .feature-item, .lesson-box, .official-version-box, .ai-card, .review-text, .vote-section, .answer-box, .modal-content, .home-hero-card, .home-card, .home-metrics-bar, .archive-card, .month-card, .post-card, .empty-state, .article-snippet-card, .update-card, .pack-card, .pack-avatar, .stats-card, .metric-box, .roadmap-col, .roadmap-task, .request-card, .form-group input, .form-group textarea, .form-group select, .mc-card, #game-area, .portfolio-card, .auth-card, .account-card, .error-card, .admin-nav, .admin-panel-card, .feedback-item, h1, h2, h3, h4, h5, h6 {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
 body {
@@ -67,7 +96,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Space Grotesk', sans-serif;
-  color: #fff;
+  color: var(--heading-color);
   font-weight: 700;
   letter-spacing: -0.02em;
 }
@@ -133,7 +162,7 @@ a:hover {
 }
 
 .site-title a {
-  color: #fff !important;
+  color: var(--heading-color) !important;
 }
 
 .tagline {
@@ -166,7 +195,7 @@ a:hover {
 .header-menu-trigger {
   background: transparent;
   border: none;
-  color: white;
+  color: var(--heading-color);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -232,7 +261,7 @@ a:hover {
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
   font-size: 1.05rem;
-  color: white;
+  color: var(--heading-color);
   line-height: 1.2;
 }
 
@@ -345,7 +374,7 @@ a:hover {
 
 .article-card h1 {
   font-size: 2.5rem;
-  color: #fff;
+  color: var(--heading-color);
   margin-bottom: 8px;
   line-height: 1.2;
 }
@@ -379,7 +408,7 @@ a:hover {
 .post-content h3 {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 1.3rem;
-  color: #fff;
+  color: var(--heading-color);
   margin-top: 32px;
   margin-bottom: 12px;
 }
@@ -410,7 +439,7 @@ a:hover {
   border-radius: var(--radius-md);
   padding: 20px;
   margin-bottom: 32px;
-  color: #fff;
+  color: var(--text-color);
   box-shadow: var(--shadow-1);
   display: flex;
   align-items: flex-start;
@@ -460,7 +489,7 @@ a:hover {
 
 .download-section h4 {
   font-family: 'Space Grotesk', sans-serif;
-  color: #fff;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 16px;
   font-size: 1.4rem;
@@ -518,7 +547,7 @@ a:hover {
   margin-top: 24px;
   border: none;
   padding: 0;
-  color: #fff;
+  color: var(--heading-color);
 }
 
 .tech-badge { 
@@ -526,7 +555,7 @@ a:hover {
   align-items: center;
   gap: 6px;
   background: var(--md-primary-container); 
-  color: #fff;
+  color: var(--md-on-primary-container);
   border: 1px solid var(--md-primary);
   padding: 6px 14px; 
   border-radius: var(--radius-full); 
@@ -620,7 +649,7 @@ a:hover {
   font-weight: 700; 
   font-size: 1.2rem; 
   margin-bottom: 12px; 
-  color: #fff; 
+  color: var(--heading-color); 
 }
 
 .progress-bar-wrapper { 
@@ -721,7 +750,7 @@ a:hover {
 
 /* GitHub Embed Integrations */
 .github-cta {
-  background: #24292e; 
+  background: var(--md-surface-container); 
   border-radius: var(--radius-md);
   padding: 24px;
   display: flex;
@@ -730,7 +759,7 @@ a:hover {
   text-decoration: none;
   transition: all 0.3s var(--motion-standard);
   margin-top: 32px;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--md-outline-variant);
 }
 
 .github-cta:hover {
@@ -740,14 +769,14 @@ a:hover {
 }
 
 .github-icon-circle {
-  background: rgba(255,255,255,0.1);
+  background: var(--md-primary-container);
   width: 56px;
   height: 56px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--md-primary);
   flex-shrink: 0;
 }
 
@@ -757,7 +786,7 @@ a:hover {
 }
 
 .github-title {
-  color: white;
+  color: var(--heading-color);
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
   font-size: 1.2rem;
@@ -765,7 +794,7 @@ a:hover {
 }
 
 .github-url {
-  color: rgba(255,255,255,0.6);
+  color: var(--md-outline);
   font-size: 0.9rem;
   font-family: 'DM Sans', monospace;
   word-break: break-all;
@@ -790,7 +819,7 @@ a:hover {
 
 .ai-card h3 { 
   margin-top: 0; 
-  color: #fff; 
+  color: var(--heading-color); 
   font-family: 'Space Grotesk', sans-serif;
   font-size: 1.3rem;
   margin-bottom: 12px;
@@ -853,7 +882,7 @@ a:hover {
 .vote-section h4 { 
   font-family: 'Space Grotesk', sans-serif; 
   font-size: 1.2rem; 
-  color: #fff; 
+  color: var(--heading-color); 
   margin-top: 0; 
   margin-bottom: 16px; 
 }
@@ -1043,6 +1072,7 @@ a:hover {
 
 .home-hero-card h1 {
   font-size: 3rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 12px;
   line-height: 1.1;
@@ -1083,6 +1113,7 @@ a:hover {
 .home-card h2 {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 1.6rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 16px;
   display: flex;
@@ -1139,6 +1170,7 @@ a:hover {
 
 .archive-header h1 {
   font-size: 2.8rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 12px;
 }
@@ -1179,6 +1211,7 @@ a:hover {
 
 .archive-card h3, .month-card h3 {
   font-size: 1.4rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 12px;
 }
@@ -1247,6 +1280,7 @@ a:hover {
 .post-title {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 1.3rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 8px;
 }
@@ -1283,6 +1317,7 @@ a:hover {
 
 .empty-state h3 {
   font-size: 1.5rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 8px;
 }
@@ -1335,6 +1370,7 @@ a:hover {
 
 .article-snippet-card h3 {
   font-size: 1.3rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 12px;
 }
@@ -1364,6 +1400,7 @@ a:hover {
 
 .updates-hero h1 {
   font-size: 2.8rem;
+  color: var(--heading-color);
   margin-bottom: 8px;
 }
 
@@ -1394,6 +1431,7 @@ a:hover {
 
 .update-card h3 {
   font-size: 1.3rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 12px;
 }
@@ -1691,6 +1729,7 @@ a:hover {
 
 .mc-card h2 {
   font-size: 1.6rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 20px;
   display: flex;
@@ -1707,7 +1746,7 @@ a:hover {
 }
 
 .mc-checklist-item span.icon {
-  color: #16a34a;
+  color: var(--md-success);
   font-weight: bold;
 }
 
@@ -1728,7 +1767,7 @@ a:hover {
 
 #game-area {
   position: relative; width: 100%; height: 450px;
-  background: #111; border-radius: var(--radius-md);
+  background: var(--bg-deep); border-radius: var(--radius-md);
   overflow: hidden; border: 2px solid var(--md-primary);
   box-shadow: var(--shadow-2);
   margin: 32px 0;
@@ -1776,6 +1815,7 @@ a:hover {
 
 .portfolio-card h3 {
   font-size: 1.4rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 12px;
 }
@@ -1831,6 +1871,7 @@ a:hover {
 
 .auth-card h2 {
   font-size: 2rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 8px;
   text-align: center;
@@ -1906,6 +1947,7 @@ a:hover {
 
 .account-card h2 {
   font-size: 1.8rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 24px;
   border-bottom: 2px solid var(--md-outline-variant);
@@ -2016,6 +2058,7 @@ a:hover {
 
 .error-title {
   font-size: 1.8rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 16px;
 }
@@ -2111,6 +2154,7 @@ a:hover {
 
 .admin-panel-card h2 {
   font-size: 1.8rem;
+  color: var(--heading-color);
   margin-top: 0;
   margin-bottom: 24px;
   border-bottom: 2px solid var(--md-outline-variant);
@@ -2165,6 +2209,7 @@ a:hover {
 
 .feedback-title {
   font-family: 'Space Grotesk', sans-serif;
+  color: var(--heading-color);
   font-weight: 700;
   font-size: 1.1rem;
 }

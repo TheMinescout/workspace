@@ -179,6 +179,36 @@ export const landingViews = {
     </footer>
   `,
 
+  // ── 1.5 ABOUT ME PAGE ──────────────────────────────────────────────
+  '/about': `
+    <header class="main-header">
+      <div class="container site-title-container">
+        <div class="site-title-wrapper">
+          <h1 class="site-title"><a href="/" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+          <p class="tagline">About the Creator</p>
+        </div>
+      </div>
+    </header>
+    <div class="main-content-area">
+      <div class="container">
+        <article class="article-card" style="background: var(--card-bg); border: 1px solid var(--md-outline-variant); border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-1);">
+          <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; margin-bottom: 8px; line-height: 1.2;">About Minescouts Life</h1>
+          <p class="post-meta" style="color: var(--md-outline); font-size: 0.95rem; margin-bottom: 32px; font-weight: 500;">System Profile • Active Build</p>
+          <div class="post-content">
+            <p style="font-size: 1.05rem; color: var(--text-color); opacity: 0.9; line-height: 1.8; margin-bottom: 24px;">Welcome! I'm an ambitious builder, coder, and Eagle Scout. This digital space represents my live portfolio, software playgrounds, and chronicled observations of our family dogs, Monty and Nigel.</p>
+            <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; color: var(--md-primary); margin-top: 48px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--md-outline-variant);">What I Build</h2>
+            <p style="font-size: 1.05rem; color: var(--text-color); opacity: 0.9; line-height: 1.8; margin-bottom: 24px;">I develop dynamic web applications, interactive physics systems, local AI models, and secure server environments. You can track my projects directly inside the coding projects sector or play around in the Beta Mainframe.</p>
+            <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; color: var(--md-primary); margin-top: 48px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--md-outline-variant);">Scouting & Leadership</h2>
+            <p style="font-size: 1.05rem; color: var(--text-color); opacity: 0.9; line-height: 1.8; margin-bottom: 24px;">Having successfully achieved my Eagle Scout rank in March 2026, I enjoy applying structured project management, team collaboration, and community-centric development principles to everything I design.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+    <footer class="main-footer">
+      <div class="container"><p>© 2026 Minescouts Life. All rights reserved.</p></div>
+    </footer>
+  `,
+
   // ── 2. TECH TIPS DIRECTORY ───────────────────────────────────────
   '/tech': `
     <style>
