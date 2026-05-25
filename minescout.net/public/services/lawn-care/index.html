@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/4284/4284824.png">
+
+    <title>SmartCut Automated Lawn Care</title>
+    <style>
+        /* Modern Reset & Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Premium Navigation */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+        }
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1b5e20;
+            letter-spacing: -0.5px;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: #2e7d32;
+        }
+
+        /* Hero Section with Your Background Image */
+        .hero {
+            padding: 120px 20px;
+            text-align: center;
+            background: linear-gradient(rgba(15, 32, 18, 0.75), rgba(15, 32, 18, 0.6)), 
+                        url('https://static.vecteezy.com/system/resources/thumbnails/054/917/054/small_2x/lush-green-grass-texture-background-in-soft-focus-with-vibrant-manicured-lawn-and-sunlight-bokeh-perfect-for-outdoor-nature-or-garden-design-and-fresh-eco-landscapes-and-botanic-projects-photo.jpeg') center/cover no-repeat;
+            color: white;
+            box-shadow: inset 0 -20px 30px -10px rgba(0,0,0,0.1);
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 35px;
+            color: #e8f5e9;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .btn {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 14px 35px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+        .btn:hover {
+            background: #388e3c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 142, 60, 0.5);
+        }
+        .btn:disabled {
+            background: #a5d6a7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Content Sections */
+        .section {
+            padding: 80px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .section h2 {
+            text-align: center;
+            margin-bottom: 50px;
+            color: #1b5e20;
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+
+        /* Features Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .card {
+            background: white;
+            padding: 30px 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 4px solid #4caf50;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+        
+        /* Image Containers inside Cards */
+        .card-img-container {
+            width: 100%;
+            height: 160px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background-color: #f0f0f0;
+        }
+        .card-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        /* CSS Trick to crop the bottom of the 3rd image */
+        .crop-bottom {
+            object-position: center top;
+            transform: scale(1.15); /* Zooms in slightly to push the bottom edge out of frame */
+        }
+
+        .card h3 {
+            margin-bottom: 12px;
+            color: #2e7d32;
+            font-size: 1.4rem;
+        }
+        .card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Pricing Card Design */
+        .pricing-box {
+            background: white;
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 50px;
+            border-radius: 16px;
+            border: 2px solid #e8f5e9;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(46, 125, 50, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        .pricing-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: #4caf50;
+        }
+        .price {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #1b5e20;
+            margin: 20px 0;
+            line-height: 1;
+        }
+        .price span {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #777;
+        }
+
+        /* Contact Form */
+        form {
+            background: white;
+            max-width: 550px;
+            margin: 0 auto;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background-color: #fafafa;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #4caf50;
+            background-color: #fff;
+        }
+        textarea {
+            resize: vertical;
+            height: 120px;
+        }
+        
+        /* Status Feedback Box */
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        .status-message.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            display: block;
+            border: 1px solid #c8e6c9;
+        }
+        .status-message.loading {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            display: block;
+            border: 1px solid #bbdefb;
+        }
+
+        /* New Sections CSS (Capacity, Service Area, Disclaimer) */
+        .capacity-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #2e7d32);
+            transition: width 1s ease-in-out;
+        }
+        .service-box, .disclaimer-box {
+            background: white;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .disclaimer-box {
+            margin-bottom: 30px;
+            border-left: 4px solid #ff9800;
+            background-color: #fff3e0;
+            text-align: left;
+            padding: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background: #112a14;
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 60px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo" id="brandName">SmartCut Neighborhood</div>
+        <ul class="nav-links">
+            <li><a href="#capacity">Availability</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Header -->
+    <header class="hero">
+        <h1>A Perfectly Cut Lawn, 24/7</h1>
+        <p>Quiet, emissions-free, automated robotic mowing designed specifically for our local neighborhood.</p>
+        <a href="#contact" class="btn">Check Availability</a>
+    </header>
+
+    <!-- Benefits Section -->
+    <section id="about" class="section">
+        <h2>Why Robotic Mowing?</h2>
+        <div class="grid">
+            
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://img.magnific.com/free-vector/abstract-blue-wave-background_23-2147496679.jpg?semt=ais_hybrid&w=740&q=80" alt="Quiet Icon">
+                </div>
+                <h3>🤫 Ultra-Quiet</h3>
+                <p>Mows completely silently. No loud gas engines waking up the house or interrupting your remote work day.</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://thumbs.dreamstime.com/b/lush-green-grass-blades-vibrant-macro-view-springtime-natures-texture-immerse-yourself-intricate-beauty-close-up-shot-355594659.jpg" alt="Macro Grass">
+                </div>
+                <h3>⛳ Golf-Course Cut</h3>
+                <p>Instead of hacking the lawn once every two weeks, our robot maintains a perfect, micro-trimmed length every day.</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-img-container">
+                    <!-- Removed manual crop class, added smart-center script target -->
+                    <img class="smart-center" crossorigin="anonymous" src="https://www.shutterstock.com/image-vector/save-energy-symbol-icon-green-260nw-2471747163.jpg" alt="Eco Icon">
+                </div>
+                <h3>🌱 100% Clean</h3>
+                <p>Fully electric. Zero gas fumes, zero emissions, and no bulky lawn equipment cutting deep tire ruts into your turf.</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- Capacity Bar Section -->
+    <section id="capacity" class="section" style="padding-bottom: 40px;">
+        <h2>Current Neighborhood Capacity</h2>
+        <div class="capacity-container">
+            <div style="display: flex; justify-content: space-between; font-weight: bold; color: #444; margin-bottom: 10px;">
+                <span>Filled: 0.15 Acres</span>
+                <span>Max Capacity: 0.25 Acres</span>
+            </div>
+            <div class="progress-bar">
+                <!-- 0.15 / 0.25 = 68% -->
+                <div class="progress-fill" style="width: 60%;"></div>
+            </div>
+            <p style="text-align: center; margin-top: 15px; color: #2e7d32; font-weight: 600;">Only 0.10 acres of automated capacity left for this season!</p>
+        </div>
+    </section>
+
+    <!-- Service Area Section -->
+    <section id="service-area" class="section" style="padding-top: 0; padding-bottom: 40px;">
+        <h2>Do I Serve Your Area?</h2>
+        <div class="service-box">
+            <p style="margin-bottom: 15px; color: #555;">Enter your Zip Code or City to verify you are in my service zone.</p>
+            <input type="text" id="area-input" placeholder="e.g. 98074 or Sammamish, WA" style="max-width: 400px; margin: 0 auto 15px auto; display: block; text-align: center; font-size: 1.1rem;">
+            <button onclick="checkServiceArea()" class="btn" style="padding: 10px 25px;">Check Availability</button>
+            <div id="area-result" class="status-message" style="max-width: 400px; margin: 15px auto 0;"></div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section">
+        <h2>Pricing Calculator</h2>
+        <div class="pricing-box">
+            <h3 style="color: #444; font-size: 1.2rem;">Custom Yard Quote</h3>
+            <div style="margin: 25px 0;">
+                <label for="sqft-input" style="font-size: 1rem; color: #555;">Enter Your Lawn Size (Sq. Ft):</label>
+                <input type="number" id="sqft-input" placeholder="e.g. 2500" oninput="calculatePrice()" style="width: 80%; margin: 10px auto; display: block; text-align: center; font-size: 1.3rem;">
+            </div>
+            <div class="price" id="calc-price">$0.00<span> / cut</span></div>
+            <p style="margin-bottom: 10px; color: #666; font-size: 1.05rem;">Billed flat monthly based on a rate of <strong>$0.005 per square foot</strong>.</p>
+            <p style="margin-bottom: 25px; color: #888; font-size: 0.9rem;">(Don't know your lawn size? <a href="https://www.findlotsize.com/" target="_blank" style="color: #4caf50;">Find it free here</a>, or we can measure it manually during the free assessment.)</p>
+            <a href="#contact" class="btn" style="width: 100%;">Sign Up Next Door</a>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section id="contact" class="section">
+        <h2>Get Started</h2>
+        
+        <!-- Disclaimer Box -->
+        <div class="disclaimer-box">
+            <p style="color: #555; font-size: 0.95rem;">
+                <strong>Notice:</strong> This service utilizes state-of-the-art robotic mowers to maintain your lawn. While highly efficient, no automated system is 100% perfect. This local business is proudly owned and operated by a 14-year-old high school student dedicated to bringing smart tech to the neighborhood!
+            </p>
+        </div>
+        
+        <!-- Hidden iframe to capture the Google Apps Script redirect invisibly -->
+        <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) { showSuccess(); }"></iframe>
+        
+        <!-- Form targets the hidden iframe -->
+        <form action="https://script.google.com/macros/s/AKfycbxKZ97E9eYb2U1HJha8IoWo08IWHLJR0eejCg6GPL27_svo93ZqsvxM8q8AKaqFBQHohQ/exec" method="POST" target="hidden_iframe" id="leadForm" onsubmit="submitted=true; showLoading();">
+            
+            <!-- Hidden field to pass the Brand Name to your script -->
+            <input type="hidden" name="brand" value="SmartCut Neighborhood">
+
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required placeholder="Your First & Last Name">
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" required placeholder="Street Address">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required placeholder="you@example.com">
+            </div>
+            <div class="form-group">
+                <label for="notes">Property Notes (Optional):</label>
+                <textarea id="notes" name="notes" placeholder="e.g., Fenced backyard, pets, specific gates..."></textarea>
+            </div>
+            <button type="submit" id="submitBtn" class="btn" style="width: 100%; font-size: 1.2rem; padding: 15px;">Request Free Yard Assessment</button>
+            
+            <!-- Dynamic Status Output Container -->
+            <div id="statusBox" class="status-message"></div>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 SmartCut Neighborhood Services. Locally operated.</p>
+    </footer>
+
+    <script>
+        // Global flag for the iframe onload event
+        var submitted = false;
+        const submitBtn = document.getElementById('submitBtn');
+        const statusBox = document.getElementById('statusBox');
+        const form = document.getElementById('leadForm');
+
+        function showLoading() {
+            submitBtn.disabled = true;
+            statusBox.className = 'status-message loading';
+            statusBox.innerText = 'Sending your request...';
+        }
+
+        function showSuccess() {
+            // Because the iframe loaded, the Google Script finished executing
+            statusBox.className = 'status-message success';
+            statusBox.innerHTML = '🎉 Success! Your assessment request has been submitted. Check your inbox!';
+            form.reset();
+            submitBtn.disabled = false;
+            submitted = false; // reset for future submissions
+        }
+
+        // --- Service Area Checker ---
+        function checkServiceArea() {
+            const input = document.getElementById('area-input').value.toLowerCase().trim();
+            const resultBox = document.getElementById('area-result');
+            
+            if (input === "") return;
+
+            if (input.includes('98074') || input.includes('sammamish')) {
+                resultBox.className = 'status-message success';
+                resultBox.innerHTML = '✅ Great news! You are in my active service area.';
+            } else {
+                resultBox.className = 'status-message error';
+                resultBox.style.backgroundColor = '#ffebee';
+                resultBox.style.color = '#c62828';
+                resultBox.innerHTML = '❌ Sorry, I am currently only servicing Sammamish, WA (98074).';
+            }
+        }
+
+        // --- Dynamic Pricing Calculator ---
+        function calculatePrice() {
+            const sqft = parseFloat(document.getElementById('sqft-input').value);
+            const priceDisplay = document.getElementById('calc-price');
+            const ratePerSqFt = 0.005;
+
+            if (!isNaN(sqft) && sqft > 0) {
+                const weeklyPrice = (sqft * ratePerSqFt).toFixed(2);
+                priceDisplay.innerHTML = `$${weeklyPrice}<span> / cut</span>`;
+            } else {
+                priceDisplay.innerHTML = `$0.00<span> / cut</span>`;
+            }
+        }
+
+        // --- Smart Image Centering Script ---
+        window.addEventListener('load', () => {
+            const smartImages = document.querySelectorAll('.smart-center');
+            
+            smartImages.forEach(img => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                
+                // We create a new image object to try and bypass some cache restrictions
+                const analysisImg = new Image();
+                analysisImg.crossOrigin = "Anonymous"; 
+                analysisImg.src = img.src;
+                
+                analysisImg.onload = () => {
+                    canvas.width = analysisImg.width;
+                    canvas.height = analysisImg.height;
+                    
+                    try {
+                        // Draw image to canvas to analyze pixels
+                        ctx.drawImage(analysisImg, 0, 0);
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const data = imageData.data;
+                        
+                        // Assume top-left pixel is the background color (usually white for icons)
+                        const bgR = data[0], bgG = data[1], bgB = data[2];
+                        const threshold = 30; // Color difference threshold
+                        
+                        let minX = canvas.width, minY = canvas.height, maxX = 0, maxY = 0;
+                        let foundObject = false;
+
+                        // Scan every pixel to find the boundaries of the colored object
+                        for (let y = 0; y < canvas.height; y++) {
+                            for (let x = 0; x < canvas.width; x++) {
+                                const i = (y * canvas.width + x) * 4;
+                                const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+                                
+                                // If the pixel is significantly different from the background
+                                if (a > 0 && (Math.abs(r - bgR) > threshold || Math.abs(g - bgG) > threshold || Math.abs(b - bgB) > threshold)) {
+                                    if (x < minX) minX = x;
+                                    if (x > maxX) maxX = x;
+                                    if (y < minY) minY = y;
+                                    if (y > maxY) maxY = y;
+                                    foundObject = true;
+                                }
+                            }
+                        }
+
+                        if (foundObject) {
+                            // Calculate the center of the colored object
+                            const centerX = (minX + maxX) / 2;
+                            const centerY = (minY + maxY) / 2;
+                            const percentX = (centerX / canvas.width) * 100;
+                            const percentY = (centerY / canvas.height) * 100;
+                            
+                            // Apply the newly calculated center to the original image on the page
+                            img.style.objectPosition = `${percentX}% ${percentY}%`;
+                            img.style.objectFit = 'cover';
+                        }
+                    } catch(e) {
+                        // If browser CORS security blocks the pixel scanning from external sites like Shutterstock,
+                        // gracefully fallback to CSS 'contain' to ensure the icon is fully visible and centered.
+                        console.log("CORS prevented smart centering, defaulting to standard CSS fit.");
+                        img.style.objectFit = 'contain';
+                        img.style.objectPosition = 'center';
+                        img.style.backgroundColor = '#fff'; // Ensures background blends well
+                    }
+                };
+            });
+        });
+    </script>
+
+</body>
+</html>

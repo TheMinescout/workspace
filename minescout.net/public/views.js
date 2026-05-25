@@ -1,5 +1,4 @@
 // views.js — Stores all HTML templates for the SPA
-
 export const views = {
   '/': `
     <div class="hero-layout">
@@ -192,7 +191,7 @@ export const views = {
         <h1 class="ai-title">The <em>Managed Intelligence</em><br>Platform for Sammamish.</h1>
         <p class="ai-lead">I engineer multi-tenant digital systems and persistent AI assistants for organizations that value efficiency over overhead. Every project is built on serverless edge architecture, providing sub-second speed and a private "Backstage" dashboard for real-time management.</p>
         <div class="ai-stats">
-          <div class="ai-stat"><span class="ai-stat-val">3</span><span class="ai-stat-label">Charter Spots Open</span></div>
+          <div class="ai-stat"><span class="ai-stat-val">2</span><span class="ai-stat-label">Charter Spots Open</span></div>
           <div class="ai-stat"><span class="ai-stat-val">100<em>%</em></span><span class="ai-stat-label">Edge Serverless</span></div>
           <div class="ai-stat"><span class="ai-stat-val">&lt;1<em>wk</em></span><span class="ai-stat-label">From Call to Live</span></div>
         </div>
@@ -232,10 +231,10 @@ export const views = {
       <div class="page-content clients-wrap">
         <p class="page-label">Minescout AI</p>
         <h1 class="page-title">Client Work</h1>
-        <p class="clients-intro">Minescout AI deploys high-performance digital infrastructure. Below are our current <strong>Active Network Nodes</strong>. We are currently accepting applications for three inaugural <strong>Q2 Charter Partners</strong>.</p>
+        <p class="clients-intro">Minescout AI deploys high-performance digital infrastructure. Below are our current <strong>Active Network Nodes</strong>. We are currently accepting applications for our two remaining <strong>Q2 Charter Partners</strong>.</p>
         <div class="status-bar">
           <div class="status-dot-alert"></div>
-          <div class="status-text"><strong>Commercial Pipeline: 3/3 Charter Slots Open.</strong> We are prioritizing businesses in Sammamish and the Greater Eastside for our Q2 technical architecture upgrades.</div>
+          <div class="status-text"><strong>Commercial Pipeline: 2/3 Charter Slots Open (1 Claimed).</strong> We are prioritizing businesses in Sammamish and the Greater Eastside for our Q2 technical architecture upgrades.</div>
         </div>
         <div class="section-divider">Production Nodes</div>
         <div class="client-card" style="--d:0.3s;">
@@ -371,7 +370,7 @@ export const views = {
         </div>
         <div class="legal-section" style="--d:0.4s;">
           <div class="legal-section-title">Charter Partner program</div>
-          <p class="legal-body">The Charter Partner program is an invite-only arrangement in which Minescout AI provides the full AI Upgrade at no cost in exchange for a defined set of commitments from the partner. <strong>3 spots are currently available.</strong> <a href="/contact">Get in touch to apply.</a></p>
+          <p class="legal-body">The Charter Partner program is an invite-only arrangement in which Minescout AI provides the full AI Upgrade at no cost in exchange for a defined set of commitments from the partner. <strong>2 spots are currently available.</strong> <a href="/contact">Get in touch to apply.</a></p>
           <p class="legal-body">The terms of the Charter Partner arrangement are as follows:</p>
           <div class="charter-detail">
             <div class="charter-detail-row"><div class="charter-key">What you receive</div><div class="charter-val">The full AI Upgrade at no cost &mdash; custom-trained AI assistant, website integration, and 12 months of maintenance.</div></div>
@@ -1160,7 +1159,7 @@ export const views = {
               <div class="tier-was">Valued at $799 + $59/mo</div>
             </div>
             <div class="tier-h-body">
-              <p class="tier-target">The full AI Upgrade at no cost for 3 local businesses willing to co-develop the product. You get a world-class AI assistant free. I get a real-world case study and testimonial.</p>
+              <p class="tier-target">The full AI Upgrade at no cost for 2 remaining local businesses willing to co-develop the product. You get a world-class AI assistant free. I get a real-world case study and testimonial.</p>
               <ul class="tier-features tier-features--row">
                 <li class="tier-feature">Full AI Upgrade at no cost</li>
                 <li class="tier-feature">Signed testimonial required</li>

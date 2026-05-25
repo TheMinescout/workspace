@@ -39,21 +39,10 @@
 
   <main class="flex-1 overflow-hidden relative flex flex-col md:flex-row">
 
-    <section class="w-full md:w-1/2 lg:w-1/3 bg-zinc-900 border-r border-zinc-800 overflow-y-auto p-6">
+    <section class="w-full md:w-1/2 lg:w-[40%] bg-zinc-900 border-r border-zinc-800 overflow-y-auto p-6">
       
-      <div class="mb-8">
-        <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2 text-emerald-400">
-          <i data-lucide="book-open" class="w-5 h-5"></i> Catalog Selection
-        </h2>
-        <label class="label-text mt-0">Load Item Preset</label>
-        <select id="inv-catalog-dropdown" class="input-field cursor-pointer border-emerald-900 focus:border-emerald-500 bg-emerald-950/20">
-          <option value="">-- Manual Entry / Custom Order --</option>
-          <option value="loading" disabled>Scraping Chop-Lab.com...</option>
-        </select>
-        <p id="catalog-error" class="text-xs text-red-400 mt-2 font-semibold hidden"></p>
-      </div>
-
-      <div class="mb-8">
+      <!-- Global Client Settings -->
+      <div class="mb-8 bg-zinc-950/50 p-5 rounded-xl border border-zinc-800/80">
         <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
           <i data-lucide="user" class="w-5 h-5 text-zinc-400"></i> Client Details
         </h2>
@@ -67,54 +56,29 @@
             <input type="email" id="inv-email" class="input-field calc-trigger" placeholder="jane@example.com">
           </div>
         </div>
-        
-        <label class="label-text">Item / Project Name</label>
-        <input type="text" id="inv-project" class="input-field calc-trigger" placeholder="e.g. Custom Matte Black Case" value="Custom Chop Lab Order">
-
-        <label class="label-text flex justify-between">
-            <span>Optional Item Image</span>
-            <span id="img-source-badge" class="text-xs text-emerald-500 hidden">(Loaded from Catalog)</span>
-        </label>
-        <input type="file" id="inv-image-upload" accept="image/*" class="block w-full text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-zinc-800 file:text-zinc-300 hover:file:bg-zinc-700 cursor-pointer mt-2">
+        <label class="label-text">Invoice Title / Subject</label>
+        <input type="text" id="inv-title" class="input-field calc-trigger" placeholder="e.g. Custom Potter Tools" value="Custom Chop Lab Order">
       </div>
 
-      <div class="mb-8">
-        <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
-          <i data-lucide="tags" class="w-5 h-5 text-zinc-400"></i> Rates & Base Price
-        </h2>
-        <label class="label-text mt-0">Base Item Price ($)</label>
-        <input type="number" id="inv-base-price" class="input-field calc-trigger text-emerald-400 font-bold" placeholder="0.00" min="0" step="1" value="0">
-        
-        <div class="grid grid-cols-2 gap-4 mt-4">
-          <div>
-            <label class="label-text mt-0">Design Rate ($/hr)</label>
-            <input type="number" id="inv-design-rate" class="input-field calc-trigger" placeholder="15" min="0" step="1" value="15">
-          </div>
-          <div>
-            <label class="label-text mt-0">Print Rate ($/hr)</label>
-            <input type="number" id="inv-print-rate" class="input-field calc-trigger" placeholder="2" min="0" step="0.5" value="2">
-          </div>
+      <!-- Items Section -->
+      <div class="mb-4">
+        <div class="flex justify-between items-end border-b border-zinc-700 pb-2 mb-4">
+            <h2 class="text-lg font-bold flex items-center gap-2 text-emerald-400">
+            <i data-lucide="layers" class="w-5 h-5"></i> Line Items
+            </h2>
+            <p id="catalog-error" class="text-xs text-red-400 font-semibold hidden"></p>
         </div>
-      </div>
-
-      <div class="mb-8">
-        <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
-          <i data-lucide="clock" class="w-5 h-5 text-zinc-400"></i> Logged Time
-        </h2>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="label-text mt-0">Design Hours</label>
-            <input type="number" id="inv-design-hrs" class="input-field calc-trigger" placeholder="0" min="0" step="0.25" value="0">
-          </div>
-          <div>
-            <label class="label-text mt-0">Print Hours</label>
-            <input type="number" id="inv-print-hrs" class="input-field calc-trigger" placeholder="0" min="0" step="0.5" value="0">
-          </div>
+        
+        <div id="items-container">
+            <!-- Dynamic Items Injected Here -->
         </div>
-        <label class="label-text mt-4">Extra Costs / Hardware ($)</label>
-        <input type="number" id="inv-extra-cost" class="input-field calc-trigger" placeholder="0.00" step="1" value="0">
+
+        <button id="add-item-btn" class="w-full py-4 mb-8 bg-zinc-950 hover:bg-zinc-800 text-emerald-400 font-bold rounded-xl border-2 border-zinc-800 border-dashed flex justify-center items-center gap-2 transition group">
+            <i data-lucide="plus-circle" class="w-5 h-5 group-hover:scale-110 transition-transform"></i> Add Another Item
+        </button>
       </div>
 
+      <!-- Global Discount -->
       <div class="mb-8">
         <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2 text-red-400">
           <i data-lucide="percent" class="w-5 h-5"></i> Discount
@@ -140,6 +104,7 @@
         </div>
       </div>
 
+      <!-- Payment & Notes -->
       <div class="mb-8">
         <h2 class="text-lg font-bold border-b border-zinc-700 pb-2 mb-4 flex items-center gap-2">
           <i data-lucide="wallet" class="w-5 h-5 text-zinc-400"></i> Payment & Notes
@@ -151,16 +116,17 @@
       </div>
     </section>
 
-    <section class="w-full md:w-1/2 lg:w-2/3 bg-zinc-950 overflow-y-auto p-4 md:p-8 flex justify-center items-start">
-      <div class="w-full max-w-2xl bg-zinc-100 rounded-xl shadow-2xl overflow-hidden border border-zinc-800 flex flex-col" id="invoice-preview-wrapper">
+    <!-- Preview Section -->
+    <section class="w-full md:w-1/2 lg:w-[60%] bg-zinc-950 overflow-y-auto p-4 md:p-8 flex justify-center items-start relative">
+      <div class="w-full max-w-2xl bg-zinc-100 rounded-xl shadow-2xl overflow-hidden border border-zinc-800 flex flex-col mb-12" id="invoice-preview-wrapper">
         
         <div class="bg-zinc-200 border-b border-zinc-300 p-4 shrink-0 flex justify-between items-center">
-          <button id="btn-inv-send" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded text-sm font-bold shadow transition flex items-center gap-2">
-            <i data-lucide="send" class="w-4 h-4"></i> Send to Client
+          <button id="btn-inv-send" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-md text-sm font-bold shadow transition flex items-center gap-2">
+            <i data-lucide="send" class="w-4 h-4"></i> Send Invoice
           </button>
           <div class="text-right">
-             <div class="text-xs font-bold text-zinc-500 uppercase">To: <span id="inv-out-email" class="text-zinc-800 normal-case bg-white px-1 rounded ml-1"></span></div>
-             <div class="text-xs font-bold text-zinc-500 uppercase mt-1">Subj: <span id="inv-out-subject" class="text-zinc-800 normal-case bg-white px-1 rounded ml-1"></span></div>
+             <div class="text-xs font-bold text-zinc-500 uppercase">To: <span id="inv-out-email" class="text-zinc-800 normal-case bg-white px-1.5 py-0.5 rounded ml-1 border border-zinc-300"></span></div>
+             <div class="text-xs font-bold text-zinc-500 uppercase mt-1">Subj: <span id="inv-out-subject" class="text-zinc-800 normal-case bg-white px-1.5 py-0.5 rounded ml-1 border border-zinc-300"></span></div>
           </div>
         </div>
 
@@ -182,12 +148,12 @@
             </tr></table>
 
             <div id="inv-img-container" style="display: none; text-align: center; margin-top: 30px;">
-              <img id="inv-out-image" src="" alt="Project Image" style="max-width: 100%; height: auto; max-height: 250px; object-fit: contain; border-radius: 8px; border: 1px solid #E5E5E5;">
+                <!-- Dynamically populated if images exist -->
             </div>
 
             <p style="color: #3A3F42; font-size: 14px; line-height: 1.5; margin-top: 30px; white-space: pre-wrap;" id="inv-out-notes"></p>
 
-            <table style="width: 100%; margin-top: 30px; border-collapse: collapse; background-color: #FAFAFB; border: 1px solid #E5E5E5;">
+            <table style="width: 100%; margin-top: 30px; border-collapse: collapse; background-color: #FFFFFF; border: 1px solid #E5E5E5;">
               <thead>
                 <tr style="background-color: #F4F4F6;">
                    <th style="padding: 12px; border-bottom: 2px solid #3A3F42; font-size: 12px; text-transform: uppercase; color: #7da5a8; text-align: left;">Description</th>
@@ -215,6 +181,66 @@
     </section>
   </main>
 
+  <!-- HTML TEMPLATE FOR AN ITEM CARD -->
+  <template id="item-template">
+    <div class="item-card bg-zinc-950 p-5 rounded-xl border border-zinc-800 mb-4 relative shadow-sm">
+      <button type="button" class="remove-item-btn absolute top-4 right-4 text-zinc-500 hover:text-red-500 transition">
+        <i data-lucide="trash-2" class="w-5 h-5"></i>
+      </button>
+      
+      <h3 class="text-[0.8rem] font-bold text-emerald-400 mb-4 flex items-center gap-2 uppercase tracking-wider">
+        <i data-lucide="box" class="w-4 h-4"></i><span class="item-header-title">Item</span>
+      </h3>
+
+      <div class="mb-4">
+        <label class="label-text mt-0">Load Preset Data</label>
+        <select class="input-field item-catalog-dropdown cursor-pointer border-zinc-700 focus:border-emerald-500 bg-zinc-900">
+            <option value="">-- Manual Entry / Custom --</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label class="label-text mt-0">Item Name / Description</label>
+        <input type="text" class="input-field item-name calc-trigger" placeholder="e.g. Hexagon Cutter 2in" value="Custom Item">
+      </div>
+
+      <div class="mb-4">
+        <label class="label-text mt-0 flex justify-between">
+            <span>Optional Item Image</span>
+            <span class="text-xs text-emerald-500 hidden img-source-badge font-bold">(Loaded from Catalog)</span>
+        </label>
+        <input type="file" accept="image/*" class="item-image-upload block w-full text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-zinc-800 file:text-zinc-300 hover:file:bg-zinc-700 cursor-pointer mt-1">
+      </div>
+
+      <div class="grid grid-cols-2 gap-x-4 gap-y-3 bg-zinc-900/50 p-3 rounded-lg border border-zinc-800/50">
+          <div>
+              <label class="label-text mt-0">Base Price ($)</label>
+              <input type="number" class="input-field item-base calc-trigger text-emerald-400 font-bold" min="0" step="1" value="0">
+          </div>
+          <div>
+              <label class="label-text mt-0">Extra Costs ($)</label>
+              <input type="number" class="input-field item-extras calc-trigger" min="0" step="1" value="0">
+          </div>
+          <div>
+              <label class="label-text mt-0">Design Rate ($/hr)</label>
+              <input type="number" class="input-field item-d-rate calc-trigger" min="0" step="1" value="15">
+          </div>
+          <div>
+              <label class="label-text mt-0">Design Hours</label>
+              <input type="number" class="input-field item-d-hrs calc-trigger" min="0" step="0.25" value="0">
+          </div>
+           <div>
+              <label class="label-text mt-0">Print Rate ($/hr)</label>
+              <input type="number" class="input-field item-p-rate calc-trigger" min="0" step="0.5" value="2">
+          </div>
+          <div>
+              <label class="label-text mt-0">Print Hours</label>
+              <input type="number" class="input-field item-p-hrs calc-trigger" min="0" step="0.5" value="0">
+          </div>
+      </div>
+    </div>
+  </template>
+
   <script>
     lucide.createIcons();
     const CLOUDFLARE_WORKER_URL = "https://video-intake-engine.tmcarleton11.workers.dev/";
@@ -223,15 +249,11 @@
     // 1. DYNAMIC CATALOG SCRAPING
     // =====================================
     window.catalogItems = {};
-    let catalogImageBase64 = null;
-    let manualImageBase64 = null;
+    let catalogOptionsString = '<option value="">-- Manual Entry / Custom Order --</option>';
 
     async function loadCatalog() {
-      const dropdown = document.getElementById('inv-catalog-dropdown');
       const errBox = document.getElementById('catalog-error');
-      
       try {
-        // We try a direct fetch. If CORS blocks it, we fallback to a safe proxy to parse the HTML.
         let htmlText = "";
         try {
             const res = await fetch('https://chop-lab.com');
@@ -246,14 +268,11 @@
 
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlText, 'text/html');
-        
         const productSelect = doc.getElementById('productSelect');
-        if (!productSelect) throw new Error("Could not locate #productSelect on chop-lab.com");
+        if (!productSelect) throw new Error("Could not locate catalog on chop-lab.com");
 
         const options = productSelect.querySelectorAll('option:not([disabled])');
         
-        dropdown.innerHTML = '<option value="">-- Manual Entry / Custom Order --</option>';
-
         options.forEach(opt => {
            const val = opt.value;
            if(!val) return;
@@ -265,54 +284,125 @@
              print: opt.getAttribute('data-print') || "0",
              img: opt.getAttribute('data-image') || ""
            };
+           catalogOptionsString += `<option value="${val}">${window.catalogItems[val].name}</option>`;
+        });
 
-           const newOpt = document.createElement('option');
-           newOpt.value = val;
-           newOpt.innerText = window.catalogItems[val].name;
-           dropdown.appendChild(newOpt);
+        // Update all currently rendered dropdowns
+        document.querySelectorAll('.item-catalog-dropdown').forEach(dd => {
+            const currentVal = dd.value;
+            dd.innerHTML = catalogOptionsString;
+            dd.value = currentVal;
         });
 
       } catch(err) {
         console.error(err);
-        errBox.innerText = `⚠ Catalog Sync Failed: ${err.message}`;
+        errBox.innerText = `⚠ Catalog Sync Failed`;
         errBox.classList.remove('hidden');
-        dropdown.innerHTML = '<option value="">-- Manual Entry Only (Sync Failed) --</option>';
+        catalogOptionsString = '<option value="">-- Manual Entry Only (Sync Failed) --</option>';
       }
     }
 
-    // Initialize Catalog Fetch
-    loadCatalog();
+    // =====================================
+    // 2. ITEM MANAGEMENT LOGIC
+    // =====================================
+    const itemsContainer = document.getElementById('items-container');
+    const itemTemplate = document.getElementById('item-template');
 
-    // Handle Catalog Dropdown Change
-    document.getElementById('inv-catalog-dropdown').addEventListener('change', (e) => {
-        const val = e.target.value;
-        const badge = document.getElementById('img-source-badge');
+    function updateItemHeaders() {
+        document.querySelectorAll('.item-card').forEach((card, index) => {
+            card.querySelector('.item-header-title').textContent = `Item ${index + 1}`;
+        });
+    }
+
+    function addItem() {
+        const clone = itemTemplate.content.cloneNode(true);
+        const dropdown = clone.querySelector('.item-catalog-dropdown');
+        dropdown.innerHTML = catalogOptionsString; // Inject options
         
-        if(val && window.catalogItems[val]) {
-            const item = window.catalogItems[val];
-            inputs.project.value = item.name;
-            inputs.basePrice.value = item.base;
-            inputs.designRate.value = item.design;
-            inputs.printRate.value = item.print;
+        itemsContainer.appendChild(clone);
+        lucide.createIcons();
+        updateItemHeaders();
+        updateInvoicePreview();
+    }
+
+    document.getElementById('add-item-btn').addEventListener('click', addItem);
+
+    // Event Delegation for Items Container
+    itemsContainer.addEventListener('click', (e) => {
+        const removeBtn = e.target.closest('.remove-item-btn');
+        if (removeBtn) {
+            removeBtn.closest('.item-card').remove();
+            updateItemHeaders();
+            updateInvoicePreview();
+        }
+    });
+
+    itemsContainer.addEventListener('input', (e) => {
+        if(e.target.classList.contains('calc-trigger')) {
+            updateInvoicePreview();
+        }
+    });
+
+    itemsContainer.addEventListener('change', (e) => {
+        // Handle Catalog Dropdown
+        if(e.target.classList.contains('item-catalog-dropdown')) {
+            const card = e.target.closest('.item-card');
+            const val = e.target.value;
+            const badge = card.querySelector('.img-source-badge');
             
-            if(item.img) {
-                catalogImageBase64 = item.img;
-                badge.classList.remove('hidden');
+            if(val && window.catalogItems[val]) {
+                const item = window.catalogItems[val];
+                card.querySelector('.item-name').value = item.name;
+                card.querySelector('.item-base').value = item.base;
+                card.querySelector('.item-d-rate').value = item.design;
+                card.querySelector('.item-p-rate').value = item.print;
+                
+                if(item.img) {
+                    card.dataset.catalogImg = item.img;
+                    badge.classList.remove('hidden');
+                    badge.innerText = "(Loaded from Catalog)";
+                } else {
+                    card.dataset.catalogImg = "";
+                    badge.classList.add('hidden');
+                }
             } else {
-                catalogImageBase64 = null;
+                card.dataset.catalogImg = "";
                 badge.classList.add('hidden');
             }
-        } else {
-            // Manual mode reset
-            catalogImageBase64 = null;
-            badge.classList.add('hidden');
+            updateInvoicePreview();
         }
-        updateInvoicePreview();
+
+        // Handle Image Uploads per Item
+        if(e.target.classList.contains('item-image-upload')) {
+            const card = e.target.closest('.item-card');
+            const file = e.target.files[0];
+            const badge = card.querySelector('.img-source-badge');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    card.dataset.manualImg = event.target.result;
+                    badge.innerText = "(Custom Uploaded)";
+                    badge.classList.remove('hidden');
+                    updateInvoicePreview();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                card.dataset.manualImg = "";
+                if(card.dataset.catalogImg) {
+                    badge.innerText = "(Loaded from Catalog)";
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+                updateInvoicePreview();
+            }
+        }
     });
 
 
     // =====================================
-    // 2. DISCOUNT SLIDER LOGIC
+    // 3. DISCOUNT SLIDER LOGIC
     // =====================================
     const discountType = document.getElementById('inv-discount-type');
     const discountVal = document.getElementById('inv-discount-val');
@@ -321,161 +411,140 @@
 
     function syncDiscount(source) {
         let val = parseFloat(source.value) || 0;
-        
         if (discountType.value === 'percent') {
             val = Math.min(val, 100);
             discountDisplay.innerText = val + '%';
         } else {
             discountDisplay.innerText = '$' + val;
         }
-
         if(source.id === 'inv-discount-slider') discountVal.value = val;
         if(source.id === 'inv-discount-val') discountSlider.value = val;
-        
         updateInvoicePreview();
     }
 
     discountSlider.addEventListener('input', (e) => syncDiscount(e.target));
     discountVal.addEventListener('input', (e) => syncDiscount(e.target));
-    
     discountType.addEventListener('change', () => {
         if(discountType.value === 'percent') {
             discountSlider.max = 100;
             if(discountVal.value > 100) discountVal.value = 100;
         } else {
-            discountSlider.max = 200; // Arbitrary max for slider in flat mode, input can go higher
+            discountSlider.max = 200; 
         }
         syncDiscount(discountVal);
     });
 
     // =====================================
-    // 3. UI STATE & CALCULATION LOGIC
+    // 4. UI STATE & CALCULATION LOGIC
     // =====================================
     document.getElementById('inv-out-date').innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     const formatMoney = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
 
-    const inputs = {
-      name: document.getElementById('inv-name'),
-      email: document.getElementById('inv-email'),
-      project: document.getElementById('inv-project'),
-      basePrice: document.getElementById('inv-base-price'),
-      designRate: document.getElementById('inv-design-rate'),
-      printRate: document.getElementById('inv-print-rate'),
-      designHrs: document.getElementById('inv-design-hrs'),
-      printHrs: document.getElementById('inv-print-hrs'),
-      extraCost: document.getElementById('inv-extra-cost'),
-      venmo: document.getElementById('inv-venmo'),
-      notes: document.getElementById('inv-notes')
-    };
-
-    // Manual Image Upload
-    document.getElementById('inv-image-upload').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          manualImageBase64 = event.target.result;
-          document.getElementById('img-source-badge').innerText = "(Custom Uploaded)";
-          document.getElementById('img-source-badge').classList.remove('hidden');
-          updateInvoicePreview();
-        };
-        reader.readAsDataURL(file);
-      } else {
-        manualImageBase64 = null;
-        if(catalogImageBase64) {
-            document.getElementById('img-source-badge').innerText = "(Loaded from Catalog)";
-        } else {
-            document.getElementById('img-source-badge').classList.add('hidden');
-        }
-        updateInvoicePreview();
-      }
-    });
+    // Global Listeners for main form
+    document.getElementById('inv-name').addEventListener('input', updateInvoicePreview);
+    document.getElementById('inv-email').addEventListener('input', updateInvoicePreview);
+    document.getElementById('inv-title').addEventListener('input', updateInvoicePreview);
+    document.getElementById('inv-venmo').addEventListener('input', updateInvoicePreview);
+    document.getElementById('inv-notes').addEventListener('input', updateInvoicePreview);
 
     function updateInvoicePreview() {
-      const projName = inputs.project.value.trim() || "Chop Lab Order";
-      const clientName = inputs.name.value.trim() || inputs.email.value.split('@')[0] || "Client";
-      
-      document.getElementById('inv-out-email').innerText = inputs.email.value || "customer@example.com";
-      document.getElementById('inv-out-subject').innerText = projName;
+      // Global Elements
+      const invTitle = document.getElementById('inv-title').value.trim() || "Chop Lab Order";
+      const clientName = document.getElementById('inv-name').value.trim() || document.getElementById('inv-email').value.split('@')[0] || "Client";
+      const email = document.getElementById('inv-email').value || "customer@example.com";
+      const venmoHandle = document.getElementById('inv-venmo').value.replace('@','') || "tmcarleton";
+      const notes = document.getElementById('inv-notes').value || "";
+
+      document.getElementById('inv-out-email').innerText = email;
+      document.getElementById('inv-out-subject').innerText = invTitle;
       document.getElementById('inv-out-name').innerText = clientName;
-      document.getElementById('inv-out-notes').innerText = inputs.notes.value || "";
-      document.getElementById('inv-venmo-handle').innerText = inputs.venmo.value || "tmcarleton";
+      document.getElementById('inv-out-notes').innerText = notes;
+      document.getElementById('inv-venmo-handle').innerText = venmoHandle;
 
-      // Display Image logic (Manual overrides Catalog)
-      const imgContainer = document.getElementById('inv-img-container');
-      const imgElement = document.getElementById('inv-out-image');
-      const activeImage = manualImageBase64 || catalogImageBase64;
-      
-      if (activeImage) {
-        imgElement.src = activeImage;
-        imgContainer.style.display = "block";
-      } else {
-        imgContainer.style.display = "none";
-      }
-
-      let tbodyHTML = ""; 
       let subTotal = 0;
+      let tbodyHTML = ""; 
+      let imagesHTML = "";
+      const itemCards = document.querySelectorAll('.item-card');
 
-      // 1. Base Price
-      const basePrice = parseFloat(inputs.basePrice.value) || 0;
-      if (basePrice > 0) {
-        subTotal += basePrice;
-        tbodyHTML += `<tr>
-          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;">
-            <strong style="color: #3A3F42;">${projName}</strong><br>
-            <span style="font-size:12px;color:#7da5a8;">Base Item / Deposit</span>
-          </td>
-          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color: #3A3F42;">${formatMoney(basePrice)}</td>
-        </tr>`;
+      // Process Items
+      itemCards.forEach((card, index) => {
+          const name = card.querySelector('.item-name').value || `Item ${index + 1}`;
+          const basePrice = parseFloat(card.querySelector('.item-base').value) || 0;
+          const dRate = parseFloat(card.querySelector('.item-d-rate').value) || 0;
+          const dHrs = parseFloat(card.querySelector('.item-d-hrs').value) || 0;
+          const pRate = parseFloat(card.querySelector('.item-p-rate').value) || 0;
+          const pHrs = parseFloat(card.querySelector('.item-p-hrs').value) || 0;
+          const extras = parseFloat(card.querySelector('.item-extras').value) || 0;
+          
+          let itemTotal = 0;
+          
+          // Image handling
+          const activeImg = card.dataset.manualImg || card.dataset.catalogImg;
+          if(activeImg) {
+              imagesHTML += `<img src="${activeImg}" alt="${name}" style="max-width: 46%; height: auto; max-height: 200px; object-fit: contain; border-radius: 8px; border: 1px solid #E5E5E5; display: inline-block; margin: 1%; vertical-align: top;">`;
+          }
+
+          // HTML Builder for Item
+          let detailsHTML = "";
+          
+          if (basePrice > 0) {
+              itemTotal += basePrice;
+              detailsHTML += `<tr>
+                <td style="padding: 10px 12px 10px 24px; border-bottom: 1px solid #F0F0F0; font-size: 13px; color: #3A3F42;">Base Item / Deposit</td>
+                <td style="padding: 10px 12px; border-bottom: 1px solid #F0F0F0; text-align:right; font-size: 13px; color: #3A3F42;">${formatMoney(basePrice)}</td>
+              </tr>`;
+          }
+          if (dHrs > 0) {
+              const rowTot = dHrs * dRate;
+              itemTotal += rowTot;
+              detailsHTML += `<tr>
+                <td style="padding: 10px 12px 10px 24px; border-bottom: 1px solid #F0F0F0; font-size: 13px; color: #3A3F42;">Design & CAD <span style="color:#7da5a8;">(${dHrs}h @ ${formatMoney(dRate)}/h)</span></td>
+                <td style="padding: 10px 12px; border-bottom: 1px solid #F0F0F0; text-align:right; font-size: 13px; color: #3A3F42;">${formatMoney(rowTot)}</td>
+              </tr>`;
+          }
+          if (pHrs > 0) {
+              const rowTot = pHrs * pRate;
+              itemTotal += rowTot;
+              detailsHTML += `<tr>
+                <td style="padding: 10px 12px 10px 24px; border-bottom: 1px solid #F0F0F0; font-size: 13px; color: #3A3F42;">3D Print <span style="color:#7da5a8;">(${pHrs}h @ ${formatMoney(pRate)}/h)</span></td>
+                <td style="padding: 10px 12px; border-bottom: 1px solid #F0F0F0; text-align:right; font-size: 13px; color: #3A3F42;">${formatMoney(rowTot)}</td>
+              </tr>`;
+          }
+          if (extras > 0) {
+              itemTotal += extras;
+              detailsHTML += `<tr>
+                <td style="padding: 10px 12px 10px 24px; border-bottom: 1px solid #F0F0F0; font-size: 13px; color: #3A3F42;">Hardware / Extra Materials</td>
+                <td style="padding: 10px 12px; border-bottom: 1px solid #F0F0F0; text-align:right; font-size: 13px; color: #3A3F42;">${formatMoney(extras)}</td>
+              </tr>`;
+          }
+
+          if(itemTotal > 0) {
+              subTotal += itemTotal;
+              tbodyHTML += `
+                <tr style="background-color: #FAFAFB;">
+                  <td colspan="2" style="padding: 12px; border-bottom: 1px solid #E5E5E5;">
+                    <strong style="color: #D86A46; font-size: 14px;">${name}</strong>
+                  </td>
+                </tr>
+                ${detailsHTML}
+              `;
+          }
+      });
+
+      // Images rendering
+      const imgContainer = document.getElementById('inv-img-container');
+      if (imagesHTML) {
+          imgContainer.innerHTML = imagesHTML;
+          imgContainer.style.display = "block";
+      } else {
+          imgContainer.style.display = "none";
       }
 
-      // 2. Design Time
-      const dHrs = parseFloat(inputs.designHrs.value) || 0;
-      const dRate = parseFloat(inputs.designRate.value) || 0;
-      if (dHrs > 0) {
-        const dTotal = dHrs * dRate;
-        subTotal += dTotal;
-        tbodyHTML += `<tr>
-          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;">
-            <strong style="color: #3A3F42;">Design & CAD Labor</strong><br>
-            <span style="font-size:12px;color:#7da5a8;">${dHrs} hrs @ ${formatMoney(dRate)}/hr</span>
-          </td>
-          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color: #3A3F42;">${formatMoney(dTotal)}</td>
-        </tr>`;
-      }
-
-      // 3. Print Time
-      const pHrs = parseFloat(inputs.printHrs.value) || 0;
-      const pRate = parseFloat(inputs.printRate.value) || 0;
-      if (pHrs > 0) {
-        const pTotal = pHrs * pRate;
-        subTotal += pTotal;
-        tbodyHTML += `<tr>
-          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;">
-            <strong style="color: #3A3F42;">3D Printing Time</strong><br>
-            <span style="font-size:12px;color:#7da5a8;">${pHrs} hrs @ ${formatMoney(pRate)}/hr</span>
-          </td>
-          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color: #3A3F42;">${formatMoney(pTotal)}</td>
-        </tr>`;
-      }
-
-      // 4. Extras
-      const extras = parseFloat(inputs.extraCost.value) || 0;
-      if (extras > 0) { 
-        subTotal += extras; 
-        tbodyHTML += `<tr>
-          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;">
-            <strong style="color: #3A3F42;">Hardware / Extra Materials</strong>
-          </td>
-          <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color: #3A3F42;">${formatMoney(extras)}</td>
-        </tr>`; 
-      }
-
-      // 5. Discount
+      // Discount Logic
       let grandTotal = subTotal;
       const dVal = parseFloat(discountVal.value) || 0;
       
-      if (dVal > 0) {
+      if (dVal > 0 && subTotal > 0) {
         let discountAmount = 0;
         let discountLabel = "";
         
@@ -487,22 +556,22 @@
             discountLabel = `Discount Applied`;
         }
         
-        discountAmount = Math.min(discountAmount, subTotal); // Prevent negative totals
+        discountAmount = Math.min(discountAmount, subTotal); 
         grandTotal -= discountAmount;
         
         if (discountAmount > 0) {
-            tbodyHTML += `<tr>
+            tbodyHTML += `<tr style="background-color: #FFF5F5;">
               <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top;">
-                <strong style="color: #3A3F42;">${discountLabel}</strong>
+                <strong style="color: #ef4444; font-size: 13px;">${discountLabel}</strong>
               </td>
-              <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color:#ef4444;">-${formatMoney(discountAmount)}</td>
+              <td style="padding: 15px 12px; border-bottom: 1px solid #E5E5E5; vertical-align: top; text-align:right; color:#ef4444; font-size: 13px;">-${formatMoney(discountAmount)}</td>
             </tr>`;
         }
       }
 
       // Empty State
       if (tbodyHTML === "") {
-        tbodyHTML = `<tr><td colspan="2" style="padding: 15px 12px; text-align: center; color: #a1a1aa; font-size: 12px;">Add base price, design time, or print time to generate line items.</td></tr>`;
+        tbodyHTML = `<tr><td colspan="2" style="padding: 15px 12px; text-align: center; color: #a1a1aa; font-size: 12px;">Add an item with base price or hours to generate line items.</td></tr>`;
       }
 
       document.getElementById('inv-tbody').innerHTML = tbodyHTML;
@@ -511,18 +580,15 @@
       document.getElementById('inv-out-total').innerText = totalStr;
       document.getElementById('inv-venmo-btn-amt').innerText = totalStr;
       
-      document.getElementById('inv-venmo-link').href = `https://venmo.com/?txn=pay&audience=private&recipients=${(inputs.venmo.value.replace('@','').trim() || 'tmcarleton')}&amount=${grandTotal.toFixed(2)}&note=${encodeURIComponent(`Invoice for ${projName} via Chop Lab`)}`;
+      document.getElementById('inv-venmo-link').href = `https://venmo.com/?txn=pay&audience=private&recipients=${venmoHandle}&amount=${grandTotal.toFixed(2)}&note=${encodeURIComponent(`Invoice for ${invTitle} via Chop Lab`)}`;
     }
 
-    document.querySelectorAll('.calc-trigger').forEach(input => { input.addEventListener('input', updateInvoicePreview); });
-    updateInvoicePreview(); // Run once
-
     // =====================================
-    // 4. DISPATCH EMAIL LOGIC
+    // 5. DISPATCH EMAIL LOGIC
     // =====================================
     document.getElementById('btn-inv-send').addEventListener('click', async () => {
       const btn = document.getElementById('btn-inv-send');
-      const emailTo = inputs.email.value;
+      const emailTo = document.getElementById('inv-email').value;
       if(!emailTo) return alert("Please enter a customer email address.");
 
       btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Sending...`; 
@@ -566,7 +632,7 @@
         alert("Make sure your Cloudflare Worker is active and configured.");
       } finally {
         setTimeout(() => { 
-          btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Send to Client`; 
+          btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Send Invoice`; 
           btn.classList.remove('bg-zinc-700', 'bg-red-600'); 
           btn.classList.add('bg-emerald-600'); 
           btn.disabled = false; 
@@ -574,6 +640,10 @@
         }, 3000);
       }
     });
+
+    // Boot Up
+    loadCatalog();
+    addItem(); // Start with one item by default
   </script>
 </body>
 </html>
