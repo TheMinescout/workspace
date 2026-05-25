@@ -1,5 +1,9 @@
 // app.js — Application Logic & Routing (Dynamic Cloudflare Hub)
 
+console.log("%c🚀 Minescouts Life Mainframe Initialized", "color: #5d8c58; font-size: 14px; font-weight: bold;");
+console.log("Version: v1.25");
+console.log("Latest Updates: Removed legacy hardcoded views, fixed admin, integrated dynamic Cloudflare KV routing, and secured authentication endpoints.");
+
 // ── 0. DYNAMIC VIEWS OBJECT ───────────────────────────────────────
 // All views are now dynamically loaded from external module files!
 // No hardcoded HTML or static posts remain in this core file.
@@ -16,10 +20,10 @@ async function loadModules() {
     { path: './views/view-admin.js', name: 'adminViews' },
     { path: './views/view-pages-archive.js', name: 'archiveViews' },
     { path: './views/posts/view-tech-2025q2.js', name: 'techViews2025Q2' },
-    { path: './views/posts/view-tech-2025q3.js', name: 'techViews2025Q3' },
+    { path: './views/posts/view-tech-2025q3.js?v=1', name: 'techViews2025Q3' },
     { path: './views/posts/view-tech-2025q4.js', name: 'techViews2025Q4' },
     { path: './views/posts/view-tech-2026q1.js', name: 'techViews2026Q1' },
-    { path: './views/posts/view-tech-2026q2.js', name: 'techViews2026Q2' }
+    { path: './views/posts/view-tech-2026q2.js?v=1', name: 'techViews2026Q2' }
   ];
 
   for (const mod of modulesToLoad) {
@@ -86,6 +90,21 @@ window.logoutAdmin = () => {
   localStorage.removeItem('admin_token');
   localStorage.removeItem('user_email');
   navigate('/');
+};
+
+// Global Admin UI Toggles
+window.switchAdminTab = (tab) => {
+    document.getElementById('panel-publish').style.display = tab === 'publish' ? 'block' : 'none';
+    document.getElementById('panel-feedback').style.display = tab === 'feedback' ? 'block' : 'none';
+    document.getElementById('tab-publish').classList.toggle('active', tab === 'publish');
+    document.getElementById('tab-feedback').classList.toggle('active', tab === 'feedback');
+};
+
+window.toggleAdminPostFields = (type) => {
+    const blogFields = document.getElementById('blog-only-fields');
+    if (blogFields) {
+        blogFields.style.display = type === 'blog' ? 'block' : 'none';
+    }
 };
 
 // ── 3. INTERACTIVE DISCUSSION ELEMENT SETUP ───────────────────────
@@ -733,6 +752,73 @@ function initResetPasswordHandler() {
     }
 }
 
+function initAdminHandler() {
+    const adminForm = document.getElementById('admin-content-form');
+    if (adminForm) {
+        adminForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Gather values from the admin deck form
+            const type = document.getElementById('post-type').value;
+            const title = document.getElementById('post-title').value;
+            const categoryEl = document.getElementById('post-category');
+            const category = categoryEl ? categoryEl.value : 'Updates';
+            const imageEl = document.getElementById('post-image');
+            const image = imageEl ? imageEl.value : '';
+            const linkEl = document.getElementById('post-link');
+            const link = linkEl ? linkEl.value : '';
+            const body = document.getElementById('post-body').value;
+            
+            const btn = adminForm.querySelector('button[type="submit"]');
+
+            // Construct a robust ID for the post to use as the database key
+            const finalLink = link || (type === 'announcement' ? '/Footer/updates.html' : '#');
+            const defaultId = finalLink.split('/').filter(Boolean).pop() || ('post-' + Date.now());
+
+            const newPost = {
+                id: defaultId,
+                title: title,
+                category: type === 'announcement' ? 'Updates' : category,
+                timestamp: Date.now(),
+                summary: body,
+                imageUrl: image,
+                linkUrl: finalLink,
+                linkText: type === 'announcement' ? "Read Entry →" : "Read Article →"
+            };
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-rounded">hourglass_empty</span> Publishing...';
+
+            const token = localStorage.getItem('admin_token');
+            const email = localStorage.getItem('user_email');
+
+            try {
+                // Post directly to our new Cloudflare Worker Endpoint
+                const res = await fetch(`${CLOUDFLARE_API_BASE}/api/content`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, token, post: newPost })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    alert("Content successfully published to the Mainframe!");
+                    adminForm.reset();
+                    // Instantly refresh the local site cache so it displays on the homepage
+                    window.DYNAMIC_POSTS = await fetchFromCloudflareKV();
+                } else {
+                    alert("Error: " + (data.error || "Failed to publish item."));
+                }
+            } catch(err) {
+                alert("Connection error while attempting to publish to KV.");
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-symbols-rounded">publish</span> Publish Post';
+        });
+    }
+}
+
 // ── 7. BOOTSTRAP ROUTER ──────────────────────────────────────────────────
 let appElement;
 
@@ -776,6 +862,7 @@ function render(path) {
   if (finalPath === '/signup') initSignupHandler();
   if (finalPath === '/forgot-password') initForgotPasswordHandler();
   if (finalPath === '/reset-password') initResetPasswordHandler();
+  if (finalPath === '/admin') initAdminHandler(); // Activates the publishing button!
   if (finalPath === '/') initHomepagePosts();
 
   if (finalPath !== '/') {

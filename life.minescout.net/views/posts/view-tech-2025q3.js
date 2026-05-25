@@ -583,5 +583,125 @@ export const techViews2025Q3 = {
     <footer class="main-footer">
         <div class="container"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
     </footer>
-  `
+  `,
+  
+  '/tech/ai-comparison': `
+    <style>
+        #user-display a { text-decoration: none; color: white; }
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--md-primary); font-weight: 700; text-decoration: none; transition: all 0.3s var(--motion-standard); margin-bottom: 16px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .back-link:hover { filter: brightness(0.8); transform: translateX(-4px); }
+        .article-card { background: var(--card-bg); border: 1px solid var(--md-outline-variant); border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-1); }
+        .article-card h1 { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; color: var(--text-color); margin-bottom: 8px; line-height: 1.2; }
+        .post-meta { color: var(--md-outline); font-size: 0.95rem; margin-bottom: 32px; font-weight: 500; }
+        .post-image-full { width: 100%; height: auto; border-radius: var(--radius-md); margin-bottom: 32px; box-shadow: var(--shadow-2); border: 1px solid var(--md-outline-variant); }
+        .post-content h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; color: var(--md-primary); margin-top: 48px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--md-outline-variant); }
+        .post-content p { font-size: 1.05rem; color: var(--text-color); opacity: 0.9; line-height: 1.8; margin-bottom: 24px; }
+        .table-container { width: 100%; overflow-x: auto; margin: 32px 0; border-radius: var(--radius-md); border: 1px solid var(--md-outline-variant); box-shadow: var(--shadow-1); }
+        .results-table { width: 100%; border-collapse: collapse; text-align: left; background: var(--card-bg); }
+        .results-table th { background: var(--md-surface-container); padding: 16px; font-family: 'Space Grotesk', sans-serif; color: var(--text-color); font-size: 1.1rem; border-bottom: 2px solid var(--md-outline-variant); }
+        .results-table td { padding: 16px; border-bottom: 1px solid var(--md-outline-variant); color: var(--text-color); font-weight: 500; line-height: 1.6; vertical-align: middle; }
+        .results-table tfoot td { background: var(--md-surface-container); font-weight: bold; border-top: 2px solid var(--md-primary); }
+        .ai-logo { height: 24px; vertical-align: middle; margin-right: 8px; border-radius: 4px; }
+        @media (max-width: 768px) { .article-card { padding: 24px; } .article-card h1 { font-size: 2rem; } }
+        .hidden { display: none !important; }
+    </style>
+
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="/" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Tech Tips</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            <main class="post-main" data-post-id="ai-comparison-final">
+                <a href="/tech" class="back-link">
+                    <span class="material-symbols-rounded" style="font-size: 20px;">arrow_back</span>
+                    Back to Tech Tips
+                </a>
+
+                <article class="article-card">
+                    <h1>AI Comparison: The Final Review</h1>
+                    <p class="post-meta">Posted on June 18, 2025 by TheMinescouter</p>
+
+                    <img src="/assests/images/tech/ai-comparison-final/Title.png" 
+                         alt="AI Final Comparison Title" 
+                         class="post-image-full" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/800x400/e0e0e0/333333?text=AI+Comparison+Final';">
+                    
+                    <div class="post-content">
+                        <p>We've tracked, reviewed, and battled these AI models against each other over the last year. Let's look at the definitive rankings across logic, code generation, speed, and real-world utility.</p>
+                        
+                        <div class="table-container">
+                            <table class="results-table">
+                                <thead>
+                                    <tr>
+                                        <th>Model</th>
+                                        <th>Logic</th>
+                                        <th>Coding</th>
+                                        <th>Speed</th>
+                                        <th>Usability</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><img src="/assests/images/logos/gemini.png" alt="Gemini logo" class="ai-logo" onerror="this.style.display='none'"> Gemini</td>
+                                        <td>1</td>
+                                        <td>2</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="/assests/images/logos/chatgpt.png" alt="ChatGPT logo" class="ai-logo" onerror="this.style.display='none'"> ChatGPT</td>
+                                        <td>2</td>
+                                        <td>1</td>
+                                        <td>2</td>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="/assests/images/logos/grok.png" alt="Grok logo" class="ai-logo" onerror="this.style.display='none'"> Grok</td>
+                                        <td>3</td>
+                                        <td>4</td>
+                                        <td>3</td>
+                                        <td>4</td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="/assests/images/logos/deepseek.png" alt="Deepseek logo" class="ai-logo" onerror="this.style.display='none'"> DeepSeek</td>
+                                        <td>4</td>
+                                        <td>3</td>
+                                        <td>4</td>
+                                        <td>3</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="5">
+                                            <strong>Average Placements:</strong>
+                                            <span style="margin-left: 16px;">Gemini: <strong>1.5</strong></span> | 
+                                            <span style="margin-left: 8px;">ChatGPT: <strong>1.8</strong></span> | 
+                                            <span style="margin-left: 8px;">Grok: <strong>3.3</strong></span> | 
+                                            <span style="margin-left: 8px;">DeepSeek: <strong>3.3</strong></span>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <h2>Conclusion</h2>
+                        <p>To sum up, after putting these AIs to the test and averaging their placement, in first with an average place of 1.5 is Gemini, in second with an average place of 1.8 is ChatGPT, and tied in 3rd with an average place of 3.3 are Grok and Deepseek.</p>
+                        
+                        <p>All these AIs have their strong suit, but Gemini being linked to Google gives it the edge over the others in this competition, and is the one that I would recommend for all users. Hope you enjoyed this week's paper from the Carleton Testers.</p>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
+    </footer>
+  `,
 };
