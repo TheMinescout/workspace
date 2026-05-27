@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Chop Lab - Multiview Generator</title>
+    
+    <!-- The Chop Lab Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Three.js Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/STLLoader.js"></script>
+
+    <style>
+        /* --- The Chop Lab Variables --- */
+        :root {
+            --tcl-primary: #C97B63; 
+            --tcl-primary-hover: #b56a52;
+            --tcl-surface: #ffffff; 
+            --tcl-background: #F5EFE6; 
+            --tcl-text-main: #2B2B2B; 
+            --tcl-text-muted: #6A5D4D; 
+            --tcl-border: #D8C3A5; 
+            --font-primary: 'Lato', sans-serif;
+            --font-heading: 'Playfair Display', serif;
+            --tcl-shadow-sm: 0 4px 15px rgba(106, 93, 77, 0.05);
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-primary);
+            background-color: var(--tcl-background);
+            color: var(--tcl-text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Navbar / Header --- */
+        header {
+            background-color: var(--tcl-surface);
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--tcl-border);
+            box-shadow: var(--tcl-shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--tcl-primary);
+            margin: 0;
+            font-style: italic;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* --- Toggles & Settings --- */
+        .settings-group {
+            display: flex;
+            gap: 15px;
+            border-right: 1px solid var(--tcl-border);
+            padding-right: 15px;
+            margin-right: 5px;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--tcl-text-muted);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .checkbox-label input {
+            accent-color: var(--tcl-primary);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* --- Buttons --- */
+        .btn-launch {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            background-color: var(--tcl-primary); color: #fff; padding: 10px 20px; 
+            font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; 
+            font-size: 0.8rem; border: 1px solid var(--tcl-primary); cursor: pointer; 
+            transition: all 0.3s ease; border-radius: 6px;
+        }
+        .btn-launch:hover {
+            background-color: var(--tcl-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 123, 99, 0.2);
+        }
+        
+        .btn-minimal {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            background-color: var(--tcl-surface); color: var(--tcl-text-main); padding: 10px 20px; 
+            font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; 
+            font-size: 0.8rem; border: 1px solid var(--tcl-border); cursor: pointer; 
+            transition: all 0.3s ease; border-radius: 6px;
+        }
+        .btn-minimal:hover {
+            border-color: var(--tcl-primary);
+            color: var(--tcl-primary);
+        }
+
+        /* --- Upload Wrapper --- */
+        .file-upload-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            font-size: 100px;
+            opacity: 0;
+            right: 0;
+            top: 0;
+            cursor: pointer;
+        }
+
+        /* --- Layout Grid --- */
+        #main-workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 20px;
+            padding: 20px 40px;
+            flex-grow: 1;
+            box-sizing: border-box;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .view-panel {
+            background: var(--tcl-surface);
+            border: 1px solid var(--tcl-border);
+            border-radius: 8px;
+            box-shadow: var(--tcl-shadow-sm);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .view-label {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--tcl-text-muted);
+            border: 1px solid var(--tcl-border);
+            z-index: 5;
+            pointer-events: auto; /* Allow interaction with slider */
+            backdrop-filter: blur(4px);
+        }
+        
+        .slice-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .slice-controls select {
+            padding: 4px;
+            font-family: var(--font-primary);
+            font-size: 0.8rem;
+            border: 1px solid var(--tcl-border);
+            border-radius: 4px;
+            color: var(--tcl-text-main);
+            background: var(--tcl-surface);
+            cursor: pointer;
+            outline: none;
+        }
+
+        .slice-controls select:focus {
+            border-color: var(--tcl-primary);
+        }
+
+        .slice-controls input[type="range"] {
+            width: 150px;
+            accent-color: var(--tcl-primary);
+            cursor: pointer;
+        }
+
+        .canvas-container {
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Let events pass to overlays if needed */
+        }
+
+        #status-text {
+            font-size: 0.9rem;
+            color: var(--tcl-text-muted);
+            font-style: italic;
+            font-weight: 700;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 900px) {
+            header { flex-direction: column; gap: 15px; padding: 20px; align-items: flex-start;}
+            .controls { flex-wrap: wrap; justify-content: flex-start; }
+            .settings-group { border-right: none; border-bottom: 1px solid var(--tcl-border); padding-bottom: 10px; margin-bottom: 5px; width: 100%; }
+            #main-workspace { grid-template-columns: 1fr; grid-template-rows: repeat(6, 1fr); padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 class="logo">The Chop Lab<span>.</span></h1>
+        <div class="controls">
+            <div class="settings-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="toggle-dimensions" checked> Dimensions
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="toggle-hidden-lines"> Hidden Lines
+                </label>
+            </div>
+
+            <span id="status-text">Awaiting STL Model...</span>
+            <div class="file-upload-wrapper">
+                <button class="btn-minimal"><i class="material-icons" style="font-size: 18px;">upload_file</i> Upload</button>
+                <input type="file" id="stl-file" accept=".stl">
+            </div>
+            <button class="btn-launch" onclick="exportBlueprint()"><i class="material-icons" style="font-size: 18px;">download</i> Export</button>
+        </div>
+    </header>
+
+    <div id="main-workspace">
+        <div class="view-panel">
+            <div class="view-label">Top View</div>
+            <div id="view-top" class="canvas-container"></div>
+        </div>
+        <div class="view-panel">
+            <div class="view-label">Isometric View</div>
+            <div id="view-iso" class="canvas-container"></div>
+        </div>
+        <div class="view-panel">
+            <div class="view-label">Front View</div>
+            <div id="view-front" class="canvas-container"></div>
+        </div>
+        <div class="view-panel">
+            <div class="view-label">Right View</div>
+            <div id="view-right" class="canvas-container"></div>
+        </div>
+        <div class="view-panel">
+            <div class="view-label">Bottom View</div>
+            <div id="view-bottom" class="canvas-container"></div>
+        </div>
+        <div class="view-panel">
+            <div class="view-label slice-controls">
+                <span style="border-bottom: 1px solid var(--tcl-border); padding-bottom: 4px; margin-bottom: 2px;">Section Slice</span>
+                <select id="slice-dir" disabled>
+                    <option value="x">Right (+X Cut)</option>
+                    <option value="-x">Left (-X Cut)</option>
+                    <option value="y">Top (+Y Cut)</option>
+                    <option value="-y">Bottom (-Y Cut)</option>
+                    <option value="z">Front (+Z Cut)</option>
+                    <option value="-z">Back (-Z Cut)</option>
+                </select>
+                <input type="range" id="slice-slider" min="-50" max="50" value="0" step="0.1" disabled>
+            </div>
+            <div id="view-slice" class="canvas-container"></div>
+        </div>
+    </div>
+
+    <script>
+        let views = {};
+        const viewKeys = ['top', 'iso', 'front', 'right', 'bottom', 'slice'];
+        const TCL_PRIMARY = 0xC97B63;
+        const TCL_BG = 0xF5EFE6;
+        const TCL_DARK = 0x2B2B2B;
+        const TCL_MUTED = 0x6A5D4D;
+        
+        // Globals for State and Logic
+        let currentGeometry = null;
+        let showDimensions = true;
+        let showHiddenLines = false;
+
+        // Global clipping plane for the section view
+        let clipPlane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0); // Defaults to cutting +X away
+
+        init();
+
+        function init() {
+            viewKeys.forEach(key => {
+                const container = document.getElementById(`view-${key}`);
+                const scene = new THREE.Scene();
+                
+                // Match the Artisan Background
+                scene.background = new THREE.Color(TCL_BG);
+
+                // Warm lighting
+                scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+                const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+                dirLight.position.set(1, 1, 1).normalize();
+                scene.add(dirLight);
+
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                const aspect = width / height;
+                const viewSize = 100; 
+
+                // Strictly Orthographic for technical accuracy
+                const camera = new THREE.OrthographicCamera(-viewSize * aspect / 2, viewSize * aspect / 2, viewSize / 2, -viewSize / 2, 0.1, 2000);
+
+                // preserveDrawingBuffer is REQUIRED to allow exporting the canvas to an image later
+                const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+                renderer.setSize(width, height);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                
+                // CRITICAL: Enable clipping planes for the renderer so our slice works
+                renderer.localClippingEnabled = true;
+                
+                container.appendChild(renderer.domElement);
+
+                views[key] = { scene, camera, renderer, container };
+            });
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize);
+            document.getElementById('stl-file').addEventListener('change', handleFileSelect);
+            
+            document.getElementById('toggle-dimensions').addEventListener('change', (e) => showDimensions = e.target.checked);
+            document.getElementById('toggle-hidden-lines').addEventListener('change', (e) => showHiddenLines = e.target.checked);
+
+            document.getElementById('slice-dir').addEventListener('change', resetSliderBounds);
+            document.getElementById('slice-slider').addEventListener('input', updateSlicePlane);
+
+            animate();
+        }
+
+        // --- Slice Plane Math & State Updates ---
+        function resetSliderBounds() {
+            if (!currentGeometry) return;
+            const dir = document.getElementById('slice-dir').value;
+            const slider = document.getElementById('slice-slider');
+            
+            const box = currentGeometry.boundingBox;
+            const size = new THREE.Vector3();
+            box.getSize(size);
+            
+            // Set slider bounds based on the axis we are slicing
+            if (dir.includes('x')) { slider.min = -size.x/2; slider.max = size.x/2; }
+            else if (dir.includes('y')) { slider.min = -size.y/2; slider.max = size.y/2; }
+            else if (dir.includes('z')) { slider.min = -size.z/2; slider.max = size.z/2; }
+            
+            slider.value = 0;
+            updateSlicePlane();
+        }
+
+        function updateSlicePlane() {
+            if (!currentGeometry) return;
+            const dir = document.getElementById('slice-dir').value;
+            const slider = document.getElementById('slice-slider');
+            const val = parseFloat(slider.value);
+            
+            // Map the direction selection to the exact Plane Normal Vector.
+            // In Three.js, points where (dot(p, normal) + constant) < 0 are clipped out.
+            switch(dir) {
+                case 'x':  clipPlane.normal.set(-1, 0, 0); break; // Normal points left, cuts away right side
+                case '-x': clipPlane.normal.set(1, 0, 0); break;  // Normal points right, cuts away left side
+                case 'y':  clipPlane.normal.set(0, -1, 0); break; // Cuts top
+                case '-y': clipPlane.normal.set(0, 1, 0); break;  // Cuts bottom
+                case 'z':  clipPlane.normal.set(0, 0, -1); break; // Cuts front
+                case '-z': clipPlane.normal.set(0, 0, 1); break;  // Cuts back
+            }
+            
+            // Adjust the constant to move the plane seamlessly with the slider
+            clipPlane.constant = (dir.includes('-') ? -val : val);
+        }
+
+        // --- Custom Text Sprite Generator ---
+        function makeTextSprite(message) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 512;
+            canvas.height = 128;
+            
+            context.font = "900 48px 'Lato', sans-serif";
+            context.textAlign = "center";
+            context.textBaseline = "middle";
+            
+            const textWidth = context.measureText(message).width;
+            
+            // White Pill Background for readability
+            context.fillStyle = "#ffffff"; 
+            const rw = textWidth + 80;
+            const rh = 64;
+            const rx = 256 - rw/2;
+            const ry = 64 - rh/2;
+            const radius = 32; 
+            
+            context.beginPath();
+            context.moveTo(rx + radius, ry);
+            context.lineTo(rx + rw - radius, ry);
+            context.quadraticCurveTo(rx + rw, ry, rx + rw, ry + radius);
+            context.lineTo(rx + rw, ry + rh - radius);
+            context.quadraticCurveTo(rx + rw, ry + rh, rx + rw - radius, ry + rh);
+            context.lineTo(rx + radius, ry + rh);
+            context.quadraticCurveTo(rx, ry + rh, rx, ry + rh - radius);
+            context.lineTo(rx, ry + radius);
+            context.quadraticCurveTo(rx, ry, rx + radius, ry);
+            context.closePath();
+            context.fill();
+            
+            // Border
+            context.lineWidth = 4;
+            context.strokeStyle = "#D8C3A5";
+            context.stroke();
+
+            // Text
+            context.fillStyle = "#C97B63";
+            context.fillText(message, 256, 64 + 4); 
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            // Ensure crisp rendering
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
+            
+            const spriteMaterial = new THREE.SpriteMaterial({ 
+                map: texture, 
+                depthTest: false, 
+                transparent: true 
+            });
+            
+            const sprite = new THREE.Sprite(spriteMaterial);
+            sprite.renderOrder = 999;
+            
+            return { sprite, ratio: 512/128 }; 
+        }
+
+        // --- Dimension Line Drawing Logic ---
+        function drawDim(scene, pt1, pt2, offsetDir, pad, textStr, sizeReference) {
+            const dimGroup = new THREE.Group();
+            dimGroup.name = "dimensionGroup"; // Group name allows us to toggle visibility later
+
+            const lineMat = new THREE.LineBasicMaterial({ color: TCL_MUTED, linewidth: 2 }); 
+            
+            // Push the dimension line outwards from the geometry
+            const offsetVec = offsetDir.clone().normalize().multiplyScalar(pad);
+            const start = pt1.clone().add(offsetVec);
+            const end = pt2.clone().add(offsetVec);
+
+            // 1. Draw Main Line
+            const lineGeo = new THREE.BufferGeometry().setFromPoints([start, end]);
+            dimGroup.add(new THREE.Line(lineGeo, lineMat));
+
+            // 2. Draw Extension Lines (from edge to slightly past the dim line)
+            const gap = pad * 0.1;
+            const overhang = pad * 0.2;
+            
+            const ext1Start = pt1.clone().add(offsetDir.clone().normalize().multiplyScalar(gap));
+            const ext1End = start.clone().add(offsetDir.clone().normalize().multiplyScalar(overhang));
+            dimGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([ext1Start, ext1End]), lineMat));
+
+            const ext2Start = pt2.clone().add(offsetDir.clone().normalize().multiplyScalar(gap));
+            const ext2End = end.clone().add(offsetDir.clone().normalize().multiplyScalar(overhang));
+            dimGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([ext2Start, ext2End]), lineMat));
+
+            // 3. Insert Text Sprite
+            const spriteData = makeTextSprite(textStr);
+            const midPoint = start.clone().lerp(end, 0.5);
+            spriteData.sprite.position.copy(midPoint);
+            
+            // Scale sprite based on object size to keep it proportional
+            const spriteScale = sizeReference * 0.12; 
+            spriteData.sprite.scale.set(spriteScale * spriteData.ratio, spriteScale, 1);
+            
+            dimGroup.add(spriteData.sprite);
+            scene.add(dimGroup);
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            document.getElementById('status-text').innerText = `Rendering: ${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const contents = event.target.result;
+                const loader = new THREE.STLLoader();
+                
+                try {
+                    currentGeometry = loader.parse(contents);
+                    currentGeometry.center();
+                    currentGeometry.computeVertexNormals();
+                    currentGeometry.computeBoundingBox();
+
+                    // Calculate Dimensions
+                    const box = currentGeometry.boundingBox;
+                    const size = new THREE.Vector3();
+                    box.getSize(size);
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    const pad = maxDim * 0.2;
+
+                    // --- Standard Material ---
+                    const material = new THREE.MeshStandardMaterial({ 
+                        color: TCL_PRIMARY, 
+                        roughness: 0.6,
+                        metalness: 0.1,
+                        polygonOffset: true,
+                        polygonOffsetFactor: 1, 
+                        polygonOffsetUnits: 1
+                    });
+                    
+                    const wireframeGeom = new THREE.EdgesGeometry(currentGeometry, 25);
+                    const lineMat = new THREE.LineBasicMaterial({ color: TCL_DARK, linewidth: 2 });
+                    
+                    // --- Hidden Lines Material (Ghosted through depth test) ---
+                    const hiddenLineMat = new THREE.LineBasicMaterial({
+                        color: TCL_MUTED,
+                        linewidth: 1,
+                        depthTest: false,
+                        transparent: true,
+                        opacity: 0.2
+                    });
+
+                    // --- Sliced Material ---
+                    const sliceMaterial = material.clone();
+                    sliceMaterial.clippingPlanes = [clipPlane];
+                    sliceMaterial.side = THREE.DoubleSide; 
+                    
+                    const sliceLineMat = lineMat.clone();
+                    sliceLineMat.clippingPlanes = [clipPlane];
+
+                    const sliceHiddenLineMat = hiddenLineMat.clone();
+                    sliceHiddenLineMat.clippingPlanes = [clipPlane];
+
+                    // --- Enable Slider & Direction Dropdown ---
+                    document.getElementById('slice-slider').disabled = false;
+                    document.getElementById('slice-dir').disabled = false;
+                    resetSliderBounds(); // Aligns plane math initially
+
+                    viewKeys.forEach(key => {
+                        const scene = views[key].scene;
+                        
+                        // Clean previous models & dimensions
+                        while(scene.children.length > 2) { 
+                            scene.remove(scene.children[scene.children.length - 1]); 
+                        }
+
+                        // Select correct materials depending on view
+                        const activeMat = (key === 'slice') ? sliceMaterial : material;
+                        const activeLineMat = (key === 'slice') ? sliceLineMat : lineMat;
+                        const activeHiddenMat = (key === 'slice') ? sliceHiddenLineMat : hiddenLineMat;
+
+                        const mesh = new THREE.Mesh(currentGeometry, activeMat);
+                        const edges = new THREE.LineSegments(wireframeGeom, activeLineMat);
+                        const hiddenEdges = new THREE.LineSegments(wireframeGeom, activeHiddenMat);
+                        hiddenEdges.name = "hiddenEdges"; // allows visibility toggle
+
+                        mesh.add(edges);
+                        mesh.add(hiddenEdges);
+                        scene.add(mesh);
+
+                        // Inject Dimensions based on Camera View
+                        if (key === 'top') {
+                            drawDim(scene, new THREE.Vector3(-size.x/2, 0, size.z/2), new THREE.Vector3(size.x/2, 0, size.z/2), new THREE.Vector3(0, 0, 1), pad, size.x.toFixed(1) + ' mm', maxDim);
+                            drawDim(scene, new THREE.Vector3(size.x/2, 0, -size.z/2), new THREE.Vector3(size.x/2, 0, size.z/2), new THREE.Vector3(1, 0, 0), pad, size.z.toFixed(1) + ' mm', maxDim);
+                        } else if (key === 'front') {
+                            drawDim(scene, new THREE.Vector3(-size.x/2, -size.y/2, 0), new THREE.Vector3(size.x/2, -size.y/2, 0), new THREE.Vector3(0, -1, 0), pad, size.x.toFixed(1) + ' mm', maxDim);
+                            drawDim(scene, new THREE.Vector3(-size.x/2, -size.y/2, 0), new THREE.Vector3(-size.x/2, size.y/2, 0), new THREE.Vector3(-1, 0, 0), pad, size.y.toFixed(1) + ' mm', maxDim);
+                        } else if (key === 'right') {
+                            drawDim(scene, new THREE.Vector3(0, -size.y/2, -size.z/2), new THREE.Vector3(0, -size.y/2, size.z/2), new THREE.Vector3(0, -1, 0), pad, size.z.toFixed(1) + ' mm', maxDim);
+                            drawDim(scene, new THREE.Vector3(0, -size.y/2, size.z/2), new THREE.Vector3(0, size.y/2, size.z/2), new THREE.Vector3(0, 0, 1), pad, size.y.toFixed(1) + ' mm', maxDim);
+                        } else if (key === 'bottom') {
+                            drawDim(scene, new THREE.Vector3(-size.x/2, 0, -size.z/2), new THREE.Vector3(size.x/2, 0, -size.z/2), new THREE.Vector3(0, 0, -1), pad, size.x.toFixed(1) + ' mm', maxDim);
+                            drawDim(scene, new THREE.Vector3(-size.x/2, 0, -size.z/2), new THREE.Vector3(-size.x/2, 0, size.z/2), new THREE.Vector3(-1, 0, 0), pad, size.z.toFixed(1) + ' mm', maxDim);
+                        }
+                    });
+
+                    adjustCameras(maxDim / 2);
+                    document.getElementById('status-text').innerText = `Engineered: ${file.name}`;
+                } catch (error) {
+                    console.error(error);
+                    document.getElementById('status-text').innerText = "Geometry Error. Invalid STL.";
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+
+        function adjustCameras(radius) {
+            const distance = radius * 4;
+
+            viewKeys.forEach(key => {
+                const view = views[key];
+                const aspect = view.container.clientWidth / view.container.clientHeight;
+                
+                const pad = 1.6; // Increased padding to fit dimension labels
+                view.camera.left = -radius * aspect * pad;
+                view.camera.right = radius * aspect * pad;
+                view.camera.top = radius * pad;
+                view.camera.bottom = -radius * pad;
+
+                view.camera.position.set(0, 0, 0);
+                view.camera.up.set(0, 1, 0);
+
+                if (key === 'front') {
+                    view.camera.position.z = distance;
+                } else if (key === 'top') {
+                    view.camera.position.y = distance;
+                    view.camera.up.set(0, 0, -1);
+                } else if (key === 'right') {
+                    view.camera.position.x = distance;
+                } else if (key === 'bottom') {
+                    view.camera.position.y = -distance;
+                    view.camera.up.set(0, 0, 1);
+                } else if (key === 'iso' || key === 'slice') {
+                    // Both Isometric and the Slice view share the same viewing angle
+                    const isoAngleX = Math.PI / 4; 
+                    const isoAngleY = Math.asin(Math.tan(Math.PI / 6)); 
+                    
+                    view.camera.position.x = distance * Math.sin(isoAngleX) * Math.cos(isoAngleY);
+                    view.camera.position.y = distance * Math.sin(isoAngleY);
+                    view.camera.position.z = distance * Math.cos(isoAngleX) * Math.cos(isoAngleY);
+                }
+                
+                view.camera.lookAt(0, 0, 0);
+                view.camera.updateProjectionMatrix();
+            });
+        }
+
+        function onWindowResize() {
+            viewKeys.forEach(key => {
+                const view = views[key];
+                const width = view.container.clientWidth;
+                const height = view.container.clientHeight;
+                
+                view.renderer.setSize(width, height);
+                const aspect = width / height;
+                const halfHeight = (view.camera.top - view.camera.bottom) / 2;
+                
+                view.camera.left = -halfHeight * aspect;
+                view.camera.right = halfHeight * aspect;
+                view.camera.updateProjectionMatrix();
+            });
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            viewKeys.forEach(key => {
+                // Apply Toggle states dynamically
+                views[key].scene.children.forEach(child => {
+                    if (child.name === 'dimensionGroup') child.visible = showDimensions;
+                    if (child.type === 'Mesh') {
+                        // Look for the hidden edges child inside the main mesh
+                        const hidden = child.children.find(c => c.name === 'hiddenEdges');
+                        if (hidden) hidden.visible = showHiddenLines;
+                    }
+                });
+
+                views[key].renderer.render(views[key].scene, views[key].camera);
+            });
+        }
+
+        // --- Export Engine (Native HTML5 Canvas) ---
+        function exportBlueprint() {
+            // Force a fresh render cycle right before capturing
+            viewKeys.forEach(k => views[k].renderer.render(views[k].scene, views[k].camera));
+
+            // Create a high-res offscreen 2D canvas
+            const res = 1000; // Resolution per quadrant
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = res * 2;
+            exportCanvas.height = res * 3;
+            const ctx = exportCanvas.getContext('2d');
+
+            // Draw Background and Borders
+            ctx.fillStyle = '#ffffff'; 
+            ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+            // Stitch the 6 WebGL viewports together
+            ctx.drawImage(views['top'].renderer.domElement, 0, 0, res, res);
+            ctx.drawImage(views['iso'].renderer.domElement, res, 0, res, res);
+            ctx.drawImage(views['front'].renderer.domElement, 0, res, res, res);
+            ctx.drawImage(views['right'].renderer.domElement, res, res, res, res);
+            ctx.drawImage(views['bottom'].renderer.domElement, 0, res * 2, res, res);
+            ctx.drawImage(views['slice'].renderer.domElement, res, res * 2, res, res);
+
+            // Draw Grid Lines (TCL Border Color)
+            ctx.strokeStyle = '#D8C3A5';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(res, 0); ctx.lineTo(res, res * 3); // Vertical
+            ctx.moveTo(0, res); ctx.lineTo(res * 2, res); // Horizontal 1
+            ctx.moveTo(0, res * 2); ctx.lineTo(res * 2, res * 2); // Horizontal 2
+            ctx.stroke();
+
+            // Add Typography Labels
+            ctx.fillStyle = '#6A5D4D'; 
+            ctx.font = 'bold 28px sans-serif';
+            ctx.fillText('TOP VIEW', 30, 45);
+            ctx.fillText('ISOMETRIC', res + 30, 45);
+            ctx.fillText('FRONT VIEW', 30, res + 45);
+            ctx.fillText('RIGHT VIEW', res + 30, res + 45);
+            ctx.fillText('BOTTOM VIEW', 30, (res * 2) + 45);
+            
+            // Add the slice position info to the blueprint
+            const slider = document.getElementById('slice-slider');
+            const dirSelect = document.getElementById('slice-dir');
+            
+            let sliceText = 'SECTION SLICE';
+            if (!slider.disabled) {
+                const dirStr = dirSelect.options[dirSelect.selectedIndex].text;
+                const sliceVal = parseFloat(slider.value).toFixed(1);
+                sliceText = `SECTION SLICE (${dirStr} : ${sliceVal}mm)`;
+            }
+            
+            ctx.fillText(sliceText, res + 30, (res * 2) + 45);
+
+            // Trigger Download
+            const link = document.createElement('a');
+            link.download = 'TCL-Multiview-Blueprint.png';
+            link.href = exportCanvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>

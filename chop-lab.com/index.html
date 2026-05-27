@@ -403,7 +403,7 @@
 
             // Expose globally to your SPA
             window.CSG = CSG;
-            console.log("Lab Engine: Native CSG Math Engine loaded perfectly!");
+            console.log("Lab Engine: Native CSG Math Engine loaded perfectly! V101");
         })();
     </script>
     
@@ -1400,73 +1400,61 @@
                     const res = await fetch(WORKER_URL, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ messages: aiChatHistory })
+                        body: JSON.stringify({ prompt: prompt })
                     });
 
-                    if (!res.ok) {
-                        const body = await res.text();
-                        throw new Error(`Worker ${res.status}: ${body.slice(0, 200)}`);
-                    }
-
-                    const raw = await res.text();
-                    console.log("Raw worker response:", raw);
-
-                    // Robust JSON extraction — handles extra whitespace or partial wrapping
-                    // Replace the JSON extraction logic in generateCAD() with this:
-let data;
-try {
-    // 1. Try a clean parse
-    data = JSON.parse(raw);
-} catch (e) {
-    console.warn("Clean parse failed, attempting surgical extraction...");
-    // 2. Find the VERY FIRST { and the VERY LAST }
-    const firstBrace = raw.indexOf('{');
-    const lastBrace = raw.lastIndexOf('}');
-    
-    if (firstBrace !== -1 && lastBrace !== -1) {
-        const jsonCandidate = raw.substring(firstBrace, lastBrace + 1);
-        try {
-            data = JSON.parse(jsonCandidate);
-        } catch (innerErr) {
-            // 3. Final attempt: Fix common LLM array truncation
-            const fixedJson = jsonCandidate.trim() + (jsonCandidate.endsWith('}') ? '' : '}]}');
-            try {
-                data = JSON.parse(fixedJson);
-            } catch(f) {
-                throw new Error("AI output was too malformed to repair.");
-            }
-        }
-    } else {
-        throw new Error("Worker returned non-JSON structure.");
-    }
-}
-
-                    console.log("Parsed worker data:", JSON.stringify(data, null, 2));
+                    // The new pipeline guarantees standard JSON returns
+                    const data = await res.json();
                     document.getElementById(loadId)?.remove();
 
-                    if (data.type === 'message') {
-                        aiChatHistory.push({ role: "assistant", content: data.text });
-                        chat.innerHTML += `<div class="ai-message system"><strong>Lab AI:</strong> ${cadEscape(data.text)}</div>`;
+                    if (data.status === "error") {
+                        const errMsg = data.error?.message || "Pipeline failed.";
+                        const trace = JSON.stringify(data.error?.details || {}, null, 2);
+                        throw new Error(`${errMsg}\nDetails: ${trace}`);
+                    }
 
-                    } else if (data.type === 'model') {
-    aiChatHistory.push({ role: "assistant", content: JSON.stringify(data) });
-        const opCount = (data.operations || []).length;
-                        chat.innerHTML += `<div class="ai-message system" style="border-left-color:var(--tcl-accent-green)">
-                            <strong>Lab AI:</strong> Model compiled — ${opCount} operation${opCount !== 1 ? 's' : ''}. Rendering to viewport.<br>
-                            <small style="color:var(--tcl-text-muted)">Drag to orbit &middot; Scroll to zoom &middot; Right-drag to pan</small>
+                    // Handle AI Clarification Questions
+                    if (data.status === "clarification") {
+                        aiChatHistory.push({ role: "assistant", content: data.message });
+                        chat.innerHTML += `<div class="ai-message system"><strong>Lab AI:</strong> ${cadEscape(data.message)}</div>`;
+                        return; // Stop here, don't try to render CAD
+                    }
+
+                    if (data.status === "success") {
+                        const geometry = data.data.geometry || [];
+                        const sheet = data.data.engineeringSheet || {};
+                        const opCount = geometry.length;
+
+                        // Save to history context
+                        aiChatHistory.push({ role: "assistant", content: JSON.stringify(sheet) });
+
+                        // Format the new Deterministic Engineering Sheet
+                        let blueprintHtml = `
+                        <div style="background: rgba(0,0,0,0.05); border: 1px solid var(--tcl-border); padding: 12px; margin: 12px 0; border-radius: 6px; font-family: 'Roboto Mono', monospace; font-size: 0.85em; white-space: pre-wrap; color: var(--tcl-text-main);">
+<strong style="color: var(--tcl-primary); display:block; margin-bottom: 6px;">[ENGINEERING BLUEPRINT]</strong>
+Dimensions: ${sheet.outer_dimensions?.x}x${sheet.outer_dimensions?.y}x${sheet.outer_dimensions?.z}
+Wall Thickness: ${sheet.metrics?.wall_thickness}mm
+Floor Thickness: ${sheet.metrics?.floor_thickness}mm
+Features: ${sheet.features_present?.join(', ') || 'None'}
                         </div>`;
+
+                        chat.innerHTML += `
+                        <div class="ai-message system" style="border-left-color:var(--tcl-accent-green)">
+                            <strong>Lab AI:</strong> Geometry compiled successfully (${opCount} CSG operations).
+                            ${blueprintHtml}
+                            <small style="color:var(--tcl-text-muted)">Rendering to viewport... (Drag to orbit &middot; Scroll to zoom)</small>
+                        </div>`;
+
                         try {
-                            buildMeshFromJSON(data);
+                            // Pass the 'data' sub-object into the mesh builder
+                            buildMeshFromJSON(data.data);
                         } catch (buildErr) {
                             chat.innerHTML += `<div class="ai-message system" style="border-left-color:#d9534f">
                                 <strong style="color:#d9534f">Render Error:</strong> ${cadEscape(buildErr.message)}
                             </div>`;
                         }
-
-                    } else if (data.type === 'error') {
-                        throw new Error(data.text || 'Unknown worker error');
                     } else {
-                        throw new Error("Unexpected response format: " + JSON.stringify(data).slice(0, 120));
+                        throw new Error("Unexpected response status.");
                     }
 
                 } catch (err) {
@@ -1485,8 +1473,8 @@ try {
             }
 
             function buildMeshFromJSON(data) {
-                if (!Array.isArray(data.operations) || data.operations.length === 0) {
-                    throw new Error("No valid operations array in model response.");
+                if (!Array.isArray(data.geometry) || data.geometry.length === 0) {
+                    throw new Error("No valid geometry array in worker response.");
                 }
 
                 // Clean up previous mesh
@@ -1506,8 +1494,8 @@ try {
 
                 let csgResult = null;
 
-                for (let i = 0; i < data.operations.length; i++) {
-                    const op = data.operations[i];
+                for (let i = 0; i < data.geometry.length; i++) {
+                    const op = data.geometry[i];
 
                     // Safely parse dimensions with fallbacks
                     const size = Array.isArray(op.size) ? op.size : [10, 10, 10];
@@ -1522,7 +1510,8 @@ try {
                     const pz = parseFloat(pos[2]) || 0;
 
                     let geometry;
-                    const shape = (op.shape || 'box').toLowerCase();
+                    // Use the new deterministic 'type' key
+                    const shape = (op.type || op.shape || 'box').toLowerCase();
 
                     try {
                         if (shape === 'cylinder') {
@@ -1572,7 +1561,8 @@ mesh.updateMatrix();
                     if (csgResult === null) {
                         csgResult = brush;
                     } else {
-                        const action = (op.action || 'add').toLowerCase();
+                        // Use the new deterministic 'operation' key so it actually subtracts!
+                        const action = (op.operation || op.action || 'add').toLowerCase();
                         try {
                             csgResult = action === 'subtract'
                                 ? csgResult.subtract(brush)
