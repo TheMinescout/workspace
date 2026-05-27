@@ -329,7 +329,6 @@
                 let geom;
                 let g2;
                 if(!buffered) {
-                    // Legacy code path removed for brevity since Three.js r128 only uses BufferGeometry
                     console.error("Non-buffered geometry no longer supported in r128+");
                 } else {
                     let triCount = 0;
@@ -620,11 +619,33 @@
         @keyframes flipIcon { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } }
         .spin-hourglass { display: inline-block; animation: flipIcon 2s infinite ease-in-out; }
 
-        /* --- Info Sections --- */
+        /* --- Info Sections & Specific Additions --- */
         .info-intro { padding: 80px 0 40px 0; border-bottom: 1px solid var(--tcl-border); margin-bottom: 40px; }
         .info-intro h1 { font-size: 3.8rem; line-height: 1.1; margin-bottom: 16px; color: var(--tcl-text-main);}
         .info-intro p { font-size: 1.15rem; color: var(--tcl-text-muted); letter-spacing: 1px; }
         
+        /* Process Steps */
+        .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; margin-top: 40px; }
+        .process-step { text-align: center; padding: 40px 20px; background: var(--tcl-surface); border: 1px solid var(--tcl-border); border-radius: 12px; box-shadow: var(--tcl-shadow-sm); position: relative; transition: transform 0.3s ease; }
+        .process-step:hover { transform: translateY(-5px); box-shadow: var(--tcl-shadow-md); border-color: var(--tcl-primary); }
+        .step-num { font-family: var(--font-heading); font-size: 4rem; color: var(--tcl-primary); opacity: 0.15; position: absolute; top: 10px; right: 20px; font-style: italic; line-height: 1; }
+        .process-step h4 { font-family: var(--font-heading); font-size: 1.4rem; color: var(--tcl-text-main); margin-bottom: 12px; position: relative; z-index: 2; }
+        .process-step p { font-size: 0.95rem; color: var(--tcl-text-muted); margin: 0; position: relative; z-index: 2; }
+
+        /* Use Case Grid */
+        .use-case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 40px; }
+        .use-case-card { border-radius: 12px; overflow: hidden; border: 1px solid var(--tcl-border); box-shadow: var(--tcl-shadow-sm); background: var(--tcl-surface); }
+        .use-case-img { width: 100%; height: 280px; object-fit: cover; border-bottom: 1px solid var(--tcl-border); display: block; }
+        .use-case-content { padding: 20px; }
+        .use-case-content h4 { font-family: var(--font-primary); font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .use-case-content p { color: var(--tcl-text-muted); font-size: 0.95rem; }
+
+        /* Search Bar */
+        .search-container { position: relative; max-width: 800px; margin: 0 auto 50px auto; }
+        .search-input { width: 100%; padding: 20px 24px 20px 60px; font-size: 1.1rem; border: 1px solid var(--tcl-border); border-radius: 8px; background: var(--tcl-surface); color: var(--tcl-text-main); transition: all 0.3s ease; box-shadow: var(--tcl-shadow-sm); font-family: var(--font-primary); }
+        .search-input:focus { outline: none; border-color: var(--tcl-primary); box-shadow: 0 4px 20px rgba(201, 123, 99, 0.15); }
+        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--tcl-primary); font-size: 1.8rem; }
+
         .split-section { display: flex; align-items: stretch; margin: 0; background: var(--tcl-surface);}
         .split-section.reverse { flex-direction: row-reverse; }
         .split-image { flex: 1; border-right: 1px solid var(--tcl-border); display: flex;}
@@ -750,105 +771,6 @@
         .detail-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .gallery-detail-img { width: 100%; height: 220px; object-fit: cover; border: 1px solid var(--tcl-border); border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);}
 
-        /* --- Weekly Drop Widget --- */
-        .weekly-drop-widget {
-            margin-top: 24px;
-            background: var(--tcl-surface);
-            border: 1px solid var(--tcl-border);
-            border-radius: 12px;
-            padding: 32px 28px;
-            box-shadow: var(--tcl-shadow-sm);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .weekly-drop-widget::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--tcl-primary), #e8a890, var(--tcl-primary));
-        }
-        .weekly-drop-widget .drop-eyebrow {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            color: var(--tcl-primary);
-            font-weight: 700;
-            margin-bottom: 10px;
-            display: block;
-        }
-        .weekly-drop-widget h4 {
-            font-family: var(--font-heading);
-            font-size: 1.4rem;
-            color: var(--tcl-text-main);
-            margin-bottom: 8px;
-            font-style: italic;
-            font-weight: 600;
-        }
-        .weekly-drop-widget p {
-            font-size: 0.88rem;
-            color: var(--tcl-text-muted);
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-        .weekly-drop-widget input[type="email"] {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid var(--tcl-border);
-            background: var(--tcl-background);
-            border-radius: 6px;
-            font-size: 0.95rem;
-            margin-bottom: 12px;
-            color: var(--tcl-text-main);
-            font-family: var(--font-primary);
-            transition: all 0.3s ease;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
-        }
-        .weekly-drop-widget input[type="email"]:focus {
-            outline: none;
-            border-color: var(--tcl-primary);
-            box-shadow: 0 0 0 3px rgba(201, 123, 99, 0.1);
-        }
-        /* Override the global valid/invalid rules inside the widget */
-        .weekly-drop-widget input[type="email"]:not(:placeholder-shown):valid { border-color: var(--tcl-accent-green); }
-        .weekly-drop-widget input[type="email"]:not(:placeholder-shown):invalid { border-color: var(--tcl-border); }
-        .weekly-drop-widget .btn-drop {
-            width: 100%;
-            padding: 14px 20px;
-            background: var(--tcl-primary);
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-family: var(--font-primary);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-size: 0.82rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-            box-shadow: 0 4px 10px rgba(201, 123, 99, 0.15);
-        }
-        .weekly-drop-widget .btn-drop:hover:not(:disabled) {
-            background: var(--tcl-primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(201, 123, 99, 0.25);
-        }
-        .weekly-drop-widget .btn-drop:disabled { opacity: 0.6; cursor: not-allowed; }
-        .weekly-drop-widget .drop-success {
-            display: none;
-            padding: 16px;
-            background: rgba(119, 184, 71, 0.08);
-            border: 1px solid rgba(119, 184, 71, 0.3);
-            border-radius: 6px;
-            color: #4a7a25;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-top: 4px;
-        }
-        .weekly-drop-widget .drop-success strong { display: block; margin-bottom: 4px; }
-
         /* --- Footer --- */
         footer { text-align: center; padding: 80px 20px; background: #2B2B2B; color: #D8C3A5; margin-top: auto; }
         footer a { color: var(--tcl-primary); text-decoration: none; transition: color 0.2s;}
@@ -894,9 +816,7 @@
             }
             .btn-launch, .btn-minimal { padding: 20px 24px; width: 100%; }
             .step-container { margin-bottom: 50px; }
-            
-            /* Weekly drop stacks nicely on mobile already */
-            .weekly-drop-widget { margin-top: 20px; }
+            .search-container { padding: 0 20px; }
         }
     </style>
 </head>
@@ -909,8 +829,8 @@
             <a href="#home" class="logo">The Chop Lab<span>.</span></a>
             <div class="desktop-menu">
                 <a href="#home" class="nav-link" data-target="home">Home</a>
-                <a href="#studio" class="nav-link" data-target="studio">Studio</a>
-                <a href="#3dprint" class="nav-link" data-target="3dprint">3D Print</a>
+                <a href="#studio" class="nav-link" data-target="studio">Studio Tools</a>
+                <a href="#3dprint" class="nav-link" data-target="3dprint">AI/3D Print</a>
                 <a href="#qa" class="nav-link" data-target="qa">Q&A</a>
                 <a href="#order" class="nav-link" data-target="order">Order</a>
                 <a href="#account" class="nav-link" data-target="account">Account</a>
@@ -920,84 +840,102 @@
 
     <div class="bottom-nav">
         <a href="#home" class="nav-link" data-target="home"><i class="material-icons">home</i><span>Home</span></a>
-        <a href="#studio" class="nav-link" data-target="studio"><i class="material-icons">category</i><span>Studio</span></a>
-        <a href="#3dprint" class="nav-link" data-target="3dprint"><i class="material-icons">print</i><span>3D Print</span></a>
+        <a href="#studio" class="nav-link" data-target="studio"><i class="material-icons">category</i><span>Tools</span></a>
+        <a href="#3dprint" class="nav-link" data-target="3dprint"><i class="material-icons">print</i><span>Print</span></a>
         <a href="#order" class="nav-link" data-target="order"><i class="material-icons">shopping_cart</i><span>Order</span></a>
         <a href="#account" class="nav-link" data-target="account"><i class="material-icons">person</i><span>Account</span></a>
     </div>
 
+    <!-- ============================================== -->
+    <!-- HOME PAGE -->
+    <!-- ============================================== -->
     <div id="page-home" class="page-view">
         <header class="hero">
             <div class="container reveal">
-                <h1>Where CAD meets Clay.</h1>
-                <p>Engineered precision for the handmade studio.</p>
+                <h1>Your Signature in Clay.</h1>
+                <p>Engineered custom chops, rollers, and studio tools.</p>
             </div>
         </header>
 
-        <section style="padding: 40px 0 80px 0;">
+        <section style="padding: 0 0 80px 0;">
             <div class="container">
-                <div class="reveal" style="text-align: center; max-width: 800px; margin: 0 auto; margin-bottom: 60px;">
-                    <h2 class="section-title" style="margin-bottom: 24px; font-style: italic;">Welcome to the Lab</h2>
-                    <p style="color: var(--tcl-text-muted); font-size: 1.15rem; margin-bottom: 20px;">We specialize in bridging the gap between digital design and physical creation. Whether you are a potter looking for the perfect custom stamp, or a maker in need of rapid 3D prototyping, you've found the right place.</p>
-                    <p style="color: var(--tcl-text-muted); font-size: 1.15rem;">Thank you for supporting micro-manufacturing and independent engineering.</p>
-                </div>
-
-                <div class="reveal" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 50px;">
-                    <div style="background: var(--tcl-surface); border: 1px solid var(--tcl-border); padding: 50px 40px; text-align: center; border-radius: 12px; box-shadow: var(--tcl-shadow-md);">
-                        <h3 style="font-size: 1.6rem; margin-bottom: 15px; font-family: var(--font-heading); color: var(--tcl-text-main);">Ceramic Studio Tools</h3>
-                        <p style="color: var(--tcl-text-muted); margin-bottom: 35px; line-height: 1.6;">Engineered chops, rollers, and trimming tools designed specifically for the messy, demanding world of clay.</p>
-                        <a href="#studio" class="btn-launch">Explore Studio Tools</a>
-                    </div>
-                    <div style="background: var(--tcl-surface); border: 1px solid var(--tcl-border); padding: 50px 40px; text-align: center; border-radius: 12px; box-shadow: var(--tcl-shadow-md);">
-                        <h3 style="font-size: 1.6rem; margin-bottom: 15px; font-family: var(--font-heading); color: var(--tcl-text-main);">Custom 3D Printing</h3>
-                        <p style="color: var(--tcl-text-muted); margin-bottom: 35px; line-height: 1.6;">Send us your STL files. We print in durable PETG and high-detail PLA Matte. ($5 base + $1/hr)</p>
-                        <a href="#3dprint" class="btn-minimal">Bring My STL to Life</a>
-                    </div>
-                </div>
-
-                <div class="reveal" style="text-align: center; margin-bottom: 60px; margin-top: 120px;">
-                    <h2 class="section-title" style="margin-bottom: 16px; font-style: italic;">From CAD to Clay.</h2>
-                    <p style="color: var(--tcl-text-muted); font-size: 1.15rem;">See how digital engineering translates into handmade ceramics.</p>
-                </div>
                 
-                <div class="reveal" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; margin-bottom: 120px;">
-                    <div class="art-card" style="text-align: center; padding: 40px 20px; border: 1px solid var(--tcl-border); background: var(--tcl-surface); box-shadow: var(--tcl-shadow-sm); justify-content: center;">
-                        <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;">01.</h3>
-                        <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Engineered</h4>
-                        <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Parametric digital design tailored to your specifications.</p>
+                <!-- FEATURED HIGHLIGHT (CUSTOM CHOP) -->
+                <div class="reveal split-section" style="border-radius: 12px; overflow: hidden; box-shadow: var(--tcl-shadow-md); border: 1px solid var(--tcl-border); margin-bottom: 80px;">
+                    <div class="split-image" style="background: var(--tcl-background); align-items: center; justify-content: center; padding: 40px;">
+                        <img src="https://chop-lab.com/assets/images/compex-FC-chop.png" alt="Featured Custom Chop" style="border-radius: 8px; box-shadow: var(--tcl-shadow-sm); border: 1px solid var(--tcl-border); max-width: 80%; height: auto;">
                     </div>
-                    <div class="art-card" style="text-align: center; padding: 40px 20px; border: 1px solid var(--tcl-border); background: var(--tcl-surface); box-shadow: var(--tcl-shadow-sm); justify-content: center;">
-                        <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;">02.</h3>
-                        <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Printed</h4>
-                        <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Fabricated in-lab using durable, low-friction materials.</p>
-                    </div>
-                    <div class="art-card" style="text-align: center; padding: 40px 20px; border: 1px solid var(--tcl-border); background: var(--tcl-surface); box-shadow: var(--tcl-shadow-sm); justify-content: center;">
-                        <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;">03.</h3>
-                        <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Pressed</h4>
-                        <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Seamless application in your pottery studio workflow.</p>
-                    </div>
-                    <div class="art-card" style="text-align: center; padding: 40px 20px; border: 1px solid var(--tcl-border); background: var(--tcl-surface); box-shadow: var(--tcl-shadow-sm); justify-content: center;">
-                        <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;">04.</h3>
-                        <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Fired</h4>
-                        <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Beautiful, consistent, artisan-quality results.</p>
+                    <div class="split-content" style="background: var(--tcl-surface);">
+                        <div style="font-family: 'Roboto Mono', monospace; font-size: 0.8rem; color: var(--tcl-primary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Featured Product</div>
+                        <h2 style="font-size: 2.8rem; margin-bottom: 20px; color: var(--tcl-text-main); font-style: italic; font-family: var(--font-heading);">The Signature Custom Chop.</h2>
+                        <p style="color: var(--tcl-text-muted); line-height: 1.8; margin-bottom: 20px; font-size: 1.05rem;">The tool that started it all. We extract high-fidelity detail from your logos or initials and engineer them into custom, ergonomic stamps. Printed in specialized PLA Matte for clean, low-friction clay release every single time.</p>
+                        <div style="margin-top: 20px;">
+                            <a href="#order?product=chop-complex" class="btn-launch">Configure Your Chop</a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div style="background: var(--tcl-surface); border-top: 1px solid var(--tcl-border); border-bottom: 1px solid var(--tcl-border); padding: 100px 0;">
-                <div class="container reveal">
-                    <div style="text-align: center; margin-bottom: 60px;">
-                        <h2 class="section-title" style="margin-bottom: 16px; font-style: italic;">Studio Tested.</h2>
-                        <p style="color: var(--tcl-text-muted); font-size: 1.15rem;">Precision tools trusted by independent makers and ceramicists.</p>
+                <!-- HOW CUSTOM ORDERING WORKS (STEP-BY-STEP) -->
+                <div class="reveal" style="margin-bottom: 100px;">
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <h2 class="section-title" style="margin-bottom: 16px; font-style: italic;">How Custom Works.</h2>
+                        <p style="color: var(--tcl-text-muted); font-size: 1.15rem;">Zero back-and-forth emails. Precision manufacturing on demand.</p>
                     </div>
-                    
-                    <div style="text-align: center; color: var(--tcl-text-muted); font-style: italic; padding: 40px; border: 1px dashed var(--tcl-border); border-radius: 12px;">
-                        Awaiting reviews
+                    <div class="process-steps">
+                        <div class="process-step">
+                            <div class="step-num">01</div>
+                            <h4>Submit Specs</h4>
+                            <p>Use our configurator to upload your logo, sketch, or precise dimensions.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-num">02</div>
+                            <h4>CAD & Quote</h4>
+                            <p>We review your request, build the parametric model, and email you an exact quote.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-num">03</div>
+                            <h4>Fabrication</h4>
+                            <p>Once approved, your tool is 3D printed in-lab using durable, low-stress materials.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-num">04</div>
+                            <h4>Shipped</h4>
+                            <p>Your custom engineered tool arrives ready to integrate into your workflow.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="container">
+                <!-- USE CASE DEMONSTRATIONS -->
+                <div class="reveal" style="margin-bottom: 100px;">
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <h2 class="section-title" style="margin-bottom: 16px; font-style: italic;">In The Studio.</h2>
+                        <p style="color: var(--tcl-text-muted); font-size: 1.15rem;">See our tools in action.</p>
+                    </div>
+                    <div class="use-case-grid">
+                        <div class="use-case-card">
+                            <img src="https://chop-lab.com/assets/images/use-case-1.JPG" alt="Trimming tool in action" class="use-case-img">
+                            <div class="use-case-content">
+                                <h4>Trimming Consistency</h4>
+                                <p>Protecting delicate rims and improving speed with the zero-friction Trimming Spinner.</p>
+                            </div>
+                        </div>
+                        <div class="use-case-card">
+                            <img src="https://chop-lab.com/assets/images/use-case-2.JPG" alt="Custom chop on clay" class="use-case-img">
+                            <div class="use-case-content">
+                                <h4>Clean Impressions</h4>
+                                <p>Achieving deep, sharp branding on leather-hard clay using a Custom Complex Chop.</p>
+                            </div>
+                        </div>
+                        <div class="use-case-card">
+                            <img src="https://chop-lab.com/assets/images/use-case-3.JPG" alt="Texture roller on slab" class="use-case-img">
+                            <div class="use-case-content">
+                                <h4>Continuous Texture</h4>
+                                <p>Rolling seamless architectural honeycomb patterns across large slabs effortlessly.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="split-section reveal" style="border-radius: 12px; overflow: hidden; box-shadow: var(--tcl-shadow-md); margin-top: 100px; margin-bottom: 60px; border: 1px solid var(--tcl-border);">
                     <div class="split-image">
                         <img src="https://chop-lab.com/assets/images/maker-photo.png" alt="Thomas Carleton - Lab Technician">
@@ -1012,17 +950,29 @@
         </section>
     </div>
 
+    <!-- ============================================== -->
+    <!-- STUDIO PAGE -->
+    <!-- ============================================== -->
     <div id="page-studio" class="page-view hidden-page">
         <div class="info-intro reveal" style="text-align: center; border-bottom: none; margin-bottom: 0;">
             <div class="container">
                 <h1>Studio Tools.</h1>
-                <p>Engineered for the messy world of clay. <br> <em>(Click on the boxed numbers to see whats inside!)</em></p>
+                <p>Engineered for the messy world of clay.</p>
+            </div>
+        </div>
+
+        <!-- SEARCH BAR ENGINE -->
+        <div class="container reveal">
+            <div class="search-container">
+                <i class="material-icons search-icon">search</i>
+                <input type="text" id="toolSearch" class="search-input" placeholder="Search for chops, ribs, rollers..." onkeyup="filterTools()">
             </div>
         </div>
 
         <div class="gallery">
             <div class="container">
                 
+                <!-- CATEGORY GRID -->
                 <div id="studio-categories" class="product-grid reveal">
                     <div class="card-link category-link" data-category="stamping" style="cursor: pointer;">
                         <div class="art-card" style="text-align: center; padding: 40px 20px; justify-content: center; min-height: 280px;">
@@ -1035,31 +985,48 @@
                         <div class="art-card" style="text-align: center; padding: 40px 20px; justify-content: center; min-height: 280px;">
                             <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;">02.</h3>
                             <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Throwing & Trimming</h4>
-                            <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Precision gauges, ribs, and zero-friction trimming stabilizers.</p>
+                            <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Precision gauges, ribs, and zero-friction stabilizers.</p>
                         </div>
                     </div>
                     <div class="card-link category-link" data-category="handbuilding" style="cursor: pointer;">
                         <div class="art-card" style="text-align: center; padding: 40px 20px; justify-content: center; min-height: 280px;">
                             <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;">03.</h3>
                             <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Handbuilding</h4>
-                            <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Squaring tools, slab thickness guides, and ergonomic cutters.</p>
+                            <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Squaring tools, slab thickness guides, and cutters.</p>
                         </div>
                     </div>
                     <div class="card-link category-link" data-category="storage" style="cursor: pointer;">
                         <div class="art-card" style="text-align: center; padding: 40px 20px; justify-content: center; min-height: 280px;">
                             <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;">04.</h3>
-                            <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Storage & Organization</h4>
+                            <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Storage</h4>
                             <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Breathable, custom-fit baskets and lab organizers.</p>
+                        </div>
+                    </div>
+                    <div class="card-link category-link" data-category="digital" style="cursor: pointer;">
+                        <div class="art-card" style="text-align: center; padding: 40px 20px; justify-content: center; min-height: 280px; border-color: var(--tcl-primary);">
+                            <h3 style="color: var(--tcl-primary); font-family: var(--font-heading); font-style: italic; font-size: 3rem; margin-bottom: 15px;"><i class="material-icons" style="font-size:3rem;">download</i></h3>
+                            <h4 style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--tcl-text-main); margin-bottom: 15px;">Digital Files (STLs)</h4>
+                            <p style="font-size: 1rem; color: var(--tcl-text-muted); margin: 0;">Download our engineered CAD models to 3D print yourself.</p>
                         </div>
                     </div>
                 </div>
 
+                <!-- MISSING ITEM / EMPTY SEARCH STATE -->
+                <div id="search-empty-state" class="hidden" style="text-align: center; padding: 60px 20px; background: var(--tcl-surface); border: 1px dashed var(--tcl-border); border-radius: 12px; margin-top: 20px; margin-bottom: 60px;">
+                    <i class="material-icons" style="font-size: 3.5rem; color: var(--tcl-border); margin-bottom: 15px;">search_off</i>
+                    <h3 style="font-family: var(--font-heading); font-size: 1.8rem; color: var(--tcl-text-main); margin-bottom: 10px; font-style: italic;">Tool not found in catalog</h3>
+                    <p style="color: var(--tcl-text-muted); margin-bottom: 25px; font-size: 1.05rem;">We engineer custom tools every day. Let us know what you're looking for and we'll design it from scratch.</p>
+                    <a href="mailto:?subject=Custom Tool Request" id="search-mailto-btn" class="btn-launch">Email me to add it</a>
+                </div>
+
+                <!-- ALL PRODUCTS LIST -->
                 <div id="studio-products" class="hidden">
                     <div style="margin-bottom: 30px; text-align: left;">
                         <button id="btn-back-categories" class="btn-minimal" style="padding: 10px 20px; font-size: 0.75rem;">&larr; View All Categories</button>
                     </div>
                     <div class="product-grid" id="studio-product-grid">
                         
+                        <!-- Physical Prints -->
                         <a href="#order?product=chop-simple" class="card-link reveal" data-category="stamping">
                             <div class="art-card">
                                 <div class="art-image-wrapper">
@@ -1214,22 +1181,45 @@
                             </div>
                         </a>
 
-                    </div>
-                </div>
+                        <!-- Digital Downloads (STLs) -->
+                        <a href="#order?product=stl-spinner" class="card-link reveal" data-category="digital">
+                            <div class="art-card" style="border-top: 4px solid var(--tcl-primary);">
+                                <div class="art-image-wrapper">
+                                    <img src="https://chop-lab.com/assets/files/The TCL Trimming Spinner.stl" alt="Trimming Spinner STL" class="art-image">
+                                </div>
+                                <div class="art-info">
+                                    <h3 style="color:var(--tcl-primary);"><i class="material-icons" style="font-size:1rem;vertical-align:middle;">download</i> Trimming Spinner</h3>
+                                    <span class="price">$5.00 (STL Download)</span>
+                                    <p class="desc">Download the parametric model to 3D print in your own lab.</p>
+                                    <div class="card-cta">Request Digital File &rarr;</div>
+                                </div>
+                            </div>
+                        </a>
 
-                <div class="reveal" style="margin-top: 80px; margin-bottom: 60px; border-top: 1px solid var(--tcl-border); padding-top: 60px;">
-                    <div style="text-align: center; margin-bottom: 40px;">
-                        <h2 style="font-family: var(--font-heading); font-size: 2.5rem; color: var(--tcl-text-main); font-style: italic;">In the R&D Lab.</h2>
-                        <p style="color: var(--tcl-text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Currently prototyping and testing.</p>
-                    </div>
+                        <a href="#order?product=stl-basket" class="card-link reveal" data-category="digital">
+                            <div class="art-card" style="border-top: 4px solid var(--tcl-primary);">
+                                <div class="art-image-wrapper">
+                                    <img src="https://chop-lab.com/assets/files/Sponge-Basket.stl" alt="Sponge Basket STL" class="art-image">
+                                </div>
+                                <div class="art-info">
+                                    <h3 style="color:var(--tcl-primary);"><i class="material-icons" style="font-size:1rem;vertical-align:middle;">download</i> Sponge Basket</h3>
+                                    <span class="price">$5.00 (STL Download)</span>
+                                    <p class="desc">Download the parametric model to 3D print in your own lab.</p>
+                                    <div class="card-cta">Request Digital File &rarr;</div>
+                                </div>
+                            </div>
+                        </a>
 
-                
+                    </div>
                 </div>
 
             </div>
         </div>
     </div>
 
+    <!-- ============================================== -->
+    <!-- AI CAD 3D PRINT PAGE -->
+    <!-- ============================================== -->
     <div id="page-3dprint" class="page-view hidden-page">
         <div class="info-intro reveal" style="background: var(--tcl-background); border-bottom: 1px solid var(--tcl-border); text-align: center; margin-bottom: 0;">
             <div class="container">
@@ -1279,39 +1269,29 @@
 
             const WORKER_URL = "https://ai-cad-engine.tmcarleton11.workers.dev";
             function exportSceneToSTL() {
-    // 1. Create the exporter
-    const exporter = new THREE.STLExporter();
-    
-    // 2. Find the model in the scene
-    // We search for the specific mesh that contains our geometry
-    let meshToExport = null;
-    scene.traverse(function (object) {
-        if (object.isMesh && object.name === "aiModel") {
-            meshToExport = object;
-        }
-    });
+                const exporter = new THREE.STLExporter();
+                let meshToExport = null;
+                aiScene.traverse(function (object) {
+                    if (object.isMesh && object.name === "aiModel") {
+                        meshToExport = object;
+                    }
+                });
 
-    if (!meshToExport) {
-        alert("No model found to export! Please generate something first.");
-        return;
-    }
+                if (!meshToExport) {
+                    alert("No model found to export! Please generate something first.");
+                    return;
+                }
+                const result = exporter.parse(meshToExport, { binary: true });
+                const blob = new Blob([result], { type: 'application/octet-stream' });
+                const link = document.createElement('a');
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.href = URL.createObjectURL(blob);
+                link.download = 'ChopLab_Model_' + Date.now() + '.stl';
+                link.click();
+                document.body.removeChild(link);
+            }
 
-    // 3. Generate the STL data (binary is smaller and better for 3D printing)
-    const result = exporter.parse(meshToExport, { binary: true });
-    
-    // 4. Create a "Blob" (a file-like object) and trigger a download
-    const blob = new Blob([result], { type: 'application/octet-stream' });
-    const link = document.createElement('a');
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    
-    link.href = URL.createObjectURL(blob);
-    link.download = 'ChopLab_Model_' + Date.now() + '.stl';
-    link.click();
-    
-    // Cleanup
-    document.body.removeChild(link);
-}
             function initAiViewport() {
                 const container = document.getElementById('ai-viewport');
                 if (aiRenderer || !container) return;
@@ -1333,7 +1313,6 @@
                 aiControls.enableDamping = true;
                 aiControls.dampingFactor = 0.05;
 
-                // Warm lighting setup
                 aiScene.add(new THREE.AmbientLight(0xfff5e6, 0.8));
                 const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
                 keyLight.position.set(150, 250, 100);
@@ -1342,7 +1321,6 @@
                 fillLight.position.set(-100, 50, -100);
                 aiScene.add(fillLight);
 
-                // Grid
                 const grid = new THREE.GridHelper(200, 25, 0xC97B63, 0xD8C3A5);
                 aiScene.add(grid);
 
@@ -1353,7 +1331,6 @@
                 }
                 animate();
 
-                // Responsive resize
                 const ro = new ResizeObserver(() => {
                     const cw = container.clientWidth;
                     const ch = container.clientHeight;
@@ -1372,9 +1349,7 @@
             if (window.location.hash === '#3dprint' || window.location.hash === '') setTimeout(initAiViewport, 150);
 
             function cadEscape(str) {
-                return String(str)
-                    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
             }
 
             async function generateCAD() {
@@ -1403,7 +1378,6 @@
                         body: JSON.stringify({ prompt: prompt })
                     });
 
-                    // The new pipeline guarantees standard JSON returns
                     const data = await res.json();
                     document.getElementById(loadId)?.remove();
 
@@ -1413,11 +1387,10 @@
                         throw new Error(`${errMsg}\nDetails: ${trace}`);
                     }
 
-                    // Handle AI Clarification Questions
                     if (data.status === "clarification") {
                         aiChatHistory.push({ role: "assistant", content: data.message });
                         chat.innerHTML += `<div class="ai-message system"><strong>Lab AI:</strong> ${cadEscape(data.message)}</div>`;
-                        return; // Stop here, don't try to render CAD
+                        return; 
                     }
 
                     if (data.status === "success") {
@@ -1425,10 +1398,8 @@
                         const sheet = data.data.engineeringSheet || {};
                         const opCount = geometry.length;
 
-                        // Save to history context
                         aiChatHistory.push({ role: "assistant", content: JSON.stringify(sheet) });
 
-                        // Format the new Deterministic Engineering Sheet
                         let blueprintHtml = `
                         <div style="background: rgba(0,0,0,0.05); border: 1px solid var(--tcl-border); padding: 12px; margin: 12px 0; border-radius: 6px; font-family: 'Roboto Mono', monospace; font-size: 0.85em; white-space: pre-wrap; color: var(--tcl-text-main);">
 <strong style="color: var(--tcl-primary); display:block; margin-bottom: 6px;">[ENGINEERING BLUEPRINT]</strong>
@@ -1446,7 +1417,6 @@ Features: ${sheet.features_present?.join(', ') || 'None'}
                         </div>`;
 
                         try {
-                            // Pass the 'data' sub-object into the mesh builder
                             buildMeshFromJSON(data.data);
                         } catch (buildErr) {
                             chat.innerHTML += `<div class="ai-message system" style="border-left-color:#d9534f">
@@ -1477,7 +1447,6 @@ Features: ${sheet.features_present?.join(', ') || 'None'}
                     throw new Error("No valid geometry array in worker response.");
                 }
 
-                // Clean up previous mesh
                 if (currentAiMesh) {
                     aiScene.remove(currentAiMesh);
                     currentAiMesh.geometry?.dispose();
@@ -1486,22 +1455,16 @@ Features: ${sheet.features_present?.join(', ') || 'None'}
                 }
 
                 const material = new THREE.MeshPhongMaterial({
-                    color: 0xCBC6B8,
-                    specular: 0x222222,
-                    shininess: 20,
-                    side: THREE.DoubleSide
+                    color: 0xCBC6B8, specular: 0x222222, shininess: 20, side: THREE.DoubleSide
                 });
 
                 let csgResult = null;
 
                 for (let i = 0; i < data.geometry.length; i++) {
                     const op = data.geometry[i];
-
-                    // Safely parse dimensions with fallbacks
                     const size = Array.isArray(op.size) ? op.size : [10, 10, 10];
                     const pos  = Array.isArray(op.position) ? op.position : [0, 0, 0];
 
-                    // Enforce positive, non-degenerate dimensions
                     const sx = Math.max(Math.abs(parseFloat(size[0])) || 1, 0.1);
                     const sy = Math.max(Math.abs(parseFloat(size[1])) || 1, 0.1);
                     const sz = Math.max(Math.abs(parseFloat(size[2])) || 1, 0.1);
@@ -1510,89 +1473,61 @@ Features: ${sheet.features_present?.join(', ') || 'None'}
                     const pz = parseFloat(pos[2]) || 0;
 
                     let geometry;
-                    // Use the new deterministic 'type' key
                     const shape = (op.type || op.shape || 'box').toLowerCase();
 
                     try {
                         if (shape === 'cylinder') {
-                            // size = [radius, height, ignored]
                             geometry = new THREE.CylinderGeometry(sx, sx, sy, 64);
                             geometry.translate(0, sy / 2, 0);
                         } else if (shape === 'sphere') {
-                            // size = [radius, ignored, ignored]
                             geometry = new THREE.SphereGeometry(sx, 64, 64);
-                            geometry.translate(0, sx, 0); // rest on the floor
+                            geometry.translate(0, sx, 0); 
                         } else {
-                            // box: size = [width, height, depth]
                             geometry = new THREE.BoxGeometry(sx, sy, sz);
                             geometry.translate(0, sy / 2, 0);
                         }
-                    } catch (e) {
-                        console.warn(`Op ${i}: geometry creation failed`, op, e);
-                        continue;
-                    }
+                    } catch (e) { continue; }
 
                     const mesh = new THREE.Mesh(geometry, material);
-mesh.position.set(px, py, pz);
+                    mesh.position.set(px, py, pz);
 
-// Apply rotation if the AI provided it
-if (op.rotation && Array.isArray(op.rotation)) {
-    const rx = parseFloat(op.rotation[0]) || 0;
-    const ry = parseFloat(op.rotation[1]) || 0;
-    const rz = parseFloat(op.rotation[2]) || 0;
-    // Three.js uses radians, so we convert the AI's degrees to radians
-    mesh.rotation.set(
-        THREE.MathUtils.degToRad(rx), 
-        THREE.MathUtils.degToRad(ry), 
-        THREE.MathUtils.degToRad(rz)
-    );
-}
-
-mesh.updateMatrix();
+                    if (op.rotation && Array.isArray(op.rotation)) {
+                        const rx = parseFloat(op.rotation[0]) || 0;
+                        const ry = parseFloat(op.rotation[1]) || 0;
+                        const rz = parseFloat(op.rotation[2]) || 0;
+                        mesh.rotation.set(THREE.MathUtils.degToRad(rx), THREE.MathUtils.degToRad(ry), THREE.MathUtils.degToRad(rz));
+                    }
+                    mesh.updateMatrix();
 
                     let brush;
-                    try {
-                        brush = CSG.fromMesh(mesh);
-                    } catch (e) {
-                        console.warn(`Op ${i}: CSG.fromMesh failed`, e);
-                        continue;
-                    }
+                    try { brush = CSG.fromMesh(mesh); } catch (e) { continue; }
 
                     if (csgResult === null) {
                         csgResult = brush;
                     } else {
-                        // Use the new deterministic 'operation' key so it actually subtracts!
                         const action = (op.operation || op.action || 'add').toLowerCase();
                         try {
-                            csgResult = action === 'subtract'
-                                ? csgResult.subtract(brush)
-                                : csgResult.union(brush);
-                        } catch (e) {
-                            console.warn(`Op ${i}: CSG.${action} failed`, e);
-                        }
+                            csgResult = action === 'subtract' ? csgResult.subtract(brush) : csgResult.union(brush);
+                        } catch (e) { console.warn(`Op ${i}: CSG.${action} failed`, e); }
                     }
                 }
 
-                if (!csgResult) {
-                    throw new Error("All CSG operations failed — see console for details.");
-                }
+                if (!csgResult) throw new Error("All CSG operations failed.");
 
                 currentAiMesh = CSG.toMesh(csgResult, new THREE.Matrix4(), material);
-                currentAiMesh.name = "aiModel"; // Explicitly tag for identification
+                currentAiMesh.name = "aiModel"; 
                 currentAiMesh.geometry.computeBoundingBox();
                 const bbox = currentAiMesh.geometry.boundingBox;
 
                 if (!bbox || bbox.isEmpty() || isNaN(bbox.min.x) || isNaN(bbox.min.y)) {
                     aiScene.remove(currentAiMesh);
                     currentAiMesh = null;
-                    throw new Error("Resulting geometry is empty. The subtracted volume may be larger than the base shape — try increasing wall thickness.");
+                    throw new Error("Resulting geometry is empty.");
                 }
 
-                // Sit flat on grid floor
                 currentAiMesh.position.y = -bbox.min.y;
                 aiScene.add(currentAiMesh);
 
-                // Auto-frame camera on the new object
                 const center = new THREE.Vector3();
                 const size3  = new THREE.Vector3();
                 bbox.getCenter(center);
@@ -1601,48 +1536,34 @@ mesh.updateMatrix();
                 const dist = maxDim * 2.5;
 
                 aiControls.target.set(center.x, currentAiMesh.position.y + size3.y / 2, center.z);
-                aiCamera.position.set(
-                    center.x + dist,
-                    currentAiMesh.position.y + dist * 0.9,
-                    center.z + dist
-                );
+                aiCamera.position.set(center.x + dist, currentAiMesh.position.y + dist * 0.9, center.z + dist);
                 aiControls.update();
             }
 
             function exportAiSTL() {
-    if (!currentAiMesh) {
-        showToast("No model generated yet.", "error");
-        return;
-    }
-
-    try {
-        // 1. Initialize the Exporter
-        const exporter = new THREE.STLExporter();
-        
-        // 2. Parse the current AI mesh (Binary is smaller/better for printing)
-        const result = exporter.parse(currentAiMesh, { binary: true });
-        
-        // 3. Create a download link and trigger it
-        const blob = new Blob([result], { type: 'application/octet-stream' });
-        const link = document.createElement('a');
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        
-        link.href = URL.createObjectURL(blob);
-        link.download = 'TCL_Custom_Tool_' + Date.now() + '.stl';
-        link.click();
-        
-        // 4. Cleanup
-        document.body.removeChild(link);
-        showToast("STL Exported Successfully!");
-    } catch (err) {
-        console.error("Export Error:", err);
-        showToast("Failed to export STL.", "error");
-    }
-}
+                if (!currentAiMesh) { showToast("No model generated yet.", "error"); return; }
+                try {
+                    const exporter = new THREE.STLExporter();
+                    const result = exporter.parse(currentAiMesh, { binary: true });
+                    const blob = new Blob([result], { type: 'application/octet-stream' });
+                    const link = document.createElement('a');
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'TCL_Custom_Tool_' + Date.now() + '.stl';
+                    link.click();
+                    document.body.removeChild(link);
+                    showToast("STL Exported Successfully!");
+                } catch (err) {
+                    showToast("Failed to export STL.", "error");
+                }
+            }
         </script>
     </div>
 
+    <!-- ============================================== -->
+    <!-- QA & AI CHAT PAGE -->
+    <!-- ============================================== -->
     <div id="page-qa" class="page-view hidden-page">
         <div class="container reveal" style="padding-top: 60px; padding-bottom: 80px;">
             <div style="text-align: center; margin-bottom: 60px;">
@@ -1688,6 +1609,9 @@ mesh.updateMatrix();
         </div>
     </div>
 
+    <!-- ============================================== -->
+    <!-- ORDER PAGE -->
+    <!-- ============================================== -->
     <div id="page-order" class="page-view hidden-page">
         <div class="container order-page-content reveal">
             <header class="order-header" style="text-align: center; margin-bottom: 60px;">
@@ -1696,9 +1620,7 @@ mesh.updateMatrix();
             </header>
 
             <form id="tcl-order-form" class="order-layout">
-                
                 <div class="order-form-column">
-                    
                     <div class="step-container">
                         <div class="step-header">
                             <div class="step-number">01</div>
@@ -1737,10 +1659,15 @@ mesh.updateMatrix();
                                     <option value="extruder-dies" data-base="5.00" data-design="3.00" data-print="2.00" data-name="Custom Extruder Dies">Custom Extruder Dies</option>
                                     <option value="sponge-basket" data-base="12.00" data-design="2.00" data-print="3.00" data-name="Sponge Basket" data-image="https://chop-lab.com/assets/files/Sponge-Basket.stl">Sponge Basket</option>
                                 </optgroup>
+                                <optgroup label="Digital Downloads (STLs)">
+                                    <option value="stl-spinner" data-base="5.00" data-design="0" data-print="0" data-name="Trimming Spinner (STL Download)" data-image="https://chop-lab.com/assets/files/The TCL Trimming Spinner.stl">Trimming Spinner (STL Download)</option>
+                                    <option value="stl-basket" data-base="5.00" data-design="0" data-print="0" data-name="Sponge Basket (STL Download)" data-image="https://chop-lab.com/assets/files/Sponge-Basket.stl">Sponge Basket (STL Download)</option>
+                                    <option value="stl-bevel-cutter" data-base="5.00" data-design="0" data-print="0" data-name="Dual Bevel Cutter (STL Download)" data-image="https://chop-lab.com/assets/files/Bevel Cutter.stl">Dual Bevel Cutter (STL Download)</option>
+                                </optgroup>
                                 <optgroup label="3D Printing">
                                     <option value="custom-stl" data-base="3.00" data-design="20.00" data-print="2.00" data-name="3D Print (Full Custom)">Custom STL Print / 3D Print</option>
                                     <option value="custom-design" data-base="3.00" data-design="20.00" data-print="2.00" data-name="Custom CAD Design">Custom CAD Design (We design it)</option>
-</optgroup>
+                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -1765,6 +1692,11 @@ mesh.updateMatrix();
                                     <input type="radio" name="unitPreference" value="in" style="width: auto; padding: 0; accent-color: var(--tcl-primary);"> Inches (in)
                                 </label>
                             </div>
+                        </div>
+
+                        <!-- DIGITAL DOWNLOAD SECTION -->
+                        <div id="opt-digital-download" class="dynamic-section hidden">
+                            <p style="font-size: 0.9rem; color: var(--tcl-text-muted); margin-bottom: 25px;">You are requesting to purchase a digital .STL file to 3D print yourself. Your file link and invoice will be emailed to you.</p>
                         </div>
 
                         <div id="opt-3d-print" class="dynamic-section hidden">
@@ -1794,24 +1726,22 @@ mesh.updateMatrix();
                         </div>
 
                         <div id="opt-custom-design" class="dynamic-section hidden">
-    <p style="font-size: 0.9rem; color: var(--tcl-text-muted); margin-bottom: 25px;">Need something designed from scratch? Describe your idea below. Pricing matches our standard 3D print rates.</p>
-    
-    <div class="form-group">
-        <label>Design Description & Dimensions</label>
-        <textarea name="customDesignDesc" placeholder="Describe the part, its purpose, and provide precise dimensions (mm or inches)..."></textarea>
-    </div>
-    
-    <div class="form-group">
-        <label>Reference Sketch / Image (Optional)</label>
-        <div id="reference-drop-zone" class="drop-zone">
-            <i class="material-icons">draw</i>
-            <span class="drop-text">Drag &amp; drop a sketch or photo, or click to browse</span>
-            <span class="file-details"></span>
-            <input type="file" id="referenceUpload" name="referenceUpload" accept="image/*,.pdf" hidden>
-        </div>
-        <span class="note" style="display:block; text-align:center; margin-top:10px; color: var(--tcl-text-muted); font-size: 0.85rem;">Helps us visualize what you need engineered.</span>
-    </div>
-</div>
+                            <p style="font-size: 0.9rem; color: var(--tcl-text-muted); margin-bottom: 25px;">Need something designed from scratch? Describe your idea below. Pricing matches our standard 3D print rates.</p>
+                            <div class="form-group">
+                                <label>Design Description & Dimensions</label>
+                                <textarea name="customDesignDesc" placeholder="Describe the part, its purpose, and provide precise dimensions (mm or inches)..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Reference Sketch / Image (Optional)</label>
+                                <div id="reference-drop-zone" class="drop-zone">
+                                    <i class="material-icons">draw</i>
+                                    <span class="drop-text">Drag &amp; drop a sketch or photo, or click to browse</span>
+                                    <span class="file-details"></span>
+                                    <input type="file" id="referenceUpload" name="referenceUpload" accept="image/*,.pdf" hidden>
+                                </div>
+                                <span class="note" style="display:block; text-align:center; margin-top:10px; color: var(--tcl-text-muted); font-size: 0.85rem;">Helps us visualize what you need engineered.</span>
+                            </div>
+                        </div>
 
                         <div id="opt-chop-simple" class="dynamic-section hidden">
                             <div class="form-group">
@@ -1982,7 +1912,6 @@ mesh.updateMatrix();
                             <i class="material-icons">engineering</i> Finalize Request
                         </button>
                     </div>
-
                 </div>
 
                 <div class="order-summary-column">
@@ -2025,10 +1954,7 @@ mesh.updateMatrix();
                             </p>
                         </div>
                     </div>
-
-                    
                 </div>
-
             </form>
         </div>
 
@@ -2070,6 +1996,9 @@ mesh.updateMatrix();
         </div>
     </div>
 
+    <!-- ============================================== -->
+    <!-- ACCOUNT & ADMIN PAGES -->
+    <!-- ============================================== -->
     <div id="page-account" class="page-view hidden-page">
         <div class="container reveal" style="margin-top: 100px; min-height: 70vh; max-width: 900px;">
             <div id="auth-container" style="max-width: 450px; margin: 0 auto; padding: 60px 40px; border: 1px solid var(--tcl-border); background: var(--tcl-surface); border-radius: 12px; box-shadow: var(--tcl-shadow-md);">
@@ -2169,23 +2098,22 @@ mesh.updateMatrix();
         </div>
     </footer>
 
+    <!-- ============================================== -->
+    <!-- GLOBAL JS APPLICATION LOGIC -->
+    <!-- ============================================== -->
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxA0tHDzsc4baNHSURGJRMFVvRpXLZMAL0Hhkezq5xC641ehY5asGkTD1X4k6uauBJF9A/exec";
         const WEEKLY_DROP_URL = "https://video-intake-engine.tmcarleton11.workers.dev/";
         
-        // --- MASTER CONFIGURATION STORE ---
         let aiConfig = null;
 
-        // --- THE MINESCOUT ONE-LINE ENGINE ---
+        // --- MINESCOUT AI ENGINE LOGIC ---
         async function initMinescoutNetwork() {
             const API_URL = "https://backend.tmcarleton11.workers.dev/ai-config?id=chop-lab";
-            
             try {
                 const res = await fetch(API_URL);
                 if (!res.ok) throw new Error(`Minescout Node Error: ${res.status}`);
-                
                 aiConfig = await res.json();
-                
                 document.getElementById('chatMessages').innerHTML = `<div class="ai-message system">${aiConfig.welcomeMessage}</div>`;
                 console.log("Minescout Network: Authorized via Edge Gatekeeper.");
             } catch (e) {
@@ -2205,7 +2133,6 @@ mesh.updateMatrix();
             
             const loadingId = 'ai-loading-' + Date.now();
             body.innerHTML += `<div class="ai-message system" id="${loadingId}"><em><i class="material-icons spin-hourglass" style="font-size: 14px; vertical-align: middle; margin-right: 8px;">hourglass_empty</i> Processing Lab Schematic...</em></div>`;
-            
             body.scrollTop = body.scrollHeight;
 
             try {
@@ -2220,7 +2147,7 @@ mesh.updateMatrix();
             }
         }
 
-        // --- WEEKLY DROP SUBSCRIPTION ---
+        // --- WEEKLY DROP WIDGET ---
         async function submitWeeklySubscription() {
             const emailInput = document.getElementById('weekly-sub-email');
             const btn = document.getElementById('btn-weekly-sub');
@@ -2247,9 +2174,7 @@ mesh.updateMatrix();
                     btn.style.display = 'none';
                     if (successEl) successEl.style.display = 'block';
                     showToast("You're on the list! See you Monday. ☕");
-                } else {
-                    throw new Error("Server error");
-                }
+                } else { throw new Error("Server error"); }
             } catch (err) {
                 showToast("Connection error. Please try again.", "error");
                 btn.disabled = false;
@@ -2257,7 +2182,7 @@ mesh.updateMatrix();
             }
         }
 
-        // --- SMART GALLERY 3D PREVIEW ENGINE (AUTO-DETECT STL) ---
+        // --- GALLERY 3D PREVIEW ENGINE ---
         async function initGalleryStls() {
             const images = document.querySelectorAll('.art-image');
             const matteWhite = 0xCBC6B8;
@@ -2267,7 +2192,6 @@ mesh.updateMatrix();
                 if (!src || !src.toLowerCase().endsWith('.stl')) continue;
 
                 const wrapper = img.parentElement;
-                
                 let canvasContainer = wrapper.querySelector('.stl-canvas-container');
                 if (!canvasContainer) {
                     canvasContainer = document.createElement('div');
@@ -2289,16 +2213,10 @@ mesh.updateMatrix();
 
                 try {
                     let geometry;
-                    try {
-                        geometry = await loadSTL(localUrl);
-                    } catch (e) {
-                        console.warn(`Local STL [${stlFilename}] missing. Trying GitHub Vault...`);
-                        geometry = await loadSTL(backupUrl);
-                    }
+                    try { geometry = await loadSTL(localUrl); } 
+                    catch (e) { geometry = await loadSTL(backupUrl); }
 
-                    if (!geometry || !geometry.attributes.position || geometry.attributes.position.count === 0) {
-                        throw new Error("Invalid or empty STL geometry");
-                    }
+                    if (!geometry || !geometry.attributes.position || geometry.attributes.position.count === 0) throw new Error("Invalid STL");
 
                     const scene = new THREE.Scene();
                     scene.background = null; 
@@ -2320,11 +2238,7 @@ mesh.updateMatrix();
                     geometry.computeBoundingBox();
                     geometry.center();
                     
-                    const material = new THREE.MeshPhongMaterial({ 
-                        color: matteWhite, 
-                        specular: 0x222222, 
-                        shininess: 30 
-                    });
+                    const material = new THREE.MeshPhongMaterial({ color: matteWhite, specular: 0x222222, shininess: 30 });
                     const mesh = new THREE.Mesh(geometry, material);
                     mesh.rotation.x = -Math.PI / 2;
 
@@ -2344,7 +2258,6 @@ mesh.updateMatrix();
                     let isVisible = false;
                     const obs = new IntersectionObserver((entries) => { isVisible = entries[0].isIntersecting; });
                     obs.observe(wrapper);
-
                     camera.lookAt(0, 0, 0);
 
                     function animate() {
@@ -2359,9 +2272,7 @@ mesh.updateMatrix();
                     animate();
 
                     window.addEventListener('resize', () => {
-                        if (wrapper.clientWidth > 0) {
-                            renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
-                        }
+                        if (wrapper.clientWidth > 0) renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
                     });
 
                 } catch (err) {
@@ -2375,12 +2286,51 @@ mesh.updateMatrix();
         function triggerGalleryFallback(wrapper, img) {
             const altText = (img && img.alt) ? img.alt : "3D Asset View";
             if(img) img.style.display = 'none';
-            
             if(!wrapper.querySelector('.fancy-placeholder')) {
                 const fallback = document.createElement('div');
                 fallback.className = 'fancy-placeholder';
                 fallback.innerHTML = `<div class="fancy-placeholder-content">Preview Unavailable<strong>${altText}</strong></div>`;
                 wrapper.appendChild(fallback);
+            }
+        }
+
+        // --- STUDIO SEARCH FUNCTION ---
+        function filterTools() {
+            const query = document.getElementById('toolSearch').value.toLowerCase();
+            const studioCats = document.getElementById('studio-categories');
+            const studioProds = document.getElementById('studio-products');
+            const productCards = document.querySelectorAll('#studio-product-grid .card-link');
+            const emptyState = document.getElementById('search-empty-state');
+            const mailtoBtn = document.getElementById('search-mailto-btn');
+
+            if (query.length > 0) {
+                studioCats.classList.add('hidden');
+                studioProds.classList.remove('hidden');
+
+                let visibleCount = 0;
+                productCards.forEach(card => {
+                    const title = card.querySelector('h3').innerText.toLowerCase();
+                    const desc = card.querySelector('.desc').innerText.toLowerCase();
+                    if (title.includes(query) || desc.includes(query)) {
+                        card.style.display = 'block';
+                        setTimeout(() => card.classList.add('active'), 50);
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                        card.classList.remove('active');
+                    }
+                });
+
+                if (visibleCount === 0) {
+                    emptyState.classList.remove('hidden');
+                    mailtoBtn.href = `mailto:?subject=Custom%20Tool%20Request:%20${encodeURIComponent(query)}&body=Hi%20Thomas,%0A%0AI'm%20looking%20for%20a%20tool%20that%20isn't%20listed%20in%20the%20catalog:%20${encodeURIComponent(query)}%0A%0ACan%20you%20design%20this?%0A%0AThanks!`;
+                } else {
+                    emptyState.classList.add('hidden');
+                }
+            } else {
+                studioCats.classList.remove('hidden');
+                studioProds.classList.add('hidden');
+                emptyState.classList.add('hidden');
             }
         }
 
@@ -2391,15 +2341,11 @@ mesh.updateMatrix();
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    }
+                    if (entry.isIntersecting) { entry.target.classList.add('active'); }
                 });
             }, { threshold: 0.1 });
             
-            document.querySelectorAll('.reveal').forEach(el => {
-                observer.observe(el);
-            });
+            document.querySelectorAll('.reveal').forEach(el => { observer.observe(el); });
             
             // --- Studio Category Filtering ---
             const categoryLinks = document.querySelectorAll('.category-link');
@@ -2436,6 +2382,8 @@ mesh.updateMatrix();
                 btnBackCats.addEventListener('click', () => {
                     studioProds.classList.add('hidden');
                     studioCats.classList.remove('hidden');
+                    document.getElementById('toolSearch').value = '';
+                    document.getElementById('search-empty-state').classList.add('hidden');
                     
                     const studioPage = document.getElementById('page-studio');
                     if(studioPage) {
@@ -2445,12 +2393,9 @@ mesh.updateMatrix();
                 });
             }
 
-            // --- Admin password enter key ---
             const adminPassInput = document.getElementById('adminPass');
             if (adminPassInput) {
-                adminPassInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') checkPass();
-                });
+                adminPassInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkPass(); });
             }
         });
 
@@ -2475,7 +2420,6 @@ mesh.updateMatrix();
         // --- SPA ROUTING (HASH-BASED) ---
         function route() {
             let hash = window.location.hash.substring(1);
-            
             let search = '';
             if (hash.includes('?')) {
                 const parts = hash.split('?');
@@ -2485,12 +2429,9 @@ mesh.updateMatrix();
             
             let pageName = hash || 'home';
             const validRoutes = ['home', 'studio', '3dprint', 'qa', 'order', 'account', 'admin'];
-            if (!validRoutes.includes(pageName)) {
-                pageName = '404';
-            }
+            if (!validRoutes.includes(pageName)) { pageName = '404'; }
             
             const pageId = 'page-' + pageName;
-
             document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden-page'));
 
             const targetPage = document.getElementById(pageId);
@@ -2515,9 +2456,7 @@ mesh.updateMatrix();
 
             document.querySelectorAll('.nav-link').forEach(l => {
                 l.classList.remove('current');
-                if(l.getAttribute('data-target') === pageName) {
-                    l.classList.add('current');
-                }
+                if(l.getAttribute('data-target') === pageName) l.classList.add('current');
             });
 
             if (pageName === 'order' && search) {
@@ -2549,11 +2488,7 @@ mesh.updateMatrix();
         window.addEventListener('hashchange', route);
 
         document.addEventListener('DOMContentLoaded', () => {
-            if(!window.location.hash) {
-                window.location.hash = 'home';
-            } else {
-                route();
-            }
+            if(!window.location.hash) window.location.hash = 'home'; else route();
             
             const yearSpan = document.getElementById('footer-year');
             if(yearSpan) yearSpan.textContent = new Date().getFullYear();
@@ -2659,7 +2594,6 @@ mesh.updateMatrix();
                     const center = new THREE.Vector3();
                     geometry.boundingBox.getCenter(center);
                     mesh.position.sub(center);
-
                     mesh.rotation.x = -Math.PI / 2;
 
                     const size = new THREE.Vector3();
@@ -2717,6 +2651,7 @@ mesh.updateMatrix();
             const bevelCutterSection = document.getElementById('opt-bevel-cutter');
             const extruderDiesSection = document.getElementById('opt-extruder-dies');
             const spongeBasketSection = document.getElementById('opt-sponge-basket');
+            const digitalDownloadSection = document.getElementById('opt-digital-download');
             
             const step3Wrapper = document.getElementById('step-3-wrapper');
             const unitToggleSection = document.getElementById('unit-toggle-section');
@@ -2735,11 +2670,8 @@ mesh.updateMatrix();
             const simpleFontOtherGroup = document.getElementById('simpleFontOtherGroup');
             if (simpleFontSelect && simpleFontOtherGroup) {
                 simpleFontSelect.addEventListener('change', (e) => {
-                    if (e.target.value === 'other') {
-                        simpleFontOtherGroup.classList.remove('hidden');
-                    } else {
-                        simpleFontOtherGroup.classList.add('hidden');
-                    }
+                    if (e.target.value === 'other') { simpleFontOtherGroup.classList.remove('hidden'); } 
+                    else { simpleFontOtherGroup.classList.add('hidden'); }
                 });
             }
 
@@ -2747,11 +2679,8 @@ mesh.updateMatrix();
             const simpleTextWarning = document.getElementById('simpleTextWarning');
             if (simpleTextInput && simpleTextWarning) {
                 simpleTextInput.addEventListener('input', (e) => {
-                    if (e.target.value.length > 3) {
-                        simpleTextWarning.classList.remove('hidden');
-                    } else {
-                        simpleTextWarning.classList.add('hidden');
-                    }
+                    if (e.target.value.length > 3) { simpleTextWarning.classList.remove('hidden'); } 
+                    else { simpleTextWarning.classList.add('hidden'); }
                 });
             }
 
@@ -2761,10 +2690,7 @@ mesh.updateMatrix();
                     const rushKeywords = ['rush', 'asap', 'fast', 'urgent', 'hurry', 'expedite'];
                     const previousRushState = isRushRequested;
                     isRushRequested = rushKeywords.some(kw => text.includes(kw));
-
-                    if (isRushRequested !== previousRushState) {
-                        updateSummaryCard();
-                    }
+                    if (isRushRequested !== previousRushState) { updateSummaryCard(); }
                 });
             }
 
@@ -2781,10 +2707,9 @@ mesh.updateMatrix();
                 if(bevelCutterSection) bevelCutterSection.classList.add('hidden');
                 if(extruderDiesSection) extruderDiesSection.classList.add('hidden');
                 if(spongeBasketSection) spongeBasketSection.classList.add('hidden');
+                if(digitalDownloadSection) digitalDownloadSection.classList.add('hidden');
                 if(unitToggleSection) unitToggleSection.classList.add('hidden');
                 if(step3Wrapper) step3Wrapper.classList.add('hidden');
-                
-                
                 document.querySelectorAll('.dynamic-section input').forEach(input => input.required = false);
             }
 
@@ -2814,6 +2739,7 @@ mesh.updateMatrix();
                 else if (value === 'bevel-cutter' && bevelCutterSection) bevelCutterSection.classList.remove('hidden');
                 else if (value === 'extruder-dies' && extruderDiesSection) extruderDiesSection.classList.remove('hidden');
                 else if (value === 'sponge-basket' && spongeBasketSection) spongeBasketSection.classList.remove('hidden');
+                else if (value.startsWith('stl-') && digitalDownloadSection) digitalDownloadSection.classList.remove('hidden');
             }
 
             function updateSummaryCard() {
@@ -2824,24 +2750,18 @@ mesh.updateMatrix();
                 }
                 
                 const selectedOption = productSelect.options[productSelect.selectedIndex];
-                
-                // Fetch pricing dataset
                 const basePrice = parseFloat(selectedOption.getAttribute('data-base')) || 0;
                 const designRate = parseFloat(selectedOption.getAttribute('data-design')) || 0;
                 const printRate = parseFloat(selectedOption.getAttribute('data-print')) || 0;
                 const name = selectedOption.getAttribute('data-name') || selectedOption.text;
 
                 sumName.textContent = name;
-
                 let totalCostNum = basePrice;
                 let displayHtml = `$${basePrice.toFixed(2)} Base <br>`;
 
-                // Averages for standard tools
-                const avgDesignHours = 0.5; // 30 minutes
-                const avgPrintHours = 1.25; // 75 minutes
-
-                if (productSelect.value === 'custom-stl') {
-                    // Custom STL calculates based on uploaded file size
+                if (productSelect.value.startsWith('stl-')) {
+                    displayHtml += `<span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ $0.00 Digital Delivery</span><br>`;
+                } else if (productSelect.value === 'custom-stl') {
                     if (estimatedPrintTimeHours > 0) {
                         const addedTimeCost = estimatedPrintTimeHours * printRate;
                         totalCostNum += addedTimeCost;
@@ -2849,16 +2769,14 @@ mesh.updateMatrix();
                     } else {
                         displayHtml += `<span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ Print Time ($${printRate.toFixed(2)}/hr)</span><br>`;
                     }
-                    if (designRate > 0) {
-                        displayHtml += `<span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ Design Time ($${designRate.toFixed(2)}/hr)</span>`;
-                    }
+                    if (designRate > 0) displayHtml += `<span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ Design Time ($${designRate.toFixed(2)}/hr)</span>`;
                 } else {
-                    // Standard Tools use the averages
+                    const avgDesignHours = 0.5; 
+                    const avgPrintHours = 1.25; 
                     const estDesignCost = designRate * avgDesignHours;
                     const estPrintCost = printRate * avgPrintHours;
                     
                     totalCostNum += estDesignCost + estPrintCost;
-
                     displayHtml += `<span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ ~$${estDesignCost.toFixed(2)} Est. Design (30m @ $${designRate.toFixed(2)}/hr)</span><br>`;
                     displayHtml += `<span style="font-size:0.8rem; color:var(--tcl-text-muted);">+ ~$${estPrintCost.toFixed(2)} Est. Print (75m @ $${printRate.toFixed(2)}/hr)</span>`;
                 }
@@ -2870,29 +2788,17 @@ mesh.updateMatrix();
                 
                 sumPrice.innerHTML = displayHtml;
                 
-                // Set the total and append the disclaimer
-                if (productSelect.value !== 'custom-stl' || estimatedPrintTimeHours > 0) {
-                    sumTotal.innerHTML = `
-                        <div style="text-align: right;">
-                            ~$${totalCostNum.toFixed(2)}
-                            <span style="font-size:0.65rem; color:var(--tcl-text-muted); font-weight:normal; display:block; margin-top:6px; max-width: 180px; line-height: 1.3;">
-                                *This price is just an estimate. Final prices will vary due to complexity and difficulty.
-                            </span>
-                        </div>`;
+                if (productSelect.value.startsWith('stl-')) {
+                    sumTotal.innerHTML = `<div style="text-align: right;">$${totalCostNum.toFixed(2)}<span style="font-size:0.65rem; color:var(--tcl-text-muted); font-weight:normal; display:block; margin-top:6px; max-width: 180px; line-height: 1.3;">*Digital download delivered via email.</span></div>`;
+                } else if (productSelect.value !== 'custom-stl' || estimatedPrintTimeHours > 0) {
+                    sumTotal.innerHTML = `<div style="text-align: right;">~$${totalCostNum.toFixed(2)}<span style="font-size:0.65rem; color:var(--tcl-text-muted); font-weight:normal; display:block; margin-top:6px; max-width: 180px; line-height: 1.3;">*This price is just an estimate. Final prices will vary due to complexity and difficulty.</span></div>`;
                 } else {
-                    sumTotal.innerHTML = `
-                        <div style="text-align: right;">
-                            TBD based on time
-                            <span style="font-size:0.65rem; color:var(--tcl-text-muted); font-weight:normal; display:block; margin-top:6px; max-width: 180px; line-height: 1.3;">
-                                *This price is just an estimate. Final prices will vary due to complexity and difficulty.
-                            </span>
-                        </div>`;
+                    sumTotal.innerHTML = `<div style="text-align: right;">TBD based on time<span style="font-size:0.65rem; color:var(--tcl-text-muted); font-weight:normal; display:block; margin-top:6px; max-width: 180px; line-height: 1.3;">*This price is just an estimate. Final prices will vary due to complexity and difficulty.</span></div>`;
                 }
 
                 if(sumEmpty) sumEmpty.classList.add('hidden');
                 if(sumDetails) sumDetails.classList.remove('hidden');
 
-                // Update the preview image in the summary
                 const imageUrl = selectedOption.getAttribute('data-image');
                 const previewSection = document.getElementById('summary-preview-section');
                 const previewImg = document.getElementById('summary-preview-img');
@@ -2910,21 +2816,13 @@ mesh.updateMatrix();
                 const oldCanvas = wrapper.querySelector('.stl-canvas-container');
                 if (oldCanvas) oldCanvas.remove();
                 if (summaryStlReqId) cancelAnimationFrame(summaryStlReqId);
-                if (summaryResizeObs) {
-                    summaryResizeObs.disconnect();
-                    summaryResizeObs = null;
-                }
-                if (summaryStlRenderer) {
-                    summaryStlRenderer.dispose();
-                    summaryStlRenderer = null;
-                }
+                if (summaryResizeObs) { summaryResizeObs.disconnect(); summaryResizeObs = null; }
+                if (summaryStlRenderer) { summaryStlRenderer.dispose(); summaryStlRenderer = null; }
 
                 img.src = src;
                 img.style.display = 'block';
 
-                if (!src.toLowerCase().endsWith('.stl')) {
-                    return;
-                }
+                if (!src.toLowerCase().endsWith('.stl')) return;
 
                 const canvasContainer = document.createElement('div');
                 canvasContainer.className = 'stl-canvas-container active';
@@ -2943,8 +2841,7 @@ mesh.updateMatrix();
 
                 try {
                     let geometry;
-                    try { geometry = await loadSTL(src); }
-                    catch (e) { geometry = await loadSTL(backupUrl); }
+                    try { geometry = await loadSTL(src); } catch (e) { geometry = await loadSTL(backupUrl); }
 
                     if (!geometry || !geometry.attributes.position) throw new Error("Invalid STL");
 
@@ -3066,11 +2963,11 @@ mesh.updateMatrix();
                         specString = `Diameter: ${data.dieDiameter || '?'}${u}, Desired Shape: ${data.dieShape || 'Not Specified (Check Notes)'}`;
                     } else if (data.productSelect === 'sponge-basket') {
                         specString = `Rim Width: ${data.basketRimWidth || '9'}${u}, Color: ${data.basketColor || 'Standard'}`;
+                    } else if (data.productSelect.startsWith('stl-')) {
+                        specString = `Digital Download Request`;
                     }
                     
-                    if (isRushRequested) {
-                        specString += " | RUSH PRIORITY (+ $10.00)";
-                    }
+                    if (isRushRequested) { specString += " | RUSH PRIORITY (+ $10.00)"; }
 
                     data.specs = specString;
 
@@ -3083,9 +2980,9 @@ mesh.updateMatrix();
                         fileToUpload = logoInput.files[0];
                     } else if (data.productSelect === 'custom-stl' && stlInput && stlInput.files.length > 0) {
                         fileToUpload = stlInput.files[0];
-                    } else if (data.productSelect === 'custom-design' && refInput && refInput.files.length > 0) { // <--- ADD THIS BLOCK
-    fileToUpload = refInput.files[0];
-}
+                    } else if (data.productSelect === 'custom-design' && refInput && refInput.files.length > 0) {
+                        fileToUpload = refInput.files[0];
+                    }
 
                     if (fileToUpload) {
                         const reader = new FileReader();
@@ -3145,9 +3042,7 @@ mesh.updateMatrix();
             backToOverview();
         }
 
-        function closeTextureModal() {
-            document.getElementById('textureModal').classList.add('hidden');
-        }
+        function closeTextureModal() { document.getElementById('textureModal').classList.add('hidden'); }
 
         function viewTextureDetails(name, value, imageArray) {
             pendingTextureValue = value;
@@ -3199,10 +3094,7 @@ mesh.updateMatrix();
         function handleLogin() {
             const emailEl = document.getElementById('loginEmail');
             const email = emailEl ? emailEl.value.trim() : '';
-            if (!email || !email.includes('@')) {
-                showToast("Please enter a valid email address.", "error");
-                return;
-            }
+            if (!email || !email.includes('@')) { showToast("Please enter a valid email address.", "error"); return; }
             localStorage.setItem('tcl_user_email', email);
             const authContainer = document.getElementById('auth-container');
             const dashContainer = document.getElementById('dashboard-container');
@@ -3265,7 +3157,6 @@ mesh.updateMatrix();
             const input = document.getElementById('adminPass');
             const btn = document.getElementById('adminAuthBtn');
             if(!input) return;
-            
             if(btn) { btn.innerHTML = '<i class="material-icons spin-hourglass">hourglass_empty</i> Authenticating...'; btn.disabled = true; }
 
             try {
@@ -3321,7 +3212,6 @@ mesh.updateMatrix();
         document.addEventListener('error', function(e) {
             if (e.target.tagName && e.target.tagName.toLowerCase() === 'img') {
                 const img = e.target;
-                
                 if (img.src && img.src.toLowerCase().endsWith('.stl')) return;
 
                 if (!img.dataset.fallbackAttempted) {
