@@ -62,7 +62,7 @@ const AI_SECONDARY = [
   { label: 'Legal',        href: '/ai/legal' },
   { label: 'Portfolio',    href: '/' },
   { label: 'Ask AI',       href: '/ask' },
-  { label: 'Client Portal',href: '/portal' },
+  { label: 'Client Auth Rest',href: 'https://backend.tmcarleton11.workers.dev/authreset' },
 ];
 
 let sidebarNav, sidebarSecondary, ownerText, aside, overlay, hamBtn;
@@ -1517,7 +1517,6 @@ function render(path) {
   else if (finalPath === '/ai/pricing') initPricing();
   else if (finalPath === '/ai/legal' || finalPath === '/legal') initLegal();
   else if (finalPath === '/ai/admin' || finalPath === '/admin') initAdmin();
-  else if (finalPath === '/portal' || finalPath === '/ai/clients/portal') initPortal();
 }
 
 function navigate(path) {

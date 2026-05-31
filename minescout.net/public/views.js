@@ -1002,53 +1002,6 @@ export const views = {
       </div>
     </div>
   `,
-  '/portal': `
-    <div id="portal-root" style="background: var(--bg); min-height: 100vh; padding: 2rem; font-family: var(--sans);">
-      
-      <div id="portal-login" style="max-width: 400px; margin: 10vh auto; border: 1px solid var(--border); padding: 2rem; border-radius: 8px;">
-        <h1 style="font-family: var(--serif); font-size: 1.5rem; color: var(--fg); margin-bottom: 0.5rem;">Client Portal</h1>
-        <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem;">Log in to manage your Minescout AI integration.</p>
-        <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom:1.5rem;">
-          <div class="form-group"><label>Email</label><input type="email" id="p-email"></div>
-          <div class="form-group"><label>Password</label><input type="password" id="p-pass"></div>
-        </div>
-        <button class="btn-primary" id="p-login-btn" style="width:100%;" onclick="window.portalLogin()">Sign In</button>
-        <div id="p-err" style="color:var(--accent); font-size:0.75rem; margin-top:1rem; display:none;"></div>
-      </div>
-
-      <div id="portal-dash" style="display: none; max-width: 800px; margin: 0 auto;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid var(--fg); padding-bottom: 1rem; margin-bottom: 2rem;">
-          <div>
-            <h1 style="font-family: var(--serif); font-size: 1.8rem; color: var(--fg); margin:0;" id="pd-name">Loading...</h1>
-            <p style="font-size: 0.8rem; color: var(--muted); margin:0;" id="pd-plan">...</p>
-          </div>
-          <button class="btn-ghost" onclick="window.portalSignOut()">Sign Out</button>
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-          <div style="border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; text-align: center;">
-            <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem;">Conversations Handled</div>
-            <div style="font-family: var(--serif); font-size: 3rem; font-weight: 700; color: #4caf82; line-height: 1;" id="pd-convos">0</div>
-          </div>
-          <div style="border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; text-align: center;">
-            <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem;">System Status</div>
-            <div style="font-family: var(--sans); font-size: 1.2rem; font-weight: 600; color: var(--fg); margin-top: 1rem;">● Active & Routing</div>
-          </div>
-        </div>
-
-        <div style="border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; margin-bottom: 2rem;">
-          <h3 style="font-size: 1rem; color: var(--fg); margin-bottom: 0.5rem;">Submit a Correction</h3>
-          <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem;">Did the AI answer something incorrectly? Tell us what the user asked, and what the correct answer should be. We will update the Training Bridge within 48 hours.</p>
-          <div style="display:flex; flex-direction:column; gap:1rem;" class="form-group">
-            <input type="text" id="corr-q" placeholder="What did the customer ask?">
-            <textarea id="corr-a" placeholder="What is the correct factual answer?"></textarea>
-            <button class="btn-primary" id="corr-submit" style="align-self: flex-start;" onclick="window.submitCorrection()">Submit to Minescout</button>
-            <div id="corr-msg" style="font-size:0.75rem; color:#4caf82; display:none;">Correction submitted securely.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
   '/ai/pricing': `
     <div class="main--page">
       <div class="page-content pricing-wrap">
