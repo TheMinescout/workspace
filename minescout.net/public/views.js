@@ -80,51 +80,95 @@ export const views = {
   `,
   '/resume': `
     <div class="main--page">
-      <div class="page-content" style="max-width: 720px;">
+      <div class="page-content" style="max-width: 740px;">
         <div class="print-header">
           <h1 class="print-name">Thomas Carleton</h1>
-          <div class="print-contact">Sammamish, WA &nbsp;|&nbsp; 425-520-8683 &nbsp;|&nbsp; thomas@minescout.net &nbsp;|&nbsp; minescout.net</div>
+          <div class="print-contact">Sammamish, WA &nbsp;|&nbsp; 425-520-8683 &nbsp;|&nbsp; tmcarleton11@gmail.com &nbsp;|&nbsp; minescout.net</div>
         </div>
-        <p class="page-label">Resume</p>
-        <h1 class="page-title">Experience &amp; Leadership</h1>
-        <button onclick="window.downloadResume()" class="pdf-btn">
+        
+        <p class="page-label no-print">Resume</p>
+        <h1 class="page-title no-print">Experience &amp; Leadership</h1>
+        
+        <button onclick="window.downloadResume()" class="pdf-btn no-print">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2-2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           Download PDF / Print
         </button>
-        <p class="competencies-header">2026 Strategic Competencies</p>
-        <div class="competencies-grid">
-          <div class="comp-card"><h4>SaaS Architecture</h4><p>Architecting multi-tenant engines utilizing header-based routing and serverless Edge workers for scalable, zero-infrastructure deployment.</p></div>
-          <div class="comp-card"><h4>Hardware Integration</h4><p>Proficient in Fusion 360 CAD modeling, electrical wiring, and mechanical fabrication.</p></div>
-          <div class="comp-card"><h4>Project Leadership</h4><p>Eagle Scout experienced in managing volunteer logistics, community projects, and mechanical prototyping.</p></div>
+
+        <div class="resume-summary-box" style="margin-bottom: 2.5rem; line-height: 1.6; font-size: 0.95rem; color: var(--fg);">
+          <strong>Professional Summary:</strong> Motivated high school student and aspiring engineer with experience in software development, robotics, CAD design, and technical leadership. Founder of multiple technology projects involving web applications, cloud infrastructure, and AI-powered systems. Proven track record of leadership through Scouting America, FIRST Robotics, community service, and entrepreneurship. Seeking opportunities to apply engineering and software development skills while continuing to grow as a builder, problem solver, and team contributor.
         </div>
+
         <table class="resume-table">
           <tbody>
             <tr class="year-row"><td colspan="3">2026</td></tr>
-            <tr class="entry-row" style="--delay: 100ms;"><td>Mar 2026</td><td>Eagle Scout</td><td><strong>Scouting America, Troop 571</strong> — Achieved the highest rank in Scouting. Directed a comprehensive community literacy initiative, leading a team of volunteers over 60+ hours to construct and install a local Little Free Library.</td></tr>
-            <tr class="entry-row" style="--delay: 150ms;"><td>Mar-Apr 2026</td><td>FRC Team 1294</td><td><strong>DCMP Qualifier & District Champion</strong> — Secured 1st place at the FIRST Robotics Glacier Peak District Event and advanced to the Pacific Northwest District Championship (DCMP). Assisted with mechanical assembly and hardware integration for the turret subteam.</td></tr>
-            <tr class="entry-row" style="--delay: 200ms;"><td>Feb 2026</td><td>Minescout AI</td><td><strong>Founder & Systems Architect</strong> — Launched a Multi-Tenant SaaS platform offering automated architecture and AI integrations. Engineered proprietary routing using Cloudflare Workers and KV storage.</td></tr>
-            <tr class="entry-row" style="--delay: 250ms;"><td>Jan-Apr 2026</td><td>The Chop Lab</td><td><strong>Lead Designer & Developer</strong> — Developed a high-performance digital storefront for an artisanal ceramics firm. Recently architected a full v2 overhaul, migrating the platform to a custom Single Page Application (SPA) to support expanded product lines and a redesigned UI.</td></tr>
+            <tr class="entry-row" style="--delay: 100ms;">
+              <td class="resume-date">Feb 2026 – Pres.</td>
+              <td class="resume-title">Minescout AI</td>
+              <td><strong>Founder &amp; Systems Architect</strong> — Designed and launched a multi-tenant SaaS platform utilizing AI integrations and cloud-based infrastructure. Engineered application routing systems using Cloudflare Workers and KV storage to achieve sub-second global edge latency. Developed scalable web architecture supporting multiple users and services from a single codebase.</td>
+            </tr>
+            <tr class="entry-row" style="--delay: 150ms;">
+              <td class="resume-date">Jan – Apr 2026</td>
+              <td class="resume-title">The Chop Lab</td>
+              <td><strong>Lead Designer &amp; Developer</strong> — Developed a custom digital storefront for an artisanal ceramics business. Led a complete platform redesign and v2 overhaul focused on performance, usability, and scalability. Built a custom Single Page Application (SPA) architecture supporting expanded product offerings and a redesigned UI.</td>
+            </tr>
+            <tr class="entry-row" style="--delay: 200ms;">
+              <td class="resume-date">Mar 2026</td>
+              <td class="resume-title">Troop 571</td>
+              <td><strong>Eagle Scout, Scouting America</strong> — Directed a comprehensive community literacy initiative, leading a team of volunteers over 60+ hours to construct and install a local Little Free Library in Illahee Park. Demonstrated advanced leadership, project logistics management, and team coordination skills to achieve Scouting's highest rank.</td>
+            </tr>
           </tbody>
+
           <tbody>
             <tr class="year-row"><td colspan="3">2025</td></tr>
-            <tr class="entry-row" style="--delay: 300ms;"><td>2025</td><td>FRC Team 1294</td><td><strong>Robotics Turret Subteam</strong> — Assisted with the mechanical assembly of turret systems and participated in the 2025 Robotics Showcase.</td></tr>
-            <tr class="entry-row" style="--delay: 350ms;"><td>Mar 2025</td><td>National History Day</td><td><strong>Regional Award Winner</strong> — Produced and edited a junior individual documentary titled <em>"A Safe Workplace: A Right, And A Responsibility,"</em> for the East Puget Sound Regional.</td></tr>
-            <tr class="entry-row" style="--delay: 400ms;"><td>Jan 2025</td><td>Future City</td><td><strong>Washington Regional Champion</strong> — Awarded Best Overall City Essay, Best Land Surveying Practices (NCEES), and the Student Choice Award at Shoreline Community College for excellence in urban engineering and planning.</td></tr>
-            <tr class="entry-row" style="--delay: 450ms;"><td>2025</td><td>Minescout Beta / Life</td><td><strong>Founder</strong> — Established a beta testing environment and technology review platform to validate LLM performance, site architecture, and AI-assisted workflows.</td></tr>
+            <tr class="entry-row" style="--delay: 250ms;">
+              <td class="resume-date">Jan 2025 – Apr 2026</td>
+              <td class="resume-title">FRC Team 1294</td>
+              <td><strong>Mechanical Assembly &amp; Hardware Integration</strong> — Contributed to robot assembly, hardware integration, and turret subsystem development. Assisted with precision turret assembly, electrical wiring, and mechanical fabrication. Contributed to a team that earned First Place at the Glacier Peak District Event and advanced to the Pacific Northwest District Championship.</td>
+            </tr>
+            <tr class="entry-row" style="--delay: 300ms;">
+              <td class="resume-date">Mar 2025 – Jan 2026</td>
+              <td class="resume-title">Minescout Beta</td>
+              <td><strong>Founder</strong> — Created a technology review and beta testing platform focused on AI tools and large language model workflows. Evaluated emerging technologies and documented performance findings to validate AI-assisted workflows. Organized testing processes and structured user feedback collection.</td>
+            </tr>
           </tbody>
+
           <tbody>
-            <tr class="year-row"><td colspan="3">Education & Community</td></tr>
-            <tr class="entry-row" style="--delay: 500ms;"><td>2025–Present</td><td>Eastlake High School</td><td><strong>9th Grade (GPA: 4.0)</strong> — Focusing on Computer Science, Engineering Design, and Fusion 360 modeling.</td></tr>
-            <tr class="entry-row" style="--delay: 550ms;"><td>2024–Present</td><td>Sammamish Botanical</td><td><strong>Community Volunteer</strong> — Dedicating hours to general site maintenance and supporting local horticulture and community garden operations.</td></tr>
-            <tr class="entry-row" style="--delay: 600ms;"><td>2023–2025</td><td>Pack 551</td><td><strong>Den Chief</strong> — Mentored younger Cub Scouts and led den activities, earning the Den Chief Service Award for consistent leadership and role modeling.</td></tr>
-            <tr class="entry-row" style="--delay: 650ms;"><td>2023–2025</td><td>Stella Schola / RHMS</td><td><strong>7th & 8th Grade (GPA: 4.0)</strong> — Inducted into the National Junior Honor Society. Recognized for English Achievement and School Spirit.</td></tr>
+            <tr class="year-row"><td colspan="3">Education &amp; Community</td></tr>
+            <tr class="entry-row" style="--delay: 350ms;">
+              <td class="resume-date">2025 – Present</td>
+              <td class="resume-title">Eastlake High School</td>
+              <td><strong>9th Grade (GPA: 4.0)</strong> — Expected Graduation: June 2029. Areas of focus include Engineering, Computer Science, and CAD Design (Fusion 360). Honors include National Junior Honor Society, English Achievement, and School Spirit Awards.</td>
+            </tr>
+            <tr class="entry-row" style="--delay: 400ms;">
+              <td class="resume-date">Jan 2024 – Pres.</td>
+              <td class="resume-title">Sammamish Botanical</td>
+              <td><strong>Community Volunteer</strong> — Support local horticultural and garden operations through regular maintenance and service projects. Contribute to beautification and preservation efforts within the local community garden.</td>
+            </tr>
+            <tr class="entry-row" style="--delay: 450ms;">
+              <td class="resume-date">Jan 2024 – Pres.</td>
+              <td class="resume-title">City of Sammamish</td>
+              <td><strong>Park Restoration Volunteer</strong> — Participated in environmental stewardship and community restoration initiatives. Assisted with park improvement, trail preservation, and conservation projects.</td>
+            </tr>
+            <tr class="entry-row" style="--delay: 500ms;">
+              <td class="resume-date">Jan 2023 – Jan 2025</td>
+              <td class="resume-title">Pack 551</td>
+              <td><strong>Den Chief, Scouting America</strong> — Mentored Cub Scouts and led weekly activities, skills challenges, and development programs. Served as a dedicated youth leader and positive role model. Earned the Den Chief Service Award.</td>
+            </tr>
           </tbody>
         </table>
+
+        <div class="pricing-section-label" style="margin-top: 2.5rem; margin-bottom: 1rem;">Awards &amp; Achievements</div>
+        <div class="resume-skills" style="grid-template-columns: 1fr; gap: 0.5rem; margin-bottom: 2rem; font-size: 0.88rem; line-height: 1.5;">
+          <div>• <strong>Eagle Scout Rank</strong>, Scouting America (Troop 571)</div>
+          <div>• <strong>Washington Regional Champion</strong>, Future City Competition (Awarded Best Overall City Essay and NCEES Best Land Surveying Practices)</div>
+          <div>• <strong>Regional Award Winner</strong>, National History Day (Junior Individual Documentary)</div>
+          <div>• <strong>Glacier Peak District Event Champion</strong>, FIRST Robotics Team 1294</div>
+        </div>
+
         <div class="resume-skills">
-          <div class="skills-block"><span class="skills-label">Tech Stack</span><span class="skills-value">React, JavaScript (ES6+), Cloudflare Workers, Python, HTML5/CSS3, Git/GitHub, VS Code</span></div>
-          <div class="skills-block"><span class="skills-label">Engineering</span><span class="skills-value">Fusion 360 (CAD Modeling), Electrical Wiring, Mechanical Fabrication, Robotics Assembly</span></div>
-          <div class="skills-block"><span class="skills-label">Activities</span><span class="skills-value">City of Sammamish Park Restoration, Scouting America</span></div>
-          <div class="skills-block"><span class="skills-label">Athletics</span><span class="skills-value">Distance running — 5K PR: 26:00</span></div>
+          <div class="skills-block"><span class="skills-label">Dev Stack</span><span class="skills-value">JavaScript (ES6+), Python, React, HTML5, CSS3</span></div>
+          <div class="skills-block"><span class="skills-label">Cloud &amp; Tools</span><span class="skills-value">Cloudflare Workers, Git, GitHub, VS Code</span></div>
+          <div class="skills-block"><span class="skills-label">Engineering</span><span class="skills-value">Fusion 360 (CAD Modeling), Mechanical Fabrication, Electrical Wiring, Robotics Assembly</span></div>
         </div>
       </div>
     </div>
@@ -236,8 +280,20 @@ export const views = {
           <div class="status-dot-alert"></div>
           <div class="status-text"><strong>Commercial Pipeline: 2/3 Charter Slots Open (1 Claimed).</strong> We are prioritizing businesses in Sammamish and the Greater Eastside for our Q2 technical architecture upgrades.</div>
         </div>
+        
         <div class="section-divider">Production Nodes</div>
         <div class="client-card" style="--d:0.3s;">
+          <div class="client-card-header"><div><div class="client-name">Chris Franz</div><div class="client-type">Fine Art & Studio Pottery</div></div><span class="client-status status-live">Live</span></div>
+          <div class="client-card-body">
+            <div class="client-detail-grid">
+              <div><div class="client-detail-label">Deployment</div><div class="client-detail-val">June 2026</div></div>
+              <div><div class="client-detail-label">Solution</div><div class="client-detail-val">Serverless Edge SPA</div></div>
+              <div><div class="client-detail-label">Performance</div><div class="client-detail-val">100% Best Practices / Zero Render-Blocking</div></div>
+            </div>
+            <p class="client-note">Deploying a highly optimized, single-page serverless portfolio at the network edge for Pacific Northwest artist Chris Franz. This node leverages a decoupled cloud architecture to deliver sub-second paint times, localized asset caching, and a secure, low-latency administrative back panel for zero-maintenance content management.<br><a href="https://chrisceramics.pages.dev" class="view-link" target="_blank">View Live Site &rarr;</a></p>
+          </div>
+        </div>
+        <div class="client-card" style="--d:0.35s;">
           <div class="client-card-header"><div><div class="client-name">The Chop Lab</div><div class="client-type">Manufacturing & Robotics Automation</div></div><span class="client-status status-live">Live</span></div>
           <div class="client-card-body">
             <div class="client-detail-grid">
@@ -249,8 +305,9 @@ export const views = {
             <p class="client-note">An advanced integration of robotics and automated sales. Features a custom AI technician capable of providing instant quotes from a technical database and managing 3D fabrication requests.<br><a href="https://chop-lab.com" class="view-link" target="_blank">Analyze Live Integration &rarr;</a></p>
           </div>
         </div>
-        <div class="section-divider">Edge Infrastructure Nodes</div>
-        <div class="client-card" style="--d:0.4s;">
+
+        <div class="section-divider">Demonstration Nodes</div>
+        <div class="client-card" style="--d:0.45s;">
           <div class="client-card-header"><div><div class="client-name">Handmade by Jayme</div><div class="client-type">Artisanal Goods & Lifestyle</div></div><span class="client-status status-live">Live</span></div>
           <div class="client-card-body">
             <div class="client-detail-grid">
@@ -260,7 +317,7 @@ export const views = {
             <p class="client-note">A complete serverless edge migration. We transformed a legacy site into a high-performance visual experience featuring dynamic gallery rendering and sub-second mobile load times.<br><a href="https://jaymecarleton.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
           </div>
         </div>
-        <div class="client-card" style="--d:0.45s;">
+        <div class="client-card" style="--d:0.5s;">
           <div class="client-card-header"><div><div class="client-name">Fern Carleton Studio</div><div class="client-type">Fine Arts & Visual Media</div></div><span class="client-status status-live">Live</span></div>
           <div class="client-card-body">
             <div class="client-detail-grid">
@@ -270,8 +327,7 @@ export const views = {
             <p class="client-note">Designed for high-fidelity visual archiving without sacrificing backend speed. This node utilizes our multi-tenant engine to ensure rapid asset delivery globally.<br><a href="https://ferncarleton.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
           </div>
         </div>
-        <div class="section-divider">Demonstration Nodes</div>
-        <div class="client-card" style="--d:0.5s;">
+        <div class="client-card" style="--d:0.55s;">
           <div class="client-card-header"><div><div class="client-name">Smith &amp; Cole Law</div><div class="client-type">Professional Services Demo</div></div><span class="client-status status-demo">Internal Node</span></div>
           <div class="client-card-body">
             <div class="client-detail-grid">
@@ -281,6 +337,7 @@ export const views = {
             <p class="client-note">A demonstration of how Minescout AI can capture and qualify professional service leads 24/7.<br><a href="/ai/demo/index.html" class="view-link">Test AI Agent &rarr;</a></p>
           </div>
         </div>
+        
         <div class="clients-cta" style="margin-top: 3rem;">
           <a href="/ai/intake" class="btn-primary">Apply for Q2 Charter Program</a>
         </div>
@@ -1025,13 +1082,15 @@ export const views = {
               <div class="tier-price-sub">one-time &middot; no monthly fee</div>
             </div>
             <div class="tier-h-body">
-              <p class="tier-target">A brand-new, fast, mobile-first website built from scratch. For businesses that don&rsquo;t have a site yet &mdash; or whose current one is embarrassing them.</p>
+              <p class="tier-target">A brand-new, fast, mobile-first website built from scratch. You keep full ownership of your domain and business identity while I handle the technical side &mdash; coding, updates, deployment, and optimization. Perfect for businesses that need a professional online presence without the hassle.</p>
               <ul class="tier-features tier-features--row">
-                <li class="tier-feature">Built from scratch</li>
-                <li class="tier-feature">Mobile-first responsive</li>
-                <li class="tier-feature">Sub-second load times</li>
-                <li class="tier-feature">SEO metadata &amp; schema</li>
-              </ul>
+  <li class="tier-feature">Built from scratch</li>
+  <li class="tier-feature">You own the domain</li>
+  <li class="tier-feature">I maintain the code</li>
+  <li class="tier-feature">Mobile-first responsive</li>
+  <li class="tier-feature">Sub-second load times</li>
+  <li class="tier-feature">SEO metadata &amp; schema</li>
+</ul>
             </div>
             <div class="tier-h-cta">
               <a href="/contact" class="tier-cta btn-ghost">Get started</a>
