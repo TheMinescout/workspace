@@ -486,7 +486,7 @@ window.initApp = function() {
     });
     newGameBtn.addEventListener('click', () => showView('newOptions'));
     backToMainHomeBtn.addEventListener('click', () => {
-        window.location.href = '../../index.html';
+        window.location.href = '//index.html';
     });
 
     selectStandardBtn.addEventListener('click', () => {

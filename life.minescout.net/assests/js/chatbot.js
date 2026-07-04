@@ -1,7 +1,7 @@
 // assets/js/chatbot.js
 
 // 1. Import Firebase to get the data
-import { db } from "./firebase-config.js";
+import { db } from "./firebase-config.js?v=1";
 import { ref, get, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 // REPLACE WITH YOUR WORKER URL

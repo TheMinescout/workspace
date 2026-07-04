@@ -231,57 +231,52 @@ export const views = {
   '/ai': `
     <div class="main--page">
       <div class="page-content ai-wrap">
-        <p class="ai-eyebrow">Minescout AI &middot; Architecture Node</p>
-        <h1 class="ai-title">The <em>Managed Intelligence</em><br>Platform for Sammamish.</h1>
-        <p class="ai-lead">I engineer multi-tenant digital systems and persistent AI assistants for organizations that value efficiency over overhead. Every project is built on serverless edge architecture, providing sub-second speed and a private "Backstage" dashboard for real-time management.</p>
+        <p class="ai-eyebrow">Minescout Studio</p>
+        <h1 class="ai-title">Custom Websites.<br><em>Practical AI.</em><br>Built for Local Businesses.</h1>
+        
+        <p class="ai-lead" style="font-weight: 600; color: var(--fg); font-size: 1.1rem; margin-bottom: 0.5rem;">Still answering the same customer questions every day? Need a better website?</p>
+        <p class="ai-lead">MineScout builds fast custom websites and AI assistants that save you time. Every project is coded from scratch, delivered quickly, and designed to evolve over time.</p>
+        
         <div class="ai-stats">
-          <div class="ai-stat"><span class="ai-stat-val">2</span><span class="ai-stat-label">Charter Spots Open</span></div>
-          <div class="ai-stat"><span class="ai-stat-val">100<em>%</em></span><span class="ai-stat-label">Edge Serverless</span></div>
-          <div class="ai-stat"><span class="ai-stat-val">&lt;1<em>wk</em></span><span class="ai-stat-label">From Call to Live</span></div>
+          <div class="ai-stat"><span class="ai-stat-val">&lt;7<em>days</em></span><span class="ai-stat-label">To Launch</span></div>
+          <div class="ai-stat"><span class="ai-stat-val">100<em>%</em></span><span class="ai-stat-label">Custom Built</span></div>
+          <div class="ai-stat"><span class="ai-stat-val">24/7</span><span class="ai-stat-label">AI Support</span></div>
         </div>
-        <div class="ai-section-label">Production Components</div>
+        
+        <div class="ai-section-label">What We Build</div>
         <div class="ai-features">
-          <a href="/blog/minescout-genesis" class="ai-feature"><div class="ai-feature-icon">⚙️</div><div><div class="ai-feature-title">Multi-Tenant Routing Engine</div><div class="ai-feature-desc">The core v61.0 logic. Hosting unlimited client nodes from a single codebase via header-based routing and KV data persistence.</div></div><span class="ai-feature-badge badge-live">System Live</span></a>
-          <a href="https://ferncarleton.com?studio" target="_blank" class="ai-feature"><div class="ai-feature-icon">🎭</div><div><div class="ai-feature-title">The "Backstage" Dashboard</div><div class="ai-feature-desc">A private, secure admin suite allowing clients to update photography, bios, and skills grids without touching a line of code.</div></div><span class="ai-feature-badge badge-node">Node 02</span></a>
-          <a href="/ai/demo/index.html" class="ai-feature"><div class="ai-feature-icon">🤖</div><div><div class="ai-feature-title">Sentry AI (RAG Assistant)</div><div class="ai-feature-desc">A persistent assistant trained on proprietary data. Handles high-frequency inquiries with 24/7 accuracy and instant triage.</div></div><span class="ai-feature-badge badge-ready">Demo Ready</span></a>
+          <a href="/ai/pricing" class="ai-feature"><div class="ai-feature-icon">⚡</div><div><div class="ai-feature-title">Fast, Secure Custom Websites</div><div class="ai-feature-desc">One website that grows with your business. No servers for you to manage.</div></div><span class="ai-feature-badge badge-live">Core</span></a>
+          <a href="/ai/demo/index.html" class="ai-feature"><div class="ai-feature-icon">🤖</div><div><div class="ai-feature-title">An AI Employee for Your Site</div><div class="ai-feature-desc">Imagine every visitor getting an instant answer—even at 2 AM. A chatbot trained specifically on YOUR business.</div></div><span class="ai-feature-badge badge-ready">Demo Ready</span></a>
+          <a href="/portal" target="_blank" class="ai-feature"><div class="ai-feature-icon">🎭</div><div><div class="ai-feature-title">The "Backstage" Dashboard</div><div class="ai-feature-desc">Your private dashboard where you can edit AI knowledge, see conversations, and manage your site without touching code.</div></div><span class="ai-feature-badge badge-node">Included</span></a>
         </div>
-        <div class="ai-section-label">The Implementation Loop</div>
-        <div class="ai-steps">
-          <div class="ai-step"><div class="ai-step-num">01</div><div><div class="ai-step-title">The Technical Audit</div><div class="ai-step-desc">I analyze your current digital footprint to find "True Friction"—mobile bottlenecks, slow load times, or manual FAQ overhead.</div></div></div>
-          <div class="ai-step"><div class="ai-step-num">02</div><div><div class="ai-step-title">Heritage Modernization</div><div class="ai-step-desc">I architect a high-performance "Front Door" that respects your brand's history while providing modern speed and accessibility.</div></div></div>
-          <div class="ai-step"><div class="ai-step-num">03</div><div><div class="ai-step-title">Intelligence Injection</div><div class="ai-step-desc">We deploy a custom-trained assistant to your site and connect your secure Backstage dashboard for real-time monitoring.</div></div></div>
+        
+        <div class="ai-callout" style="border-left-color: var(--fg); background: var(--bg);">
+          <div class="ai-callout-title">🤝 Agency Quality, Direct Access.</div>
+          <div class="ai-callout-desc">Traditional agencies have project managers, sales teams, designers, and heavy overhead. MineScout is different. You work directly with the founder building your project, allowing me to deliver custom work at a fraction of typical agency pricing.</div>
         </div>
+
         <div class="ai-callout">
-          <div class="ai-callout-title">📦 Zero-Cost Infrastructure Promise.</div>
-          <div class="ai-callout-desc">By leveraging enterprise-grade "Free Tier" technologies (Cloudflare, Firebase, GitHub), I eliminate traditional hosting costs. You pay for the architecture and intelligence, not for the "digital rent" of slow servers.</div>
+          <div class="ai-callout-title">🛡️ Clear Ownership.</div>
+          <div class="ai-callout-desc">You own your domain, branding, and content. MineScout licenses the software that powers your site, allowing continuous improvements and lightning-fast support. It feels intentional, never restrictive.</div>
         </div>
-        <div class="ai-section-label">Managed Service Access</div>
-        <div class="ai-pricing">
-          <div class="ai-price-tier"><div class="ai-price-name">Starter Site</div><div class="ai-price-amount">$<em>499</em></div><div class="ai-price-desc">New site from scratch. Fast, modern, mobile-first.</div></div>
-          <div class="ai-price-tier"><div class="ai-price-name">Digital Remodel</div><div class="ai-price-amount">$<em>599</em></div><div class="ai-price-desc">Full overhaul of your existing site.</div></div>
-          <div class="ai-price-tier"><div class="ai-price-name">Full AI Upgrade</div><div class="ai-price-amount">$<em>799</em></div><div class="ai-price-desc">Remodel + custom-trained AI assistant, 24/7.</div></div>
-          <div class="ai-price-tier"><div class="ai-price-name">Widget</div><div class="ai-price-amount">$<em>150</em></div><div class="ai-price-desc">Drop-in calculator or lead tool for any site.</div></div>
+        
+        <div class="ai-cta-group" style="margin-bottom: 3rem;">
+          <a href="/contact" class="btn-primary">Book a Call</a>
+          <a href="/ai/pricing" class="btn-ghost">See Pricing &rarr;</a>
         </div>
-        <div class="ai-cta-group">
-          <a href="/ai/intake" class="btn-primary">Request a Technical Audit</a>
-          <a href="/ai/demo/index.html" class="btn-ghost">Try the Live AI Demo &rarr;</a>
-        </div>
-        <p class="ai-disclaimer">Minescout AI is built and operated by <a href="/">Thomas Carleton</a>, a systems engineer at Eastlake HS. All operations are strictly capped at 5 hours weekly to maintain a 4.0 GPA standing. For collaboration or inquiries, <a href="/ai/intake">initiate a project request here</a>.</p>
+        
+        <p class="ai-disclaimer">Every project is built directly by the founder from start to finish. Minescout is operated by <a href="/">Thomas Carleton</a>. Whether you're a student building your first portfolio or a business looking to automate customer support, the goal is the same: build something that lasts.</p>
       </div>
     </div>
   `,
   '/ai/clients': `
     <div class="main--page">
       <div class="page-content clients-wrap">
-        <p class="page-label">Minescout AI</p>
+        <p class="page-label">Portfolio</p>
         <h1 class="page-title">Client Work</h1>
-        <p class="clients-intro">Minescout AI deploys high-performance digital infrastructure. Below are our current <strong>Active Network Nodes</strong>. We are currently accepting applications for our two remaining <strong>Q2 Charter Partners</strong>.</p>
-        <div class="status-bar">
-          <div class="status-dot-alert"></div>
-          <div class="status-text"><strong>Commercial Pipeline: 2/3 Charter Slots Open (1 Claimed).</strong> We are prioritizing businesses in Sammamish and the Greater Eastside for our Q2 technical architecture upgrades.</div>
-        </div>
+        <p class="clients-intro">MineScout builds custom websites and AI systems for people who want agency-quality results without agency complexity. Below are our active deployments.</p>
         
-        <div class="section-divider">Production Nodes</div>
+        <div class="section-divider">Live Client Deployments</div>
         <div class="client-card" style="--d:0.3s;">
           <div class="client-card-header"><div><div class="client-name">Chris Franz</div><div class="client-type">Fine Art & Studio Pottery</div></div><span class="client-status status-live">Live</span></div>
           <div class="client-card-body">
@@ -290,7 +285,15 @@ export const views = {
               <div><div class="client-detail-label">Solution</div><div class="client-detail-val">Serverless Edge SPA</div></div>
               <div><div class="client-detail-label">Performance</div><div class="client-detail-val">100% Best Practices / Zero Render-Blocking</div></div>
             </div>
-            <p class="client-note">Deploying a highly optimized, single-page serverless portfolio at the network edge for Pacific Northwest artist Chris Franz. This node leverages a decoupled cloud architecture to deliver sub-second paint times, localized asset caching, and a secure, low-latency administrative back panel for zero-maintenance content management.<br><a href="https://chrisceramics.pages.dev" class="view-link" target="_blank">View Live Site &rarr;</a></p>
+            <p class="client-note">Deploying a highly optimized, single-page serverless portfolio at the network edge for Pacific Northwest artist Chris Franz. This node leverages a decoupled cloud architecture to deliver sub-second paint times, localized asset caching, and a secure, low-latency administrative back panel for zero-maintenance content management.</p>
+            
+            <div style="margin: 1.25rem 0; padding: 1rem 1.25rem; background: var(--light); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0;">
+              <div style="color: #f5b041; font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 0.4rem;">★★★★★</div>
+              <p style="font-size: 0.85rem; font-style: italic; color: var(--fg); margin: 0; line-height: 1.6;">
+                "Minescout does a great job replying to questions in a timely manner. They quickly created a plug and play website for me, work fast, and will walk you through how to make updates to your webpage."
+              </p>
+            </div>
+            <p style="margin: 0;"><a href="https://chrisdfranz.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
           </div>
         </div>
         <div class="client-card" style="--d:0.35s;">
@@ -299,14 +302,14 @@ export const views = {
             <div class="client-detail-grid">
               <div><div class="client-detail-label">Vertical</div><div class="client-detail-val">E-Commerce Automation</div></div>
               <div><div class="client-detail-label">Deployment</div><div class="client-detail-val">April 2026</div></div>
-              <div><div class="client-detail-label">Architecture</div><div class="client-detail-val">Llama-3 RAG, STL Engine</div></div>
-              <div><div class="client-detail-label">Performance</div><div class="client-detail-val">0.4s Edge Latency</div></div>
+              <div><div class="client-detail-label">Architecture</div><div class="client-detail-val">Custom AI & STL Engine</div></div>
+              <div><div class="client-detail-label">Performance</div><div class="client-detail-val">Sub-second Edge Latency</div></div>
             </div>
-            <p class="client-note">An advanced integration of robotics and automated sales. Features a custom AI technician capable of providing instant quotes from a technical database and managing 3D fabrication requests.<br><a href="https://chop-lab.com" class="view-link" target="_blank">Analyze Live Integration &rarr;</a></p>
+            <p class="client-note">An advanced integration of robotics and automated sales. Features a custom AI employee capable of providing instant quotes from a technical database and managing 3D fabrication requests.<br><a href="https://chop-lab.com" class="view-link" target="_blank">Analyze Live Integration &rarr;</a></p>
           </div>
         </div>
 
-        <div class="section-divider">Demonstration Nodes</div>
+        <div class="section-divider">Capabilities & Frameworks</div>
         <div class="client-card" style="--d:0.45s;">
           <div class="client-card-header"><div><div class="client-name">Handmade by Jayme</div><div class="client-type">Artisanal Goods & Lifestyle</div></div><span class="client-status status-live">Live</span></div>
           <div class="client-card-body">
@@ -314,7 +317,15 @@ export const views = {
               <div><div class="client-detail-label">Deployment</div><div class="client-detail-val">March 2026</div></div>
               <div><div class="client-detail-label">Solution</div><div class="client-detail-val">Organic Modern Architecture</div></div>
             </div>
-            <p class="client-note">A complete serverless edge migration. We transformed a legacy site into a high-performance visual experience featuring dynamic gallery rendering and sub-second mobile load times.<br><a href="https://jaymecarleton.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
+            <p class="client-note">A complete serverless edge migration. We transformed a legacy site into a high-performance visual experience featuring dynamic gallery rendering and fast mobile load times.</p>
+            
+            <div style="margin: 1.25rem 0; padding: 1rem 1.25rem; background: var(--light); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0;">
+              <div style="color: #f5b041; font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 0.4rem;">★★★★★</div>
+              <p style="font-size: 0.85rem; font-style: italic; color: var(--fg); margin: 0; line-height: 1.6;">
+                "Excellent communication. My favorite part about the final product is that I can easily edit things myself and add new pages."
+              </p>
+            </div>
+            <p style="margin: 0;"><a href="https://jaymecarleton.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
           </div>
         </div>
         <div class="client-card" style="--d:0.5s;">
@@ -322,40 +333,40 @@ export const views = {
           <div class="client-card-body">
             <div class="client-detail-grid">
               <div><div class="client-detail-label">Deployment</div><div class="client-detail-val">March 2026</div></div>
-              <div><div class="client-detail-label">Solution</div><div class="client-detail-val">Multi-Tenant Serverless Engine</div></div>
+              <div><div class="client-detail-label">Solution</div><div class="client-detail-val">Digital Asset Archiving</div></div>
             </div>
-            <p class="client-note">Designed for high-fidelity visual archiving without sacrificing backend speed. This node utilizes our multi-tenant engine to ensure rapid asset delivery globally.<br><a href="https://ferncarleton.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
+            <p class="client-note">Designed for high-fidelity visual archiving without sacrificing backend speed. This framework ensures rapid asset delivery globally.<br><a href="https://ferncarleton.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
           </div>
         </div>
         <div class="client-card" style="--d:0.55s;">
-          <div class="client-card-header"><div><div class="client-name">Smith &amp; Cole Law</div><div class="client-type">Professional Services Demo</div></div><span class="client-status status-demo">Internal Node</span></div>
+          <div class="client-card-header"><div><div class="client-name">Smith &amp; Cole Law</div><div class="client-type">Professional Services Demo</div></div><span class="client-status status-demo">Internal Concept</span></div>
           <div class="client-card-body">
             <div class="client-detail-grid">
               <div><div class="client-detail-label">Objective</div><div class="client-detail-val">Lead Triage & Qualification</div></div>
               <div><div class="client-detail-label">Industry</div><div class="client-detail-val">Legal Consulting</div></div>
             </div>
-            <p class="client-note">A demonstration of how Minescout AI can capture and qualify professional service leads 24/7.<br><a href="/ai/demo/index.html" class="view-link">Test AI Agent &rarr;</a></p>
+            <p class="client-note">A demonstration of how Minescout can capture and qualify professional service leads 24/7.<br><a href="/ai/demo/index.html" class="view-link">Test AI Agent &rarr;</a></p>
           </div>
         </div>
         
         <div class="clients-cta" style="margin-top: 3rem;">
-          <a href="/ai/intake" class="btn-primary">Apply for Q2 Charter Program</a>
+          <a href="/contact" class="btn-primary">Book a Call</a>
         </div>
       </div>
     </div>
-  `,
-  '/ai/process': `
+  `,'/ai/process': `
     <div class="main--page">
       <div class="page-content process-wrap">
-        <p class="page-label">Minescout AI</p>
+        <p class="page-label">Minescout Studio</p>
         <h1 class="page-title">The Process</h1>
-        <p class="process-intro">From first conversation to live widget — here's exactly what working with Minescout AI looks like, step by step. No surprises, no jargon.</p>
+        <div style="display: inline-block; background: var(--fg); color: var(--bg); padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem;">Total time: ~5–7 days</div>
+        <p class="process-intro">From first conversation to live website — here's exactly what working with MineScout looks like, step by step. No surprises, no jargon.</p>
         <div class="timeline">
           <div class="phase" style="--d:0.3s;">
             <div class="phase-dot active">01</div>
             <div class="phase-content">
               <div class="phase-header"><div class="phase-title">Initial conversation</div><span class="phase-timeline-tag">Day 1 &mdash; 30 min</span></div>
-              <p class="phase-desc">We talk (email or call) about your business, what questions customers ask most, and what you want the AI to handle. I'll ask about your hours, services, pricing, and anything that trips up your current process. No tech knowledge required from you.</p>
+              <p class="phase-desc">We talk (email or call) about your business, what questions customers ask most, and what you want the site to handle. I'll ask about your hours, services, pricing, and anything that trips up your current process. No tech knowledge required from you.</p>
               <ul class="phase-deliverables"><li>Scope agreed and plan selected</li><li>Content checklist sent to you</li><li>Timeline confirmed</li></ul>
             </div>
           </div>
@@ -363,48 +374,34 @@ export const views = {
             <div class="phase-dot">02</div>
             <div class="phase-content">
               <div class="phase-header"><div class="phase-title">You send your content</div><span class="phase-timeline-tag">Day 1&ndash;2</span></div>
-              <p class="phase-desc">You send me your FAQs, hours, service descriptions, pricing, and anything else the AI should know. A Google Doc, PDF, Word file, or even a bullet-point email works perfectly. I don't need it to be formatted — I'll handle that.</p>
-              <ul class="phase-deliverables"><li>FAQ document (any format)</li><li>Business hours &amp; contact info</li><li>Services or menu with pricing</li><li>Anything customers frequently ask about</li></ul>
+              <p class="phase-desc">You send me your FAQs, hours, service descriptions, pricing, and anything else I should know. A Google Doc, PDF, Word file, or even a bullet-point email works perfectly. I don't need it to be formatted — I'll handle that.</p>
+              <ul class="phase-deliverables"><li>FAQ document (any format)</li><li>Business hours &amp; contact info</li><li>Services or menu with pricing</li></ul>
             </div>
           </div>
           <div class="phase" style="--d:0.50s;">
-            <div class="phase-dot">03</div>
-            <div class="phase-content">
-              <div class="phase-header"><div class="phase-title">AI training & infrastructure</div><span class="phase-timeline-tag">Day 2–5</span></div>
-              <p class="phase-desc">I train the AI on your documents, write the system prompt (the instructions that tell it how to behave), set up guardrails to keep it on-topic, and deploy it to Cloudflare's global edge network. I also provision your secure Admin Portal so you have full visibility into your AI.</p>
-              <ul class="phase-deliverables"><li>AI trained on your business content</li><li>System prompt written and tested</li><li>Secure Admin Portal live</li><li>Widget tested across browsers</li></ul>
+            <div class="phase-content" style="margin-left: 52px; padding: 1rem; text-align: center; background: var(--light); border: 1px dashed var(--border);">
+              <span style="font-weight: 600; font-size: 0.85rem; color: var(--fg);">Days 2–5: I build the site and train the AI from scratch.</span>
             </div>
           </div>
           <div class="phase" style="--d:0.54s;">
-            <div class="phase-dot">04</div>
+            <div class="phase-dot">03</div>
             <div class="phase-content">
               <div class="phase-header"><div class="phase-title">Review & launch</div><span class="phase-timeline-tag">Day 5–7</span></div>
-              <p class="phase-desc">You test the AI yourself, ask it your hardest questions, and tell me anything it got wrong. I fix it. Once you're happy, I give you a single line of code to paste into your website — or I add it for you if you share access. The AI goes live within 24 hours of your approval.</p>
-              <ul class="phase-deliverables"><li>Test session with you</li><li>Admin Portal credentials delivered</li><li>Embed code delivered</li><li>AI goes live on your site</li></ul>
+              <p class="phase-desc">You test the site yourself, ask the AI your hardest questions, and tell me anything it got wrong. I fix it. Once you're happy, we flip the switch and go live.</p>
+              <ul class="phase-deliverables"><li>Test session with you</li><li>Admin Portal credentials delivered</li><li>Website goes live</li></ul>
             </div>
           </div>
           <div class="phase" style="--d:0.58s;">
-            <div class="phase-dot">05</div>
+            <div class="phase-dot">04</div>
             <div class="phase-content">
               <div class="phase-header"><div class="phase-title">Ongoing maintenance</div><span class="phase-timeline-tag">Monthly</span></div>
-              <p class="phase-desc">You have 24/7 access to your Admin Portal to update the AI's instructions, tweak pricing, or change business hours instantly. On my end, I actively monitor the API infrastructure, optimize backend latency, and send you a short summary of the AI's performance to ensure zero downtime.</p>
-              <ul class="phase-deliverables"><li>24/7 Admin Portal access</li><li>Monthly performance summary</li><li>Backend infrastructure scaling</li><li>API & security monitoring</li></ul>
+              <p class="phase-desc">You have 24/7 access to your Backstage Portal to update the AI's instructions, tweak pricing, or change business hours instantly. On my end, I actively monitor the infrastructure, apply security updates, and handle hosting.</p>
+              <ul class="phase-deliverables"><li>24/7 Backstage Portal access</li><li>Backend infrastructure scaling</li><li>Hosting and SSL management</li></ul>
             </div>
           </div>
         </div>
-        <div class="you-need">
-          <div class="you-need-title">What you need to provide — that's it</div>
-          <div class="you-need-list">
-            <div class="you-need-item">&#10003;&nbsp; Your FAQs (any format)</div>
-            <div class="you-need-item">&#10003;&nbsp; Business hours</div>
-            <div class="you-need-item">&#10003;&nbsp; Services / menu / pricing</div>
-            <div class="you-need-item">&#10003;&nbsp; Contact info</div>
-            <div class="you-need-item">&#10003;&nbsp; 30 minutes of your time</div>
-            <div class="you-need-item">&#10003;&nbsp; Feedback during review</div>
-          </div>
-        </div>
         <div class="process-cta">
-          <a href="/contact" class="btn-primary">Start the conversation</a>
+          <a href="/contact" class="btn-primary">Book a Call</a>
           <a href="/ai/pricing" class="btn-ghost" style="border-color: var(--border); color: var(--fg);">View pricing &rarr;</a>
         </div>
       </div>
@@ -479,6 +476,10 @@ export const views = {
         <div class="legal-contact">
           <div class="legal-contact-title">Questions about these terms?</div>
           <div class="legal-contact-body">Reach out directly &mdash; happy to clarify anything. <a href="/contact">Contact page</a> or <a href="mailto:thomas@minescout.net">thomas@minescout.net</a>.</div>
+        </div>
+        
+        <div style="margin-top: 3rem; text-align: center;">
+          <a href="https://scamadviser.com/check-website/minescout.net" target="_blank" ><img src="https://files.scamadviser.com/thumbs/scamadviser-logo-4ad94.jpg_900x.jpg" alt="Check My Site on ScamAdviser.com" style="width:260px;height:auto;"></a>
         </div>
       </div>
     </div>
@@ -1061,135 +1062,151 @@ export const views = {
   `,
   '/ai/pricing': `
     <div class="main--page">
-      <div class="page-content pricing-wrap">
-        <p class="page-label">Minescout AI</p>
+      <div class="page-content">
+        <p class="page-label">Minescout Studio</p>
         <h1 class="page-title">Pricing</h1>
 
         <div class="anchor-bar" style="opacity:0;animation:fadeUp 0.5s ease 0.15s forwards;">
-          <div class="anchor-bar-icon">&#128161;</div>
+          <div class="anchor-bar-icon">💡</div>
           <div class="anchor-bar-text">
-            A standard agency website redesign costs <strong>$5,000&ndash;$10,000</strong>.
-            Minescout AI starts at <strong>$499</strong> &mdash; built and maintained by one person, no overhead.
+            This isn't the cheapest option—but it's one of the best values. MineScout competes on <strong>speed, quality, and personal service</strong>, delivering agency-quality results without agency complexity.
           </div>
         </div>
 
-        <div class="tiers" style="display:flex;flex-direction:column;gap:1.25rem;margin-top:2rem;">
+        <div class="pricing-wrap" style="margin: 0 auto; max-width: 850px;">
 
-          <div class="tier tier--horizontal" style="opacity:0;animation:fadeUp 0.5s ease 0.2s forwards;">
-            <div class="tier-h-left">
-              <div class="tier-name">Starter Site</div>
-              <div class="tier-price">$<em>499</em></div>
-              <div class="tier-price-sub">one-time &middot; no monthly fee</div>
+          <div class="tiers">
+
+            <div class="tier tier--horizontal" style="opacity:0;animation:fadeUp 0.5s ease 0.2s forwards;">
+              <div class="tier-h-left">
+                <div class="tier-name">Portfolio Website</div>
+                <div class="tier-price-sub">Starting at</div>
+                <div class="tier-price">$<em>750</em></div>
+              </div>
+              <div class="tier-h-body">
+                <p class="tier-target">Perfect for portfolios, creators, freelancers, and resumes.</p>
+                <ul class="tier-features tier-features--row">
+                  <li class="tier-feature">Custom design</li>
+                  <li class="tier-feature">Responsive layout</li>
+                  <li class="tier-feature">Contact form</li>
+                  <li class="tier-feature">SEO basics</li>
+                  <li class="tier-feature">Fast hosting setup</li>
+                </ul>
+              </div>
+              <div class="tier-h-cta">
+                <a href="/contact" class="tier-cta btn-ghost">Book a call</a>
+              </div>
             </div>
-            <div class="tier-h-body">
-              <p class="tier-target">A brand-new, fast, mobile-first website built from scratch. You keep full ownership of your domain and business identity while I handle the technical side &mdash; coding, updates, deployment, and optimization. Perfect for businesses that need a professional online presence without the hassle.</p>
-              <ul class="tier-features tier-features--row">
-  <li class="tier-feature">Built from scratch</li>
-  <li class="tier-feature">You own the domain</li>
-  <li class="tier-feature">I maintain the code</li>
-  <li class="tier-feature">Mobile-first responsive</li>
-  <li class="tier-feature">Sub-second load times</li>
-  <li class="tier-feature">SEO metadata &amp; schema</li>
-</ul>
+
+            <div class="tier tier--horizontal" style="opacity:0;animation:fadeUp 0.5s ease 0.27s forwards;">
+              <div class="tier-h-left">
+                <div class="tier-name">Professional Website</div>
+                <div class="tier-price-sub">Starting at</div>
+                <div class="tier-price">$<em>1,500</em></div>
+              </div>
+              <div class="tier-h-body">
+                <p class="tier-target">Perfect for photographers, consultants, creators, and local services.</p>
+                <ul class="tier-features tier-features--row">
+                  <li class="tier-feature">Everything in Portfolio</li>
+                  <li class="tier-feature">Multiple pages</li>
+                  <li class="tier-feature">Booking/contact integrations</li>
+                  <li class="tier-feature">Analytics</li>
+                  <li class="tier-feature">Performance optimization</li>
+                </ul>
+              </div>
+              <div class="tier-h-cta">
+                <a href="/contact" class="tier-cta btn-ghost">Book a call</a>
+              </div>
             </div>
-            <div class="tier-h-cta">
-              <a href="/contact" class="tier-cta btn-ghost">Get started</a>
+
+            <div class="tier tier--horizontal" style="opacity:0;animation:fadeUp 0.5s ease 0.34s forwards;">
+              <div class="tier-h-left">
+                <div class="tier-name">Business Website</div>
+                <div class="tier-price-sub">Starting at</div>
+                <div class="tier-price">$<em>2,500</em></div>
+              </div>
+              <div class="tier-h-body">
+                <p class="tier-target">Perfect for restaurants, contractors, medical, legal, and retail.</p>
+                <ul class="tier-features tier-features--row">
+                  <li class="tier-feature">Discovery meeting</li>
+                  <li class="tier-feature">Fully custom design</li>
+                  <li class="tier-feature">Advanced SEO</li>
+                  <li class="tier-feature">Custom Forms</li>
+                  <li class="tier-feature">AI-ready foundation</li>
+                </ul>
+              </div>
+              <div class="tier-h-cta">
+                <a href="/contact" class="tier-cta btn-primary">Book a call</a>
+              </div>
             </div>
+
+            <div class="tier tier--horizontal tier--featured" style="opacity:0;animation:fadeUp 0.5s ease 0.41s forwards;">
+              <div class="tier-h-left">
+                <div class="tier-name">Business + AI</div>
+                <div class="tier-price-sub">Starting at</div>
+                <div class="tier-price">$<em>3,500</em></div>
+              </div>
+              <div class="tier-h-body">
+                <p class="tier-target">The ultimate growth platform. A complete custom website integrated with an autonomous AI employee.</p>
+                <ul class="tier-features tier-features--row">
+                  <li class="tier-feature">Custom Website</li>
+                  <li class="tier-feature">Custom AI Assistant</li>
+                  <li class="tier-feature">Knowledge Base</li>
+                  <li class="tier-feature">Automation</li>
+                  <li class="tier-feature">Dashboard</li>
+                </ul>
+              </div>
+              <div class="tier-h-cta">
+                <a href="/contact" class="tier-cta btn-primary">Book a call</a>
+              </div>
+            </div>
+
           </div>
+        </div>
 
-          <div class="tier tier--horizontal" style="opacity:0;animation:fadeUp 0.5s ease 0.27s forwards;">
-            <div class="tier-h-left">
-              <div class="tier-name">Digital Remodel</div>
-              <div class="tier-price">$<em>599</em></div>
-              <div class="tier-price-sub">one-time &middot; no monthly fee</div>
-            </div>
-            <div class="tier-h-body">
-              <p class="tier-target">A complete overhaul of your existing site. Same modern speed and design quality &mdash; but we start from what you already have rather than a blank canvas.</p>
-              <ul class="tier-features tier-features--row">
-                <li class="tier-feature">Redesigned UI &amp; layout</li>
-                <li class="tier-feature">Mobile-first responsive</li>
-                <li class="tier-feature">Sub-second load times</li>
-                <li class="tier-feature">SEO metadata &amp; schema</li>
-              </ul>
-            </div>
-            <div class="tier-h-cta">
-              <a href="/contact" class="tier-cta btn-ghost">Get started</a>
-            </div>
+        <div class="ai-callout" style="opacity:0;animation:fadeUp 0.5s ease 0.45s forwards;">
+          <div class="ai-callout-title" style="font-family: var(--serif); font-size: 1.2rem; margin-bottom: 0.5rem;">🎓 Student & Startup Program</div>
+          <div class="ai-callout-desc" style="color: var(--fg); font-size: 0.9rem;">
+            Just getting started? I know what it's like to launch your first project. That's why I reserve a limited number of discounted projects each semester for students, nonprofits, and first-time entrepreneurs.<br><br>
+            Typical projects range from <strong>$250–$750</strong> depending on scope. Availability is extremely limited.
           </div>
-
-          <div class="tier tier--horizontal tier--featured" style="opacity:0;animation:fadeUp 0.5s ease 0.34s forwards;">
-            <div class="tier-h-left">
-              <span class="tier-badge">Most Popular</span>
-              <div class="tier-name">Full AI Upgrade</div>
-              <div class="tier-price">$<em>799</em></div>
-              <div class="tier-price-sub">one-time setup</div>
-              <div class="tier-price-sub">+ $59 / month</div>
-              <div class="tier-was">Agency equivalent: $5,000+</div>
-            </div>
-            <div class="tier-h-body">
-              <p class="tier-target">Everything in the Remodel, plus a custom-trained AI assistant that answers your customers 24/7 &mdash; handling FAQs, hours, pricing, and lead triage so you don&rsquo;t have to.</p>
-              <ul class="tier-features tier-features--row">
-                <li class="tier-feature">Everything in Remodel</li>
-                <li class="tier-feature">Custom-trained AI assistant</li>
-                <li class="tier-feature">Managed Training Bridge</li>
-                <li class="tier-feature">After-hours lead capture</li>
-                <li class="tier-feature">Monthly performance review</li>
-                <li class="tier-feature">Client portal access</li>
-              </ul>
-            </div>
-            <div class="tier-h-cta">
-              <a href="/contact" class="tier-cta btn-primary">Get started</a>
-            </div>
+          <div style="margin-top: 1.5rem;">
+            <a href="/contact" class="btn-ghost">Apply for the Program</a>
           </div>
+        </div>
 
-          <div class="tier tier--horizontal" style="opacity:0;animation:fadeUp 0.5s ease 0.41s forwards;">
-            <div class="tier-h-left">
-              <div class="tier-name">Widget</div>
-              <div class="tier-price">$<em>150</em></div>
-              <div class="tier-price-sub">one-time &middot; no monthly fee</div>
-            </div>
-            <div class="tier-h-body">
-              <p class="tier-target">A custom drop-in tool for your existing site &mdash; quote calculators, lead capture forms, booking helpers. Built and embedded in under a week.</p>
-              <ul class="tier-features tier-features--row">
-                <li class="tier-feature">Interactive logic &amp; math</li>
-                <li class="tier-feature">Instant lead capture</li>
-                <li class="tier-feature">Results to your email</li>
-                <li class="tier-feature">Embeds on any site</li>
-              </ul>
-            </div>
-            <div class="tier-h-cta">
-              <a href="/contact" class="tier-cta btn-ghost">Get started</a>
-            </div>
+        <div class="pricing-section-label" style="--ad:0.38s;">Maintenance & Support Plans</div>
+        <div style="font-size:0.85rem; color:var(--muted); text-align:center; margin:-1rem auto 1.5rem; max-width:600px; opacity:0; animation:fadeUp 0.5s ease 0.46s forwards;">
+          💡 <strong>Please note:</strong> None of these recurring monthly support plans are required to work with me. You are completely free to handle your own hosting independently, however updates can always be handled by me.
+        </div>
+        
+        <div class="dash-grid" style="margin-bottom:2rem; opacity:0; animation:fadeUp 0.5s ease 0.48s forwards; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+          <div class="dash-stat" style="text-align: left;">
+            <div style="font-size:1rem;font-family:var(--serif);font-weight:700;color:var(--fg);margin-bottom:0.3rem;">Priority Care</div>
+            <div style="color:var(--accent); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.85rem;">$10 / month</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Priority support tickets and code checkups. <strong>Does not include hosting.</strong></div>
           </div>
-
-          <div class="tier tier--horizontal tier--charter" style="opacity:0;animation:fadeUp 0.5s ease 0.48s forwards;">
-            <div class="tier-h-left">
-              <span class="tier-badge tier-badge--charter">Invite Only</span>
-              <div class="tier-name">Charter Partner</div>
-              <div class="tier-price" style="color:var(--muted);">$<em style="color:var(--muted);">0</em></div>
-              <div class="tier-price-sub">setup &amp; monthly waived</div>
-              <div class="tier-was">Valued at $799 + $59/mo</div>
-            </div>
-            <div class="tier-h-body">
-              <p class="tier-target">The full AI Upgrade at no cost for 2 remaining local businesses willing to co-develop the product. You get a world-class AI assistant free. I get a real-world case study and testimonial.</p>
-              <ul class="tier-features tier-features--row">
-                <li class="tier-feature">Full AI Upgrade at no cost</li>
-                <li class="tier-feature">Signed testimonial required</li>
-                <li class="tier-feature">Published case study</li>
-                <li class="tier-feature">12 months of feedback</li>
-              </ul>
-            </div>
-            <div class="tier-h-cta">
-              <a href="/contact" class="tier-cta btn-ghost">Request invite</a>
-            </div>
+          <div class="dash-stat" style="text-align: left;">
+            <div style="font-size:1rem;font-family:var(--serif);font-weight:700;color:var(--fg);margin-bottom:0.3rem;">Hosting Only</div>
+            <div style="color:var(--accent); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.85rem;">$15 / month</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Ultra-fast edge hosting and SSL certificates.</div>
           </div>
-
+          <div class="dash-stat" style="text-align: left;">
+            <div style="font-size:1rem;font-family:var(--serif);font-weight:700;color:var(--fg);margin-bottom:0.3rem;">Hosting + Maintenance</div>
+            <div style="color:var(--accent); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.85rem;">$40 / month</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Includes hosting, platform updates, and regular backups.</div>
+          </div>
+          <div class="dash-stat" style="text-align: left;">
+            <div style="font-size:1rem;font-family:var(--serif);font-weight:700;color:var(--fg);margin-bottom:0.3rem;">Business Care</div>
+            <div style="color:var(--accent); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.85rem;">$75 / month</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Hosting, updates, backups, AI maintenance, and priority support.</div>
+          </div>
         </div>
 
         <div class="pricing-section-label" style="--ad:0.5s;">Not sure what plan?</div>
         <div style="font-size:0.78rem;color:var(--muted);line-height:1.7;margin-bottom:1.25rem;">
-          Not sure which plan is right for you?
-          <button type="button" class="btn-ghost" id="open-plan-quiz" style="margin-left:0.5rem; padding: 0.5rem 1rem;">Take a quick quiz</button>
+          Take a quick quiz to find the best fit for your business.
+          <button type="button" class="btn-ghost" id="open-plan-quiz" style="margin-left:0.5rem; padding: 0.5rem 1rem;">Take the Quiz</button>
         </div>
 
         <div class="plan-quiz is-hidden" id="plan-quiz">
@@ -1246,33 +1263,6 @@ export const views = {
           </div>
         </div>
 
-        <div class="pricing-section-label" style="--ad:0.38s;">What the monthly fee covers</div>
-        <div class="faq-list" style="margin-bottom:2rem;opacity:0;animation:fadeUp 0.5s ease 0.4s forwards;">
-          <div style="padding:1rem 1.25rem;font-size:0.78rem;color:var(--muted);line-height:1.8;border-bottom:1px solid var(--border);">
-            <strong style="color:var(--fg);">$59 per month</strong> (Full AI Upgrade only). The fee covers four real operating costs:
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);">
-            <div style="padding:1rem 1.25rem;border-right:1px solid var(--border);">
-              <div style="font-size:0.7rem;font-weight:600;color:var(--fg);margin-bottom:0.3rem;">API Token Costs</div>
-              <div style="font-size:0.72rem;color:var(--muted);line-height:1.6;">Every message the AI processes costs a fraction of a cent. The monthly fee absorbs this entirely &mdash; no surprise bills.</div>
-            </div>
-            <div style="padding:1rem 1.25rem;">
-              <div style="font-size:0.7rem;font-weight:600;color:var(--fg);margin-bottom:0.3rem;">Edge Hosting &amp; SSL</div>
-              <div style="font-size:0.72rem;color:var(--muted);line-height:1.6;">Hosted on Cloudflare&rsquo;s global edge network. 99.9% uptime, sub-second latency, SSL included.</div>
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;">
-            <div style="padding:1rem 1.25rem;border-right:1px solid var(--border);">
-              <div style="font-size:0.7rem;font-weight:600;color:var(--fg);margin-bottom:0.3rem;">Training Bridge Updates</div>
-              <div style="font-size:0.72rem;color:var(--muted);line-height:1.6;">When your hours, prices, or services change, I update the AI within 48 hours. No stale info ever reaches customers.</div>
-            </div>
-            <div style="padding:1rem 1.25rem;">
-              <div style="font-size:0.7rem;font-weight:600;color:var(--fg);margin-bottom:0.3rem;">Security &amp; Monitoring</div>
-              <div style="font-size:0.72rem;color:var(--muted);line-height:1.6;">Guardrails to prevent off-topic responses, monthly performance reviews, and proactive fixes when something breaks.</div>
-            </div>
-          </div>
-        </div>
-
         <div class="pricing-cta">
           <div class="pricing-cta-text">
             <div class="pricing-cta-title">Not sure which plan?</div>
@@ -1284,11 +1274,36 @@ export const views = {
         </div>
 
         <p class="pricing-disclaimer">
-          Minescout AI is operated by Thomas Carleton, a student developer in Sammamish, WA.
-          Charter Partner spots are limited and invite-only.
+          Minescout Studio is operated by Thomas Carleton, a student developer in Sammamish, WA.
           <a href="/contact">Questions? Reach out directly.</a>
         </p>
 
+      </div>
+    </div>
+  `,
+  '/ai/review': `
+    <div class="main--page">
+      <div class="page-content">
+        <p class="page-label">Client Feedback</p>
+        <h1 class="page-title">Project Review</h1>
+        
+        <p style="color: var(--muted); margin-bottom: 2.5rem; max-width: 650px; line-height: 1.6; font-size: 1.05rem;">
+          Thank you for trusting Minescout AI with your digital infrastructure. Your honest feedback helps me improve the platform and shows future clients what to expect when working together.
+        </p>
+
+        <div style="border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #ffffff; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+          <iframe 
+            src="https://docs.google.com/forms/d/e/1FAIpQLSdwRb4TMCKMLCqudnWCnckwChUHpfvdUsW4ASfHUD-ufaux_g/viewform?embedded=true" 
+            width="100%" 
+            height="2000" 
+            frameborder="0" 
+            marginheight="0" 
+            marginwidth="0"
+            style="display: block;">
+            Loading…
+          </iframe>
+        </div>
+        
       </div>
     </div>
   `,

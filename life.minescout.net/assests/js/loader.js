@@ -6,9 +6,9 @@ document.addEventListener("DOMContentLoaded", function() {
     
     let relativePrefix = "./"; 
     if (path.includes("/pages/") || path.includes("/admin/")) {
-        relativePrefix = "../";
+        relativePrefix = "/";
     } else if (path.includes("/posts/") || path.includes("/projects/") || path.includes("/archives/")) {
-        relativePrefix = "../../";
+        relativePrefix = /";
     }
 
     // 2. Load Sidebar

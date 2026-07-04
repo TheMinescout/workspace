@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>OpenScan-AI: One Shot Battle - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Updated Fonts to match the M3 Design System -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <!-- Fixed Paths: Absolute locations starting with / -->
+    <link rel="stylesheet" href="/assests/css/homepage.css?v=1.12">
+    <link rel="stylesheet" href="/assests/css/AI-ASSISTANT.css">
+    <link rel="icon" type="image/png" href="/assests/images/favicon.png?v=2">
+    
+    <style>
+        #user-display a { text-decoration: none; color: white; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--md-primary);
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s var(--motion-standard);
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .back-link:hover {
+            filter: brightness(0.8);
+            transform: translateX(-4px);
+        }
+
+        .article-card {
+            background: var(--card-bg);
+            border: 1px solid var(--md-outline-variant);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-1);
+        }
+
+        .article-card h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            color: var(--text-color);
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .post-meta {
+            color: var(--md-outline);
+            font-size: 0.95rem;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+
+        .post-image-full {
+            width: 100%;
+            height: auto;
+            border-radius: var(--radius-md);
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-2);
+            border: 1px solid var(--md-outline-variant);
+        }
+
+        .post-content h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            color: var(--md-primary);
+            margin-top: 48px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--md-outline-variant);
+        }
+
+        .post-content p {
+            font-size: 1.05rem;
+            color: var(--text-color);
+            opacity: 0.9;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        /* M3 Refactored Custom Elements */
+        .comparison-section { margin-bottom: 40px; }
+        
+        .prompt-box { 
+            background-color: var(--md-surface-container); 
+            padding: 24px; 
+            border-radius: 0 var(--radius-md) var(--radius-md) 0; 
+            font-family: 'DM Sans', monospace; 
+            font-size: 0.95rem; 
+            border: 1px solid var(--md-outline-variant); 
+            border-left: 4px solid var(--md-primary); 
+            margin-bottom: 32px; 
+            color: var(--text-color); 
+            line-height: 1.6;
+        }
+
+        .ai-card { 
+            background: var(--md-surface-container);
+            border: 1px solid var(--md-outline-variant); 
+            border-radius: var(--radius-md); 
+            padding: 32px 24px 24px; 
+            margin-bottom: 24px; 
+            box-shadow: var(--shadow-1); 
+            transition: all 0.3s var(--motion-standard);
+            position: relative;
+        }
+
+        .ai-card:hover {
+            box-shadow: var(--shadow-2);
+            border-color: var(--md-primary);
+        }
+
+        .ai-card.winner {
+            border: 2px solid #f59e0b; /* Amber/Gold accent */
+            background: linear-gradient(to bottom right, var(--md-surface-container), rgba(245, 158, 11, 0.05));
+        }
+        
+        .winner-badge { 
+            background: #f59e0b; 
+            color: #fff; 
+            padding: 6px 12px; 
+            border-radius: var(--radius-full); 
+            font-weight: 700; 
+            font-size: 0.8rem; 
+            position: absolute; 
+            top: 24px; 
+            right: 24px;
+            display: inline-flex; 
+            align-items: center; 
+            gap: 4px;
+            box-shadow: var(--shadow-1);
+        }
+
+        .ai-card h3 { 
+            margin-top: 0; 
+            color: var(--md-primary); 
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .ai-card p {
+            margin-bottom: 8px;
+        }
+
+        .ai-link { 
+            display: inline-block; 
+            margin-top: 8px; 
+            font-weight: 700; 
+            color: var(--md-primary); 
+            text-decoration: none; 
+            transition: 0.2s;
+        }
+
+        .ai-link:hover { 
+            text-decoration: underline; 
+            filter: brightness(0.8); 
+        }
+        
+        .review-text { 
+            background-color: var(--md-primary-container); 
+            border-left: 4px solid var(--md-primary); 
+            padding: 16px 20px; 
+            margin-top: 24px; 
+            color: var(--md-on-primary-container); 
+            line-height: 1.6; 
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            font-size: 0.95rem;
+        }
+        
+        .official-version-box { 
+            background-color: var(--card-bg); 
+            border: 2px solid var(--md-primary); 
+            border-radius: var(--radius-lg); 
+            padding: 32px; 
+            margin: 48px 0 24px; 
+            text-align: center; 
+            box-shadow: var(--shadow-2);
+        }
+        
+        .official-version-box h2 { 
+            color: var(--md-primary); 
+            margin-top: 0; 
+            border: none;
+            padding: 0;
+        }
+
+        .github-btn { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px;
+            background-color: var(--md-primary); 
+            color: var(--md-on-primary); 
+            padding: 14px 28px; 
+            border-radius: var(--radius-full); 
+            text-decoration: none; 
+            font-weight: bold; 
+            margin-top: 24px; 
+            transition: all 0.3s var(--motion-standard); 
+            box-shadow: var(--shadow-2);
+        }
+
+        .github-btn:hover { 
+            filter: brightness(0.9); 
+            transform: translateY(-2px); 
+            box-shadow: var(--shadow-3);
+        }
+
+        @media (max-width: 768px) {
+            .article-card { padding: 24px; }
+            .article-card h1 { font-size: 2rem; }
+            .winner-badge { position: relative; top: 0; right: 0; margin-bottom: 16px; }
+            .ai-card { padding: 24px; }
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container"><a href="/login.html" id="login-link">Login</a></div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="/index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Tech Tips</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <a href="/account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn" class="btn-glass">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            
+            <main class="post-main" data-post-id="openscan-ai-battle">
+                
+                <a href="/pages/tech-tips.html" class="back-link">
+                    <span class="material-symbols-rounded" style="font-size: 20px;">arrow_back</span>
+                    Back to Tech Tips
+                </a>
+
+                <article class="article-card">
+                    <h1>OpenScan-AI: One Shot Battle</h1>
+                    <p class="post-meta">Posted on 2/18/26 by TheMinescouter</p>
+
+                    <img src="/assests/images/tech/openscan-ai.png" 
+                         alt="OpenScan-AI: One Shot Battle" 
+                         class="post-image-full"
+                         onerror="this.onerror=null; this.src='https://placehold.co/800x400/e0e0e0/333333?text=OpenScan-AI+Battle';">
+                    
+                    <div class="post-content">
+                        <p>I challenged the world's leading AI models to build <strong>OpenScan-AI</strong>: a web-based document scanner. The rules: one prompt, one file, and zero human bug fixes during the generation phase. We put Gemini 3.0 Thinking, GPT-5, and Claude 4.6 Extended through the ringer.</p>
+                        
+                        <p>While the concept of a browser-based scanner seems simple, handling camera streams and OCR (Optical Character Recognition) in a single-file environment is a high-level architectural challenge. Here is how the battle unfolded.</p>
+
+                        <h2>The Prompt</h2>
+                        <div class="prompt-box">"Code a complete, single-file HTML5 web application called 'OpenScan-AI' that requires no external assets... Implement a sleek 'Glassmorphism' UI, live camera viewfinder, image processing filters for document clarity, and Tesseract.js integration for actual OCR text extraction."</div>
+
+                        <hr style="border: 0; height: 1px; background: var(--md-outline-variant); margin: 32px 0;">
+
+                        <h2>The Contenders</h2>
+
+                        <div class="ai-card winner">
+                            <span class="winner-badge"><span class="material-symbols-rounded" style="font-size: 16px;">emoji_events</span> WINNER</span>
+                            <h3>Claude</h3>
+                            <p><strong>Model:</strong> Claude 4.6 Extended</p>
+                            <a href="https://theminescout.github.io/openscan-ai/claude/index.html" class="ai-link" target="_blank">Play Claude's Output »</a>
+                            
+                            <div class="review-text">
+                                <strong>Minescout's Review:</strong><br>
+                                Claude remains the gold standard for UI/UX in coding tasks. It delivered a stunningly polished interface that worked right out of the box. While all models were "okay" for a first attempt, Claude's version was the most complete, handling the library integrations with the fewest errors.
+                            </div>
+                        </div>
+
+                        <div class="ai-card">
+                            <h3>Google Gemini</h3>
+                            <p><strong>Model:</strong> Gemini 3.0 Thinking</p>
+                            <a href="https://theminescout.github.io/openscan-ai/gemini/index.html" class="ai-link" target="_blank">Play Gemini's Output »</a>
+                            
+                            <div class="review-text">
+                                <strong>Minescout's Review:</strong><br>
+                                The "Thinking" process led to some very clean JavaScript, but it was light on features. It produced a stable build, but completely forgot to include any method for saving or exporting the scans, making it more of a demo than a tool.
+                            </div>
+                        </div>
+
+                        <div class="ai-card">
+                            <h3>ChatGPT</h3>
+                            <p><strong>Model:</strong> GPT-5</p>
+                            <a href="https://theminescout.github.io/openscan-ai/chatgpt/index.html" class="ai-link" target="_blank">Play ChatGPT's Output »</a>
+                            
+                            <div class="review-text">
+                                <strong>Minescout's Review:</strong><br>
+                                GPT-5 went for a very futuristic look, which I appreciated. However, it was "all flash and no go." The actual OCR engine failed to trigger correctly in my tests, making the primary purpose of the app—scanning text—non-functional.
+                            </div>
+                        </div>
+
+                        <hr style="border: 0; height: 1px; background: var(--md-outline-variant); margin: 32px 0;">
+
+                        <h2>The Verdict</h2>
+                        <p><strong>The overall winner is Claude.</strong></p>
+                        <p>Claude's ability to balance technical library requirements with a responsive, high-end UI design allowed it to edge out the competition once again. If you need a "One-Shot" developer, the choice is clear.</p>
+
+                        <div class="official-version-box">
+                            <h2>🔍 Play the Perfected Version</h2>
+                            <p style="margin-bottom: 24px;">After the battle, I merged the best design elements of GPT-5 with the robust logic of Claude and Gemini. I added <strong>Auto-Scanning</strong>, <strong>Persistence</strong> (LocalStorage), and <strong>Manual Image Editing</strong> tools to create the ultimate browser-based scanner.</p>
+                            
+                            <div style="text-align: center;">
+                                <a href="https://theminescout.github.io/openscan-ai/main/index.html" class="github-btn" target="_blank">
+                                    <span class="material-symbols-rounded">document_scanner</span>
+                                    Launch OpenScan-AI Perfected
+                                </a>
+                                <br><br>
+                                <a href="https://github.com/TheMinescout/openscan-ai/" style="color: var(--md-outline); text-decoration: underline; font-size: 0.95rem; font-weight: 500;" target="_blank">View the GitHub Repository</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </article>
+                
+            </main>
+
+            <aside id="sidebar">
+                <div id="sidebar-container"></div>
+            </aside>
+
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container"><p id="copyright">© 2026 Minescouts Life. All rights reserved.</p></div>
+    </footer>
+
+    <!-- Modular Scripts (Legacy Firebase compat removed) -->
+    <script type="module" src="/assests/js/auth.js"></script>
+    <script type="module" src="/assests/js/homepage.js" defer></script>
+    <script src="/assests/js/loader.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Removal Face-Off - Minescouts Life</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Updated Fonts to match the M3 Design System -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <!-- Fixed Paths: Absolute locations starting with / -->
+    <link rel="stylesheet" href="/assests/css/homepage.css?v=1.12">
+    <link rel="icon" type="image/png" href="/assests/images/favicon.png?v=2">
+
+    <!-- Specific Page Styles (Using M3 Variables) -->
+    <style>
+        #user-display a { text-decoration: none; color: white; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--md-primary);
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s var(--motion-standard);
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .back-link:hover {
+            filter: brightness(0.8);
+            transform: translateX(-4px);
+        }
+
+        .article-card {
+            background: var(--card-bg);
+            border: 1px solid var(--md-outline-variant);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-1);
+        }
+
+        .article-card h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            color: var(--text-color);
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .post-meta {
+            color: var(--md-outline);
+            font-size: 0.95rem;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+
+        .post-image-full {
+            width: 100%;
+            height: auto;
+            border-radius: var(--radius-md);
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-2);
+            border: 1px solid var(--md-outline-variant);
+        }
+
+        .post-content h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            color: var(--md-primary);
+            margin-top: 48px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--md-outline-variant);
+        }
+
+        .post-content h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            color: var(--text-color);
+            margin-top: 32px;
+            margin-bottom: 16px;
+        }
+
+        .post-content p {
+            font-size: 1.05rem;
+            color: var(--text-color);
+            opacity: 0.9;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        .post-content a {
+            color: var(--md-primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .post-content a:hover {
+            text-decoration: underline;
+            filter: brightness(0.8);
+        }
+
+        /* M3 Styled Content Images */
+        .content-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--md-outline-variant);
+            box-shadow: var(--shadow-1);
+            margin-bottom: 16px;
+            margin-top: 8px;
+            display: block;
+        }
+
+        /* Voting Section M3 Styles */
+        .vote-section {
+            background: var(--md-surface-container);
+            border: 1px solid var(--md-outline-variant);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin: 24px 0 48px;
+            box-shadow: var(--shadow-1);
+            text-align: center;
+        }
+
+        .vote-section h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        .vote-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .vote-btn {
+            background: var(--md-primary-container);
+            color: var(--md-on-primary-container);
+            border: 1px solid var(--md-primary);
+            padding: 10px 24px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s var(--motion-standard);
+            box-shadow: var(--shadow-1);
+        }
+
+        .vote-btn:hover {
+            background: var(--md-primary);
+            color: var(--md-on-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-2);
+        }
+
+        .vote-results p {
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .vote-bar {
+            display: flex;
+            height: 32px;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            background: var(--md-outline-variant);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .vote-bar > div {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: white;
+            white-space: nowrap;
+            transition: width 0.5s ease;
+        }
+
+        .vote-bar-gemini { 
+            background: var(--md-primary); 
+            justify-content: flex-start; 
+        }
+        
+        .vote-bar-pixelcut { 
+            background: #64748b; /* Sleek slate color for PixelCut */
+            justify-content: flex-end; 
+        }
+
+        /* Modal M3 Styles */
+        .modal-overlay {
+            display: none; 
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90vh;
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-3);
+        }
+
+        .modal-content figure {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 75vh;
+            border-radius: var(--radius-md);
+            display: block;
+        }
+
+        #modal-caption {
+            text-align: center;
+            margin-top: 16px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            color: var(--text-color);
+            font-size: 1.1rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -16px;
+            right: -16px;
+            background: var(--md-primary);
+            color: var(--md-on-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: var(--shadow-2);
+            border: 2px solid var(--card-bg);
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .article-card { padding: 24px; }
+            .article-card h1 { font-size: 2rem; }
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container site-title-container">
+            <div id="auth-container">
+                <a href="/login.html" id="login-link">Login</a>
+            </div>
+            <div class="site-title-wrapper">
+                <h1 class="site-title"><a href="/index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <p class="tagline">Tech Tips</p>
+            </div>
+            <div id="user-display" class="hidden">
+                <a href="/account.html"><span id="user-email-display"></span></a>
+                <button id="signOut-btn" class="btn-glass">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content-area">
+        <div class="container">
+            <main class="post-main" data-post-id="ai-image-removal-competition">
+                
+                <a href="/pages/tech-tips.html" class="back-link">
+                    <span class="material-symbols-rounded" style="font-size: 20px;">arrow_back</span>
+                    Back to Tech Tips
+                </a>
+
+                <article class="article-card">
+                    <h1>AI Image Removal Face-Off!</h1>
+                    <p class="post-meta">Posted on July 22, 2025 by TheMinescouter</p>
+
+                    <!-- Updated Image path to /assests/ -->
+                    <img src="/assests/images/ai-image-removal-vs/Title.png" 
+                         alt="AI Generated Title Image" 
+                         class="post-image-full"
+                         onerror="this.onerror=null; this.src='https://placehold.co/800x400/e0e0e0/333333?text=AI+Image+Removal+Face-Off';">
+                    
+                    <!-- M3 Styled Notice Box -->
+                    <div class="notice-box" style="margin-bottom: 32px;">
+                        <span class="material-symbols-rounded" style="color: #b45309; font-size: 28px;">campaign</span>
+                        <div style="flex:1">
+                            <h4 style="margin: 0 0 6px 0; color: var(--text-color); font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem;">Note on voting:</h4>
+                            <p style="margin: 0; font-size: 0.95rem; color: var(--text-color); opacity: 0.85;">Since this is still in development, please put a comment if you encounter an issue or wish to change your vote. TheMinescout will address the comment and then remove it. If it takes too long, email <a href="mailto:theminescout@minescout.net" style="color: var(--md-primary); font-weight: bold;">theminescout@minescout.net</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="post-content">
+                        <h2>What This Is</h2>
+                        <p>Welcome to the AI Image Item Removal Competition! This competition pits Gemini AI, our winner in the image comparison, against PixelCut in a head-to-head battle to see which can more effectively edit items in images. The first two rounds will be about removing objects, but the third round will be about adding in objects.</p>
+                        
+                        <h2>Competition</h2>
+                        
+                        <h3>Round 1</h3>
+                        <p><strong>Original Photo:</strong></p>
+                        <img src="/assests/images/ai-image-removal-vs/Round One Original.jpg" alt="Round One Original Photo" class="content-img" onerror="this.style.display='none'">
+                        
+                        <p style="text-align: center; margin: 16px 0;">
+                            <a href="javascript:void(0);" class="modal-trigger" data-image-src="/assests/images/ai-image-removal-vs/Round One Gemini.png" data-caption="Round 1: Gemini's Removal">View Gemini's Removal</a> | 
+                            <a href="javascript:void(0);" class="modal-trigger" data-image-src="/assests/images/ai-image-removal-vs/Round One Pixelcut.png" data-caption="Round 1: PixelCut's Removal">View PixelCut's Removal</a>
+                        </p>
+                        
+                        <div class="vote-section" data-vote-id="round1">
+                            <h4>Which did a better job?</h4>
+                            <div class="vote-buttons">
+                                <button class="vote-btn" data-vote-option="gemini">Vote Gemini</button>
+                                <button class="vote-btn" data-vote-option="pixelcut">Vote PixelCut</button>
+                            </div>
+                            <div class="vote-results">
+                                <p>Current Votes:</p>
+                                <div class="vote-bar">
+                                    <div class="vote-bar-gemini" style="width: 50%;">Gemini: <span class="gemini-votes">0</span></div>
+                                    <div class="vote-bar-pixelcut" style="width: 50%;">PixelCut: <span class="pixelcut-votes">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Round 2</h3>
+                        <p><strong>Original Photo:</strong></p>
+                        <img src="/assests/images/ai-image-removal-vs/Round Two Original.jpg" alt="Round Two Original Photo" class="content-img" onerror="this.style.display='none'">
+                        
+                        <p style="text-align: center; margin: 16px 0;">
+                            <a href="javascript:void(0);" class="modal-trigger" data-image-src="/assests/images/ai-image-removal-vs/Round Two Gemini.png" data-caption="Round 2: Gemini's Removal">View Gemini's Removal</a> | 
+                            <a href="javascript:void(0);" class="modal-trigger" data-image-src="/assests/images/ai-image-removal-vs/Round Two Pixelcut.png" data-caption="Round 2: PixelCut's Removal">View PixelCut's Removal</a>
+                        </p>
+                        
+                        <div class="vote-section" data-vote-id="round2">
+                            <h4>Which did a better job?</h4>
+                            <div class="vote-buttons">
+                                <button class="vote-btn" data-vote-option="gemini">Vote Gemini</button>
+                                <button class="vote-btn" data-vote-option="pixelcut">Vote PixelCut</button>
+                            </div>
+                            <div class="vote-results">
+                                <p>Current Votes:</p>
+                                <div class="vote-bar">
+                                    <div class="vote-bar-gemini" style="width: 50%;">Gemini: <span class="gemini-votes">0</span></div>
+                                    <div class="vote-bar-pixelcut" style="width: 50%;">PixelCut: <span class="pixelcut-votes">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Round 3</h3>
+                        <p><strong>Original Photo:</strong></p>
+                        <img src="/assests/images/ai-image-removal-vs/Round Three Original.jpg" alt="Round Three Original Photo" class="content-img" onerror="this.style.display='none'">
+                        
+                        <p style="text-align: center; margin: 16px 0;">
+                            <a href="javascript:void(0);" class="modal-trigger" data-image-src="/assests/images/ai-image-removal-vs/Round Three Gemini.png" data-caption="Round 3: Gemini's Removal">View Gemini's Removal</a> | 
+                            <a href="javascript:void(0);" class="modal-trigger" data-image-src="/assests/images/ai-image-removal-vs/Round Three Pixelcut.png" data-caption="Round 3: PixelCut's Removal">View PixelCut's Removal</a>
+                        </p>
+                        
+                        <div class="vote-section" data-vote-id="round3">
+                            <h4>Which did a better job?</h4>
+                            <div class="vote-buttons">
+                                <button class="vote-btn" data-vote-option="gemini">Vote Gemini</button>
+                                <button class="vote-btn" data-vote-option="pixelcut">Vote PixelCut</button>
+                            </div>
+                            <div class="vote-results">
+                                <p>Current Votes:</p>
+                                <div class="vote-bar">
+                                    <div class="vote-bar-gemini" style="width: 50%;">Gemini: <span class="gemini-votes">0</span></div>
+                                    <div class="vote-bar-pixelcut" style="width: 50%;">PixelCut: <span class="pixelcut-votes">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+            </main>
+
+            <!-- Modular Sidebar -->
+            <aside id="sidebar">
+                <div id="sidebar-container"></div> 
+            </aside>
+
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p id="copyright">© 2026 Minescouts Life. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" title="Close">×</span>
+            <figure>
+                <img id="modal-image" src="" alt="Modal Image">
+                <figcaption id="modal-caption"></figcaption>
+            </figure>
+        </div>
+    </div>
+
+    <!-- Modular Scripts -->
+    <script type="module" src="/assests/js/auth.js"></script>
+    <script type="module" src="/assests/js/homepage.js" defer></script>
+    <script src="/assests/js/loader.js"></script>
+
+    <!-- Optional: Basic modal opening script if not handled in homepage.js -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-image');
+            const modalCaption = document.getElementById('modal-caption');
+            const closeBtn = document.querySelector('.modal-close');
+            
+            document.querySelectorAll('.modal-trigger').forEach(trigger => {
+                trigger.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    modalImg.src = trigger.getAttribute('data-image-src');
+                    modalCaption.textContent = trigger.getAttribute('data-caption');
+                    modal.classList.add('active');
+                });
+            });
+
+            const closeModal = () => {
+                modal.classList.remove('active');
+                modalImg.src = '';
+            };
+
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-import { db, auth } from "./firebase-config.js";
+import { db, auth } from "./firebase-config.js?v=1";
 import { ref, onValue, push, remove, runTransaction, onDisconnect, set, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const ADMIN_EMAIL = 'theminescout@minescout.net';

@@ -1,6 +1,6 @@
 // app.js — Application Logic & Routing
 
-import { views } from './views.js?v=4.2';
+import { views } from './views.js?v=1.321';
 
 // ── 1. GLOBAL FIREBASE INITIALIZATION (Fixes memory leaks) ─────────
 let globalFirebaseApp = null;
@@ -62,6 +62,7 @@ const AI_SECONDARY = [
   { label: 'Legal',        href: '/ai/legal' },
   { label: 'Portfolio',    href: '/' },
   { label: 'Ask AI',       href: '/ask' },
+  { label: 'Client Review',       href: '/ai/review' },
   { label: 'Client Auth Rest',href: 'https://backend.tmcarleton11.workers.dev/authreset' },
 ];
 
@@ -935,7 +936,29 @@ function initPricing() {
     });
   }
 
-  const TOTAL_STEPS = 4;
+  // ── 1. AUTO-GRAB PRICING PLANS ──
+  let plansText = '';
+  document.querySelectorAll('.tier--horizontal').forEach((tier, idx) => {
+    const name = tier.querySelector('.tier-name')?.textContent || '';
+    const priceSub = tier.querySelector('.tier-price-sub')?.textContent || '';
+    const price = tier.querySelector('.tier-price')?.textContent || '';
+    const desc = tier.querySelector('.tier-target')?.textContent || '';
+    
+    let perks = [];
+    tier.querySelectorAll('.tier-feature').forEach(feature => {
+      perks.push(feature.textContent.trim());
+    });
+
+    if(name) {
+      plansText += `Plan ${idx + 1}: ${name} (${priceSub} ${price})\nTarget: ${desc}\nFeatures: ${perks.join(', ')}\n\n`;
+    }
+  });
+
+  if (!plansText) {
+    plansText = "1. Portfolio Website 2. Professional Website 3. Business Website 4. Business + AI";
+  }
+
+  const TOTAL_STEPS = 5;
   const progressFill = document.getElementById('quiz-progress');
   const quizBody = document.getElementById('quiz-body');
   const quizResult = document.getElementById('quiz-result');
@@ -943,177 +966,218 @@ function initPricing() {
   const resultDesc = document.getElementById('quiz-result-desc');
   const resultCta = document.getElementById('quiz-result-cta');
   const retryBtn = document.getElementById('quiz-retry');
+  const backBtn = document.getElementById('quiz-back');
+  const nextBtn = document.getElementById('quiz-next');
 
   let step = 1;
-  let selections = {}; 
+  let conversationHistory = []; 
+  let selectedText = "";
+  const initialStepHTML = quizBody ? quizBody.innerHTML : '';
 
   function updateProgress() {
     const pct = step <= TOTAL_STEPS ? (step / TOTAL_STEPS) * 100 : 100;
     if (progressFill) progressFill.style.width = pct + '%';
   }
 
-  function goToStep(s) {
-    step = s;
-    document.querySelectorAll('.plan-quiz-step').forEach(function(el) {
-      el.classList.toggle('active', parseInt(el.getAttribute('data-step'), 10) === step);
-    });
-    updateProgress();
+  function renderAIQuestion(questionText, options) {
+    quizBody.innerHTML = ''; 
+    
+    const stepDiv = document.createElement('div');
+    stepDiv.className = 'plan-quiz-step active';
+    stepDiv.setAttribute('data-step', step);
 
-    const backBtn = document.getElementById('quiz-back');
-    const nextBtn = document.getElementById('quiz-next');
-    
-    if (backBtn) backBtn.style.visibility = step > 1 ? 'visible' : 'hidden';
-    
+    const qDiv = document.createElement('div');
+    qDiv.className = 'plan-quiz-q';
+    qDiv.textContent = questionText;
+    stepDiv.appendChild(qDiv);
+
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'plan-quiz-options';
+
+    options.slice(0, 4).forEach(optText => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'plan-quiz-opt';
+      btn.textContent = optText;
+      optsDiv.appendChild(btn);
+    });
+
+    stepDiv.appendChild(optsDiv);
+    quizBody.appendChild(stepDiv);
+
     if (nextBtn) {
-      nextBtn.disabled = !selections[step];
-      nextBtn.textContent = step === TOTAL_STEPS ? 'See Recommendation' : 'Next Step';
+      nextBtn.disabled = true;
+      nextBtn.textContent = step >= TOTAL_STEPS ? 'See Recommendation' : 'Next Step';
     }
+    
+    if (backBtn) backBtn.style.visibility = 'hidden'; 
+    updateProgress();
   }
 
-  function showResult() {
+  function showLoading() {
+    quizBody.innerHTML = '<div style="text-align:center; padding: 3rem 1rem; color: var(--muted);"><div class="spinner" style="margin: 0 auto 1rem;"></div>Analyzing responses...</div>';
+    if(nextBtn) nextBtn.disabled = true;
+  }
+
+  function showResult(planName, reason) {
     if (quizBody) quizBody.style.display = 'none';
     const nav = document.querySelector('.plan-quiz-nav');
     if (nav) nav.style.display = 'none';
     if (quizResult) quizResult.classList.add('active');
     if (progressFill) progressFill.style.width = '100%';
 
-    let remodelScore = 0;
-    let aiScore = 0;
-    let widgetScore = 0;
-    let opsScore = 0;
-    let userAnswers = [];
-    
-    for (let i = 1; i <= TOTAL_STEPS; i++) {
-      if (selections[i]) {
-        remodelScore += selections[i].remodel || 0;
-        aiScore += selections[i].ai || 0;
-        widgetScore += selections[i].widget || 0;
-        opsScore += selections[i].ops || 0;
-        userAnswers.push(`Q: ${selections[i].qText} | A: ${selections[i].aText}`);
-      }
-    }
-    
-    if (resultTitle) resultTitle.innerHTML = '<span class="ai-loading">Consulting Minescout AI...</span>';
-    if (resultDesc) resultDesc.innerHTML = '';
-    if (resultCta) resultCta.style.display = 'none';
-
-    const scores = { 
-      'Starter Site': selections[1]?.starter || 0,
-      'Digital Remodel': remodelScore, 
-      'Full AI Upgrade': aiScore, 
-      'Widget': widgetScore
-    };
-
-    
-    const topPlan = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-
-    const systemPrompt = `You are a technical sales advisor for Minescout AI. A client just finished a quiz.
-    Based on their answers, explain why "${topPlan}" is the perfect fit.
-    
-    PLANS TO REFERENCE:
-    1. Starter Site ($499): Brand new site from scratch. Best for businesses with no site or one that needs replacing entirely.
-    2. Digital Remodel ($599): Full overhaul of an existing site. Best for businesses with a site that needs modernizing.
-    3. Full AI Upgrade ($799 + $59/mo): Remodel plus custom AI assistant. Best for high inquiry volume and after-hours lead capture.
-    4. Widget ($150): Drop-in tool for any existing site. Best for businesses needing a specific calculator or lead form.
-
-    Format your response EXACTLY like this:
-    PLAN: [The Exact Plan Name]
-    REASON: [1-2 professional, persuasive paragraphs speaking directly to 'you'.]`;
-
-    fetch(CHAT_WORKER, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [{ role: "user", content: "Recommend: " + topPlan + "\nAnswers:\n" + userAnswers.join("\n") }],
-        system_override: systemPrompt,
-        temperature: 0.4
-      })
-    })
-    .then(res => res.json())
-    .then(async data => {
-      const text = data.content || "";
-      let planName = topPlan;
-      let reasonText = text;
-
-      if (text.includes("PLAN:") && text.includes("REASON:")) {
-        const parts = text.split("REASON:");
-        planName = parts[0].replace("PLAN:", "").trim();
-        reasonText = parts[1].trim();
-      }
-
-      if (resultTitle) resultTitle.textContent = planName;
-      if (resultDesc) {
-        for (let i = 0; i < reasonText.length; i++) {
-          resultDesc.innerHTML += reasonText[i] === '\n' ? '<br/>' : reasonText[i];
-          await new Promise(r => setTimeout(r, 5));
+    if (resultTitle) resultTitle.textContent = planName;
+    if (resultDesc) {
+      resultDesc.innerHTML = '';
+      let i = 0;
+      function typeWriter() {
+        if (i < reason.length) {
+          resultDesc.innerHTML += reason.charAt(i) === '\n' ? '<br/>' : reason.charAt(i);
+          i++;
+          setTimeout(typeWriter, 5); 
         }
       }
+      typeWriter();
+    }
+    
+    if (resultCta) {
+      resultCta.textContent = 'Get started with ' + planName;
+      resultCta.href = '/contact';
+      resultCta.style.display = 'inline-flex';
+    }
+  }
+
+  // ── 3. STRICT JSON FETCH FROM LLAMA 3.1 ──
+  async function fetchNextStep() {
+    showLoading();
+
+    const systemPrompt = `You are a technical sales advisor for Minescout AI.
+
+AVAILABLE PLANS:
+${plansText}
+
+CRITICAL INSTRUCTIONS:
+You MUST respond ONLY with a raw, valid JSON object. Do not include markdown formatting (like \`\`\`json) or conversational text.
+
+SCENARIO 1: Ask a question
+To narrow down their needs, ask ONE multiple-choice question with EXACTLY 4 options. Output this exact JSON format:
+{
+  "question": "Your question here?",
+  "options": ["Option 1", "Option 2", "Option 3", "Option 4"]
+}
+
+SCENARIO 2: Final Recommendation
+If they have answered enough questions, give a final recommendation using this exact JSON format:
+{
+  "plan": "Exact Plan Name",
+  "reason": "1-2 persuasive paragraphs explaining why this plan fits."
+}`;
+
+    let rawContent = "";
+    try {
+      const res = await fetch(CHAT_WORKER, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: conversationHistory,
+          system_override: systemPrompt,
+          temperature: 0.2 // Very low for strict JSON compliance
+        })
+      });
+
+      const data = await res.json();
+      rawContent = data.content || "";
       
-      if (resultCta) {
-        resultCta.textContent = 'Get started with ' + planName;
-        resultCta.href = '/contact';
-        resultCta.style.display = 'inline-flex';
+      let parsed;
+
+      // Check if the Worker already parsed it into an object for us
+      if (typeof rawContent === 'object' && rawContent !== null) {
+        parsed = rawContent;
+      } else {
+        // If it's a string, strip any markdown and parse it manually
+        let cleanJsonText = String(rawContent).replace(/```json/gi, '').replace(/```/g, '').trim();
+        parsed = JSON.parse(cleanJsonText);
       }
-    })
-    .catch(err => {
-      if (resultTitle) resultTitle.textContent = topPlan;
-      if (resultDesc) resultDesc.textContent = "Based on your focus on efficiency and growth, the " + topPlan + " is your best path forward. Contact us to discuss the next steps.";
-      if (resultCta) {
-        resultCta.style.display = 'inline-flex';
-        resultCta.textContent = 'Get started';
+
+      // Check which JSON schema it returned
+      if (parsed.plan && parsed.reason) {
+        showResult(parsed.plan, parsed.reason);
+      } 
+      else if (parsed.question && parsed.options && parsed.options.length > 1) {
+        renderAIQuestion(parsed.question, parsed.options);
+      } 
+      else {
+        throw new Error("Missing required JSON fields.");
       }
-    });
+
+    } catch(err) {
+      console.error("AI JSON Parse Error. Raw output was:", rawContent);
+      console.error("Exact Error:", err); // Added this so we can see the exact crash if it happens again
+      
+      // The ultimate failsafe: gracefully render a fallback question if the AI glitches
+      renderAIQuestion("What is your main priority for the new site?", [
+        "Focusing on high-end design",
+        "Maximum load speed and SEO",
+        "Automating my customer support",
+        "Keeping initial costs low"
+      ]);
+    }
   }
 
-  function resetQuiz() {
-    step = 1;
-    selections = {};
-    document.querySelectorAll('.plan-quiz-opt').forEach(el => el.classList.remove('selected'));
-    if (quizBody) quizBody.style.display = '';
-    const nav = document.querySelector('.plan-quiz-nav');
-    if (nav) nav.style.display = 'flex';
-    if (quizResult) quizResult.classList.remove('active');
-    goToStep(1);
-  }
-
+  // ── 4. EVENT LISTENERS ──
   if (planQuizEl) {
     planQuizEl.addEventListener('click', function(e) {
-      var opt = e.target.closest('.plan-quiz-opt');
+      const opt = e.target.closest('.plan-quiz-opt');
       if (opt) {
         const stepEl = opt.closest('.plan-quiz-step');
-        const stepNum = parseInt(stepEl.getAttribute('data-step'), 10);
-        
         stepEl.querySelectorAll('.plan-quiz-opt').forEach(el => el.classList.remove('selected'));
         opt.classList.add('selected');
+        selectedText = opt.textContent;
         
-        selections[stepNum] = {
-          qText: stepEl.querySelector('.plan-quiz-q').textContent,
-          aText: opt.textContent,
-          remodel: parseInt(opt.getAttribute('data-remodel'), 10) || 0,
-          ai: parseInt(opt.getAttribute('data-ai'), 10) || 0,
-          widget: parseInt(opt.getAttribute('data-widget'), 10) || 0,
-          ops: parseInt(opt.getAttribute('data-ops'), 10) || 0
-        };
-        
-        const nextBtn = document.getElementById('quiz-next');
         if (nextBtn) nextBtn.disabled = false;
         return;
       }
 
       if (e.target.closest('#quiz-next')) {
-        if (step >= TOTAL_STEPS) showResult();
-        else goToStep(step + 1);
-        return;
-      }
+        const activeStep = document.querySelector('.plan-quiz-step.active');
+        if (activeStep) {
+          const qText = activeStep.querySelector('.plan-quiz-q').textContent;
+          // Keep the conversation history clean for JSON generation
+          conversationHistory.push({ role: 'assistant', content: qText });
+          conversationHistory.push({ role: 'user', content: "My answer: " + selectedText });
+        }
 
-      if (e.target.closest('#quiz-back')) {
-        if (step > 1) goToStep(step - 1);
+        step++;
+        
+        if (step > TOTAL_STEPS) {
+          conversationHistory.push({ role: 'user', content: "I have answered enough questions. Output the final recommendation JSON now."});
+        }
+        
+        fetchNextStep();
         return;
       }
     });
   }
 
-  if (retryBtn) retryBtn.addEventListener('click', resetQuiz);
+  if (retryBtn) {
+    retryBtn.addEventListener('click', () => {
+      step = 1;
+      conversationHistory = [];
+      if (quizBody) {
+        quizBody.style.display = 'block';
+        quizBody.innerHTML = initialStepHTML; 
+      }
+      const nav = document.querySelector('.plan-quiz-nav');
+      if (nav) nav.style.display = 'flex';
+      if (quizResult) quizResult.classList.remove('active');
+      if (backBtn) backBtn.style.visibility = 'hidden';
+      if (nextBtn) {
+        nextBtn.disabled = true;
+        nextBtn.textContent = 'Next Step';
+      }
+      updateProgress();
+    });
+  }
 }
 
 function initLegal() {

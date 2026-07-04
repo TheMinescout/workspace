@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carly Fam Survival Server — MineScout Life</title>
+  <meta name="description" content="My life in the Carly Fam Survival Server. Videos, summaries, and playlist links." />
+
+  <!-- Asset paths step up one directory because this is in /pages/ -->
+  <link rel="icon" type="image/png" href="/assests/images/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <link rel="stylesheet" href="/assests/css/homepage.css?v=1.12" />
+
+  <style>
+    /* ════ MINECRAFT SERVER SPECIFIC STYLES ════ */
+    .minecraft-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      box-shadow: var(--shadow-card);
+      animation: fade-up 0.5s ease both;
+    }
+
+    .page-title {
+      font-size: clamp(28px, 4vw, 36px);
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .post-image-full {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-lift);
+      border: 1px solid var(--border);
+    }
+
+    .youtube-link-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--bg-glass);
+      padding: 20px 24px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      transition: all var(--transition);
+      text-decoration: none;
+      color: var(--text-primary);
+      margin-top: 24px;
+    }
+
+    .youtube-link-box:hover {
+      box-shadow: 0 4px 20px rgba(255, 0, 0, 0.15);
+      border-color: #ff0000;
+      transform: translateY(-2px);
+    }
+
+    .youtube-icon {
+      font-size: 48px;
+      color: #ff0000;
+      transition: transform var(--transition);
+    }
+
+    .youtube-link-box:hover .youtube-icon {
+      transform: scale(1.1);
+    }
+
+    .youtube-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+
+    .youtube-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    @media(max-width: 600px) {
+      .minecraft-card { padding: 24px; }
+      .youtube-link-box { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="site-header">
+  <div class="header-left">
+    <span class="header-logo"><a href="/index.html" style="color:inherit; text-decoration:none;">Life of a Smart Kid</a></span>
+    <span class="header-tagline">minescout.net</span>
+  </div>
+  <div class="header-right">
+    <!-- THEME TOGGLE -->
+    <button id="theme-toggle" class="view-btn" title="Toggle theme">
+      ☀️
+    </button>
+
+    <!-- Auth Controls -->
+    <div id="auth-section">
+      <div class="auth-user-chip" id="user-chip" style="display:none;">
+        <div class="auth-avatar" id="user-avatar">U</div>
+        <span id="header-email"></span>
+      </div>
+      <a href="/login.html" id="login-btn" class="btn-primary">Sign In</a>
+      <button id="signout-btn" class="clear-filter-btn" style="display:none; padding:7px 12px;">Sign Out</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO SECTION -->
+<section id="hero-section">
+  <div class="hero-eyebrow"><span class="dot"></span> Server Hub</div>
+  <h1 class="hero-title">Carly Fam <span>Survival.</span></h1>
+  <p class="hero-subtitle">My life in the Carly Fam Survival Server. Videos, summaries, and playlist links.</p>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div id="page-layout">
+
+  <!-- CONTENT AREA -->
+  <main id="content-area">
+
+    <!-- ADMIN PANEL BANNER -->
+    <div id="admin-panel" class="admin-section hidden">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:24px;">🛡️</span>
+        <div>
+          <div class="admin-info-text">Admin Access Active</div>
+          <div style="font-size:12px; color:var(--text-secondary);">You are viewing the dashboard as an administrator.</div>
+        </div>
+      </div>
+      <a href="/admin/admin-posting.html" id="admin-link-btn" class="admin-button">
+        Dashboard <span id="admin-badge" class="notification-badge hidden">0</span>
+      </a>
+    </div>
+
+    <!-- MINECRAFT CONTENT CARD -->
+    <article class="minecraft-card">
+        <h1 class="page-title">Welcome to my Minecraft Life!</h1>
+        <p class="page-subtitle">This is a homepage for my videos and summaries.</p>
+
+        <img src="/Images/survival-server-images/Minecraft server title image.png" 
+             alt="Minecraft Survival World" 
+             class="post-image-full"
+             onerror="this.onerror=null; this.src='https://placehold.co/800x400/111120/7c5aff?text=Minecraft+Server+Image';">
+
+        <!-- V3 Styled Notice Box -->
+        <div class="notice-box" style="margin-bottom: 32px;">
+            <span class="material-symbols-rounded" style="color: var(--warning); font-size: 28px;">warning</span>
+            <div style="flex:1">
+                <h4 style="margin: 0 0 6px 0; color: var(--text-primary); font-size: 1.1rem; font-weight: 700;">Leaving of House and Farms Section</h4>
+                <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">We are sorry to announce that we are removing the house and farm section compatibly with this website, due to upkeep and UI issues. You can still access videos via the YouTube playlist.</p>
+            </div>
+        </div>
+
+        <div class="post-content">
+            <p style="color: var(--text-primary); font-size: 1.05rem; margin-bottom: 16px;">The options below will take you to the main sections for my life in the Carly Fam Survival Server.</p>
+
+            <!-- V3 Styled YouTube Link Card -->
+            <a href="https://www.youtube.com/playlist?list=PLiilNDHdud15uVkuaWwQbiKfYpdlU-IU5" target="_blank" class="youtube-link-box">
+                <span class="material-symbols-rounded youtube-icon">play_circle</span>
+                <div>
+                    <h3 class="youtube-title">YouTube Playlist</h3>
+                    <p class="youtube-subtitle">Click here to see my full YouTube playlist (this is unlisted so be careful when sharing)!</p>
+                </div>
+            </a>
+        </div>
+    </article>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <!-- SIDEBAR NAV INJECTOR -->
+    <div id="sidebar-nav-container"></div>
+
+    <!-- NOW BUILDING MODULE -->
+    <div class="sidebar-module">
+      <div class="sidebar-module-header">
+        <span class="sidebar-module-icon">🔴</span>
+        <span class="sidebar-module-title" style="color:var(--text-primary);">Now Building</span>
+      </div>
+      <div class="sidebar-module-body">
+        <ul class="now-building-list" id="now-building-list">
+          <!-- Injected via data.js -->
+        </ul>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<footer style="padding: 40px; text-align: center; border-top: 1px solid var(--border); margin-top: 60px;">
+  <p style="font-size: 13px; color: var(--text-muted);">Life of a Smart Kid OS v3.1 • Dual Theme Edition</p>
+</footer>
+
+<!-- ════════════════════════════════════════════════════════════
+   V3 LOGIC (THEME, SIDEBAR, & AUTH)
+════════════════════════════════════════════════════════════ -->
+<script type="module">
+import { db, auth } from "/assests/js/firebase-config.js?v=1";
+import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// IMPORT CENTRAL DATA AND SIDEBAR
+import { siteData } from "/assests/includes/data.js";
+import { initSidebar } from "/assests/includes/sidebar.js";
+
+// ── THEME ENGINE ──
+const ThemeEngine = {
+  init() {
+    const saved = localStorage.getItem("theme");
+    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const theme = saved || (systemDark ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+    this.updateIcon(theme);
+
+    document.getElementById("theme-toggle")?.addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme");
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      this.updateIcon(next);
+    });
+  },
+  updateIcon(theme) {
+    const btn = document.getElementById("theme-toggle");
+    if (!btn) return;
+    btn.textContent = theme === "dark" ? "☀️" : "🌙";
+  }
+};
+
+// ── INITIALIZATION ──
+const AppInit = {
+  start() {
+    ThemeEngine.init();
+    this.setupAuthUI();
+    
+    // Inject the global sidebar links
+    initSidebar();
+
+    // Render "Now Building" module dynamically from data.js
+    const nbContainer = document.getElementById("now-building-list");
+    if (nbContainer && siteData.nowBuilding) {
+        nbContainer.innerHTML = siteData.nowBuilding.map(item => `
+            <li>
+                <div class="pulse-dot" style="background: ${item.color || 'var(--danger)'}; box-shadow: 0 0 8px ${item.color || 'var(--danger)'};"></div>
+                <div>
+                    ${item.title}
+                    <span class="desc">${item.desc}</span>
+                </div>
+            </li>
+        `).join('');
+    }
+  },
+
+  setupAuthUI() {
+    const loginBtn = document.getElementById("login-btn");
+    const signoutBtn = document.getElementById("signout-btn");
+    const userChip = document.getElementById("user-chip");
+    const emailEl = document.getElementById("header-email");
+    const avatarEl = document.getElementById("user-avatar");
+    const adminPanel = document.getElementById("admin-panel");
+    const adminBadge = document.getElementById("admin-badge");
+    const ADMIN_EMAIL = 'theminescout@minescout.net';
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        if(loginBtn) loginBtn.style.display = "none";
+        if(signoutBtn) signoutBtn.style.display = "inline-flex";
+        if(userChip) userChip.style.display = "flex";
+        if(emailEl) emailEl.textContent = user.email;
+        if(avatarEl) avatarEl.textContent = (user.email || "U")[0].toUpperCase();
+
+        // Admin Access Logic
+        if (user.email === ADMIN_EMAIL && adminPanel) {
+          adminPanel.classList.remove("hidden");
+          onValue(ref(db, 'feature_requests'), (snapshot) => {
+            const data = snapshot.val();
+            let unreadCount = 0;
+            if (data) Object.values(data).forEach(req => { if (req.status === 'new') unreadCount++; });
+            if (adminBadge) {
+              if (unreadCount > 0) {
+                adminBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                adminBadge.classList.remove('hidden');
+              } else {
+                adminBadge.classList.add('hidden');
+              }
+            }
+          });
+        }
+      } else {
+        if(loginBtn) loginBtn.style.display = "inline-flex";
+        if(signoutBtn) signoutBtn.style.display = "none";
+        if(userChip) userChip.style.display = "none";
+        if(adminPanel) adminPanel.classList.add("hidden");
+      }
+    });
+
+    if(signoutBtn) signoutBtn.addEventListener("click", () => signOut(auth).catch(err => console.error("Sign out error", err)));
+  }
+};
+
+document.addEventListener("DOMContentLoaded", () => AppInit.start());
+</script>
+
+</body>
+</html>

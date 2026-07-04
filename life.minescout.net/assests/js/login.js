@@ -1,7 +1,7 @@
 // assests/js/login.js
 
 // 1. IMPORT THE CONFIGURATION
-import { auth, db } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js?v=1";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 

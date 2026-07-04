@@ -1,7 +1,7 @@
 // assests/js/homepage.js
 
 import { initFeatures } from "./features.js";
-import { db, auth } from "./firebase-config.js";
+import { db, auth } from "./firebase-config.js?v=1";
 import { ref, onValue, push, serverTimestamp, runTransaction } 
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
