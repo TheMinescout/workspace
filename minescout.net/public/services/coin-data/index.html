@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Material 3 Coin Price Engine</title>
+<style>
+  /* Material Design 3 Theme Tokens */
+  :root {
+    --md-sys-color-background: #FFFBFE;
+    --md-sys-color-on-background: #1C1B1F;
+    --md-sys-color-surface: #F4EFF4;
+    --md-sys-color-surface-variant: #E7E0EC;
+    --md-sys-color-on-surface-variant: #49454F;
+    --md-sys-color-primary: #6750A4;
+    --md-sys-color-on-primary: #FFFFFF;
+    --md-sys-color-primary-container: #EADDFF;
+    --md-sys-color-on-primary-container: #21005D;
+    --md-sys-color-error: #B3261E;
+    --md-sys-color-error-container: #F9DEDC;
+    --md-sys-color-on-error-container: #410E0B;
+    
+    --md-elevation-1: 0px 1px 3px 1px rgba(0,0,0,0.15), 0px 1px 2px 0px rgba(0,0,0,0.30);
+    --md-elevation-2: 0px 2px 6px 2px rgba(0,0,0,0.15), 0px 1px 2px 0px rgba(0,0,0,0.30);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+    background-color: var(--md-sys-color-background);
+    color: var(--md-sys-color-on-background);
+    margin: 0;
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+  }
+
+  .md-card {
+    background-color: var(--md-sys-color-surface);
+    border-radius: 24px;
+    padding: 32px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: var(--md-elevation-1);
+    transition: box-shadow 0.3s ease;
+  }
+  .md-card:hover { box-shadow: var(--md-elevation-2); }
+
+  .md-headline {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+    margin: 0 0 24px 0;
+    color: var(--md-sys-color-on-background);
+    text-align: center;
+  }
+
+  .md-status {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+  }
+  .md-status.loading { background: #FFF8E1; color: #F57F17; }
+  .md-status.ready { background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); }
+  .md-status.error { background: var(--md-sys-color-error-container); color: var(--md-sys-color-on-error-container); }
+
+  .md-field {
+    position: relative;
+    background-color: var(--md-sys-color-surface-variant);
+    border-radius: 4px 4px 0 0;
+    border-bottom: 1px solid var(--md-sys-color-on-surface-variant);
+    padding: 8px 16px;
+    margin-bottom: 20px;
+    transition: all 0.2s ease;
+  }
+  .md-field:focus-within {
+    border-bottom: 2px solid var(--md-sys-color-primary);
+    background-color: #EFE8F4;
+  }
+  .md-field.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .md-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--md-sys-color-primary);
+    margin-bottom: 4px;
+  }
+
+  .md-field input, .md-field select {
+    width: 100%;
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    color: var(--md-sys-color-on-background);
+    outline: none;
+    padding: 4px 0;
+    font-family: inherit;
+  }
+  
+  .md-field select { cursor: pointer; }
+
+  .grid-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .md-result-panel {
+    margin-top: 32px;
+    padding: 24px;
+    background-color: var(--md-sys-color-primary-container);
+    border-radius: 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  .md-result-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--md-sys-color-on-primary-container);
+    margin-bottom: 8px;
+  }
+  .md-result-value {
+    font-size: 48px;
+    font-weight: 400;
+    color: var(--md-sys-color-on-primary-container);
+    line-height: 1.2;
+    margin: 0;
+  }
+  .md-result-error { font-size: 16px; color: var(--md-sys-color-error); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="md-card">
+  <h1 class="md-headline">Fair Market Value Estimator</h1>
+  
+  <div id="status" class="md-status loading">
+    <span>Connecting to Cloudflare proxy...</span>
+  </div>
+
+  <div class="md-field disabled" id="wrap-mainType">
+    <label>1. Main Coin Type</label>
+    <select id="mainType" disabled>
+      <option value="">Loading types...</option>
+    </select>
+  </div>
+
+  <div class="md-field disabled" id="wrap-year">
+    <label>2. Year</label>
+    <input type="number" id="year" placeholder="e.g. 2017" disabled>
+  </div>
+
+  <div class="md-field disabled" id="wrap-series">
+    <label>Detected Series (Auto-Matched)</label>
+    <select id="seriesSelect" disabled>
+      <option value="">Awaiting Year...</option>
+    </select>
+  </div>
+
+  <div class="grid-row">
+    <div class="md-field disabled" id="wrap-mintMark">
+      <label>3. Mint Mark</label>
+      <select id="mintMark" disabled>
+        <option value="">Awaiting Year...</option>
+      </select>
+    </div>
+
+    <div class="md-field disabled" id="wrap-condition">
+      <label>4. Condition Grade</label>
+      <select id="condition" disabled>
+        <option value="">Awaiting Year & Mint...</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="md-result-panel">
+    <div class="md-result-label" id="priceLabel">Awaiting Input</div>
+    <div class="md-result-value" id="priceDisplay">—</div>
+  </div>
+</div>
+
+<script>
+  const PROXY_URL = "https://coin-proxy.tmcarleton11.workers.dev/?url=";
+  const MAIN_URL = "https://www.numismedia.com/rarecoinprices/fmv.shtml";
+
+  let coinDatabase = {
+    "Cents": [], "Nickels": [], "Dimes": [], "Quarters": [],
+    "Halves": [], "Dollars": [], "Gold": [], "Other": []
+  };
+  
+  let currentPricingTable = null; 
+  let gradeColumnMap = {}; 
+  let currentSeriesUrl = "";
+
+  // The valid US Mint Marks we want to extract
+  const VALID_MINT_MARKS = ['P', 'D', 'S', 'W', 'O', 'CC', 'C'];
+
+  const statusDiv = document.getElementById('status');
+  const mainTypeSelect = document.getElementById('mainType');
+  const yearInput = document.getElementById('year');
+  const seriesSelect = document.getElementById('seriesSelect');
+  const mintMarkSelect = document.getElementById('mintMark'); 
+  const conditionSelect = document.getElementById('condition');
+  const priceDisplay = document.getElementById('priceDisplay');
+  const priceLabel = document.getElementById('priceLabel');
+
+  const wrapMainType = document.getElementById('wrap-mainType');
+  const wrapYear = document.getElementById('wrap-year');
+  const wrapSeries = document.getElementById('wrap-series');
+  const wrapMintMark = document.getElementById('wrap-mintMark');
+  const wrapCondition = document.getElementById('wrap-condition');
+
+  function setStatus(msg, type) {
+    statusDiv.textContent = msg;
+    statusDiv.className = `md-status ${type}`;
+  }
+
+  function enableField(element, wrapper) {
+    element.disabled = false;
+    wrapper.classList.remove('disabled');
+  }
+
+  function disableField(element, wrapper) {
+    element.disabled = true;
+    wrapper.classList.add('disabled');
+  }
+
+  function findExactCoinRow(rows, yearStr, mintStr) {
+    let bestMatch = null;
+    let highestScore = -1;
+
+    for (const row of rows) {
+      const cells = row.children;
+      if (cells.length < 3) continue; 
+
+      let firstCellText = cells[0].textContent.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().toUpperCase();
+      firstCellText = firstCellText.replace(/\s+/g, ' '); 
+
+      if (!firstCellText.includes(yearStr)) continue;
+
+      if (mintStr) {
+        const regexStr = `\\b${mintStr}\\b`;
+        const mintRegex = new RegExp(regexStr);
+        const attached1 = `${yearStr}${mintStr}`;
+        const attached2 = `${yearStr}-${mintStr}`;
+        if (!mintRegex.test(firstCellText) && !firstCellText.includes(attached1) && !firstCellText.includes(attached2)) {
+          continue;
+        }
+      }
+
+      let hasPrice = false;
+      let isLayoutRow = false;
+
+      Object.keys(gradeColumnMap).forEach(idx => {
+        const i = parseInt(idx);
+        if (i < cells.length) {
+          const val = cells[i].textContent.trim();
+          if (val.length > 20) isLayoutRow = true; 
+          if (val !== "" && val !== "--" && val !== "-") {
+            hasPrice = true;
+          }
+        }
+      });
+
+      if (!hasPrice || isLayoutRow) continue;
+
+      let score = 0;
+      const exactMatchStr = mintStr ? `${yearStr} ${mintStr}` : yearStr;
+      
+      if (firstCellText === exactMatchStr) score += 100;
+      else if (firstCellText.startsWith(exactMatchStr)) score += 50;
+      else if (firstCellText.startsWith(yearStr)) score += 25;
+      
+      if (score > highestScore) {
+        highestScore = score;
+        bestMatch = row;
+      }
+    }
+    return bestMatch;
+  }
+
+  async function initEngine() {
+    try {
+      const response = await fetch(PROXY_URL + encodeURIComponent(MAIN_URL));
+      if (!response.ok) throw new Error(`Proxy error: ${response.status}`);
+      const htmlText = await response.text();
+      
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlText, "text/html");
+      const links = doc.querySelectorAll('a[href*="usrarecoinvalues.cgi"], a[href*="fmv/prices"]');
+      
+      const currentYear = new Date().getFullYear();
+
+      links.forEach(link => {
+        let text = link.textContent.trim();
+        let href = link.getAttribute('href');
+        if (!href || text.length <= 3) return;
+        if (!href.startsWith('http')) href = "https://www.numismedia.com" + (href.startsWith('/') ? '' : '/') + href;
+
+        let start = 0, end = 9999;
+        let match = text.match(/\((\d{4})\s*-\s*(current|\d{4})\)/i);
+        if (match) {
+            start = parseInt(match[1]);
+            end = match[2].toLowerCase() === 'current' ? currentYear : parseInt(match[2]);
+        }
+
+        const lower = text.toLowerCase();
+        let type = "Other";
+        if (lower.includes('cent')) type = "Cents";
+        else if (lower.includes('nickel')) type = "Nickels";
+        else if (lower.includes('dime')) type = "Dimes";
+        else if (lower.includes('quarter')) type = "Quarters";
+        else if (lower.includes('half') || lower.includes('halves')) type = "Halves";
+        else if (lower.includes('dollar') && !lower.includes('gold') && !lower.includes('commem')) type = "Dollars";
+        else if (lower.includes('gold') || lower.includes('eagle')) type = "Gold";
+
+        coinDatabase[type].push({ name: text, url: href, start, end });
+      });
+
+      mainTypeSelect.innerHTML = '<option value="">-- Choose Type --</option>';
+      Object.keys(coinDatabase).forEach(type => {
+        if(coinDatabase[type].length > 0 && type !== "Other") {
+            const opt = document.createElement('option');
+            opt.value = type;
+            opt.textContent = type;
+            mainTypeSelect.appendChild(opt);
+        }
+      });
+
+      setStatus("Database synced. Select a coin type.", "ready");
+      enableField(mainTypeSelect, wrapMainType);
+
+    } catch (err) {
+      setStatus("Initialization Failed. Check network.", "error");
+    }
+  }
+
+  mainTypeSelect.addEventListener('change', () => {
+    if (!mainTypeSelect.value) { disableField(yearInput, wrapYear); return; }
+    yearInput.value = "";
+    enableField(yearInput, wrapYear);
+    yearInput.focus();
+    
+    disableField(seriesSelect, wrapSeries);
+    seriesSelect.innerHTML = '<option value="">Awaiting Year...</option>';
+    disableField(mintMarkSelect, wrapMintMark);
+    disableField(conditionSelect, wrapCondition);
+    clearPrice();
+  });
+
+  yearInput.addEventListener('input', () => {
+    const yr = parseInt(yearInput.value);
+    const type = mainTypeSelect.value;
+    
+    if (yr >= 1793 && yr <= new Date().getFullYear()) {
+      const candidates = coinDatabase[type].filter(c => yr >= c.start && yr <= c.end);
+      
+      if (candidates.length > 0) {
+        seriesSelect.innerHTML = '';
+        candidates.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.url;
+          opt.textContent = c.name;
+          seriesSelect.appendChild(opt);
+        });
+        
+        enableField(seriesSelect, wrapSeries);
+        
+        if (seriesSelect.value !== currentSeriesUrl) {
+            setStatus("Series Auto-Matched. Loading data...", "loading");
+            fetchSeriesData(seriesSelect.value);
+        } else {
+            populateMintMarks();
+        }
+      } else {
+        seriesSelect.innerHTML = '<option value="">No series found for this year</option>';
+        disableField(seriesSelect, wrapSeries);
+        disableField(mintMarkSelect, wrapMintMark);
+        disableField(conditionSelect, wrapCondition);
+        clearPrice();
+      }
+    } else {
+      seriesSelect.innerHTML = '<option value="">Awaiting valid year...</option>';
+      disableField(seriesSelect, wrapSeries);
+      disableField(mintMarkSelect, wrapMintMark);
+      disableField(conditionSelect, wrapCondition);
+      clearPrice();
+    }
+  });
+
+  seriesSelect.addEventListener('change', () => { fetchSeriesData(seriesSelect.value); });
+
+  async function fetchSeriesData(url) {
+    disableField(mintMarkSelect, wrapMintMark);
+    disableField(conditionSelect, wrapCondition);
+    conditionSelect.innerHTML = '<option value="">Loading matrix...</option>';
+    currentPricingTable = null;
+    currentSeriesUrl = url;
+    
+    try {
+      const response = await fetch(PROXY_URL + encodeURIComponent(url));
+      if (!response.ok) throw new Error("Subtable load failure.");
+      const htmlText = await response.text();
+      
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlText, "text/html");
+      
+      const allRows = doc.querySelectorAll('tr');
+      let headerRow = null;
+      
+      for (const row of allRows) {
+        let gradeMatchCount = 0;
+        const cells = row.children; 
+        for (let i = 0; i < cells.length; i++) {
+          let txt = cells[i].textContent.toUpperCase().replace(/FMV/g, '').replace(/\s+/g, '').trim();
+          if (/^[A-Z]{1,2}\d{1,2}(\+)?$/.test(txt)) gradeMatchCount++;
+        }
+        if (gradeMatchCount >= 3) {
+          headerRow = row;
+          break;
+        }
+      }
+
+      if (!headerRow) throw new Error("Format exception in source document.");
+
+      currentPricingTable = headerRow.closest('table');
+
+      gradeColumnMap = {};
+      const cells = headerRow.children;
+      for (let i = 0; i < cells.length; i++) {
+        let gradeText = cells[i].textContent.toUpperCase().replace(/FMV/g, '').replace(/\s+/g, '').trim();
+        if (/^[A-Z]{1,2}\d{1,2}(\+)?$/.test(gradeText)) {
+          gradeColumnMap[i] = gradeText; 
+        }
+      }
+
+      setStatus("Data matrix loaded.", "ready");
+      populateMintMarks();
+      
+    } catch (err) {
+      console.error(err);
+      setStatus("Error parsing matrix data.", "error");
+    }
+  }
+
+  function populateMintMarks() {
+    if (!currentPricingTable) return;
+    const year = yearInput.value.trim().toUpperCase();
+    
+    if (!year) {
+      mintMarkSelect.innerHTML = '<option value="">Awaiting Year...</option>';
+      disableField(mintMarkSelect, wrapMintMark);
+      disableField(conditionSelect, wrapCondition);
+      return;
+    }
+
+    const rows = currentPricingTable.rows;
+    const availableMints = [];
+    
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].children;
+      if (cells.length < 3) continue;
+
+      let firstCellText = cells[0].textContent.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().toUpperCase();
+      firstCellText = firstCellText.replace(/\s+/g, ' ');
+
+      let hasPrice = false;
+      let isLayoutRow = false;
+      Object.keys(gradeColumnMap).forEach(idx => {
+        const cIdx = parseInt(idx);
+        if (cIdx < cells.length) {
+          const val = cells[cIdx].textContent.trim();
+          if (val.length > 20) isLayoutRow = true; 
+          if (val !== "" && val !== "--" && val !== "-") hasPrice = true;
+        }
+      });
+
+      if (!hasPrice || isLayoutRow) continue;
+
+      if (firstCellText.startsWith(year)) {
+        let suffix = firstCellText.replace(year, '').trim();
+        let actualMint = "";
+
+        if (suffix.length > 0) {
+            // Check if the first word in the suffix is a recognized mint mark
+            let firstWord = suffix.split(' ')[0];
+            if (VALID_MINT_MARKS.includes(firstWord)) {
+                actualMint = firstWord;
+            }
+        }
+
+        if (!availableMints.includes(actualMint)) {
+          availableMints.push(actualMint);
+        }
+      }
+    }
+
+    mintMarkSelect.innerHTML = '';
+
+    if (availableMints.length > 0) {
+      availableMints.forEach(mint => {
+        const opt = document.createElement('option');
+        opt.value = mint;
+        opt.textContent = mint === "" ? "Standard (No Mint Mark)" : mint;
+        mintMarkSelect.appendChild(opt);
+      });
+      
+      enableField(mintMarkSelect, wrapMintMark);
+      mintMarkSelect.selectedIndex = 0; 
+      filterAndRebuildConditionDropdown();
+    } else {
+      mintMarkSelect.innerHTML = '<option value="">No records for this year</option>';
+      disableField(mintMarkSelect, wrapMintMark);
+      
+      conditionSelect.innerHTML = '<option value="">N/A</option>';
+      disableField(conditionSelect, wrapCondition);
+      
+      priceDisplay.innerHTML = `<span class="md-result-error">Not Found</span>`;
+      priceLabel.innerHTML = `No coins found for year ${year}`;
+    }
+  }
+
+  function filterAndRebuildConditionDropdown() {
+    if (!currentPricingTable) return;
+
+    const year = yearInput.value.trim().toUpperCase();
+    const mint = mintMarkSelect.value.trim().toUpperCase(); 
+
+    const rows = currentPricingTable.rows; 
+    const targetRow = findExactCoinRow(rows, year, mint);
+
+    const previousSelection = conditionSelect.value;
+    conditionSelect.innerHTML = '';
+
+    if (!targetRow) {
+      conditionSelect.innerHTML = '<option value="">Error finding coin row</option>';
+      disableField(conditionSelect, wrapCondition);
+      return;
+    }
+
+    const priceCells = targetRow.children;
+    let validOptionsCount = 0;
+
+    Object.keys(gradeColumnMap).forEach(indexStr => {
+      const index = parseInt(indexStr);
+      if (index < priceCells.length) {
+        const val = priceCells[index].textContent.trim();
+        if (val !== "" && val !== "--" && val !== "-") {
+          const gradeName = gradeColumnMap[index];
+          const opt = document.createElement('option');
+          opt.value = gradeName;
+          opt.textContent = `${gradeName} (${val})`;
+          conditionSelect.appendChild(opt);
+          validOptionsCount++;
+        }
+      }
+    });
+
+    if (validOptionsCount > 0) {
+      enableField(conditionSelect, wrapCondition);
+      if ([...conditionSelect.options].some(o => o.value === previousSelection)) {
+        conditionSelect.value = previousSelection;
+      } else {
+        conditionSelect.selectedIndex = 0;
+      }
+      calculateLivePrice();
+    } else {
+      conditionSelect.innerHTML = '<option value="">No grades available</option>';
+      disableField(conditionSelect, wrapCondition);
+      priceDisplay.innerHTML = `<span class="md-result-error">N/A</span>`;
+      priceLabel.innerHTML = `No valuations listed for this coin`;
+    }
+  }
+
+  function calculateLivePrice() {
+    if (!currentPricingTable) return;
+
+    const year = yearInput.value.trim().toUpperCase();
+    const mint = mintMarkSelect.value.trim().toUpperCase();
+    const condition = conditionSelect.value;
+
+    if (!year || !condition) {
+      clearPrice();
+      return;
+    }
+
+    const rows = currentPricingTable.rows; 
+    const targetRow = findExactCoinRow(rows, year, mint);
+    if (!targetRow) return;
+
+    let targetIndex = null;
+    Object.keys(gradeColumnMap).forEach(idx => {
+      if (gradeColumnMap[idx] === condition) targetIndex = parseInt(idx);
+    });
+
+    const priceCells = targetRow.children;
+    if (targetIndex !== null && targetIndex < priceCells.length) {
+      const priceText = priceCells[targetIndex].textContent.trim();
+      priceDisplay.textContent = priceText;
+      
+      const firstCellText = targetRow.querySelector('td').textContent.replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+      priceLabel.innerHTML = `FMV - ${firstCellText} (${condition})`;
+    }
+  }
+
+  function clearPrice() {
+    if(priceDisplay) priceDisplay.textContent = "—";
+    if(priceLabel) priceLabel.textContent = "Awaiting Complete Inputs";
+  }
+
+  mintMarkSelect.addEventListener('change', () => { filterAndRebuildConditionDropdown(); });
+  conditionSelect.addEventListener('change', calculateLivePrice);
+
+  initEngine();
+</script>
+</body>
+</html>
