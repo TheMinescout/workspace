@@ -1,6 +1,6 @@
 // app.js — Application Logic & Routing
 
-import { views } from './views.js?v=1.321';
+import { views } from './views.js?v=1.32321';
 
 // ── 1. GLOBAL FIREBASE INITIALIZATION (Fixes memory leaks) ─────────
 let globalFirebaseApp = null;

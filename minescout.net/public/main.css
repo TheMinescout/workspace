@@ -1407,3 +1407,55 @@ body {
 .view-link:hover { color: var(--accent); }
 .form-success { display: none; padding: 1rem 1.25rem; background: #f0faf4; border: 1px solid #c3e8d0; border-radius: 6px; color: #3b8a62; font-size: 0.85rem; font-weight: 500; margin-top: 1rem; }
 .form-success.visible { display: block; }
+
+
+/* ===== Humanized Refresh Overrides ===== */
+:root{
+ --bg:#fcfbf8;
+ --fg:#2b2925;
+ --muted:#6f695f;
+ --light:#fffaf6;
+ --border:#ece4db;
+ --accent:#ff6b3d;
+}
+body{font-size:17px;line-height:1.75;background:linear-gradient(#fcfbf8,#faf8f4);}
+.main{padding:4rem;}
+.page-title,.hero-title{letter-spacing:-.04em;line-height:1.02}
+.page-title{font-size:clamp(2.4rem,5vw,3.6rem)}
+.hero-desc,.about-text p,.now-section p,.clients-intro,.process-intro{font-size:1.08rem;color:var(--muted)}
+.sidebar{
+ background:rgba(255,255,255,.78);
+ backdrop-filter:blur(14px);
+ border-right:none;
+ box-shadow:8px 0 40px rgba(0,0,0,.05);
+}
+.sidebar-nav a,.sidebar-secondary a{
+ border-radius:999px;
+ padding:.6rem .9rem;
+}
+.sidebar-nav a:hover,.sidebar-secondary a:hover{
+ transform:translateX(6px);
+}
+.btn-primary,.btn-ghost{
+ border-radius:999px;
+ padding:1rem 1.6rem;
+ transition:all .25s ease;
+}
+.btn-primary:hover{
+ transform:translateY(-2px);
+ box-shadow:0 12px 28px rgba(255,107,61,.25);
+}
+.project-card,.blog-card,.client-card,.phase-content,.comp-card{
+ border-radius:18px;
+ border:none;
+ box-shadow:0 10px 28px rgba(0,0,0,.05);
+}
+.project-card:hover,.blog-card:hover,.client-card:hover{
+ transform:translateY(-6px) scale(1.01);
+}
+input,textarea{
+ border-radius:14px!important;
+}
+::selection{
+ background:#ffd8c9;
+}
