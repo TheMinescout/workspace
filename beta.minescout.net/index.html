@@ -3,69 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MineScout // SPA ENGINE</title>
+    <title>BETA // MineScout</title>
     <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
-
-    <!-- Central Stylesheet -->
-    <link rel="stylesheet" href="homepage.css">
+    
+    <!-- FIREBASE SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
-        /* Base fallback styles (Can be moved entirely to homepage.css) */
-        :root { 
-            --green: #0F0; --red: #FF3333; --gold: #FFD700; 
-            --bg: #000; --glass: rgba(0, 10, 0, 0.95); --cyan: #00FFFF; 
-        }
-        
+        /* --- CORE STYLES --- */
+        :root { --green: #0F0; --red: #FF3333; --gold: #FFD700; --bg: #000; --glass: rgba(0, 10, 0, 0.95); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg); font-family: 'Courier New', monospace; color: var(--green); height: 100vh; overflow: hidden; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 0; }
+        .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%); background-size: 100% 4px; pointer-events: none; z-index: 100; opacity: 0.6; }
+        .terminal-container { height: 100%; width: 100%; display: flex; justify-content: center; align-items: center; position: relative; z-index: 200; }
+        .content-box { background: var(--glass); border: 1px solid var(--green); padding: 3rem; text-align: center; max-width: 500px; width: 90%; transition: border-color 0.5s, box-shadow 0.5s; }
+        .content-box.error-state { border-color: var(--red); box-shadow: 0 0 10px var(--red); }
+        .beta-logo { width: 80px; border-radius: 50%; border: 2px solid var(--green); margin-bottom: 1rem; }
+        .terminal-text p { margin: 8px 0; opacity: 0.9; text-align: left; }
+        .status-line { transition: color 0.3s; }
+        .status-error { color: var(--red); font-weight: bold; animation: blink-fast 1s infinite; }
+        .blink-instruction { color: #000; background: var(--green); padding: 8px; font-weight: bold; animation: blink 1.5s infinite; cursor: pointer; text-align: center; border: 1px solid var(--green); margin-top: 15px; }
+        .blink-instruction:hover { background: #fff; box-shadow: 0 0 15px var(--green); }
+        .system-hint { color: #005500; font-size: 0.8rem; font-style: italic; margin-top: 5px; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+        @keyframes blink-fast { 50% { opacity: 0.2; } }
+        .glitch { font-size: 2.5rem; font-weight: bold; text-transform: uppercase; margin-bottom: 20px; }
         
-        body { 
-            background-color: var(--bg); 
-            font-family: 'Courier New', monospace; 
-            color: var(--green); 
-            height: 100vh; 
-            overflow: hidden; 
-        }
-
-        canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.3; }
-        
-        .scanline { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: linear-gradient(to bottom, rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%); 
-            background-size: 100% 4px; pointer-events: none; z-index: 100; opacity: 0.6; 
-        }
-
-        .open-btn { 
-            position: fixed; top: 10px; left: 10px; border: 1px solid var(--green); 
-            padding: 8px; cursor: pointer; z-index: 300; background: #000; 
-            font-weight: bold; color: var(--green); transition: 0.2s;
-        }
-        .open-btn:hover { background: var(--green); color: #000; }
-
-        /* SPA Container */
-        #app { position: relative; z-index: 200; height: 100%; width: 100%; overflow-y: auto; }
+        @media (max-width: 600px) { .glitch { font-size: 1.8rem; letter-spacing: 1px; } .content-box { width: 95%; padding: 1.5rem; } }
     </style>
 </head>
 <body>
-
-    <!-- GLOBAL RENDER ENGINE ASSETS -->
     <canvas id="matrixCanvas"></canvas>
     <div class="scanline"></div>
-    <div class="open-btn" onclick="window.toggleCmd()">[ CMD ]</div>
 
-    <!-- GLOBAL TERMINAL OVERLAY -->
-    <div id="cmd-overlay" style="display:none; position:fixed; bottom:0; left:0; width:100%; background:rgba(0,20,0,0.95); border-top:2px solid #0F0; z-index:999; padding:15px; box-shadow: 0 -5px 20px rgba(0,255,0,0.2);">
-        <div style="color:#0F0; font-size:12px; margin-bottom:5px;">// GLOBAL TERMINAL INSTANCE (Type 'home', 'login', 'projects', 'email', 'inbox')</div>
-        <div style="display:flex; align-items:center;">
-            <span style="color:#0F0; margin-right:10px; font-weight:bold;">></span>
-            <input type="text" id="global-cmd-input" style="background:transparent; border:none; color:#0F0; font-family:'Courier New', monospace; font-size:16px; flex-grow:1; outline:none;" autocomplete="off" placeholder="Awaiting command...">
+    <div class="terminal-container">
+        <div id="main-box" class="content-box">
+            <div class="logo-container">
+                <img src="assets/images/BETAFAVICON.png" alt="Beta Logo" class="beta-logo">
+            </div>
+            
+            <h1 class="glitch" data-text="BETA ACCESS">BETA ACCESS</h1>
+            
+            <div class="terminal-text">
+                <p id="user-display">> USER_ID: GUEST</p>
+                <p id="device-display">> DEVICE: DETECTING...</p>
+                <p id="sys-status" class="status-line">> STATUS: INITIALIZING...</p>
+                
+                <p class="system-hint">> SYSTEM_MSG: CMD 'help' AVAILABLE</p>
+                <p class="system-hint">> Use / to open CMD Panel</p>
+
+                <br>
+                <div class="blink-instruction" onclick="window.toggleCmd()">
+                    [ CLICK HERE OR PRESS '/' TO RUN ]
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- SPA VIEWPORT CONTAINER -->
-    <div id="app"></div>
+    <!-- 1. LOAD CONFIG -->
+    <script src="assets/js/firebase-config.js?v=2.6"></script>
+    
+    <!-- 2. LOAD DATA -->
+    <script src="assets/js/filesystem.js?v=2.6"></script>
+    
+    <!-- 3. LOAD CORE TERMINAL -->
+    <script src="assets/js/terminal-core.js?v=4.6"></script>
 
-    <!-- APP ENGINE (Router & Logic) -->
-    <script type="module" src="app.js?v=1.03"></script>
+    <script>
+        console.log("Index Logic Loaded");
+        const ADMIN_EMAIL = "theminescout@minescout.net";
+        let isAdmin = false;
 
+        function detectDevice() {
+            const width = window.innerWidth;
+            const ua = navigator.userAgent.toLowerCase();
+            const isMobile = width <= 600 || ua.includes("android") || ua.includes("iphone");
+            const display = document.getElementById('device-display');
+            if (display) {
+                if (isMobile) { display.innerText = "> DEVICE: MOBILE_TERMINAL"; display.style.color = "#FFFF00"; } 
+                else { display.innerText = "> DEVICE: DESKTOP_STATION"; }
+            }
+        }
+        detectDevice();
+
+        document.addEventListener('firebase-ready', () => {
+            firebase.auth().onAuthStateChanged((user) => {
+                const userDisplay = document.getElementById('user-display');
+                if (user) {
+                    isAdmin = (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+                    const idLabel = isAdmin ? "ADMIN_ID" : "USER_ID";
+                    if(isAdmin) userDisplay.style.color = "#FFD700";
+                    const emailPrefix = user.email.split('@')[0].toUpperCase();
+                    userDisplay.innerText = `> ${idLabel}: ${emailPrefix}`;
+                    const db = firebase.database();
+                    db.ref('users/' + user.uid).once('value').then((snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            const dbName = data.username || data.name || data.displayName;
+                            if (dbName) userDisplay.innerText = `> ${idLabel}: ${dbName.toUpperCase()}`;
+                        }
+                    });
+                    if(isAdmin) checkAdminMessages();
+                } else {
+                    userDisplay.innerText = "> USER_ID: GUEST";
+                }
+            });
+        });
+
+        function checkAdminMessages() {
+            const db = firebase.database();
+            const statusEl = document.getElementById('sys-status');
+            const boxEl = document.getElementById('main-box');
+            db.ref('messages').on('value', (snapshot) => {
+                let count = 0;
+                snapshot.forEach(c => { if(c.val().read === false) count++; });
+                window.adminMsgCount = count;
+                if (count > 0) {
+                    statusEl.innerText = "ERROR : ADMIN ALERT (TYPE ERR)";
+                    statusEl.className = "status-line status-error";
+                    boxEl.classList.add('error-state');
+                } else { checkNewPosts(); }
+            });
+        }
+
+        function checkNewPosts() {
+            if(window.adminMsgCount > 0) return; 
+            const lastVisitRaw = localStorage.getItem('minescout_last_visit');
+            const lastVisit = lastVisitRaw ? new Date(lastVisitRaw) : new Date('2000-01-01');
+            let missedCount = 0; let missedTitles = [];
+            if (typeof FILE_SYSTEM !== 'undefined') {
+                FILE_SYSTEM.articles.forEach(art => {
+                    if (new Date(art.date) > lastVisit) { missedCount++; missedTitles.push(art.title); }
+                });
+            }
+            const statusEl = document.getElementById('sys-status');
+            const boxEl = document.getElementById('main-box');
+            if (missedCount > 0) {
+                statusEl.innerText = `ERROR : MISSED UPDATES (TYPE ERR)`;
+                statusEl.className = "status-line status-error";
+                boxEl.classList.add('error-state');
+                window.missedUpdates = missedTitles;
+            } else {
+                statusEl.innerText = "> STATUS: UNLOCKED (SYSTEM UP TO DATE)";
+                statusEl.className = "status-line";
+                boxEl.classList.remove('error-state');
+            }
+            localStorage.setItem('minescout_last_visit', new Date().toISOString());
+        }
+
+        // --- PAGE SPECIFIC COMMANDS ---
+        window.handlePageCommand = function(cmd, args) {
+            
+            // NEW: ACKNOWLEDGE COMMAND
+            if (cmd === 'ack' || cmd === 'dismiss' || cmd === 'clear_err') {
+                document.getElementById('sys-status').innerText = "> STATUS: UNLOCKED";
+                document.getElementById('sys-status').className = "status-line";
+                document.getElementById('main-box').classList.remove('error-state');
+                return "SYSTEM ALERT ACKNOWLEDGED.";
+            }
+
+            if (cmd === 'err') {
+                let msg = "";
+                if (isAdmin && window.adminMsgCount > 0) msg += `> CRITICAL: ${window.adminMsgCount} NEW ENCRYPTED SIGNALS.\n> TYPE 'VM' TO DECRYPT.\n\n`;
+                if (window.missedUpdates && window.missedUpdates.length > 0) msg += "> MISSED ARTICLES:\n" + window.missedUpdates.map(t => "- " + t).join("\n");
+                if(msg === "") msg = "SYSTEM NORMAL. No logs found.";
+                return msg;
+            }
+            
+            if (cmd === 'vm') {
+                if(isAdmin) window.location.href = 'admin-messages.html';
+                else return "ACCESS DENIED. ADMIN PRIVILEGES REQUIRED.";
+                return true;
+            }
+            return null;
+        };
+
+        if (window.firebaseReady) document.dispatchEvent(new Event('firebase-ready'));
+    </script>
 </body>
 </html>
