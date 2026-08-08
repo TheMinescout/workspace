@@ -570,3 +570,94 @@ html[data-theme="dark"] .chip-update { background: rgba(107,114,128,.2); color: 
   -webkit-font-smoothing: antialiased;
   vertical-align: middle;
 }
+
+/* ─── CARD HERO IMAGE (no placeholder when missing) ─── */
+.card-hero-img {
+  width: 100%; max-height: 180px; object-fit: cover;
+  border-radius: var(--radius-s); margin: 10px 0 6px;
+  display: block;
+}
+
+/* ─── IMAGE INPUT FIX (admin editor) ─── */
+.form-input[type="color"] { min-width: 0; }
+
+/* ─── SCHEDULED BADGE ─── */
+.scheduled-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 99px;
+  font-size: 10px; font-weight: 700; background: #fff3cd; color: #92400e;
+}
+
+/* ─── COMMENTS SECTION ─── */
+.comments-section {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule);
+}
+.comments-title {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 20px;
+}
+.comments-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+.comment {
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-s);
+  padding: 14px 16px;
+}
+.comment-header { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+.comment-author { font-weight: 700; font-size: 13px; color: var(--ink); }
+.comment-date { font-size: 11px; color: var(--ink-4); }
+.comment-text { margin: 0; font-size: 14px; color: var(--ink-3); line-height: 1.55; }
+.comments-empty { color: var(--ink-4); font-size: 14px; margin-bottom: 24px; }
+
+/* Comment form */
+.comment-form { display: flex; flex-direction: column; gap: 10px; }
+.comment-form-header { font-size: 12px; color: var(--ink-4); }
+.comment-input {
+  width: 100%; padding: 10px 14px;
+  border: 1px solid var(--rule); border-radius: var(--radius-s);
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-sans); font-size: 14px;
+  resize: vertical; box-sizing: border-box;
+  transition: border-color .15s;
+}
+.comment-input:focus { border-color: var(--accent); outline: none; }
+.comment-signin-prompt { padding: 16px; background: var(--paper-2); border-radius: var(--radius-s); border: 1px solid var(--rule); }
+
+/* ─── RATINGS ROW ─── */
+.ratings-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 28px; flex-wrap: wrap;
+}
+.ratings-label { font-size: 13px; color: var(--ink-4); font-weight: 600; }
+.vote-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: 99px;
+  border: 1px solid var(--rule); background: var(--paper-2);
+  color: var(--ink-3); font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+}
+.vote-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.vote-btn.voted { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+.vote-btn:disabled { opacity: 0.5; cursor: default; }
+.ratings-hint { font-size: 12px; color: var(--ink-4); }
+.ratings-hint a { color: var(--accent); }
+
+/* ─── AUTH TABS ─── */
+.auth-page { display: flex; justify-content: center; align-items: center; min-height: 70vh; padding: 40px 16px; }
+.auth-card { width: 100%; max-width: 400px; background: var(--paper); border: 1px solid var(--rule); border-radius: var(--radius); padding: 40px 36px; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,.06); }
+.auth-icon { font-size: 40px; margin-bottom: 12px; }
+.auth-title { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 700; color: var(--ink); margin: 0 0 6px; }
+.auth-sub { font-size: 13px; color: var(--ink-4); margin: 0 0 20px; }
+.auth-error { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 16px; }
+.auth-submit { display: block; width: 100%; padding: 12px; border-radius: var(--radius-s); background: var(--accent); color: white; font-weight: 700; font-size: 15px; border: none; cursor: pointer; margin-top: 16px; transition: opacity .15s; }
+.auth-submit:hover { opacity: .88; }
+.auth-submit:disabled { opacity: .5; }
+.auth-back { margin-top: 20px; font-size: 13px; color: var(--ink-4); }
+.auth-back a { color: var(--accent); }
+
+/* ─── ADMIN: status column ─── */
+.posts-table th:nth-child(4), .posts-table td:nth-child(4) { white-space: nowrap; }

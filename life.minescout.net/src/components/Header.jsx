@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
 import { useAdmin } from "../hooks/useAdmin";
+import { useUser } from "../hooks/useUser";
 
 export default function Header({ cols, setCols }) {
   const { theme, toggle } = useTheme();
-  const { isAdmin, logout } = useAdmin();
+  const { isAdmin, logout: adminLogout } = useAdmin();
+  const { user, logout: userLogout } = useUser();
 
   return (
     <header className="site-header">
@@ -31,7 +33,15 @@ export default function Header({ cols, setCols }) {
               <div className="user-avatar">A</div>
               <span>Admin</span>
             </div>
-            <button className="ghost-btn" onClick={logout}>Sign out</button>
+            <button className="ghost-btn" onClick={adminLogout}>Sign out</button>
+          </>
+        ) : user ? (
+          <>
+            <div className="user-chip">
+              <div className="user-avatar">{user.username[0].toUpperCase()}</div>
+              <span>{user.username}</span>
+            </div>
+            <button className="ghost-btn" onClick={userLogout}>Sign out</button>
           </>
         ) : (
           <Link to="/login" className="signin-btn">Sign in</Link>

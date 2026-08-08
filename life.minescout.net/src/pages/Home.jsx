@@ -26,19 +26,26 @@ function filterByCategory(all, key) {
   });
 }
 
+function isPublished(p) {
+  if (!p.publishDate) return true;
+  return new Date(p.publishDate) <= new Date();
+}
+
 export default function Home() {
   const [posts, setPosts]       = useState([]);
   const [catFilter, setCat]     = useState("all");
-  const [yearFilter, setYear]   = useState(CURRENT_YEAR); // default: current year only
+  const [yearFilter, setYear]   = useState(CURRENT_YEAR);
   const [cols, setCols]         = useState(1);
   const [counts, setCounts]     = useState({total:0,tech:0,app:0});
   const { isAdmin } = useAdmin();
 
   useEffect(() => {
     fetchPosts().then(data => {
-      setPosts(data);
-      const tech = data.filter(p=>p.category?.toLowerCase().includes("tech")).length;
-      const app  = data.filter(p=>p.category?.toLowerCase().includes("app")).length;
+      // Filter out future-scheduled posts for non-admins
+      const visible = isAdmin ? data : data.filter(isPublished);
+      setPosts(visible);
+      const tech = visible.filter(p=>p.category?.toLowerCase().includes("tech")).length;
+      const app  = visible.filter(p=>p.category?.toLowerCase().includes("app")).length;
       const anim = (setter, target) => {
         const start = performance.now();
         const step = now => {
@@ -48,16 +55,14 @@ export default function Home() {
         };
         requestAnimationFrame(step);
       };
-      anim(v=>setCounts(c=>({...c,total:v})), data.length);
+      anim(v=>setCounts(c=>({...c,total:v})), visible.length);
       anim(v=>setCounts(c=>({...c,tech:v})),  tech);
       anim(v=>setCounts(c=>({...c,app:v})),   app);
     });
-  }, []);
+  }, [isAdmin]);
 
-  // Available years from all posts
   const allYears = [...new Set(posts.map(p=>new Date(p.timestamp).getFullYear()))].sort((a,b)=>b-a);
 
-  // Apply both filters
   const filtered = filterByCategory(posts, catFilter)
     .filter(p => yearFilter === "all" || new Date(p.timestamp).getFullYear() === yearFilter)
     .sort((a,b)=>b.timestamp-a.timestamp);
@@ -66,7 +71,6 @@ export default function Home() {
   filtered.forEach(p=>{const y=new Date(p.timestamp).getFullYear();if(!grouped[y])grouped[y]=[];grouped[y].push(p);});
 
   const statVals = {all:counts.total, tech:counts.tech, app:counts.app, eagle:`${siteConfig.eaglePercent}%`};
-  const isFiltered = catFilter!=="all" || yearFilter!==CURRENT_YEAR;
 
   return (
     <>
@@ -104,9 +108,7 @@ export default function Home() {
             </div>
           )}
 
-          {/* Filter / year bar */}
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"16px",flexWrap:"wrap",gap:"8px"}}>
-            {/* Year tabs */}
             <div style={{display:"flex",gap:"4px",flexWrap:"wrap"}}>
               {[CURRENT_YEAR, ...allYears.filter(y=>y!==CURRENT_YEAR)].map(y=>(
                 <button key={y}
@@ -127,8 +129,6 @@ export default function Home() {
                 </button>
               )}
             </div>
-
-            {/* Clear cat filter */}
             {catFilter!=="all" && (
               <div className="filter-bar visible" style={{margin:0}}>
                 <span className="filter-label">Category: <strong>{CAT_FILTERS.find(f=>f.key===catFilter)?.label}</strong></span>
@@ -157,7 +157,7 @@ export default function Home() {
         </main>
         <Sidebar posts={posts} yearFilter={yearFilter} setYear={setYear} allYears={allYears}/>
       </div>
-      <footer className="site-footer"><p>Life of a Smart Kid · v4.0 React Edition · <a href="/admin">Admin</a></p></footer>
+      <footer className="site-footer"><p>Life of a Smart Kid · v5.0 · <a href="/admin">Admin</a></p></footer>
     </>
   );
 }

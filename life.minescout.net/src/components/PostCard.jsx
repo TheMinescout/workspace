@@ -20,6 +20,14 @@ export default function PostCard({ post }) {
       </div>
       <h2 className="card-title">{post.title}</h2>
       <p className="card-summary">{post.summary}</p>
+      {post.heroImage && (
+        <img
+          src={post.heroImage}
+          alt={post.title}
+          className="card-hero-img"
+          onError={e => e.target.style.display = "none"}
+        />
+      )}
       <div className="card-footer">
         <Link to={`/post/${post.id}`} className="read-link">
           {post.linkText || "Read entry"} →

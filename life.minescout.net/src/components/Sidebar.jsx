@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { siteConfig } from "../data/posts";
+import { siteConfig, fetchSidebarConfig } from "../data/posts";
 import { useEffect, useState } from "react";
 
 const NAV = [
@@ -8,7 +8,6 @@ const NAV = [
   { label: "Tech Tips",        href: "/pages/tech-tips" },
   { label: "Updates",          href: "/pages/updates" },
   { label: "Puppy Life",       href: "/pages/puppy-life" },
-  { label: "Minecraft Server", href: "/pages/minecraft-server" },
   { label: "Beta",             href: "/pages/beta" },
   { label: "Stats",            href: "/pages/stats" },
   { label: "Feature Request",  href: "/pages/feature-request" },
@@ -34,6 +33,15 @@ function AIInsight({ posts }) {
 
 export default function Sidebar({ posts=[], yearFilter, setYear, allYears=[] }) {
   const { pathname } = useLocation();
+  const [cfg, setCfg] = useState(null);
+
+  useEffect(() => {
+    fetchSidebarConfig().then(c => c && Object.keys(c).length && setCfg(c));
+  }, []);
+
+  const nowBuilding = cfg?.nowBuilding || siteConfig.nowBuilding;
+  const eaglePercent = cfg?.eaglePercent ?? siteConfig.eaglePercent;
+
   const grouped = {};
   posts.forEach(p => { const y=new Date(p.timestamp).getFullYear(); grouped[y]=(grouped[y]||0)+1; });
 
@@ -62,7 +70,7 @@ export default function Sidebar({ posts=[], yearFilter, setYear, allYears=[] }) 
         <div className="sidebar-head">🔴 Now Building</div>
         <div className="sidebar-body">
           <div className="now-building-list">
-            {siteConfig.nowBuilding.map((item,i) => (
+            {nowBuilding.map((item,i) => (
               <div key={i} className="now-building-item">
                 <div className="nb-dot" style={{background:item.color,boxShadow:`0 0 0 0 ${item.color}`}}/>
                 <div>
@@ -93,7 +101,7 @@ export default function Sidebar({ posts=[], yearFilter, setYear, allYears=[] }) 
         </div>
       </div>
 
-      {/* Archive — click to filter by year (only shown on home page via setYear prop) */}
+      {/* Archive */}
       <div className="sidebar-mod">
         <div className="sidebar-head">📅 Timeline</div>
         <div className="sidebar-body">
