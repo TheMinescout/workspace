@@ -6,10 +6,7 @@
     <title>BETA // MineScout</title>
     <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
     
-    <!-- FIREBASE SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 
     <style>
         /* --- CORE STYLES --- */
@@ -64,13 +61,13 @@
     </div>
 
     <!-- 1. LOAD CONFIG -->
-    <script src="assets/js/firebase-config.js?v=2.6"></script>
+    <script src="assets/js/auth.js?v=1.01"></script>
     
     <!-- 2. LOAD DATA -->
     <script src="assets/js/filesystem.js?v=2.6"></script>
     
     <!-- 3. LOAD CORE TERMINAL -->
-    <script src="assets/js/terminal-core.js?v=4.6"></script>
+    <script src="assets/js/terminal-core.js?v=4.86"></script>
 
     <script>
         console.log("Index Logic Loaded");
@@ -89,44 +86,38 @@
         }
         detectDevice();
 
-        document.addEventListener('firebase-ready', () => {
-            firebase.auth().onAuthStateChanged((user) => {
-                const userDisplay = document.getElementById('user-display');
-                if (user) {
-                    isAdmin = (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
-                    const idLabel = isAdmin ? "ADMIN_ID" : "USER_ID";
-                    if(isAdmin) userDisplay.style.color = "#FFD700";
-                    const emailPrefix = user.email.split('@')[0].toUpperCase();
-                    userDisplay.innerText = `> ${idLabel}: ${emailPrefix}`;
-                    const db = firebase.database();
-                    db.ref('users/' + user.uid).once('value').then((snapshot) => {
-                        const data = snapshot.val();
-                        if (data) {
-                            const dbName = data.username || data.name || data.displayName;
-                            if (dbName) userDisplay.innerText = `> ${idLabel}: ${dbName.toUpperCase()}`;
-                        }
-                    });
-                    if(isAdmin) checkAdminMessages();
-                } else {
-                    userDisplay.innerText = "> USER_ID: GUEST";
-                }
-            });
+        document.addEventListener('auth-ready', (e) => {
+            const user = e.detail.user;
+            const userDisplay = document.getElementById('user-display');
+            if (user) {
+                isAdmin = (user.username.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+                const idLabel = isAdmin ? "ADMIN_ID" : "USER_ID";
+                if (isAdmin) userDisplay.style.color = "#FFD700";
+                userDisplay.innerText = `> ${idLabel}: ${user.username.toUpperCase()}`;
+                if (isAdmin) checkAdminMessages();
+            } else {
+                userDisplay.innerText = "> USER_ID: GUEST";
+            }
         });
 
         function checkAdminMessages() {
-            const db = firebase.database();
+            // Admin message check — reads messages.json from life.minescout.net
             const statusEl = document.getElementById('sys-status');
             const boxEl = document.getElementById('main-box');
-            db.ref('messages').on('value', (snapshot) => {
-                let count = 0;
-                snapshot.forEach(c => { if(c.val().read === false) count++; });
-                window.adminMsgCount = count;
-                if (count > 0) {
-                    statusEl.innerText = "ERROR : ADMIN ALERT (TYPE ERR)";
-                    statusEl.className = "status-line status-error";
-                    boxEl.classList.add('error-state');
-                } else { checkNewPosts(); }
-            });
+            fetch('https://life.minescout.net/data/messages.json?_=' + Date.now())
+                .then(r => r.ok ? r.json() : [])
+                .then(messages => {
+                    const count = Array.isArray(messages)
+                        ? messages.filter(m => !m.read).length
+                        : 0;
+                    window.adminMsgCount = count;
+                    if (count > 0) {
+                        statusEl.innerText = "ERROR : ADMIN ALERT (TYPE ERR)";
+                        statusEl.className = "status-line status-error";
+                        boxEl.classList.add('error-state');
+                    } else { checkNewPosts(); }
+                })
+                .catch(() => checkNewPosts());
         }
 
         function checkNewPosts() {
@@ -181,7 +172,7 @@
             return null;
         };
 
-        if (window.firebaseReady) document.dispatchEvent(new Event('firebase-ready'));
+        if (window.authReady) document.dispatchEvent(new CustomEvent('auth-ready', { detail: { user: window.currentUser } }));
     </script>
 </body>
 </html>

@@ -4,7 +4,7 @@
     "title": "The Upgrade of Minescout Life and Its Web Presence — Part 2: The Rest of the Stack",
     "category": "Update",
     "summary": "A look at v5, v6, and everything beyond Life — the portfolio, Minescout AI, the Beta mainframe, and what's coming next.",
-    "heroImage": "life.minescout.net/public/assests/images/updates/Upgrade of Minescout Life V2.png",
+    "heroImage": "/assests/images/updates/Upgrade of Minescout Life V2.png",
     "timestamp": 1786202596977,
     "linkUrl": "/post/the-upgrade-of-minescout-life-and-its-web-presence-part-2-the-rest-of-the-stack-2026",
     "linkText": "Read Entry",
@@ -164,7 +164,8 @@
     "timestamp": 1764892800000,
     "linkUrl": "/post/beta-how-to",
     "linkText": "Read Entry",
-    "date": "December 5, 2025"
+    "date": "December 5, 2025",
+    "publishDate": null
   },
   {
     "id": "github-launch",
