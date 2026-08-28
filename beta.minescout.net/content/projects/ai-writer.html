@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOOL // AI_WRITER_COMMUNITY</title>
-    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png">
+    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png?v=1">
     
     <!-- EXTERNAL LIBRARIES -->
     <script src="../../assets/js/firebase-config.js?v=3.2"></script>
-    <script src="../../assets/js/terminal-core.js?v=4.86"></script>
     <script src="https://js.puter.com/v2/"></script>
 
     <!-- PROJECT STYLES -->
     <link rel="stylesheet" href="css/ai-writer.css?v=40.0">
+    <link rel="stylesheet" href="../../assets/css/style.css?theme=msbeta-v12">
 </head>
 <body>
-    <canvas id="matrixCanvas"></canvas>
+    <header class="ms-topbar"><a class="ms-logo" href="../../index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="../../index">HOME</a><a href="../../pages">ATLS</a><a href="../../projects">PRDS</a><a href="../../feature-requests">REQUESTS</a><a href="../../email">CONTACT</a></nav><a class="top-login" href="../../login">ACCOUNT ↗</a></header>
+
 
     <div class="main-layout">
         <!-- HEADER -->
@@ -170,11 +171,11 @@
 <link rel="stylesheet" href="assets/css/style.css">
 <style>
     body { overflow-y: auto; padding: 20px; }
-    .page-container { max-width: 900px; margin: 0 auto; border: 1px solid #0F0; background: rgba(0, 10, 0, 0.9); padding: 40px; }
-    h1 { border-bottom: 2px solid #0F0; padding-bottom: 10px; color: #0F0; }
-    h2 { color: #88ff88; margin-top: 30px; border-left: 3px solid #0F0; padding-left: 10px; }
+    .page-container { max-width: 900px; margin: 0 auto; border: 1px solid #da7756; background: rgba(0, 10, 0, 0.9); padding: 40px; }
+    h1 { border-bottom: 2px solid #da7756; padding-bottom: 10px; color: #da7756; }
+    h2 { color: #88ff88; margin-top: 30px; border-left: 3px solid #da7756; padding-left: 10px; }
     p { line-height: 1.6; color: #ccffcc; margin-bottom: 15px; }
-    img, video { max-width: 100%; height: auto; max-height: 600px; object-fit: contain; border: 1px solid #0F0; margin: 15px 0; display: block; margin-left: auto; margin-right: auto; }
+    img, video { max-width: 100%; height: auto; max-height: 600px; object-fit: contain; border: 1px solid #da7756; margin: 15px 0; display: block; margin-left: auto; margin-right: auto; }
     .media-caption { text-align: center; font-size: 0.8em; color: #005500; margin-top: 5px; font-style: italic; }
 </style>
 </head>
@@ -182,9 +183,11 @@
     <div class="page-container">
         <h1>{{title}}</h1>
         <p style="color:#005500;">GENERATED: {{date}} | AUTHOR: AI_ASSISTANT</p>
-        <hr style="border-color:#003300; margin-bottom:30px;">
+        <hr style="border-color:rgba(218,119,86,0.12); margin-bottom:30px;">
         <div id="content">{{AI}}</div>
     </div>
+<script src="../../assets/js/background.js?v=12"></script>
+<script src="../../assets/js/security.js?v=12"></script>
 </body>
 </html>
     </script>
@@ -207,13 +210,13 @@
 <body>
     <header class="main-header">
         <div class="container site-title-container">
-            <div id="auth-container"><a href="../../login.html" id="login-link">Login</a></div>
+            <div id="auth-container"><a href="../../login" id="login-link">Login</a></div>
             <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="../../index.html" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
+                <h1 class="site-title"><a href="../../index" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
                 <p class="tagline">{{category}}</p>
             </div>
             <div id="user-display" class="hidden">
-                <a href="../../account.html"><span id="user-email-display"></span></a>
+                <a href="../../account"><span id="user-email-display"></span></a>
                 <button id="signOut-btn">Sign Out</button>
             </div>
         </div>
@@ -249,11 +252,15 @@
     [[SCRIPT type="module" src="../../assests/js/auth.js?v=1.1"]][[CLOSE_SCRIPT]]
     [[SCRIPT type="module" src="../../assests/js/homepage.js"]][[CLOSE_SCRIPT]]
     [[SCRIPT src="../../assests/js/loader.js"]][[CLOSE_SCRIPT]]
+<script src="../../assets/js/background.js?v=12"></script>
+<script src="../../assets/js/security.js?v=12"></script>
 </body>
 </html>
     </script>
 
     <!-- PROJECT LOGIC -->
     <script src="js/ai-writer.js"></script>
+<script src="../../assets/js/background.js?v=12"></script>
+<script src="../../assets/js/security.js?v=12"></script>
 </body>
 </html>

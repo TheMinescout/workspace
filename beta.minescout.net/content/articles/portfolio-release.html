@@ -1,79 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>nano /docs/fin-sim.txt</title>
-    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png">
-    
-    <script src="../../assets/js/firebase-config.js?v=3.2"></script>
-    <script src="../../assets/js/terminal-core.js?v=4.86"></script>
-
-    <style>
-        body { background-color: #111; color: #ccc; font-family: 'Courier New', monospace; margin: 0; padding: 20px; }
-        .editor-header { background: #fff; color: #000; padding: 5px; font-weight: bold; display: flex; justify-content: space-between; }
-        .content { max-width: 800px; margin: 20px auto; white-space: pre-wrap; line-height: 1.5; }
-        h1 { color: #00FF00; border-bottom: 1px double #00FF00; }
-        a { color: #00FF00; text-decoration: underline; cursor: pointer; }
-        
-        .instruction {
-            position: fixed; bottom: 10px; right: 10px;
-            background: #00FF00; color: #000; padding: 5px 10px; font-weight: bold; cursor: pointer; z-index: 100;
-        }
-        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; pointer-events: none; }
-    </style>
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Release // Minescout Beta</title>
+<link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png?v=1?v=1.01">
+<link rel="stylesheet" href="../../assets/css/style.css?theme=msbeta-v12">
+<style>
+.article-content .meta{color:var(--muted);font-size:11px;margin:-4px 0 30px}
+.article-content .rule{height:1px;background:var(--line);margin:28px 0}
+.article-content .entry-label{font-size:10px;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin:0 0 10px}
+.article-content h2{font-size:15px;letter-spacing:1px;color:var(--accent2)!important;margin:28px 0 10px;text-transform:uppercase}
+.article-content p{margin:0 0 15px}
+.article-content ul,.article-content ol{margin:10px 0 22px;padding-left:24px}
+.article-content li{margin:8px 0;padding-left:3px}
+.article-content .callout{margin:20px 0;padding:15px 16px;background:rgba(18,23,20,.8);border:1px solid var(--line);border-left:2px solid var(--accent);color:#b9c2bc}
+.article-content .steps{counter-reset:step;list-style:none;padding-left:0}
+.article-content .steps li{counter-increment:step;display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:start}.article-content .steps .step-copy{min-width:0;display:block}
+.article-content .steps li::before{content:counter(step,decimal-leading-zero);color:var(--accent);font-size:10px;padding-top:2px}
+.article-content .caps{font-size:10px;letter-spacing:1.4px;color:var(--accent);font-weight:700}
+.article-content .end{margin-top:30px;padding-top:15px;border-top:1px solid var(--line);font-size:10px;letter-spacing:1.3px;color:var(--dim)}
+.article-content .action-link{display:inline-flex;margin:6px 0 20px;padding:10px 12px;border:1px solid var(--line);background:#101412;color:var(--accent2)!important;text-decoration:none!important}
+.article-content .action-link:hover{border-color:var(--accent);background:#151b18}
+</style>
 </head>
-<body>
-    <canvas id="matrixCanvas"></canvas>
-    
-    <div class="editor-header"><span>GNU nano 6.0</span><span>File: finance-release.txt</span><span>Modified</span></div>
-
-    <div class="content">
-<h1>RELEASE: Portfolio Simulator</h1>
-<p>Date: Dec 27, 2025 | Type: Financial Utility</p>
-
------------------------------------------------------------
-SYSTEM ENTRY: ASSET PROJECTION ENGINE
------------------------------------------------------------
-
-We have deployed a new financial modeling tool to the Projects directory.
-This tool visualizes compound interest and portfolio growth over time using a terminal-based interface.
-
-**CAPABILITIES:**
-1.  **Phased Contributions:** Model different life stages (e.g., investing heavy for 5 years, then coasting).
-2.  **Volatility Simulation:** Visualizes Best Case, Base Case, and Worst Case scenarios based on CAGR variance.
-3.  **Neon Visualization:** Renders data using a high-contrast chart engine.
-
-**ACCESS:**
-> <a href="../../content/projects/portfolio-tool.html" target="_blank">LAUNCH_SIMULATION</a>
-
-**HOW TO USE:**
-1.  Enter your Initial Capital.
-2.  Set your Base Growth Rate (CAGR) and Volatility Range.
-3.  Add "Phases" to simulate changing monthly contributions over specific time periods.
-4.  Click **[ RUN PROJECTION ]**.
-
------------------------------------------------------------
-END OF LOG
------------------------------------------------------------
-    </div>
-
-    <div class="instruction" onclick="window.toggleCmd()">
-        [ ^X EXIT ] (Click or Type '/')
-    </div>
-
-    <script>
-        window.handlePageCommand = function(cmd) {
-            if (cmd === 'return' || cmd === 'back') { window.location.href = '../../pages.html'; return true; }
-            if (cmd === 'run') { window.location.href = '../../content/projects/portfolio-tool.html'; return true; }
-            return null;
-        };
-        
-        // Matrix Rain
-        const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d');
-        function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r;
-        const s='01$',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1;
-        setInterval(()=>{ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#003300';ctx.font='16px mono';for(let i=0;i<d.length;i++){ctx.fillText(s[Math.floor(Math.random()*s.length)],i*16,d[i]*16);if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;d[i]++}},33);
-    </script>
+<body class="article-page">
+<header class="ms-topbar"><a class="ms-logo" href="../../index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="../../index">HOME</a><a class="active" href="../../pages">ATLS</a><a href="../../projects">PRDS</a><a href="../../feature-requests">REQUESTS</a><a href="../../email">CONTACT</a></nav><a class="top-login" href="../../login">ACCOUNT ↗</a></header>
+<nav class="article-nav" aria-label="Article navigation"><a href="../../pages">← ATLS / ARTICLES</a><a href="../../index">⌂ MINESCOUT</a></nav>
+<div class="content article-content"><h1>RELEASE: Portfolio Simulator</h1><p class="meta">DEC 27, 2025 · FINANCIAL UTILITY · WEB TOOL</p><div class="rule"></div><p class="entry-label">System entry / asset projection engine</p><p>We have deployed a financial modeling tool to the Projects directory. It visualizes compound interest and portfolio growth over time with an interactive projection interface.</p><h2>Capabilities</h2><ul><li><span class="step-copy"><strong>Phased contributions.</strong> Model different life stages, such as investing heavily for five years and then coasting.</span></li><li><span class="step-copy"><strong>Volatility simulation.</strong> Visualize best-case, base-case, and worst-case scenarios from CAGR variance.</span></li><li><span class="step-copy"><strong>Data visualization.</strong> Render projections through a high-contrast chart engine.</span></li></ul><h2>Access</h2><a class="action-link" href="../../content/projects/portfolio-tool">LAUNCH SIMULATION →</a><h2>How to use</h2><ol class="steps"><li><span class="step-copy">Enter your initial capital.</span></li><li><span class="step-copy">Set your base growth rate (CAGR) and volatility range.</span></li><li><span class="step-copy">Add phases to simulate changing monthly contributions over specific periods.</span></li><li><span class="step-copy">Click <strong>RUN PROJECTION</strong>.</span></li></ol><div class="end">END OF ENTRY / MINESCOUT BETA</div></div>
+<script src="../../assets/js/background.js?v=12"></script>
+<script src="../../assets/js/security.js?v=12"></script>
+<script src="../../assets/js/article-nav.js?v=12"></script>
 </body>
 </html>

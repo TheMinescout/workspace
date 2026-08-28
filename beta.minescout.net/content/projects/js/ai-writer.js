@@ -45,8 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!inputContent.value) inputContent.value = "<!-- AI Content will appear here -->";
     }
 
-    // Initialize Matrix Rain (Local Only)
-    initMatrixRain();
 });
 
 // --- 3. ADMIN LOGIC ---
@@ -151,8 +149,8 @@ function startCompilation() {
         const auth = document.getElementById('prod-author').value;
         const headImg = document.getElementById('prod-img').value || "default.png";
         
-        const catMap = { "Tech Tips": "pages/tech-tips.html", "Coding Projects": "pages/coding-projects.html", "Updates": "pages/updates.html", "Puppy Life": "pages/puppy-life.html", "Minecraft Server": "pages/minecraft-server.html", "Beta": "beta.html", "General": "../index.html" };
-        const backUrl = `../../${catMap[cat] || 'index.html'}`;
+        const catMap = { "Tech Tips": "pages/tech-tips", "Coding Projects": "pages/coding-projects", "Updates": "pages/updates", "Puppy Life": "pages/puppy-life", "Minecraft Server": "pages/minecraft-server", "Beta": "beta", "General": "../index" };
+        const backUrl = `../../${catMap[cat] || 'index'}`;
 
         const vars = { category: cat, post_id: pid, back_link: backUrl, author: auth, header_image: headImg };
         for (let key in vars) {
@@ -403,6 +401,3 @@ function log(msg, cls) {
     document.getElementById('system-log').prepend(div);
 }
 
-// Matrix
-const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d'); function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r; const s='AI01',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1; setInterval(()=>{ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0F0';ctx.font='16px mono';for(let i=0;i<d.length;i++){ctx.fillText(s[Math.floor(Math.random()*s.length)],i*16,d[i]*16);if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;d[i]++}},33);
-window.handlePageCommand = function(c) { if(c==='return'){window.location.href='../../projects.html';return true} return null; };

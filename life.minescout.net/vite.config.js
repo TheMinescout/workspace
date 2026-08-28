@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
+import { registerScrapingRoutes, registerDebugRoute } from "./data/scraping/scraper.js";
 
 // ── helpers ────────────────────────────────────────────────────────────────
 function hashPassword(pw) {
@@ -913,6 +914,9 @@ the normal clearance system created it.
         }
         json(res, {}, 405);
       });
+
+      registerScrapingRoutes(server);
+      registerDebugRoute(server);
     }
   };
 }

@@ -92,11 +92,11 @@ document.getElementById('cmd-input').addEventListener('keydown', (event) => {
         switch(command) {
             case 'atls':
                 // Go to Articles
-                window.location.href = 'pages.html';
+                window.location.href = 'pages';
                 break;
             case 'prds':
                 // Go to Projects
-                window.location.href = 'projects.html';
+                window.location.href = 'projects';
                 break;
             case 'return':
                 // Go to Main Site

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Evolution of Minescout Beta // Minescout</title>
+<link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png?v=1?v=1.01">
+<link rel="stylesheet" href="../../assets/css/style.css?theme=msbeta-v12">
+<style>
+.article-content .meta{color:var(--muted);font-size:11px;margin:-4px 0 30px}
+.article-content .rule{height:1px;background:var(--line);margin:28px 0}
+.article-content .entry-label{font-size:10px;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin:0 0 10px}
+.article-content h2{font-size:15px;letter-spacing:1px;color:var(--accent2)!important;margin:32px 0 10px;text-transform:uppercase}
+.article-content h3{font-size:12px;letter-spacing:1px;color:var(--accent);margin:24px 0 8px;text-transform:uppercase}
+.article-content p{margin:0 0 15px}
+.article-content ul{margin:10px 0 22px;padding-left:24px}
+.article-content li{margin:8px 0;padding-left:3px}
+.article-content .callout{margin:20px 0;padding:15px 16px;background:rgba(18,23,20,.8);border:1px solid var(--line);border-left:2px solid var(--accent);color:#b9c2bc}
+.article-content .timeline{margin:22px 0 30px;border-top:1px solid var(--line)}
+.article-content .timeline-entry{display:grid;grid-template-columns:minmax(170px,220px) minmax(0,1fr);gap:22px;padding:18px 0;border-bottom:1px solid var(--line)}
+.article-content .timeline-label{font-size:10px;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase}
+.article-content .timeline-label strong{display:block;font-size:12px;letter-spacing:.5px;color:var(--accent2);margin-top:4px}
+.article-content .timeline-copy{min-width:0}
+.article-content .timeline-copy p:last-child{margin-bottom:0}
+.article-content .quote{margin:24px 0;padding:16px 18px;border-left:2px solid var(--accent2);background:#101412;color:#c6cec8;font-size:15px;line-height:1.7}
+.article-content .caps{font-size:10px;letter-spacing:1.4px;color:var(--accent);font-weight:700}
+.article-content .end{margin-top:30px;padding-top:15px;border-top:1px solid var(--line);font-size:10px;letter-spacing:1.3px;color:var(--dim)}
+@media (max-width:700px){.article-content .timeline-entry{grid-template-columns:1fr;gap:8px}.article-content .quote{font-size:14px}}
+</style>
+</head>
+<body class="article-page">
+<header class="ms-topbar"><a class="ms-logo" href="../../index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="../../index">HOME</a><a class="active" href="../../pages">ATLS</a><a href="../../projects">PRDS</a><a href="../../feature-requests">REQUESTS</a><a href="../../email">CONTACT</a></nav><a class="top-login" href="../../login">ACCOUNT ↗</a></header>
+<nav class="article-nav" aria-label="Article navigation"><a href="../../pages">← ATLS / ARTICLES</a><a href="../../index">⌂ MINESCOUT</a></nav>
+
+<div class="content article-content">
+<h1>THE EVOLUTION OF MINESCOUT BETA</h1>
+<p class="meta">DESIGN HISTORY · MINESCOUT BETA · FROM TERMINAL TO ARCHIVE</p>
+<div class="rule"></div>
+<p class="entry-label">System entry / design evolution</p>
+<p>Minescout Beta did not begin as the site it is today. It started as a small, experimental terminal interface: black, green, noisy, and deliberately technical. Over time, the project kept changing because the interface kept teaching us what Minescout actually wanted to be.</p>
+<p>This is the story of that change — not just a list of releases, but the shift in thinking that took Minescout from a terminal experiment to the research and software archive it is now.</p>
+
+<div class="callout">The biggest change was not adding more features. It was realizing that the terminal was no longer the best way to present the features we had already built.</div>
+
+<h2>01 / The Original Beta</h2>
+<p>The earliest Beta build was heavily inspired by Matrix-era terminals and experimental hacker interfaces. The visual language was intentionally loud: bright green text, black backgrounds, scanlines, Matrix rain, glitch effects, and a large Beta access panel.</p>
+<p>Even at this stage, though, the site was more than a landing page. Articles, projects, authentication, requests, messaging, tools, and experimental utilities were already beginning to form the underlying Minescout ecosystem.</p>
+
+<h2>02 / The Terminal Era</h2>
+<p>The next step was to make the terminal more than a visual effect. Minescout became something you could actually operate through a command interface.</p>
+<ul>
+<li>Command-driven navigation and history.</li>
+<li>Filesystem-style access to articles and projects.</li>
+<li>Keyboard controls and terminal interaction.</li>
+<li>Commands for opening, reading, and exploring content.</li>
+<li>A more deliberate Linux-inspired interface.</li>
+</ul>
+<p>The idea was simple: instead of visiting a website, you would enter a small computer built into the website.</p>
+
+<h2>03 / When the Terminal Became Too Much</h2>
+<p>That approach was fun, but it eventually created its own problem. Too many parts of the site depended on the terminal metaphor. Articles behaved like terminal documents. Navigation depended on terminal controls. Secondary pages could feel like applications inside an application.</p>
+<p>At the same time, two pages kept standing out: <strong>ATLS</strong> and <strong>PRDS</strong>.</p>
+<div class="quote">The realization was simple: ATLS and PRDS already looked like the site we were trying to build.</div>
+
+<h2>04 / The ATLS + PRDS Pivot</h2>
+<p>This became the turning point. Instead of asking how to make the terminal better, we asked what Minescout would look like if the terminal disappeared entirely.</p>
+<p>The answer was a much cleaner structure:</p>
+<ul>
+<li><strong>ATLS</strong> — articles, research, experiments, and release notes.</li>
+<li><strong>PRDS</strong> — projects, utilities, software, and archives.</li>
+<li><strong>REQUESTS</strong> — ideas and feature requests.</li>
+<li><strong>CONTACT</strong> — direct communication.</li>
+<li><strong>ACCOUNT</strong> — identity and access.</li>
+</ul>
+<p>The content had not suddenly become different. The presentation had. Minescout stopped trying to make everything feel like a terminal and started letting the archive itself become the interface.</p>
+
+<h2>05 / Building One Visual System</h2>
+<p>Once ATLS and PRDS became the reference point, the rest of the Beta was rebuilt around their visual language: dark charcoal surfaces, warm orange accents, restrained green, thin borders, compact metadata, technical typography, and dense but readable information.</p>
+<p>The same system was carried into account pages, requests, contact, administration, project pages, error states, and the article reader.</p>
+<p>We also added a much quieter animated background. Instead of Matrix rain dominating the page, subtle Minescout, ATLS, PRDS, and Beta glyphs move behind the interface. The background provides life without becoming the interface.</p>
+
+<h2>06 / Removing the Old Interface</h2>
+<p>The next passes were about removing things that no longer belonged. The old <code>GNU nano</code> article header disappeared. The fake <code>[ ^X EXIT ]</code> control disappeared. Matrix backgrounds were removed from articles and PRDS. Article navigation became normal web navigation.</p>
+<p>This mattered because a redesign is not finished when the new design is added. It is finished when the old design stops leaking through.</p>
+
+<h2>07 / Turning Articles Into Actual Documents</h2>
+<p>The terminal-era article renderer had been optimized for terminal output. Once that layer was removed, the articles needed to become proper documents.</p>
+<ul>
+<li>Real headings and sections.</li>
+<li>Readable paragraphs and spacing.</li>
+<li>Lists that behave like lists.</li>
+<li>Inline code that sizes to its content.</li>
+<li>Callouts for important information.</li>
+<li>Direct links to the actual project files and tools.</li>
+</ul>
+<p>The Vigenère release became a useful example of this process: the article explains the tool, while the project entry points directly to the standalone <code>vigenere-tool.html</code>.</p>
+
+<h2>08 / The Current Beta</h2>
+<p>The current Beta is the result of all of those iterations. It is still technical. It is still experimental. It still has the personality of a system built by someone who enjoys terminals, software, and strange little tools.</p>
+<p>But the interface no longer asks the visitor to understand a terminal before they can understand Minescout.</p>
+<div class="callout"><strong>ATLS is what Minescout has written. PRDS is what Minescout has built.</strong> Everything else exists to connect those two sides of the project.</div>
+
+<h2>09 / What Changed</h2>
+<div class="timeline">
+<div class="timeline-entry"><div class="timeline-label">ORIGIN<strong>Original Beta</strong></div><div class="timeline-copy"><p>Matrix-inspired landing page, terminal green, scanlines, glitch effects, and the first archive of tools and experiments.</p></div></div>
+<div class="timeline-entry"><div class="timeline-label">INTERACTION<strong>Terminal Era</strong></div><div class="timeline-copy"><p>The terminal became a real interface with commands, navigation, history, and filesystem-style content access.</p></div></div>
+<div class="timeline-entry"><div class="timeline-label">PIVOT<strong>ATLS + PRDS</strong></div><div class="timeline-copy"><p>The terminal was removed as the primary interface. The article and project archives became the center of the experience.</p></div></div>
+<div class="timeline-entry"><div class="timeline-label">SYSTEM<strong>Unified Design</strong></div><div class="timeline-copy"><p>The ATLS/PRDS visual language spread across the entire Beta, with a quieter animated background and consistent controls.</p></div></div>
+<div class="timeline-entry"><div class="timeline-label">POLISH<strong>Current Beta</strong></div><div class="timeline-copy"><p>Articles became real documents, project links became direct, forms were styled consistently, and small layout problems were fixed instead of hidden.</p></div></div>
+</div>
+
+<h2>10 / What We Learned</h2>
+<p>The most important lesson from the Beta was that a strong visual idea does not always need to be the entire product.</p>
+<p>The terminal was a great starting point because it gave Minescout an identity. But ATLS and PRDS gave that identity somewhere to go.</p>
+<p>Minescout Beta is better now because the interface gets out of the way of the things it is actually here to show: the research, the experiments, and the software.</p>
+
+<div class="end">END OF ENTRY / MINESCOUT BETA</div>
+</div>
+<script src="../../assets/js/background.js?v=12"></script>
+<script src="../../assets/js/security.js?v=12"></script>
+<script src="../../assets/js/article-nav.js?v=12"></script>
+</body>
+</html>

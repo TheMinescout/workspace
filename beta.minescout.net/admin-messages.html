@@ -1,40 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>ADMIN // INBOX</title>
-    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png">
+    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png?v=1">
 
-    <style>
-        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; height: 100vh; overflow: hidden; margin: 0; display: flex; flex-direction: column; }
-        canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.3; pointer-events: none; }
-        #main-interface { position: relative; z-index: 10; height: 100%; display: none; flex-direction: column; background: rgba(0,0,0,0.5); }
-        .header { padding: 15px; border-bottom: 2px solid #0F0; background: rgba(0,20,0,0.95); display: flex; justify-content: space-between; align-items: center; }
-        .status-secure { background: #003300; padding: 2px 8px; font-weight: bold; font-size: 0.8rem; }
-        #inbox-view { flex-grow: 1; overflow-y: auto; display: none; padding: 10px; }
-        .msg-bar { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px dashed #004400; cursor: pointer; background: rgba(0,0,0,0.8); }
-        .msg-bar:hover { background: rgba(0,50,0,0.5); }
-        .msg-bar.unread { color: #0F0; font-weight: bold; background: rgba(0,50,0,0.3); }
-        .msg-bar.read { color: #006600; }
-        #message-view { display: none; flex-grow: 1; padding: 20px; overflow-y: auto; }
-        .view-frame { border: 1px solid #0F0; padding: 15px; background: rgba(0,20,0,0.95); }
-        .view-body { white-space: pre-wrap; line-height: 1.5; color: #ccffcc; margin: 15px 0; }
-        .open-btn { position: fixed; bottom: 20px; right: 20px; border: 1px solid #0F0; padding: 10px; background: #000; cursor: pointer; z-index: 100; font-family: 'Courier New', monospace; color: #0F0; }
-        #lockout { display: none; height: 100%; justify-content: center; align-items: center; color: red; font-size: 2rem; font-weight: bold; position: relative; z-index: 20; }
-        .note { color: #555; font-size: 0.75rem; margin-top: 6px; }
-    </style>
+    
+    <link rel="stylesheet" href="assets/css/style.css?v=8">
 </head>
 <body>
-    <canvas id="matrixCanvas"></canvas>
-    <div class="open-btn" onclick="window.toggleCmd()">[ CMD ]</div>
+    <header class="ms-topbar"><a class="ms-logo" href="index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="index">HOME</a><a href="pages">ATLS</a><a href="projects">PRDS</a><a href="feature-requests">REQUESTS</a><a href="email">CONTACT</a></nav><a class="top-login" href="index">EXIT ↗</a></header>
     <div id="lockout">ACCESS DENIED</div>
 
     <div id="main-interface">
-        <div class="header">
-            <span>// INBOX</span>
-            <span class="status-secure">SECURE &mdash; life.minescout.net</span>
-        </div>
+        <div class="header"><span>// ADMIN / INBOX</span><span class="status-secure">SECURE — life.minescout.net</span></div>
         <div id="inbox-view"><div style="padding:20px;color:#555;">LOADING...</div></div>
         <div id="message-view">
             <div class="view-frame">
@@ -50,8 +30,6 @@
 
     <!-- Auth (no Firebase) -->
     <script src="assets/js/auth.js?v=1.01"></script>
-    <!-- Terminal core -->
-    <script src="assets/js/terminal-core.js?v=4.86"></script>
 
     <script>
         const ADMIN_USERNAME = "theminescout@minescout.net"; // must match users.json username
@@ -68,7 +46,7 @@
                 await initInbox();
             } else {
                 document.getElementById('lockout').style.display = 'flex';
-                setTimeout(() => window.location.href = 'index.html', 3000);
+                setTimeout(() => window.location.href = 'index', 3000);
             }
         });
 
@@ -102,10 +80,7 @@
             currentMessages.slice().reverse().forEach(msg => {
                 const div = document.createElement('div');
                 div.className = msg.read ? 'msg-bar read' : 'msg-bar unread';
-                div.onclick = () => {
-                    const input = document.getElementById('global-cmd-input');
-                    if (input) { input.value = `open ${msg.subject}`; window.toggleCmd(); input.focus(); }
-                };
+                div.onclick = () => openMessage(msg);
                 div.innerHTML = `<span>${msg.subject}</span><span style="font-size:0.8rem">${msg.sender || ''}</span>`;
                 inboxEl.appendChild(div);
             });
@@ -144,5 +119,7 @@
 
         if (window.authReady) document.dispatchEvent(new CustomEvent('auth-ready', { detail: { user: window.currentUser } }));
     </script>
+<script src="assets/js/background.js?v=12"></script>
+<script src="assets/js/security.js?v=12"></script>
 </body>
 </html>

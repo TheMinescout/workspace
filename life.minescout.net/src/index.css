@@ -573,7 +573,7 @@ html[data-theme="dark"] .chip-update { background: rgba(107,114,128,.2); color: 
 
 /* ─── CARD HERO IMAGE (no placeholder when missing) ─── */
 .card-hero-img {
-  width: 100%; max-height: 180px; object-fit: cover;
+  width: 100%; max-height: auto; object-fit: cover;
   border-radius: var(--radius-s); margin: 10px 0 6px;
   display: block;
 }

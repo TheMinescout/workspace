@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vigenère Decoder // Matrix Protocol</title>
+    <title>Vigenère Decoder // MineScout</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
 
         :root {
-            --hex-green: #00ff41;
-            --hex-dark: #051005;
-            --hex-dim: #003b00;
+            --hex-green: #da7756;
+            --hex-dark: #1a1a1e;
+            --hex-dim: rgba(218,119,86,0.2);
         }
 
         body {
-            background-color: black;
+            background-color: #1a1a1e;
             color: var(--hex-green);
-            font-family: 'Share Tech Mono', monospace;
+            font-family: 'JetBrains Mono', ui-monospace, 'JetBrains Mono', ui-monospace, 'Courier New', monospace;
             overflow-x: hidden;
         }
 
@@ -26,7 +26,7 @@
             width: 100%;
             height: 100px;
             z-index: 10;
-            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(33, 255, 0, 0.04) 50%, rgba(0,0,0,0) 100%);
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(218, 119, 86, 0.04) 50%, rgba(0,0,0,0) 100%);
             opacity: 0.1;
             position: absolute;
             bottom: 100%;
@@ -48,26 +48,26 @@
         }
 
         .neo-box {
-            background: rgba(0, 10, 0, 0.9);
+            background: rgba(20, 20, 26, 0.97);
             border: 1px solid var(--hex-green);
-            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+            box-shadow: 0 0 18px rgba(218, 119, 86, 0.2);
         }
 
         .neo-input {
-            background: #000;
-            border: 1px solid var(--hex-dim);
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.07);
             color: var(--hex-green);
             transition: 0.3s;
         }
         
         .neo-input:focus {
             border-color: var(--hex-green);
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+            box-shadow: 0 0 12px rgba(218, 119, 86, 0.2);
             outline: none;
         }
 
         .neo-btn {
-            background: var(--hex-dim);
+            background: rgba(218,119,86,0.1);
             border: 1px solid var(--hex-green);
             color: var(--hex-green);
             text-transform: uppercase;
@@ -77,14 +77,14 @@
         }
 
         .neo-btn:hover {
-            background: var(--hex-green);
-            color: black;
-            box-shadow: 0 0 20px var(--hex-green);
+            background: var(--hex-green); /* accent */
+            color: #1a1a1e;
+            box-shadow: 0 0 16px rgba(218,119,86,0.3);
         }
 
         .tab-active {
-            background: var(--hex-green);
-            color: black;
+            background: var(--hex-green); /* accent */
+            color: #1a1a1e;
             font-weight: bold;
         }
 
@@ -96,7 +96,7 @@
         }
         .confidence-fill {
             height: 100%;
-            background: var(--hex-green);
+            background: var(--hex-green); /* accent */
             width: 0%;
             transition: width 0.5s ease;
         }
@@ -129,12 +129,15 @@
 
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #004400; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        ::-webkit-scrollbar-thumb { background: rgba(218,119,86,0.2); }
         ::-webkit-scrollbar-thumb:hover { background: #00ff41; }
     </style>
+    <link rel="stylesheet" href="../../assets/css/style.css?theme=msbeta-v12">
 </head>
 <body class="min-h-screen flex flex-col items-center p-2 md:p-6">
+    <header class="ms-topbar"><a class="ms-logo" href="../../index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="../../index">HOME</a><a href="../../pages">ATLS</a><a href="../../projects">PRDS</a><a href="../../feature-requests">REQUESTS</a><a href="../../email">CONTACT</a></nav><a class="top-login" href="../../login">ACCOUNT ↗</a></header>
+
 
     <canvas id="bg-canvas"></canvas>
     <div class="scanline"></div>
@@ -802,22 +805,8 @@
         const cols = Math.floor(200); 
         const ypos = Array(cols).fill(0);
 
-        function matrix() {
-            ctx.fillStyle = '#0001';
-            ctx.fillRect(0, 0, width, height);
-            ctx.fillStyle = '#0f0';
-            ctx.font = '14pt monospace';
-
-            ypos.forEach((y, i) => {
-                const text = String.fromCharCode(Math.random() * 128);
-                const x = i * 20;
-                ctx.fillText(text, x, y);
-                if (y > 100 + Math.random() * 10000) ypos[i] = 0;
-                else ypos[i] = y + 20;
-            });
-        }
-        setInterval(matrix, 50);
-
     </script>
+<script src="../../assets/js/background.js?v=12"></script>
+<script src="../../assets/js/security.js?v=12"></script>
 </body>
 </html>

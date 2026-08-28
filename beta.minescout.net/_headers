@@ -1,0 +1,12 @@
+/*
+  Minescout Beta security headers for Cloudflare Pages / compatible static hosts.
+*/
+/*
+  Prevent framing/clickjacking and dangerous legacy content types.
+*/
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdn.jsdelivr.net https://js.puter.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://life.minescout.net https://*.firebaseio.com https://*.googleapis.com https://api.emailjs.com https://api.puter.com; worker-src 'self' blob:; frame-src 'self' https://*.puter.com;

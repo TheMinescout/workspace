@@ -299,7 +299,7 @@ export const views = {
               <td><strong>Founder &amp; Systems Architect</strong> — Designed and launched a multi-tenant SaaS platform utilizing AI integrations and cloud-based infrastructure. Engineered application routing systems using Cloudflare Workers and KV storage to achieve sub-second global edge latency. Developed scalable web architecture supporting multiple users and services from a single codebase.</td>
             </tr>
             <tr class="entry-row" style="--delay: 150ms;">
-              <td class="resume-date">Jan – Apr 2026</td>
+              <td class="resume-date">Jan 2026 – Pres.</td>
               <td class="resume-title">The Chop Lab</td>
               <td><strong>Lead Designer &amp; Developer</strong> — Developed a custom digital storefront for an artisanal ceramics business. Led a complete platform redesign and v2 overhaul focused on performance, usability, and scalability. Built a custom Single Page Application (SPA) architecture supporting expanded product offerings and a redesigned UI.</td>
             </tr>
@@ -318,7 +318,7 @@ export const views = {
               <td><strong>Mechanical Assembly &amp; Hardware Integration</strong> — Contributed to robot assembly, hardware integration, and turret subsystem development. Assisted with precision turret assembly, electrical wiring, and mechanical fabrication. Contributed to a team that earned First Place at the Glacier Peak District Event and advanced to the Pacific Northwest District Championship.</td>
             </tr>
             <tr class="entry-row" style="--delay: 300ms;">
-              <td class="resume-date">Mar 2025 – Jan 2026</td>
+              <td class="resume-date">Mar 2025 – Pres.</td>
               <td class="resume-title">Minescout Beta</td>
               <td><strong>Founder</strong> — Created a technology review and beta testing platform focused on AI tools and large language model workflows. Evaluated emerging technologies and documented performance findings to validate AI-assisted workflows. Organized testing processes and structured user feedback collection.</td>
             </tr>
@@ -342,7 +342,7 @@ export const views = {
               <td><strong>Park Restoration Volunteer</strong> — Participated in environmental stewardship and community restoration initiatives. Assisted with park improvement, trail preservation, and conservation projects.</td>
             </tr>
             <tr class="entry-row" style="--delay: 500ms;">
-              <td class="resume-date">Jan 2023 – Jan 2025</td>
+              <td class="resume-date">Jan 2023 – Pres.</td>
               <td class="resume-title">Pack 551</td>
               <td><strong>Den Chief, Scouting America</strong> — Mentored Cub Scouts and led weekly activities, skills challenges, and development programs. Served as a dedicated youth leader and positive role model. Earned the Den Chief Service Award.</td>
             </tr>
@@ -392,6 +392,47 @@ export const views = {
             <div class="project-arrow">→</div>
           </a>
         </div>
+      </div>
+    </div>
+  `,
+  // Add these inside your views object in views.js
+'/photography': `
+    <div class="main--page">
+      <div class="page-content" style="max-width: 800px;">
+        <p class="page-label">Portfolio</p>
+        <h1 class="page-title">Photography Archive</h1>
+        <p class="hero-desc" style="margin-bottom: 2rem;">
+          A collection of my best captures ranging from wildlife action at Grouse Mountain to architectural details in Europe, shot using my Nikon D7200 or Pixel device. 
+        </p>
+
+        <div class="photography-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem;">
+          
+          <!-- Wildlife Highlights -->
+          <div class="photo-card" style="grid-column: 1 / -1;">
+            <img src="/assets/owl-flight.jpg" alt="Great Horned Owl in Flight" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
+            <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;"><strong>Great Horned Owl in Flight</strong> — Grouse Mountain, BC | Nikon D7200, ƒ/4.8, 1/8000, 125mm, ISO 1000</p>
+          </div>
+          <div class="photo-card">
+            <img src="/assets/owl-portrait.jpg" alt="Great Horned Owl Portrait" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
+            <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;"><strong>Owl Portrait</strong> — Grouse Mountain, BC | High-Key Background</p>
+          </div>
+          <div class="photo-card">
+            <img src="/assets/vulture.jpg" alt="Vulture Portrait" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
+            <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;"><strong>Turkey Vulture Close-Up</strong> — Grouse Mountain, BC | Sharp Eye Focus</p>
+          </div>
+
+          <!-- Architecture Additions -->
+          <div class="photo-card">
+            <img src="/assets/sagrada-familia-door.jpg" alt="Sagrada Família Door" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
+            <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;"><strong>Sagrada Família Facade Door</strong> — Barcelona, Spain | Nikon D7200, ƒ/5.6, 1/30s, 18mm, ISO 560</p>
+          </div>
+          <div class="photo-card">
+            <img src="/assets/pisa.jpg" alt="Leaning Tower of Pisa" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
+            <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;"><strong>Leaning Tower of Pisa</strong> — Pisa, Italy | Nikon D7200, ƒ/11, 1/500s, 28mm, ISO 200</p>
+          </div>
+
+        </div>
+
       </div>
     </div>
   `,

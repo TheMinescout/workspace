@@ -9,7 +9,9 @@
 (function () {
 
     const USERS_URL = 'https://life.minescout.net/data/users.json';
-    const SESSION_KEY = 'ms_session'; // stores { username, loggedInAt }
+    const SESSION_KEY = 'ms_session'; // stores { username, loggedInAt, expiresAt }
+    const LOGIN_GUARD_KEY = 'ms_login_guard';
+    const SESSION_TTL = 12 * 60 * 60 * 1000;
 
     // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -37,15 +39,32 @@
 
     function getSession() {
         try {
-            return JSON.parse(localStorage.getItem(SESSION_KEY)) || null;
+            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            if (!session || !session.username || !session.expiresAt || Date.now() >= session.expiresAt) {
+                clearSession();
+                return null;
+            }
+            return session;
         } catch { return null; }
     }
 
     function setSession(username) {
         localStorage.setItem(SESSION_KEY, JSON.stringify({
             username,
-            loggedInAt: Date.now()
+            loggedInAt: Date.now(),
+            expiresAt: Date.now() + SESSION_TTL
         }));
+    }
+
+    function loginAllowed() {
+        const now = Date.now();
+        let attempts = [];
+        try { attempts = JSON.parse(sessionStorage.getItem(LOGIN_GUARD_KEY) || '[]'); } catch {}
+        attempts = attempts.filter(t => now - t < 60000);
+        if (attempts.length >= 5) return false;
+        attempts.push(now);
+        try { sessionStorage.setItem(LOGIN_GUARD_KEY, JSON.stringify(attempts)); } catch {}
+        return true;
     }
 
     function clearSession() {
@@ -58,6 +77,7 @@
 
         // Attempt login. Returns { ok: true } or { ok: false, error: '...' }
         async login(username, password) {
+            if (!loginAllowed()) return { ok: false, error: 'Too many attempts. Try again in a minute.' };
             const users = await fetchUsers();
             if (!users) return { ok: false, error: 'Could not reach auth server. Try again.' };
 
@@ -93,7 +113,7 @@
 
         signOut() {
             clearSession();
-            window.location.href = 'login.html';
+            window.location.href = 'login';
         }
     };
 

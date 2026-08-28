@@ -1,83 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>nano /docs/crypto-tool.txt</title>
-    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png?v=1.01">
-    
-    <!-- FIREBASE & CORE -->
-    <script src="../../assets/js/firebase-config.js"></script>
-    <script src="../../assets/js/terminal-core.js?v=4.86"></script>
-
-    <style>
-        body { background-color: #111; color: #ccc; font-family: 'Courier New', monospace; margin: 0; padding: 20px; }
-        .editor-header { background: #fff; color: #000; padding: 5px; font-weight: bold; display: flex; justify-content: space-between; }
-        .content { max-width: 800px; margin: 20px auto; white-space: pre-wrap; line-height: 1.5; }
-        h1 { color: #0F0; border-bottom: 1px double #0F0; }
-        a { color: #0F0; text-decoration: underline; cursor: pointer; }
-        
-        .instruction {
-            position: fixed; bottom: 10px; right: 10px;
-            background: #0F0; color: #000; padding: 5px 10px; font-weight: bold; cursor: pointer; z-index: 100;
-        }
-        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; pointer-events: none; }
-    </style>
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vigenere Release // Minescout Beta</title>
+<link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png?v=1?v=1.01">
+<link rel="stylesheet" href="../../assets/css/style.css?theme=msbeta-v12">
+<style>
+.article-content .meta{color:var(--muted);font-size:11px;margin:-4px 0 30px}
+.article-content .rule{height:1px;background:var(--line);margin:28px 0}
+.article-content .entry-label{font-size:10px;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin:0 0 10px}
+.article-content h2{font-size:15px;letter-spacing:1px;color:var(--accent2)!important;margin:28px 0 10px;text-transform:uppercase}
+.article-content p{margin:0 0 15px}
+.article-content ul,.article-content ol{margin:10px 0 22px;padding-left:24px}
+.article-content li{margin:8px 0;padding-left:3px}
+.article-content .callout{margin:20px 0;padding:15px 16px;background:rgba(18,23,20,.8);border:1px solid var(--line);border-left:2px solid var(--accent);color:#b9c2bc}
+.article-content .steps{counter-reset:step;list-style:none;padding-left:0}
+.article-content .steps li{counter-increment:step;display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:start}.article-content .steps .step-copy{min-width:0;display:block}
+.article-content .steps li::before{content:counter(step,decimal-leading-zero);color:var(--accent);font-size:10px;padding-top:2px}
+.article-content .caps{font-size:10px;letter-spacing:1.4px;color:var(--accent);font-weight:700}
+.article-content .end{margin-top:30px;padding-top:15px;border-top:1px solid var(--line);font-size:10px;letter-spacing:1.3px;color:var(--dim)}
+.article-content .action-link{display:inline-flex;margin:6px 0 20px;padding:10px 12px;border:1px solid var(--line);background:#101412;color:var(--accent2)!important;text-decoration:none!important}
+.article-content .action-link:hover{border-color:var(--accent);background:#151b18}
+</style>
 </head>
-<body>
-    <canvas id="matrixCanvas"></canvas>
-    
-    <div class="editor-header"><span>GNU nano 6.0</span><span>File: crypto-release.txt</span><span>Modified</span></div>
-
-    <div class="content">
-<h1>RELEASE: Vigenère Crypto Tool (Offline)</h1>
-<p>Date: Dec 05, 2025 | Type: Standalone Utility</p>
-
------------------------------------------------------------
-SYSTEM ENTRY: TOOL DEPLOYMENT
------------------------------------------------------------
-
-We have compiled the Vigenère Cracker into a standalone local file.
-This ensures you can perform cryptographic operations without an active internet connection (Air-Gapped Mode).
-
-FEATURES:
-1. Local Encryption/Decryption.
-2. Dictionary Attack (Requires Internet for API).
-3. Brute Force Engine.
-
-> <a href="../../content/projects/vigenere-tool.zip" download>DOWNLOAD_TOOLKIT.ZIP</a>
-
-INSTRUCTIONS:
-1. Download the archive.
-2. Unzip to your local machine.
-3. Open `vigenere-tool.html` in your browser.
-
------------------------------------------------------------
-END OF LOG
------------------------------------------------------------
-    </div>
-
-    <div class="instruction" onclick="window.toggleCmd()">
-        [ ^X EXIT ] (Click or Type '/')
-    </div>
-
-    <script>
-        // Page Specific Command Handler
-        window.handlePageCommand = function(cmd, args) {
-            if (cmd === 'return' || cmd === 'back' || cmd === 'exit') { 
-                window.location.href = '../../pages.html'; 
-                return true; 
-            }
-            if (cmd === 'download' || cmd === 'get') {
-                // Trigger Download via Core logic or manual link click
-                const link = document.createElement('a');
-                link.href = '../../content/projects/vigenere-tool.zip';
-                link.download = 'vigenere-tool.zip';
-                link.click();
-                return "Downloading...";
-            }
-            return null;
-        };
-    </script>
+<body class="article-page">
+<header class="ms-topbar"><a class="ms-logo" href="../../index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="../../index">HOME</a><a class="active" href="../../pages">ATLS</a><a href="../../projects">PRDS</a><a href="../../feature-requests">REQUESTS</a><a href="../../email">CONTACT</a></nav><a class="top-login" href="../../login">ACCOUNT ↗</a></header>
+<nav class="article-nav" aria-label="Article navigation"><a href="../../pages">← ATLS / ARTICLES</a><a href="../../index">⌂ MINESCOUT</a></nav>
+<div class="content article-content"><h1>RELEASE: Vigenère Crypto Tool</h1><p class="meta">DEC 05, 2025 · STANDALONE UTILITY · OFFLINE-FIRST</p><div class="rule"></div><p class="entry-label">System entry / tool deployment</p><p>We have compiled the Vigenère tool into a standalone local HTML file. The core interface can be used without an active internet connection.</p><div class="callout">The tool is designed to run directly in your browser. The local HTML file is the canonical project entry point.</div><h2>Features</h2><ul><li><span class="step-copy">Local encryption and decryption.</span></li><li><span class="step-copy">Dictionary attack support where an external API is available.</span></li><li><span class="step-copy">Brute-force engine.</span></li></ul><h2>Access</h2><a class="action-link" href="../projects/vigenere-tool">OPEN VIGENÈRE TOOL.HTML →</a><h2>Instructions</h2><ol class="steps"><li><span class="step-copy">Open <code>vigenere-tool.html</code> directly in your browser.</span></li><li><span class="step-copy">Use the tool locally; no separate terminal application is required.</span></li></ol><div class="end">END OF ENTRY / MINESCOUT BETA</div></div>
+<script src="../../assets/js/background.js?v=12"></script>
+<script src="../../assets/js/security.js?v=12"></script>
+<script src="../../assets/js/article-nav.js?v=12"></script>
 </body>
 </html>

@@ -1,66 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOOL // PORTFOLIO_PROJECTION</title>
-    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png">
+    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png?v=1">
     
     <!-- EXTERNAL LIBS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../../assets/js/firebase-config.js?v=3.2"></script>
-    <script src="../../assets/js/terminal-core.js?v=4.86"></script>
 
     <style>
-        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; margin: 0; padding: 20px; overflow-y: auto; }
-        canvas#matrixCanvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; pointer-events: none; }
+        body { background-color: #1a1a1e; color: #e8e3db; font-family: 'JetBrains Mono', ui-monospace, 'JetBrains Mono', ui-monospace, 'Courier New', monospace; margin: 0; padding: 20px; overflow-y: auto; }
         
         .container { 
             max-width: 1200px; margin: 0 auto; 
-            border: 2px solid #0F0; background: rgba(0, 20, 0, 0.95); 
-            padding: 20px; box-shadow: 0 0 20px #0F0; 
+            border: 1px solid rgba(218,119,86,0.35); background: rgba(20,20,26,0.97); 
+            padding: 20px; box-shadow: 0 0 20px rgba(218,119,86,0.25); 
             display: grid; grid-template-columns: 350px 1fr; gap: 20px;
         }
         
         /* Title is clickable for CMD */
-        h1 { grid-column: span 2; border-bottom: 1px dashed #0F0; padding-bottom: 10px; margin-top: 0; cursor: pointer; }
+        h1 { grid-column: span 2; border-bottom: 1px dashed #da7756; padding-bottom: 10px; margin-top: 0; cursor: pointer; }
         
         /* INPUT COLUMN */
-        .col-config { display: flex; flex-direction: column; gap: 15px; border-right: 1px solid #004400; padding-right: 20px; }
+        .col-config { display: flex; flex-direction: column; gap: 15px; border-right: 1px solid rgba(255,255,255,0.07); padding-right: 20px; }
         
-        label { font-weight: bold; color: #88ff88; display: block; margin-bottom: 5px; font-size: 0.8rem; letter-spacing: 1px; }
+        label { font-weight: bold; color: #8a8480; display: block; margin-bottom: 5px; font-size: 0.8rem; letter-spacing: 1px; }
         
         input { 
-            width: 100%; background: #001100; border: 1px solid #004400; color: #0F0; 
+            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.07); color: #e8e3db; 
             font-family: inherit; padding: 8px; outline: none; box-sizing: border-box; font-size: 1rem;
         }
-        input:focus { border-color: #0F0; box-shadow: 0 0 5px #0F0; }
+        input:focus { border-color: #e8e3db; box-shadow: 0 0 8px rgba(218,119,86,0.25); }
 
         /* PHASE MANAGER */
-        .phase-box { border: 1px dashed #004400; padding: 10px; background: #000500; max-height: 300px; overflow-y: auto; }
+        .phase-box { border: 1px dashed rgba(218,119,86,0.15); padding: 10px; background: rgba(0,0,0,0.2); max-height: 300px; overflow-y: auto; }
         .phase-item { 
             display: grid; grid-template-columns: 1fr 1fr 30px; gap: 5px; margin-bottom: 5px; 
-            border-bottom: 1px dotted #003300; padding-bottom: 5px;
+            border-bottom: 1px dotted rgba(218,119,86,0.12); padding-bottom: 5px;
         }
         .del-btn { color: red; cursor: pointer; font-weight: bold; text-align: center; border: 1px solid red; }
         .del-btn:hover { background: red; color: white; }
 
         /* BUTTONS */
         .btn { 
-            background: #003300; color: #0F0; border: 1px solid #0F0; padding: 12px; 
+            background: rgba(218,119,86,0.12); color: #e8e3db; border: 1px solid rgba(218,119,86,0.3); padding: 12px; 
             cursor: pointer; font-weight: bold; text-transform: uppercase; width: 100%; transition: 0.2s; 
         }
-        .btn:hover { background: #0F0; color: #000; box-shadow: 0 0 10px #0F0; }
+        .btn:hover { background: #da7756; color: #000; box-shadow: 0 0 10px #da7756; }
         .btn-add { font-size: 10px; padding: 5px; margin-top: 5px; border-style: dashed; }
 
         /* CHART AREA */
         .col-chart { position: relative; height: 600px; padding: 10px; }
 
-        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } h1 { grid-column: span 1; } .col-config { border-right: none; border-bottom: 1px solid #004400; padding-bottom: 20px; padding-right: 0; } }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } h1 { grid-column: span 1; } .col-config { border-right: none; border-bottom: 1px solid rgba(218,119,86,0.2); padding-bottom: 20px; padding-right: 0; } }
     </style>
+    <link rel="stylesheet" href="../../assets/css/style.css?theme=msbeta-v12">
 </head>
 <body>
-    <canvas id="matrixCanvas"></canvas>
+    <header class="ms-topbar"><a class="ms-logo" href="../../index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="../../index">HOME</a><a href="../../pages">ATLS</a><a href="../../projects">PRDS</a><a href="../../feature-requests">REQUESTS</a><a href="../../email">CONTACT</a></nav><a class="top-login" href="../../login">ACCOUNT ↗</a></header>
+
     <!-- Removed Floating Button -->
 
     <div class="container">
@@ -100,7 +100,7 @@
 
             <button class="btn" onclick="generateChart()">[ RUN PROJECTION ]</button>
             
-            <div id="stats-output" style="margin-top:20px; font-size:12px; border-top:1px solid #004400; padding-top:10px;">
+            <div id="stats-output" style="margin-top:20px; font-size:12px; border-top:1px solid rgba(218,119,86,0.2); padding-top:10px;">
                 > WAITING FOR DATA...
             </div>
         </div>
@@ -205,7 +205,7 @@
             const profit = finalVal - dataContrib[dataContrib.length-1];
             document.getElementById('stats-output').innerHTML = `
                 > PROJECTION COMPLETE.<br>
-                > FINAL VALUE: <span style="color:#0F0; font-weight:bold">$${finalVal.toLocaleString(undefined, {maximumFractionDigits:0})}</span><br>
+                > FINAL VALUE: <span style="color:#da7756; font-weight:bold">$${finalVal.toLocaleString(undefined, {maximumFractionDigits:0})}</span><br>
                 > TOTAL INVESTED: $${dataContrib[dataContrib.length-1].toLocaleString()}<br>
                 > EST. PROFIT: <span style="color:#0FF">$${profit.toLocaleString(undefined, {maximumFractionDigits:0})}</span>
             `;
@@ -225,7 +225,7 @@
                         {
                             label: 'Optimistic',
                             data: high,
-                            borderColor: 'rgba(0, 255, 0, 0.3)',
+                            borderColor: 'rgba(218,119,86, 0.3)',
                             borderDash: [5, 5],
                             pointRadius: 0,
                             fill: false
@@ -233,8 +233,8 @@
                         {
                             label: 'Projected (Base)',
                             data: base,
-                            borderColor: '#0F0',
-                            backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                            borderColor: '#da7756',
+                            backgroundColor: 'rgba(218,119,86, 0.1)',
                             borderWidth: 2,
                             pointRadius: 0,
                             fill: true
@@ -242,7 +242,7 @@
                         {
                             label: 'Pessimistic',
                             data: low,
-                            borderColor: 'rgba(0, 255, 0, 0.3)',
+                            borderColor: 'rgba(218,119,86, 0.3)',
                             borderDash: [5, 5],
                             pointRadius: 0,
                             fill: false
@@ -262,12 +262,12 @@
                     maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
                     plugins: {
-                        legend: { labels: { color: '#0F0', font: { family: 'Courier New' } } },
+                        legend: { labels: { color: '#da7756', font: { family: 'Courier New' } } },
                         tooltip: {
-                            backgroundColor: 'rgba(0, 20, 0, 0.9)',
-                            titleColor: '#0F0',
+                            backgroundColor: 'rgba(20,20,26,0.97)',
+                            titleColor: '#da7756',
                             bodyColor: '#fff',
-                            borderColor: '#0F0',
+                            borderColor: '#da7756',
                             borderWidth: 1,
                             titleFont: { family: 'Courier New' },
                             bodyFont: { family: 'Courier New' },
@@ -281,11 +281,11 @@
                     scales: {
                         x: { 
                             grid: { color: '#002200' },
-                            ticks: { color: '#0F0', font: { family: 'Courier New' }, maxTicksLimit: 10 }
+                            ticks: { color: '#da7756', font: { family: 'Courier New' }, maxTicksLimit: 10 }
                         },
                         y: { 
                             grid: { color: '#002200' },
-                            ticks: { color: '#0F0', font: { family: 'Courier New' }, callback: function(value) { return '$' + value.toLocaleString(); } }
+                            ticks: { color: '#da7756', font: { family: 'Courier New' }, callback: function(value) { return '$' + value.toLocaleString(); } }
                         }
                     }
                 }
@@ -297,15 +297,11 @@
         
         // Handle Back Command
         window.handlePageCommand = function(cmd) {
-            if (cmd === 'return' || cmd === 'back') { window.location.href = '../../projects.html'; return true; }
+            if (cmd === 'return' || cmd === 'back') { window.location.href = '../../projects'; return true; }
             return null;
         };
-
-        // Matrix Rain
-        const c=document.getElementById('matrixCanvas'),ctx=c.getContext('2d');
-        function r(){c.width=window.innerWidth;c.height=window.innerHeight}r();window.onresize=r;
-        const s='$01%',cl=c.width/16,d=[];for(let i=0;i<cl;i++)d[i]=1;
-        setInterval(()=>{ctx.fillStyle='rgba(0,0,0,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0F0';ctx.font='16px mono';for(let i=0;i<d.length;i++){ctx.fillText(s[Math.floor(Math.random()*s.length)],i*16,d[i]*16);if(d[i]*16>c.height&&Math.random()>0.975)d[i]=0;d[i]++}},33);
     </script>
+<script src="../../assets/js/background.js?v=12"></script>
+<script src="../../assets/js/security.js?v=12"></script>
 </body>
 </html>

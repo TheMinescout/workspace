@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>0xUNKNOWN // GLITCH_REALM</title>
-    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png?v=1.01">
+    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png?v=1?v=1.01">
     
     <style>
-        body { background-color: #000; color: #0F0; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
+        body { background-color: #1a1a1e; color: #da7756; font-family: 'JetBrains Mono', ui-monospace, 'Courier New', monospace; overflow: hidden; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
         canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.3; }
         
-        .security-gate { text-align: center; z-index: 20; background: #000; border: 2px solid #FF0000; padding: 40px; box-shadow: 0 0 20px #FF0000; }
+        .security-gate { text-align: center; z-index: 20; background: #1a1a1e; border: 2px solid #FF0000; padding: 40px; box-shadow: 0 0 20px #FF0000; }
         .security-gate h2 { color: #FF0000; margin: 0 0 20px 0; font-size: 2rem; }
         #auth-input { background: #110000; border: 1px solid #FF0000; color: #FF0000; padding: 10px; font-family: inherit; font-size: 1.5rem; text-align: center; width: 150px; outline: none; text-transform: uppercase; }
         .gate-msg { margin-top: 10px; color: #FF0000; height: 20px; font-weight: bold; }
@@ -19,15 +19,18 @@
         h1 { color: #00FFFF; text-shadow: 2px 2px 0 #FF00FF; letter-spacing: 3px; }
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
         
-        button { background: #000; color: #0F0; border: 1px solid #0F0; padding: 15px; font-family: inherit; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #0F0; color: #000; box-shadow: 0 0 10px #0F0; transform: scale(1.05); }
-        .active-mod { background: #003300; border-color: #00FF00; box-shadow: 0 0 5px #00FF00 inset; }
+        button { background: #1a1a1e; color: #da7756; border: 1px solid #da7756; padding: 15px; font-family: inherit; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #da7756; color: #000; box-shadow: 0 0 10px #da7756; transform: scale(1.05); }
+        .active-mod { background: rgba(218,119,86,0.12); border-color: #da7756; box-shadow: 0 0 5px #da7756 inset; }
         
         .back-link { display: block; margin-top: 20px; color: #555; text-decoration: none; cursor: pointer; }
         .back-link:hover { color: #fff; }
     </style>
+    <link rel="stylesheet" href="../../assets/css/style.css?theme=msbeta-v12">
 </head>
 <body>
+    <header class="ms-topbar"><a class="ms-logo" href="../../index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="../../index">HOME</a><a href="../../pages">ATLS</a><a href="../../projects">PRDS</a><a href="../../feature-requests">REQUESTS</a><a href="../../email">CONTACT</a></nav><a class="top-login" href="../../login">ACCOUNT ↗</a></header>
+
     <canvas id="matrixCanvas"></canvas>
 
     <div id="gate" class="security-gate">
@@ -48,11 +51,10 @@
             <button id="btn-grav" onclick="toggleGravity()">[ GRAVITY FAIL ]</button>
         </div>
 
-        <a href="../../index.html" class="back-link">&lt;&lt; REBOOT SYSTEM</a>
+        <a href="../../index" class="back-link">&lt;&lt; REBOOT SYSTEM</a>
     </div>
 
     <script src="../../assets/js/firebase-config.js"></script>
-    <script src="../../assets/js/terminal-core.js?v=4.86"></script>
 
     <script>
         const gateInput = document.getElementById('auth-input');
@@ -69,7 +71,7 @@
                 } else {
                     gateMsg.innerText = "ACCESS DENIED";
                     gateInput.value = "";
-                    setTimeout(() => window.location.href = "../../index.html", 1000);
+                    setTimeout(() => window.location.href = "../../index", 1000);
                 }
             }
         });
@@ -108,5 +110,7 @@
             if(sessionStorage.getItem('egg_gravity')==='true') document.getElementById('btn-grav').classList.add('active-mod');
         }
     </script>
+<script src="../../assets/js/background.js?v=12"></script>
+<script src="../../assets/js/security.js?v=12"></script>
 </body>
 </html>

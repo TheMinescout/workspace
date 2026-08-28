@@ -81,7 +81,7 @@
             const auth = firebase.auth();
             
             let path = window.location.pathname;
-            if (path === '/' || path.endsWith('/')) path = 'index.html';
+            if (path === '/' || path.endsWith('/')) path = 'index';
             const cleanName = path.replace(/^\/|[\.\#\$\/\[\]]/g, '_');
 
             const storageKey = `tracked_${cleanName}`;

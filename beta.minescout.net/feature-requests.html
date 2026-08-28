@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>UPLINK // Feature Request</title>
-    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png?v=1.01">
+    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png?v=1?v=1.01">
     
     <!-- FIREBASE SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -14,141 +14,33 @@
     <!-- EMAILJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
-    <style>
-        body { background-color: #050505; color: #0F0; font-family: 'Courier New', monospace; overflow: hidden; height: 100vh; margin: 0; }
-        canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.2; }
-        
-        .container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; z-index: 10; }
-        
-        .form-block { 
-            background: rgba(0, 20, 0, 0.95); border: 2px solid #0F0; 
-            padding: 20px; width: 600px; max-width: 95%; 
-            box-shadow: 0 0 20px #0F0; 
-        }
-        
-        h2 { border-bottom: 2px solid #0F0; padding-bottom: 10px; margin-bottom: 15px; }
-        .input-group { margin-bottom: 15px; }
-        
-        label { display: block; font-weight: bold; margin-bottom: 5px; color: #88ff88; }
-        input, textarea, select { 
-            width: 100%; background: #000; border: 1px solid #004400; 
-            color: #0F0; font-family: inherit; padding: 10px; outline: none; 
-        }
-        input:focus, textarea:focus, select:focus { border-color: #0F0; box-shadow: 0 0 5px #004400; }
-        
-        .transmit-btn { 
-            background: #003300; color: #0F0; border: 1px solid #0F0; 
-            padding: 15px; width: 100%; font-weight: bold; cursor: pointer; text-transform: uppercase;
-        }
-        .transmit-btn:hover { background: #0F0; color: #000; }
-        
-        .progress-bar { height: 10px; background: #0F0; width: 0%; margin-top:10px; }
-        .open-btn { position: fixed; top: 10px; left: 10px; border: 1px solid #0F0; padding: 5px; cursor: pointer; z-index: 100; }
-    </style>
+    
+    <link rel="stylesheet" href="assets/css/style.css?v=8">
 </head>
-<body>
-    <canvas id="matrixCanvas"></canvas>
-    <div class="open-btn" onclick="window.toggleCmd()">[ OPEN CMD ]</div>
-
-    <div class="container">
-        <div class="form-block">
-            <h2>// UPLINK: FEATURE_REQ</h2>
-            
-            <div class="input-group">
-                <input type="text" id="sender" placeholder="Sender Name (Optional)">
-            </div>
-            <div class="input-group">
-                <input type="text" id="subject" placeholder="Subject / Feature Title">
-            </div>
-            <div class="input-group">
-                <select id="priority">
-                    <option value="LOW">LOW PRIORITY</option>
-                    <option value="MED">MED PRIORITY</option>
-                    <option value="HIGH">HIGH PRIORITY</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <textarea id="desc" rows="4" placeholder="Description..."></textarea>
-            </div>
-            
-            <button class="transmit-btn" onclick="transmitData()">[ TRANSMIT DATA ]</button>
-            
-            <div style="display:none;" id="prog-cont">
-                <div class="progress-bar" id="prog-bar"></div>
-            </div>
-            <div id="status-msg" style="text-align:center; margin-top:5px;"></div>
-        </div>
-    </div>
-
-    <!-- SCRIPTS -->
-    <script src="assets/js/firebase-config.js"></script>
-    <script src="assets/js/terminal-core.js?v=4.86"></script>
-
-    <script>
-        // --- EMAILJS SETUP ---
-        const EMAIL_SERVICE_ID = "service_khgjq1e";   // <--- PASTE HERE
-        const EMAIL_TEMPLATE_ID = "template_yb9xkyy"; // <--- PASTE HERE
-        const EMAIL_PUBLIC_KEY = "Fa69EL7WS0e4EWsl-";   // <--- PASTE HERE
-
-        (function(){ emailjs.init(EMAIL_PUBLIC_KEY); })();
-
-        function transmitData() {
-            const db = firebase.database();
-            
-            // 1. Get Values
-            const senderName = document.getElementById('sender').value || "Guest";
-            const subject = document.getElementById('subject').value;
-            const desc = document.getElementById('desc').value;
-            const priority = document.getElementById('priority').value;
-            const status = document.getElementById('status-msg');
-            
-            // 2. Validate
-            if(!subject || !desc) { 
-                status.style.color='red'; 
-                status.innerText="ERROR: NULL DATA"; 
-                return; 
-            }
-
-            // 3. Animation & Send
-            document.getElementById('prog-cont').style.display='block';
-            let w=0; 
-            
-            const int = setInterval(()=>{
-                if(w>=100){
-                    clearInterval(int);
-                    
-                    // A. Save to Firebase (Internal Admin Inbox)
-                    db.ref('messages').push({
-                        sender: senderName,
-                        subject: subject, desc: desc, priority: priority,
-                        timestamp: Date.now(), read: false
-                    });
-
-                    // B. Send Email Notification
-                    const emailParams = {
-                        name: senderName,
-                        time: new Date().toLocaleString(),
-                        message: `
-[PRIORITY]: ${priority}
-[SUBJECT]: ${subject}
-
-[CONTENT]:
-${desc}`
-                    };
-
-                    emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, emailParams)
-                        .then(() => console.log("Email Sent"), (err) => console.warn("Email Error:", err));
-
-                    // C. Redirect
-                    status.style.color='#0F0'; 
-                    status.innerText="UPLOAD COMPLETE.";
-                    setTimeout(()=>window.location.href='index.html', 1500);
-                } else { 
-                    w+=10; 
-                    document.getElementById('prog-bar').style.width=w+'%'; 
-                }
-            }, 50);
-        }
-    </script>
-</body>
-</html>
+<body class="ms-site"><header class="ms-topbar"><a class="ms-logo" href="index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="index">HOME</a><a href="pages">ATLS</a><a href="projects">PRDS</a><a class="active" href="feature-requests">REQUESTS</a><a href="email">CONTACT</a></nav><a class="top-login" href="login">ACCOUNT ↗</a></header><main class="directory-wrap"><section class="directory-head"><div><div class="eyebrow">REQUESTS / UPLINK</div><h1>Feature request</h1><p>Tell Minescout what should exist next.</p></div><div class="directory-code">REQ<br><small>UPLINK</small></div></section><div class="form-block" style="margin-top:18px"><div class="input-group"><label>NAME / HANDLE</label><input type="text" id="sender" placeholder="Optional"></div><div class="input-group"><label>FEATURE TITLE</label><input type="text" id="subject" placeholder="What should we build?"></div><div class="input-group"><label>PRIORITY</label><select id="priority"><option value="LOW">LOW</option><option value="MED">MEDIUM</option><option value="HIGH">HIGH</option></select></div><div class="input-group"><label>DESCRIPTION</label><textarea id="desc" rows="7" maxlength="5000" placeholder="Describe the idea, problem, or workflow..."></textarea></div><div class="input-group ms-honeypot" aria-hidden="true"><label>WEBSITE</label><input id="website" tabindex="-1" autocomplete="off"></div><button class="transmit-btn" onclick="transmitData()">SEND REQUEST →</button><div id="prog-cont" style="display:none;margin-top:12px"><div class="loading-bar"><div class="fill" id="prog-bar"></div></div></div><div id="status-msg" style="margin-top:10px;color:var(--muted);font-size:11px"></div></div></main><footer class="ms-footer"><span>FEATURE REQUESTS</span><a href="index">← MINESCOUT</a></footer><script src="assets/js/firebase-config.js"></script><script>
+const EMAIL_SERVICE_ID = "service_khgjq1e";
+const EMAIL_TEMPLATE_ID = "template_yb9xkyy";
+const EMAIL_PUBLIC_KEY = "Fa69EL7WS0e4EWsl-";
+emailjs.init(EMAIL_PUBLIC_KEY);
+async function transmitData(){
+  const status=document.getElementById('status-msg'), btn=document.querySelector('.transmit-btn');
+  const sender=MS_SECURITY.cleanText(document.getElementById('sender').value,120)||'Guest';
+  const subject=MS_SECURITY.cleanText(document.getElementById('subject').value,180);
+  const desc=MS_SECURITY.cleanText(document.getElementById('desc').value,5000);
+  const priority=document.getElementById('priority').value;
+  if(document.getElementById('website').value){status.textContent='REQUEST REJECTED.';return;}
+  if(!subject||!desc){status.textContent='Please provide a title and description.';return;}
+  if(!MS_SECURITY.canSubmit()){status.textContent='Please wait before sending another request.';return;}
+  btn.disabled=true; status.textContent='TRANSMITTING…';
+  document.getElementById('prog-cont').style.display='block'; document.getElementById('prog-bar').style.width='30%';
+  try{
+    const db=firebase.database();
+    await db.ref('messages').push({sender,subject,desc,priority,timestamp:Date.now(),read:false,source:'beta-request'});
+    document.getElementById('prog-bar').style.width='70%';
+    await emailjs.send(EMAIL_SERVICE_ID,EMAIL_TEMPLATE_ID,{name:sender,time:new Date().toISOString(),message:`[PRIORITY]: ${priority}\n[SUBJECT]: ${subject}\n\n[CONTENT]:\n${desc}`});
+    document.getElementById('prog-bar').style.width='100%'; status.textContent='REQUEST SENT.';
+    setTimeout(()=>location.href='index',900);
+  }catch(err){console.error(err);btn.disabled=false;status.textContent='Transmission failed. Please try again.';document.getElementById('prog-cont').style.display='none';}
+}
+</script><script src="assets/js/background.js?v=12"></script><script src="assets/js/security.js?v=12"></script><script src="assets/js/article-nav.js?v=12"></script>
+</body></html>

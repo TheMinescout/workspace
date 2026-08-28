@@ -1,6 +1,6 @@
 // app.js — Application Logic & Routing
 
-import { views } from './views.js?v=1.32321';
+import { views } from './views.js?v=1.32332';
 
 // ── 1. GLOBAL FIREBASE INITIALIZATION (Fixes memory leaks) ─────────
 let globalFirebaseApp = null;
@@ -40,11 +40,12 @@ const MAIN_MENU = [
 ];
 
 const MAIN_SECONDARY = [
-  { label: 'AI Services', href: '/ai' },
-  { label: 'Contact',     href: '/contact' },
-  { label: 'Guestbook',   href: '/guestbook' },
-  { label: 'Now',         href: '/now' },
-  { label: 'Ask',         href: '/ask' }
+  { label: 'AI Services',   href: '/ai' },
+  { label: 'Photography', href: '/photography' }, // <--- Add this line
+  { label: 'Contact',       href: '/contact' },
+  { label: 'Guestbook',     href: '/guestbook' },
+  { label: 'Now',           href: '/now' },
+  { label: 'Ask',           href: '/ask' }
 ];
 
 const AI_MENU = [
