@@ -11,7 +11,7 @@ const GAS_URL =
 // GmailApp.sendEmail in the Apps Script sends from whichever Google
 // account owns that script — this is just the studio's own address for
 // the copy. Swap this for the real inbox you want requests to land in.
-export const STUDIO_EMAIL = "orders@chop-lab.com";
+export const STUDIO_EMAIL = "tmcarleton11@gmail.com";
 
 export const checkStudioPasscode = createServerFn({ method: "POST" })
   .validator((data: { password: string }) => data)
