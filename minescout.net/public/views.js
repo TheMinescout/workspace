@@ -85,7 +85,7 @@ const BLOG_POSTS = [
   {
     date: "Sep 6, 2026", tag: "tag-leadership", tagLabel: "Leadership",
     href: "/blog/eagle-scout-project.html",
-    title: "Project Leadership at 15: Directing an Eagle Scout Project",
+    title: "Project Leadership at 14: Directing an Eagle Scout Project",
     excerpt: "Leadership lessons learned while managing 60+ volunteer hours to plan, construct, and install a Little Free Library in Illahee Park.",
   },
   {
@@ -1716,7 +1716,7 @@ registerPost('/blog/sub-second-latency.html', "Aug 30, 2026", "Building",
 
 // Post 06 — Eagle Scout Project — Sep 6, 2026
 registerPost('/blog/eagle-scout-project.html', "Sep 6, 2026", "Leadership",
-  "Project Leadership at 15: Directing an Eagle Scout Project",
+  "Project Leadership at 14: Directing an Eagle Scout Project",
   "What was involved in planning and executing your Eagle Scout service project?",
   "Achieving the rank of Eagle Scout in Troop 571 required planning, fundraising, and directing a community literacy project. I led a team of youth and adult volunteers over 60+ total hours to build and install a custom Little Free Library at Illahee Park in Sammamish, WA.",
   `
