@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "The Chop Lab",
+      "hasCanvas": false,
+      "bodyTextLen": 3748,
+      "bodyTextHash": "0a82445fdf821ef44ffea8a23cbf0d8dfa953da7ce0a1a41d76b40c83fd7d492",
+      "bodyTextPrefix": "The Chop Lab Tools Digital files About FAQ MM IN Configure CUSTO",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "The Chop Lab",
+      "hasCanvas": false,
+      "bodyTextLen": 3712,
+      "bodyTextHash": "628d7741b4ed77a25b40f72058d9d00bb16000b9aca1b6dc3b7af5415f2fc88b",
+      "bodyTextPrefix": "The Chop Lab Configure CUSTOM ENGINEERED POTTERY TOOLS Your sign",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
