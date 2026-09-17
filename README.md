@@ -1,165 +1,164 @@
-🌐 The Minescouts Ecosystem & The Chop Lab
-==========================================
+# The Minescout Workspace
 
-_A consolidated, in-depth overview of Minescout, Minescout AI, the Minescouts Life platform, the Experimental Beta Program, and The Chop Lab micro-manufacturing service. This ecosystem represents a unified digital architecture focused on high-performance web engineering, automation, and physical-digital integration._
+This repository contains the web properties and experiments behind **The Minescout**: the main Minescout portfolio and services site, Minescout Life, the Minescout Beta environment, and The Chop Lab.
 
-🏢 Minescout & Minescout AI
----------------------------
+The workspace is organized as separate site projects rather than a single application. Each site has its own runtime, build process, and deployment shape, while the repository provides a shared home for the ecosystem.
 
-### Overview
+## Sites
 
-**Minescout** and **Minescout AI** operate as a specialized technical consulting and automation agency dedicated to local businesses and organizations in Sammamish, WA, and the greater Seattle Eastside. The platform focuses on a singular mission: reclaiming high-value time for business owners by modernizing legacy websites, eliminating digital friction, and deploying custom "Managed Intelligence" assistants. By replacing sluggish, monolithic platforms with modern, decoupled architectures, Minescout actively turns local web presence into a measurable revenue-generating asset.
+| Site | Purpose | Implementation |
+| --- | --- | --- |
+| [minescout.net](https://minescout.net) | Thomas Carleton’s personal portfolio and project hub. | Static HTML/CSS/JavaScript SPA served from `minescout.net/public` |
+| [life.minescout.net](https://life.minescout.net) | Personal publishing and project site for posts, categories, experiments, and administration. | React 19 + Vite + React Router, with Firebase-backed features |
+| [beta.minescout.net](https://beta.minescout.net) | Experimental and staging site for testing new Minescout features and interfaces. | Static HTML pages with clean-URL Nginx routing |
+| [chop-lab.com](https://chop-lab.com) | The Chop Lab storefront and tooling for custom ceramic tools, 3D-printing work, files, drawings, and consultations. | React + TypeScript + Vite + TanStack Start/Router |
 
-### 🚀 Key Features & Architectural Deep Dive
-
-*   **Multi-Tenant Edge Architecture:** Powered by Cloudflare Workers and KV (Key-Value) Storage, the system utilizes advanced header-based routing (X-Site-Id) to host and serve unlimited client nodes from a single, lightning-fast serverless codebase. This means when a user in Sammamish loads a client's site, the assets are served from a localized Seattle edge node within milliseconds, drastically improving SEO rankings and lowering bounce rates compared to traditional centralized hosting.
-    
-*   **Managed Intelligence (Llama-3 RAG Pipeline):** We deploy custom-trained, persistent Llama-3 AI assistants utilizing Retrieval-Augmented Generation (RAG). Instead of generic chatbots, these agents are trained specifically on the proprietary data, pricing models, and operational hours of each individual business. They autonomously triage inbound leads, qualify potential customers, and answer complex FAQs 24/7. This ensures that no lead is lost when a business owner is off the clock.
-    
-*   **The "Backstage" Dashboard:** Recognizing that most business owners are not developers, we engineered a secure, intuitive React/Firebase CMS known as "Backstage." This portal allows non-technical clients to seamlessly update their photography, team bios, and service offerings. More importantly, it houses the "Training Bridge"—a proprietary UI where business owners can easily upload new documents or type out new policies that instantly retrain their site's AI assistant without touching a single line of code.
-    
-*   **Zero-Cost Infrastructure Strategy:** The entire deployment pipeline is architected exclusively on enterprise-grade "Free Tier" tools (Cloudflare for DNS and Edge routing, Firebase for NoSQL databases and Auth, GitHub Actions for CI/CD pipelines). This highly optimized stack completely eliminates the traditional $30-$100 monthly hosting and maintenance overhead for clients, providing them with enterprise-level security and uptime at a fraction of the traditional cost.
-    
-
-🌿 Minescouts Life
-------------------
-
-### Overview
-
-**Minescouts Life** is a personal content hub, portfolio, and dynamic web application platform. It serves as a central repository for technical deep-dives, coding project post-mortems, personal milestones (such as Eagle Scout project documentation and Puppy Life updates), and serves as the primary community portal for local gaming and Minecraft servers.
-
-Designed to be both a digital resume and a public sandbox, the site is built as a highly optimized static web application enhanced with **Firebase** for real-time data persistence, secure user authentication, and dynamic, seamless content injection.
-
-### 🚀 Key Features & Operations
-
-*   **Dynamic Content System:** Articles, blog posts, and global announcements are decoupled from the HTML and fetched in real-time from the Firebase Realtime Database. This allows for instantaneous site-wide updates without requiring a full rebuild or redeployment of the static assets.
-    
-*   **Modular Architecture (The Loader Logic):** To maintain rapid load times and follow DRY (Don't Repeat Yourself) principles, the site utilizes sophisticated JavaScript injection (loader.js). Shared UI components like the primary Navigation Sidebar, Footer, and Authentication modals are dynamically loaded across 20+ individual pages, ensuring a consistent user experience and drastically reducing code duplication.
-    
-*   **Admin Dashboard & Telemetry:** A secure, permission-gated CMS exists for the site administrator to draft posts, push announcements, and manage the public-facing development roadmap.
-    
-*   **Interactive Features & Analytics:** The platform includes a live Project Roadmap for transparent development tracking, a GitHub Status widget that pulls commit history via the GitHub API, and a custom-built Real-time Web Analytics engine that tracks Active Users and Total Views using Firebase presence protocols.
-    
-*   **Standalone Web Apps:** The ecosystem hosts several custom-built utility tools:
-    
-    *   _Beat Saber Randomizer:_ A specialized algorithm that generates randomized, balanced playlists for VR fitness routines.
-        
-    *   _Scorecard Pro:_ A digital, mobile-responsive scorekeeping application for tabletop and outdoor games.
-        
-    *   _Vigenère Cipher Tool:_ An educational cryptography app for encoding and decoding messages.
-        
-*   **Feedback System:** An integrated Feature Request form powered by EmailJS and Firebase, allowing the community to suggest improvements and report bugs directly to the developer's triage queue.
-    
-
-### 📂 Project Structure
+## Repository layout
 
 ```text
-life.minescout.net/
-├── admin/             # CMS logic, auth guards, post drafting, and request viewing
-├── archives/          # Chronological sorting and Monthly/Yearly archive generation
-├── assets/            # Core optimized resources
-│   ├── css/           # Global design system (homepage.css, typography, features.css)
-│   ├── includes/      # Modular HTML fragments (sidebar.html, comments.html, auth_modal.html)
-│   ├── images/        # Compressed site assets, icons, and post thumbnails
-│   └── js/            # Core modular logic (auth.js, loader.js, features.js, telemetry.js)
-├── pages/             # Category hubs routing (Tech Tips, Updates, Development)
-├── posts/             # Individual article rendering logic organized by topic
-├── projects/          # Standalone Web Apps (Scorecard, Beat Saber, Calculators)
-└── index.html         # Primary entry point and dynamic router
-
+workspace/
+├── minescout.net/       # Main static Minescout site
+│   └── public/          # Deployed site files and assets
+├── life.minescout.net/  # React/Vite Minescout Life application
+│   ├── public/
+│   └── src/
+│       ├── components/
+│       ├── data/
+│       ├── hooks/
+│       └── pages/
+├── beta.minescout.net/  # Static beta/staging site
+├── chop-lab.com/        # Chop Lab React/TanStack application
+│   ├── public/
+│   ├── scripts/
+│   ├── server/
+│   └── src/
+│       ├── components/
+│       ├── lib/
+│       └── routes/
+├── my-sites.conf        # Nginx virtual-host and proxy configuration
+└── README.md
 ```
-🧪 Minescouts Beta Program
---------------------------
 
-### ⚠️ Warning: Experimental Zone
+## Minescout (`minescout.net`)
 
-Welcome to the **Minescouts Beta** documentation. This branch (beta.minescout.net) serves as a staging ground for bleeding-edge features and simulates a persistent "Web Operating System" designed with a retro Hacker/Terminal aesthetic. It is a sandbox for testing UI/UX concepts before they hit production.
+The main site is a lightweight, asset-based SPA. Its HTML entry point mounts the application at `#app` and loads the client from `public/app.js`; styling, images, and other static resources live alongside it in `public`.
 
-**Current Version:** v5.0-beta (Terminal OS & AI Suite)
+The site presents a personal portfolio and project hub rather than a framework-driven server application. Nginx serves real files from `minescout.net/public` and falls back to `index.html` for application routes. The `/ai/` and `/services/` paths are explicitly supported as SPA routes while static assets receive browser caching headers.
 
-### 🚧 Active Beta Experiments
+## Minescout Life (`life.minescout.net`)
 
-#### 1\. The Terminal OS (Core v5.0)
+Minescout Life is now a React application rather than the older collection of injected HTML fragments described by the previous README. It uses Vite for development and production builds, React Router for navigation, Firebase for application data and authentication, and TipTap for rich-text editing.
 
-A fully functional, browser-based Command Line Interface (CLI) that persists application state and session data across page loads using localStorage and sessionStorage.
+Current route areas include:
 
-*   **Navigation:** Users can seamlessly use the / key to toggle the terminal overlay from anywhere on the site, allowing for rapid, mouse-free navigation.
-    
-*   **New Commands & Utilities:**
-    
-    *   alias \[name\]=\[cmd\]: Allows users to create custom shortcuts and macros tailored to their workflow.
-        
-    *   snake: A fully playable, terminal-based mini-game featuring custom physics integration and local high-score tracking.
-        
-    *   stats: Visualizes real-time "system health" (simulated memory usage, network latency, and active modules) in responsive ASCII art.
-        
-    *   main: Triggers a highly complex "Reverse Matrix" CSS and Canvas API transition to elegantly return the user to the live production site.
-        
-*   **Security & Progression:** Implements a gamified Clearance Level system (Lvl 0 - 10). Users must discover hidden commands and solve basic cryptographic puzzles to elevate their clearance and unlock deeper system tools.
-    
+- Home page
+- Login and administrator pages
+- Individual posts at `/post/:id`
+- Category pages for coding projects, tech tips, updates, puppy life, the Minecraft server, beta, stats, and feature requests
+- A not-found page for unknown routes
 
-#### 2\. AI Writer Suite (v41.0)
+The application source is grouped into reusable components, data helpers, hooks, and page components. The admin area supports managing site content, while the public experience focuses on posts and category browsing.
 
-An advanced, browser-based Integrated Development Environment (IDE) specifically tailored for generating, editing, and previewing HTML content using Artificial Intelligence.
+### Local development
 
-*   **Tech Stack:** Integrates Puter.js for cloud-based AI processing, IndexedDB for robust local storage of drafts, and Firebase for community template sharing.
-    
-*   **Features:**
-    
-    *   **Smart Asset Injection:** Users can drag-and-drop images or videos into the editor. The AI automatically parses the media, converts it via Base64 encoding, and contextually places it within the generated article flow, bypassing the need for an external Content Delivery Network (CDN) during the drafting phase.
-        
-    *   **Dual Export Pipeline:** Users can export their work as clean, standard HTML5, or as Admin-ready templates pre-injected with Minescouts CSS classes for immediate publishing.
-        
+```bash
+cd life.minescout.net
+npm install
+npm run dev
+```
 
-#### 3\. Utility Tools
+Useful checks and build commands:
 
-*   **Vigenère Cipher Engine:** A robust cryptography tool featuring encryption, decryption, and a specialized dictionary-based brute force attack simulator to demonstrate the vulnerabilities of classical ciphers.
-    
-*   **Portfolio Simulator:** A neon-themed, interactive financial projection engine. It utilizes Chart.js to model complex scenarios involving compound interest, variable market volatility, and recurring contribution schedules over a 40-year timeline.
-    
+```bash
+npm run lint
+npm run build
+npm run preview
+```
 
-### 🔒 Admin Beta Access
+## Minescout Beta (`beta.minescout.net`)
 
-**Clearance Level 10** is strictly reserved for the System Administrator.
+The beta site is a static experimental environment. It includes the terminal-style interface and supporting pages for projects, feature requests, login, email, admin messages, and content. The beta directory also contains shared assets and content data used by those pages.
 
-*   **Terminal:** Grants access to restricted commands like vm (View Server Messages) and ls -a (Reveal Hidden System Files and user telemetry).
-    
-*   **AI Writer Override:** Entering the secure Admin Override Code physically unlocks restricted export features, allowing direct API pushes to the production Firebase database.
-    
+Nginx provides clean URLs for the beta deployment:
 
-🏺 The Chop Lab
----------------
+- `/index.html` redirects to `/`
+- Legacy `.html` URLs redirect to extensionless paths
+- Extensionless paths resolve to their matching `.html` files
+- Missing pages use `404.html`
 
-### Overview
+Because beta is an experimental environment, features and page structure may change more frequently than the production sites.
 
-**The Chop Lab** is an innovative micro-manufacturing hub specializing in bringing digital precision to the physical world. Operating under the guiding philosophy and tagline _"Where CAD meets Clay"_, the lab engineers custom, high-precision tools for professional ceramic artists while also providing rapid, reliable 3D prototyping services for local makers, cosplayers, and engineering students.
+## The Chop Lab (`chop-lab.com`)
 
-### 🚀 Key Services & Products
+The Chop Lab is the most application-heavy project in the workspace. It is a typed React application using TanStack Start/Router, Vite, Tailwind CSS, Radix UI components, and a server/data layer built around Kysely, PostgreSQL, and PGlite. Three.js is included for browser-based 3D and model-preview experiences.
 
-*   **Ceramic Studio Tools:** We design and manufacture high-relief, non-stick PLA Matte stamps (traditional "Chops" for signing pottery), continuous texture rollers for slab building, and concentric trimming foot guides. These tools are engineered specifically taking into account the unique shrinkage rates and moisture levels of standard stoneware and porcelain clay bodies.
-    
-*   **Print-On-Demand (STL) Prototyping:** A public-facing 3D printing service utilizing a fleet of high-speed, multi-color Bambu Lab A1 printers. Customers can upload raw .stl or .obj files to receive instant algorithmic quotes based on print time and material weight, manufactured in durable PETG for mechanical parts or detailed PLA Matte for aesthetic models.
-    
+The current route structure includes:
 
-### 🛠️ Tech Stack & Architecture
+- Home and shared application layout
+- About, FAQ, and consultation flows
+- Product configuration
+- Engineering drawings and file handling
+- Invoices
+- Tool catalogue and individual tool pages
 
-The Chop Lab's digital storefront operates on a custom-built, lightning-fast Single Page Application (SPA) designed to completely eliminate user friction during the ordering process.
+Reusable UI and domain components include product cards, chop previews, STL thumbnails, texture swatches, blueprint viewers, tool drawings, consultation forms, and preview-host integration. Database migrations and application scripts live in `migrations/` and `scripts/`.
 
-*   **Frontend Optimization:** Built purely with Vanilla HTML5, CSS3, and JavaScript, the entire application logic is contained within a single index.html file, guaranteeing zero-latency routing and instant page transitions.
-    
-*   **Interactive 3D Engine:** Integrates **Three.js** and **WebGL** to parse and render uploaded STL files directly in the user's browser. This provides customers with an interactive, beautifully lit, spinning 3D preview of their model _before_ they submit the form, ensuring scale and geometry are correct.
-    
-*   **Backend Automation Pipeline:** Powered by Google Apps Script webhooks and Firebase NoSQL data. Upon form submission, the system captures order logic, calculates pricing, dynamically generates and sends an automated HTML email quote to the client, and persists the project history to a secure tracking sheet.
-    
-*   **AI Integration & Virtual Assistant:** Features a Cloudflare Worker-powered AI Chat terminal that acts as a 24/7 virtual lab assistant, capable of answering questions about material tolerances, maximum print volumes, and design guidelines. Furthermore, a backend AI hook summarizes incoming, complex CAD orders into easily readable briefs for the lab administrator.
-    
+### Local development
 
-© 2026 The Minescouts Ecosystem & The Chop Lab. All Rights Reserved.
+```bash
+cd chop-lab.com
+npm install
+npm run dev
+```
 
-**Contact Directory:**
+Available project commands include:
 
-*   **Minescout & Minescout AI:** thomas@minescout.net
-    
-*   **The Chop Lab:** thomas@chop-lab.com
-    
-*   **Minescouts Life & Beta:** theminescout@minescout.net
+```bash
+npm run build
+npm run preview
+npm run typecheck
+npm test
+npm run lint
+npm run format
+```
+
+The development server runs on port `8080` by default. The build also runs the database migration step, so configure the required application/database environment before building a deployment image or release.
+
+## Deployment topology
+
+`my-sites.conf` documents the current Nginx layout:
+
+- **Minescout Life** is proxied to the Vite/application server on port `3000`, including WebSocket support and `/api/` and `/data/` routes.
+- **Minescout Beta** is served as static content from `/usr/share/nginx/html/beta.minescout.net` with clean-URL rewrites.
+- **The Chop Lab** is proxied to its application server on port `8080`, including Vite HMR/WebSocket headers.
+- **Minescout** is served from `/usr/share/nginx/html/minescout.net/public` with SPA fallback behavior.
+- Unknown hosts and direct-IP requests are rejected by the default server.
+
+The configuration should be treated as deployment documentation as well as server configuration: local ports, static roots, API behavior, and cross-origin access between Life and Beta are defined there.
+
+## Technology overview
+
+- **Frontend:** JavaScript, React, TypeScript, HTML, and CSS
+- **Build tools:** Vite, TanStack Start/Router, TypeScript, Oxlint, ESLint, and Prettier
+- **Minescout Life:** React Router, Firebase, and TipTap
+- **The Chop Lab:** TanStack Router, Tailwind CSS, Radix UI, Three.js, Kysely, PostgreSQL, and PGlite
+- **Hosting/proxying:** Nginx with static hosting and reverse-proxy virtual hosts
+
+## Contributing and maintenance
+
+Each site is independently runnable from its own directory. When changing a site:
+
+1. Work from that site’s directory.
+2. Install dependencies with `npm install` if needed.
+3. Run its development server and the relevant lint, typecheck, test, or build commands.
+4. Check route behavior and deployment assumptions in `my-sites.conf` before releasing.
+
+Dependencies should be installed per project; generated dependency directories such as `node_modules` should not be used as application source.
+
+## Contact
+
+- **Minescout:** thomas@minescout.net
+- **The Chop Lab:** thomas@chop-lab.com
+- **Minescout Life and Beta:** theminescout@minescout.net
+
+© 2026 The Minescout ecosystem and The Chop Lab.
