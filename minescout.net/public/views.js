@@ -315,8 +315,7 @@ export const views = {
             <tr class="entry-row" style="--delay: 250ms;">
               <td class="resume-date">Jan 2025 – Apr 2026</td>
               <td class="resume-title">FRC Team 1294</td>
-              <td><strong>Mechanical Assembly &amp; Hardware Integration</strong> — Contributed to robot assembly, hardware integration, and turret subsystem development. Assisted with precision turret assembly, electrical wiring, and mechanical fabrication. Contributed to a team that earned First Place at the Glacier Peak District Event and advanced to the Pacific Northwest District Championship.</td>
-            </tr>
+              <td><strong>Mechanical Assembly &amp; Hardware Integration</strong> — Contributed to robot assembly and hardware integration on the mechanical and electrical subteams. Assisted with turret assembly, electrical wiring, and fabrication during the pre-season. Contributed to a team that earned First Place at the Glacier Peak District Event and advanced to the Pacific Northwest District Championship.</td>            </tr>
             <tr class="entry-row" style="--delay: 300ms;">
               <td class="resume-date">Mar 2025 – Pres.</td>
               <td class="resume-title">Minescout Beta</td>
