@@ -370,9 +370,9 @@ export const views = {
         <p class="page-label">Portfolio</p>
         <h1 class="page-title">Things I've Built</h1>
         <div class="projects">
-          <a class="project-card" href="/ai" style="--delay: 100ms;">
+          <a class="project-card" href="/studio" style="--delay: 100ms;">
             <div class="project-date">Feb<br>2026</div>
-            <div><div class="project-title">Minescout AI</div><div class="project-url">minescout.net/ai</div></div>
+            <div><div class="project-title">Minescout AI</div><div class="project-url">minescout.net/studio</div></div>
             <div class="project-arrow">→</div>
           </a>
           <a class="project-card" href="https://chop-lab.com" target="_blank" style="--delay: 200ms;">
@@ -436,7 +436,7 @@ export const views = {
     </div>
   `,
   '/blog': buildBlogIndex(),
-  '/ai': `
+  '/studio': `
     <div class="main--page">
       <div class="page-content ai-wrap">
         <p class="ai-eyebrow">Minescout Studio</p>
@@ -453,8 +453,8 @@ export const views = {
         
         <div class="ai-section-label">What We Build</div>
         <div class="ai-features">
-          <a href="/ai/pricing" class="ai-feature"><div class="ai-feature-icon">⚡</div><div><div class="ai-feature-title">Clean Slate Rebuilds</div><div class="ai-feature-desc">A brand new, custom-coded website that grows with your business. No plugins, no bloat, no servers for you to manage.</div></div><span class="ai-feature-badge badge-live">Core</span></a>
-          <a href="/ai/demo/index.html" class="ai-feature"><div class="ai-feature-icon">🤖</div><div><div class="ai-feature-title">An AI Employee for Your Site</div><div class="ai-feature-desc">Imagine every visitor getting an instant answer—even at 2 AM. A chatbot trained specifically on YOUR business.</div></div><span class="ai-feature-badge badge-ready">Demo Ready</span></a>
+          <a href="/studio/pricing" class="ai-feature"><div class="ai-feature-icon">⚡</div><div><div class="ai-feature-title">Clean Slate Rebuilds</div><div class="ai-feature-desc">A brand new, custom-coded website that grows with your business. No plugins, no bloat, no servers for you to manage.</div></div><span class="ai-feature-badge badge-live">Core</span></a>
+          <a href="/studio/demo/index.html" class="ai-feature"><div class="ai-feature-icon">🤖</div><div><div class="ai-feature-title">An AI Employee for Your Site</div><div class="ai-feature-desc">Imagine every visitor getting an instant answer—even at 2 AM. A chatbot trained specifically on YOUR business.</div></div><span class="ai-feature-badge badge-ready">Demo Ready</span></a>
           <a href="/portal" target="_blank" class="ai-feature"><div class="ai-feature-icon">🎭</div><div><div class="ai-feature-title">The "Backstage" Dashboard</div><div class="ai-feature-desc">Your private dashboard where you can edit AI knowledge, see conversations, and manage your site without touching code.</div></div><span class="ai-feature-badge badge-node">Included</span></a>
         </div>
         
@@ -470,14 +470,14 @@ export const views = {
         
         <div class="ai-cta-group" style="margin-bottom: 3rem;">
           <a href="/contact" class="btn-primary">Book a Call</a>
-          <a href="/ai/pricing" class="btn-ghost">See Pricing &rarr;</a>
+          <a href="/studio/pricing" class="btn-ghost">See Pricing &rarr;</a>
         </div>
         
         <p class="ai-disclaimer">Every project is built directly by the founder from start to finish. Minescout is operated by <a href="/">Thomas Carleton</a>. Whether you're a student building your first portfolio or a business looking to automate customer support, the goal is the same: build something that lasts.</p>
       </div>
     </div>
   `,
-  '/ai/clients': `
+  '/studio/clients': `
     <div class="main--page">
       <div class="page-content clients-wrap">
         <p class="page-label">Portfolio</p>
@@ -552,7 +552,7 @@ export const views = {
               <div><div class="client-detail-label">Objective</div><div class="client-detail-val">Lead Triage & Qualification</div></div>
               <div><div class="client-detail-label">Industry</div><div class="client-detail-val">Legal Consulting</div></div>
             </div>
-            <p class="client-note">A demonstration of how Minescout can capture and qualify professional service leads 24/7.<br><a href="/ai/demo/index.html" class="view-link">Test AI Agent &rarr;</a></p>
+            <p class="client-note">A demonstration of how Minescout can capture and qualify professional service leads 24/7.<br><a href="/studio/demo/index.html" class="view-link">Test AI Agent &rarr;</a></p>
           </div>
         </div>
         
@@ -561,7 +561,7 @@ export const views = {
         </div>
       </div>
     </div>
-  `,'/ai/process': `
+  `,'/studio/process': `
     <div class="main--page">
       <div class="page-content process-wrap">
         <p class="page-label">Minescout Studio</p>
@@ -609,12 +609,12 @@ export const views = {
         </div>
         <div class="process-cta">
           <a href="/contact" class="btn-primary">Book a Call</a>
-          <a href="/ai/pricing" class="btn-ghost" style="border-color: var(--border); color: var(--fg);">View pricing &rarr;</a>
+          <a href="/studio/pricing" class="btn-ghost" style="border-color: var(--border); color: var(--fg);">View pricing &rarr;</a>
         </div>
       </div>
     </div>
   `,
-  '/ai/legal': `
+  '/studio/legal': `
     <div class="main--page">
       <div class="page-content legal-wrap">
         <p class="page-label">Minescout AI</p>
@@ -670,7 +670,7 @@ export const views = {
         </div>
         <div class="legal-section" style="--d:0.62s;">
           <div class="legal-section-title">Affiliate links</div>
-          <p class="legal-body">The <a href="/ai/tools">Tools I Use</a> page contains affiliate links, clearly labeled. I earn a small commission if you sign up through them at no cost to you. This does not influence what I recommend.</p>
+          <p class="legal-body">The <a href="/studio/tools">Tools I Use</a> page contains affiliate links, clearly labeled. I earn a small commission if you sign up through them at no cost to you. This does not influence what I recommend.</p>
         </div>
         <div class="legal-section" style="--d:0.66s;">
           <div class="legal-section-title">Intellectual property</div>
@@ -691,7 +691,7 @@ export const views = {
       </div>
     </div>
   `,
-  '/ai/tools': `
+  '/studio/tools': `
     <div class="main--page">
       <div class="page-content tools-wrap">
         <p class="page-label">Minescout AI</p>
@@ -803,7 +803,7 @@ export const views = {
       </div>
     </div>
   `,
-  '/ai/roi': `
+  '/studio/roi': `
     <div class="main--page">
       <div class="page-content">
         <p class="page-label">Business Intelligence</p>
@@ -815,7 +815,7 @@ export const views = {
             <div class="verdict-text" id="verdict-text">Enter your numbers below to see your estimated ROI.</div>
             <button type="button" class="btn-ghost" id="ai-verdict-btn" onclick="window.getAIVerdict()" style="margin-top: 1rem; font-size: 0.7rem; padding: 0.5rem 1rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">✨ Generate AI Analysis</button>
           </div>
-          <a href="/ai/intake" class="verdict-cta">Get started</a>
+          <a href="/studio/intake" class="verdict-cta">Get started</a>
         </div>
 
         <div class="calc-container">
@@ -862,7 +862,7 @@ export const views = {
       </div>
     </div>
   `,
-  '/ai/intake': `
+  '/studio/intake': `
     <div class="main--page" style="padding: 0; width: 100%;">
       <div class="intake-root">
         <div class="form-wrapper">
@@ -927,7 +927,7 @@ export const views = {
                 </ul>
               </section>
               <div class="pdf-footer">
-                <div>Generated by Minescout AI System</div><div>minescout.net/ai</div>
+                <div>Generated by Minescout AI System</div><div>minescout.net/studio</div>
               </div>
             </div>
           </div>
@@ -941,7 +941,7 @@ export const views = {
       </div>
     </div>
   `,
-  '/ai/generator/audit': `
+  '/studio/generator/audit': `
     <div class="main--page" style="display:block; width:100%; max-width:100%; padding: 0;">
       <div class="audit-root">
         <div class="app-header no-print">
@@ -1001,13 +1001,13 @@ export const views = {
           </section>
           <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
             <div>Verified by Minescout Lead Architect</div>
-            <div>minescout.net/ai</div>
+            <div>minescout.net/studio</div>
           </footer>
         </div>
       </div>
     </div>
   `,
-  '/ai/admin': `
+  '/studio/admin': `
     <div id="admin-root">
       <div id="admin-loading-screen">
         <div class="ls-logo">Minescout AI</div><div class="ls-sub">Admin</div>
@@ -1015,7 +1015,7 @@ export const views = {
       </div>
       <div id="login-screen">
         <div class="login-box">
-          <div class="login-box-title">Admin Sign In</div><div class="login-box-sub">minescout.net/ai/admin</div>
+          <div class="login-box-title">Admin Sign In</div><div class="login-box-sub">minescout.net/studio/admin</div>
           <div class="lf"><label>Email</label><input type="email" id="l-email" placeholder="thomas@minescout.net" /></div>
           <div class="lf"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" /></div>
           <button class="login-btn" id="l-btn" onclick="doLogin()">Sign In</button>
@@ -1036,7 +1036,7 @@ export const views = {
             <div class="sidenav-section">Tools</div>
             <a href="#" onclick="showPanel('new-client',this)"><span class="sidenav-icon">&#10133;</span>New Client</a>
             <a href="/portal" target="_blank"><span class="sidenav-icon">&#128279;</span>Client Portal ↗</a>
-            <a href="/ai" target="_blank"><span class="sidenav-icon">&#127760;</span>Public Site ↗</a>
+            <a href="/studio" target="_blank"><span class="sidenav-icon">&#127760;</span>Public Site ↗</a>
           </nav>
           <div class="main-area">
             <div class="main-content">
@@ -1149,7 +1149,7 @@ export const views = {
       <div class="toast" id="toast"></div>
     </div>
   `,
-  '/ai/demo/index.html': `
+  '/studio/demo/index.html': `
     <div class="main--page">
       <div class="page-content">
         <p class="page-label">Minescout AI</p>
@@ -1267,7 +1267,7 @@ export const views = {
       </div>
     </div>
   `,
-  '/ai/pricing': `
+  '/studio/pricing': `
     <div class="main--page">
       <div class="page-content">
         <p class="page-label">Minescout Studio</p>
@@ -1488,7 +1488,7 @@ export const views = {
       </div>
     </div>
   `,
-  '/ai/review': `
+  '/studio/review': `
     <div class="main--page">
       <div class="page-content">
         <p class="page-label">Client Feedback</p>
@@ -1517,9 +1517,9 @@ export const views = {
 };
 
 // Ensure aliases are set
-views['/ai/info'] = views['/ai/intake'];
-views['/legal'] = views['/ai/legal'];
-views['/ai/clients/portal'] = views['/portal'];
+views['/studio/info'] = views['/studio/intake'];
+views['/legal'] = views['/studio/legal'];
+views['/studio/clients/portal'] = views['/portal'];
 
 // ---------------------------------------------------------------------------
 // Blog post renderer & individual post routes
