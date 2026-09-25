@@ -440,10 +440,10 @@ export const views = {
     <div class="main--page">
       <div class="page-content ai-wrap">
         <p class="ai-eyebrow">Minescout Studio</p>
-        <h1 class="ai-title">Custom Websites.<br><em>Practical AI.</em><br>Built for Local Businesses.</h1>
+        <h1 class="ai-title">Custom Websites.<br><em>Practical AI.</em><br>Built for Local Businesses in Sammamish & the Eastside.</h1>
         
         <p class="ai-lead" style="font-weight: 600; color: var(--fg); font-size: 1.1rem; margin-bottom: 0.5rem;">Still dealing with a slow, outdated WordPress site?</p>
-        <p class="ai-lead">MineScout specializes in <strong>Clean Slate Rebuilds</strong>. Send me a link to your old website (or one you take inspiration from), and I will throw out the clunky code and build you a lightning-fast, 100% custom platform from the ground up.</p>
+        <p class="ai-lead">Minescout specializes in <strong>Clean Slate Rebuilds</strong>. Send me a link to your old website (or one you take inspiration from), and I will throw out the clunky code and build you a lightning-fast, 100% custom platform from the ground up.</p>
         
         <div class="ai-stats">
           <div class="ai-stat"><span class="ai-stat-val">&lt;7<em>days</em></span><span class="ai-stat-label">To Launch</span></div>
@@ -460,12 +460,12 @@ export const views = {
         
         <div class="ai-callout" style="border-left-color: var(--fg); background: var(--bg);">
           <div class="ai-callout-title">🤝 Agency Quality, Direct Access.</div>
-          <div class="ai-callout-desc">Traditional agencies have project managers, sales teams, designers, and heavy overhead. MineScout is different. You work directly with the founder building your project, allowing me to deliver custom work at a fraction of typical agency pricing.</div>
+          <div class="ai-callout-desc">Traditional agencies have project managers, sales teams, designers, and heavy overhead. Minescout is different. You work directly with the founder building your project, allowing me to deliver custom work at a fraction of typical agency pricing.</div>
         </div>
 
         <div class="ai-callout">
           <div class="ai-callout-title">🛡️ Clear Ownership.</div>
-          <div class="ai-callout-desc">You own your domain, branding, and content. MineScout licenses the software that powers your site, allowing continuous improvements and lightning-fast support. It feels intentional, never restrictive.</div>
+          <div class="ai-callout-desc">You own your domain, branding, and content. Minescout licenses the software that powers your site, allowing continuous improvements and lightning-fast support. It feels intentional, never restrictive.</div>
         </div>
         
         <div class="ai-cta-group" style="margin-bottom: 3rem;">
@@ -473,7 +473,7 @@ export const views = {
           <a href="/studio/pricing" class="btn-ghost">See Pricing &rarr;</a>
         </div>
         
-        <p class="ai-disclaimer">Every project is built directly by the founder from start to finish. Minescout is operated by <a href="/">Thomas Carleton</a>. Whether you're a student building your first portfolio or a business looking to automate customer support, the goal is the same: build something that lasts.</p>
+        <p class="ai-disclaimer">Every project is built directly by the founder from start to finish. Minescout Studio is operated by <a href="/">Thomas Carleton</a>. Whether you're a student building your first portfolio or a business looking to automate customer support, the goal is the same: build something that lasts.</p>
       </div>
     </div>
   `,
