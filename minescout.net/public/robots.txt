@@ -2,9 +2,15 @@ User-agent: *
 Allow: /
 
 # Keep Google out of the backend/admin routes
-Disallow: /ai/admin
+Disallow: /studio/admin
 Disallow: /portal
 Disallow: /hq
+Disallow: /studio/chat-config
+Disallow: /studio/generator/audit
+Disallow: /studio/generator/doc-compile
+
+# Legacy AI routes (deprecated, redirected to /studio)
+Disallow: /ai/admin
 Disallow: /ai/chat-config
 Disallow: /ai/generator/audit
 Disallow: /ai/generator/doc-compile
