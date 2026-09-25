@@ -40,7 +40,7 @@ const MAIN_MENU = [
 ];
 
 const MAIN_SECONDARY = [
-  { label: 'AI Services',   href: '/ai' },
+  { label: 'AI Services',   href: '/studio' },
   { label: 'Photography', href: '/photography' }, // <--- Add this line
   { label: 'Contact',       href: '/contact' },
   { label: 'Guestbook',     href: '/guestbook' },
@@ -49,21 +49,21 @@ const MAIN_SECONDARY = [
 ];
 
 const AI_MENU = [
-  { label: 'Overview',       href: '/ai' },
-  { label: 'Pricing',        href: '/ai/pricing' },
-  { label: 'Client Work',    href: '/ai/clients' },
-  { label: 'The Process',    href: '/ai/process' },
-  { label: 'Live Demo',      href: '/ai/demo/' }, 
-  { label: 'Tools I Use',    href: '/ai/tools' },
-  { label: 'ROI Calculator', href: '/ai/roi' }
+  { label: 'Overview',       href: '/studio' },
+  { label: 'Pricing',        href: '/studio/pricing' },
+  { label: 'Client Work',    href: '/studio/clients' },
+  { label: 'The Process',    href: '/studio/process' },
+  { label: 'Live Demo',      href: '/studio/demo/' }, 
+  { label: 'Tools I Use',    href: '/studio/tools' },
+  { label: 'ROI Calculator', href: '/studio/roi' }
 ];
 
 const AI_SECONDARY = [
-  { label: 'Enquire',      href: '/ai/intake' },
-  { label: 'Legal',        href: '/ai/legal' },
+  { label: 'Enquire',      href: '/studio/intake' },
+  { label: 'Legal',        href: '/studio/legal' },
   { label: 'Portfolio',    href: '/' },
   { label: 'Ask AI',       href: '/ask' },
-  { label: 'Client Review',       href: '/ai/review' },
+  { label: 'Client Review',       href: '/studio/review' },
   { label: 'Client Auth Rest',href: 'https://backend.tmcarleton11.workers.dev/authreset' },
 ];
 
@@ -73,8 +73,8 @@ function buildLinks(links, currentPath) {
   return links.map(link => {
     let isActive = false;
     if (link.href === '/' && currentPath === '/') isActive = true;
-    else if (link.href === '/ai' && (currentPath === '/ai' || currentPath === '/ai/')) isActive = true;
-    else if (link.href !== '/' && link.href !== '/ai' && currentPath.startsWith(link.href)) isActive = true;
+    else if (link.href === '/studio' && (currentPath === '/studio' || currentPath === '/studio/')) isActive = true;
+    else if (link.href !== '/' && link.href !== '/studio' && currentPath.startsWith(link.href)) isActive = true;
 
     const activeClass = isActive ? ' class="active"' : '';
     return `<a href="${link.href}"${activeClass}>${link.label}</a>`;
@@ -83,7 +83,7 @@ function buildLinks(links, currentPath) {
 
 function updateSidebarNav(path) {
   if (!sidebarNav || !sidebarSecondary) return;
-  const isAiSite = path.startsWith('/ai') || path.startsWith('/hq') || path === '/legal' || path === '/portal';
+  const isAiSite = path.startsWith('/studio') || path.startsWith('/hq') || path === '/legal' || path === '/portal';
   
   sidebarNav.innerHTML = buildLinks(isAiSite ? AI_MENU : MAIN_MENU, path);
   sidebarSecondary.innerHTML = buildLinks(isAiSite ? AI_SECONDARY : MAIN_SECONDARY, path);
@@ -185,12 +185,12 @@ function setupChatListeners(input, sendBtn, chatWin) {
 
     const searchTerms = text.toLowerCase().split(' ').filter(word => word.length > 3);
     let dynamicContext = "";
-    const priorityRoutes = ['/', '/resume', '/ai', '/ai/pricing', '/ai/clients'];
+    const priorityRoutes = ['/', '/resume', '/studio', '/studio/pricing', '/studio/clients'];
     
     priorityRoutes.forEach(path => {
       const rawHtml = views[path] ? views[path].toLowerCase() : "";
       const isRelevant = searchTerms.some(term => rawHtml.includes(term));
-      if (isRelevant || (path === '/ai/pricing' && text.toLowerCase().includes('cost'))) {
+      if (isRelevant || (path === '/studio/pricing' && text.toLowerCase().includes('cost'))) {
         const doc = new DOMParser().parseFromString(views[path], 'text/html');
         doc.querySelectorAll('script, style, nav, footer, .btn, aside').forEach(el => el.remove());
         let cleanText = doc.body.textContent.replace(/\s+/g, ' ').trim();
@@ -829,7 +829,7 @@ function initIntake() {
     document.getElementById('loading-screen').style.display = 'none';
     document.getElementById('previewModal').style.display = 'none';
     document.body.style.overflow = 'auto';
-    navigate('/ai'); 
+    navigate('/studio'); 
   };
 
   window.submitIntakeToCloudflare = async function() {
@@ -1564,7 +1564,7 @@ let appElement;
 
 function render(path) {
   const cleanPath = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
-  const finalPath = (path === '/ai/demo/') ? '/ai/demo/' : cleanPath;
+  const finalPath = (path === '/studio/demo/') ? '/studio/demo/' : cleanPath;
   const content = views[finalPath] || views['404'];
   
   appElement.innerHTML = content;
@@ -1576,12 +1576,12 @@ function render(path) {
   else if (finalPath === '/resume') initResume();
   else if (finalPath === '/guestbook') initGuestbook();
   else if (finalPath === '/hq') initHQ();
-  else if (finalPath === '/ai/roi') initROI();
-  else if (finalPath === '/ai/generator/audit') initAudit();
-  else if (finalPath === '/ai/intake' || finalPath === '/ai/info') initIntake();
-  else if (finalPath === '/ai/pricing') initPricing();
-  else if (finalPath === '/ai/legal' || finalPath === '/legal') initLegal();
-  else if (finalPath === '/ai/admin' || finalPath === '/admin') initAdmin();
+  else if (finalPath === '/studio/roi') initROI();
+  else if (finalPath === '/studio/generator/audit') initAudit();
+  else if (finalPath === '/studio/intake' || finalPath === '/studio/info') initIntake();
+  else if (finalPath === '/studio/pricing') initPricing();
+  else if (finalPath === '/studio/legal' || finalPath === '/legal') initLegal();
+  else if (finalPath === '/studio/admin' || finalPath === '/admin') initAdmin();
 }
 
 function navigate(path) {
