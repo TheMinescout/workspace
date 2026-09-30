@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Toolkit // Minescout Beta</title>
+<link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png?v=1">
+<link rel="stylesheet" href="../../assets/css/style.css?theme=msbeta-v12">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0e0d;--panel:#101412;--panel2:#151b18;--line:#26302a;--text:#c8d1cb;--muted:#8a968f;--dim:#5a655f;--accent:#5ef2a4;--accent2:#9fe8c8;--mono:'JetBrains Mono',monospace}
+*{box-sizing:border-box}
+body.tool-page{margin:0;background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6}
+.wrap{max-width:900px;margin:0 auto;padding:28px 20px 60px}
+h1{font-size:20px;letter-spacing:1.5px;margin:0 0 4px;color:#fff;text-transform:uppercase}
+.sub{color:var(--muted);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;margin:0 0 24px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px;border-bottom:1px solid var(--line);padding-bottom:14px}
+.tabs button{font-family:var(--mono);font-size:11px;letter-spacing:1px;padding:8px 14px;background:var(--panel);color:var(--muted);border:1px solid var(--line);cursor:pointer;text-transform:uppercase}
+.tabs button:hover{color:var(--accent2);border-color:var(--accent)}
+.tabs button.on{color:var(--accent);border-color:var(--accent);background:var(--panel2)}
+.panel{display:none}
+.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);padding:18px;margin-bottom:16px}
+.card h2{font-size:13px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);margin:0 0 6px}
+.card p.desc{color:var(--muted);font-size:12px;margin:0 0 14px}
+label{display:block;font-size:10px;letter-spacing:1.4px;color:var(--accent);text-transform:uppercase;margin:0 0 6px}
+textarea,input[type=text]{width:100%;background:#0b0f0d;color:var(--text);border:1px solid var(--line);padding:10px;font-family:var(--mono);font-size:13px;resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:var(--accent)}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:12px 0}
+button.act{font-family:var(--mono);font-size:11px;letter-spacing:1.2px;padding:9px 16px;background:var(--panel2);color:var(--accent);border:1px solid var(--accent);cursor:pointer;text-transform:uppercase}
+button.act:hover{background:var(--accent);color:#04120a}
+button.act.ghost{color:var(--muted);border-color:var(--line)}
+button.act.ghost:hover{color:var(--accent2);border-color:var(--accent);background:var(--panel2)}
+.shift-box{flex:1;min-width:220px}
+.shift-box input[type=range]{width:100%;accent-color:var(--accent)}
+.shift-val{color:var(--accent);font-weight:700}
+.out{background:#0b0f0d;border:1px solid var(--line);border-left:2px solid var(--accent);padding:12px;min-height:44px;word-break:break-all;color:var(--accent2);white-space:pre-wrap}
+.hint{color:var(--dim);font-size:10px;letter-spacing:1px;margin-top:8px;text-transform:uppercase}
+/* frequency chart */
+.freq-wrap{display:flex;align-items:flex-end;gap:3px;height:150px;padding:10px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+.freq-col{flex:1;min-width:14px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.freq-bar{width:100%;background:var(--accent);opacity:.75;min-height:2px}
+.freq-col.Eng .freq-bar{background:var(--accent2);opacity:.4}
+.freq-lab{font-size:9px;color:var(--dim);margin-top:4px}
+.freq-legend{font-size:10px;color:var(--muted);margin-top:10px;letter-spacing:1px}
+.freq-legend b{color:var(--accent2)}
+/* substitution solver */
+.sub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:6px;margin:14px 0}
+.sub-cell{display:flex;flex-direction:column;gap:3px}
+.sub-cell .lab{font-size:10px;color:var(--dim);text-align:center}
+.sub-cell input{width:100%;text-align:center;text-transform:uppercase;padding:6px 2px;font-size:13px}
+.sub-cell input.filled{border-color:var(--accent);color:var(--accent)}
+.brute-list{max-height:220px;overflow-y:auto;font-size:12px}
+.brute-list div{padding:5px 8px;border-bottom:1px solid var(--line);color:var(--text)}
+.brute-list div b{color:var(--accent);margin-right:10px}
+.brute-list div:hover{background:var(--panel2);cursor:pointer}
+.foot{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);font-size:10px;letter-spacing:1.3px;color:var(--dim);text-transform:uppercase}
+.foot a{color:var(--accent);text-decoration:none}
+@media(max-width:600px){.wrap{padding:16px 12px 40px}.card{padding:14px}}
+</style>
+</head>
+<body class="tool-page">
+<header class="ms-topbar"><a class="ms-logo" href="../../index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="../../index">HOME</a><a href="../../pages">ATLS</a><a class="active" href="../../projects">PRDS</a><a href="../../feature-requests">REQUESTS</a><a href="../../email">CONTACT</a></nav><a class="top-login" href="../../login">ACCOUNT ↗</a></header>
+<div class="wrap">
+<h1>Chop Lab Crypto Toolkit</h1>
+<p class="sub">Classical cryptography suite · v1.0 · runs entirely in your browser</p>
+<div class="tabs" id="tabs">
+<button data-t="caesar" class="on">CAESAR</button>
+<button data-t="rot13">ROT13</button>
+<button data-t="atbash">ATBASH</button>
+<button data-t="affine">AFFINE</button>
+<button data-t="freq">FREQUENCY</button>
+<button data-t="solver">SUBSTITUTION</button>
+<button data-t="vig">VIGENÈRE</button>
+</div>
+
+<!-- CAESAR -->
+<section class="panel on" id="p-caesar">
+<div class="card">
+<h2>Caesar Cipher</h2>
+<p class="desc">Every letter is shifted a fixed number of positions through the alphabet. Drag the slider to scrub through all 25 shifts — watch the plaintext emerge.</p>
+<label>Input</label>
+<textarea id="caesar-in" rows="4" placeholder="Enter plaintext or ciphertext..."></textarea>
+<div class="row">
+<div class="shift-box"><label>Shift: <span class="shift-val" id="caesar-shift-val">3</span></label><input type="range" id="caesar-shift" min="0" max="25" value="3"></div>
+<button class="act" id="caesar-run">RUN SHIFT</button>
+<button class="act ghost" id="caesar-brute">BRUTE ALL 25</button>
+</div>
+<label>Output</label>
+<div class="out" id="caesar-out">—</div>
+<div id="caesar-brute-out"></div>
+</div>
+</section>
+
+<!-- ROT13 -->
+<section class="panel" id="p-rot13">
+<div class="card">
+<h2>ROT13</h2>
+<p class="desc">A Caesar shift of 13. Since 13 is half of 26, encryption and decryption are the same operation — apply it twice and you get your text back.</p>
+<label>Input</label>
+<textarea id="rot13-in" rows="4" placeholder="Enter text..."></textarea>
+<div class="row"><button class="act" id="rot13-run">APPLY ROT13</button></div>
+<label>Output</label>
+<div class="out" id="rot13-out">—</div>
+</div>
+</section>
+
+<!-- ATBASH -->
+<section class="panel" id="p-atbash">
+<div class="card">
+<h2>Atbash</h2>
+<p class="desc">The original Hebrew cipher: A maps to Z, B to Y, and so on. The alphabet is simply mirrored. Like ROT13, it is its own inverse.</p>
+<label>Input</label>
+<textarea id="atbash-in" rows="4" placeholder="Enter text..."></textarea>
+<div class="row"><button class="act" id="atbash-run">MIRROR ALPHABET</button></div>
+<label>Output</label>
+<div class="out" id="atbash-out">—</div>
+</div>
+</section>
+
+<!-- AFFINE -->
+<section class="panel" id="p-affine">
+<div class="card">
+<h2>Affine Cipher</h2>
+<p class="desc">Each letter is multiplied by key <i>a</i> then shifted by key <i>b</i>: E(x) = (a·x + b) mod 26. Key <i>a</i> must be coprime with 26 (valid: 1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25).</p>
+<label>Input</label>
+<textarea id="affine-in" rows="4" placeholder="Enter text..."></textarea>
+<div class="row">
+<div><label>a (multiplier)</label><input type="text" id="affine-a" value="5" style="width:80px"></div>
+<div><label>b (shift)</label><input type="text" id="affine-b" value="8" style="width:80px"></div>
+<button class="act" id="affine-enc">ENCRYPT</button>
+<button class="act" id="affine-dec">DECRYPT</button>
+</div>
+<label>Output</label>
+<div class="out" id="affine-out">—</div>
+</div>
+</section>
+
+<!-- FREQUENCY -->
+<section class="panel" id="p-freq">
+<div class="card">
+<h2>Frequency Analysis</h2>
+<p class="desc">Paste ciphertext and compare its letter frequencies against average English. Big spikes in single letters are the fingerprint of a substitution-class cipher.</p>
+<label>Ciphertext</label>
+<textarea id="freq-in" rows="4" placeholder="Paste ciphertext..."></textarea>
+<div class="row"><button class="act" id="freq-run">ANALYZE</button></div>
+<div class="freq-wrap" id="freq-chart"></div>
+<div class="freq-legend"><b>GREEN TALL</b> = your ciphertext · <b>PALE</b> = average English</div>
+</div>
+</section>
+
+<!-- SUBSTITUTION SOLVER -->
+<section class="panel" id="p-solver">
+<div class="card">
+<h2>Substitution Cipher Solver</h2>
+<p class="desc">Semi-automated cracking. Click a guess below to seed the mapping with the best frequency fit, then adjust individual letters by hand. Click a brute-force candidate to load it into the grid.</p>
+<label>Ciphertext</label>
+<textarea id="solver-in" rows="4" placeholder="Paste monoalphabetic substitution ciphertext..."></textarea>
+<div class="row">
+<button class="act" id="solver-seed">SEED FROM FREQUENCY</button>
+<button class="act ghost" id="solver-clear">CLEAR MAPPING</button>
+</div>
+<div class="sub-grid" id="solver-grid"></div>
+<label>Plaintext preview (unmapped letters shown as ·)</label>
+<div class="out" id="solver-out">—</div>
+<div class="row"><label>Brute-force candidates (click to load)</label></div>
+<div class="brute-list" id="solver-brute"></div>
+</div>
+</section>
+
+<!-- VIGENERE LINK -->
+<section class="panel" id="p-vig">
+<div class="card">
+<h2>Vigenère Cipher</h2>
+<p class="desc">The Vigenère tool remains a standalone project entry — a polyalphabetic cipher with dictionary-attack and brute-force support. It pairs naturally with this toolkit: use Frequency Analysis here to find the key length, then finish the job there.</p>
+<a href="vigenere-tool" style="display:inline-block;margin-top:10px;padding:10px 14px;border:1px solid var(--line);background:#101412;color:var(--accent2);text-decoration:none">OPEN VIGENÈRE TOOL.HTML →</a>
+<div class="hint">Part of the Chop Lab Crypto Toolkit</div>
+</div>
+</section>
+
+<div class="foot">Chop Lab Crypto Toolkit v1.0 · Minescout Beta · <a href="../../pages">Read the release entry in ATLS →</a></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var A="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+function mod(n,m){return ((n%m)+m)%m}
+
+// Tab switching
+var tabs=document.querySelectorAll('#tabs button');
+tabs.forEach(function(b){b.addEventListener('click',function(){
+  tabs.forEach(function(x){x.classList.remove('on')});
+  b.classList.add('on');
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on')});
+  document.getElementById('p-'+b.dataset.t).classList.add('on');
+})});
+
+// ---- shared transform (preserves case & non-letters) ----
+function transform(text,fn){
+  return text.replace(/[a-zA-Z]/g,function(c){
+    var up=c.toUpperCase(),v=fn(A.indexOf(up));
+    return c===up?A[v]:A[v].toLowerCase();
+  });
+}
+// Caesar shift
+function caesar(text,shift){return transform(text,function(i){return mod(i+shift,26)})}
+var cIn=document.getElementById('caesar-in'),cShift=document.getElementById('caesar-shift'),cOut=document.getElementById('caesar-out'),cVal=document.getElementById('caesar-shift-val');
+function caesarRun(){cShift=+cShift.value;cVal.textContent=cShift;cOut.textContent=caesar(cIn.value,cShift)}
+cShift.addEventListener('input',caesarRun);
+document.getElementById('caesar-run').addEventListener('click',caesarRun);
+document.getElementById('caesar-brute').addEventListener('click',function(){
+  var box=document.getElementById('caesar-brute-out');box.innerHTML='';
+  var list=document.createElement('div');list.className='brute-list';
+  for(var s=1;s<=25;s++){(function(shift){
+    var d=document.createElement('div');d.innerHTML='<b>'+String(shift).padStart(2,'0')+'</b>'+caesar(cIn.value,shift);
+    d.addEventListener('click',function(){cShift.value=shift;caesarRun()});
+    list.appendChild(d);
+  })(s)}
+  box.appendChild(list);
+});
+
+// ROT13
+document.getElementById('rot13-run').addEventListener('click',function(){
+  document.getElementById('rot13-out').textContent=caesar(document.getElementById('rot13-in').value,13);
+});
+// Atbash
+document.getElementById('atbash-run').addEventListener('click',function(){
+  document.getElementById('atbash-out').textContent=transform(document.getElementById('atbash-in').value,function(i){return 25-i});
+});
+// Affine
+function affine(text,a,b,dec){
+  var inv=0;for(var x=0;x<26;x++){if(mod(a*x,26)===1){inv=x;break}}
+  if(!inv){return null}
+  return transform(text,function(i){return dec?mod(inv*(i-b),26):mod(a*i+b,26)});
+}
+function affineRun(dec){
+  var a=parseInt(document.getElementById('affine-a').value,10),b=parseInt(document.getElementById('affine-b').value,10),out=document.getElementById('affine-out');
+  if(isNaN(a)||isNaN(b)||a%2===0||a%13===0){out.textContent='ERROR: key "a" must be coprime with 26 (try 1,3,5,7,9,11,15,17,19,21,23,25)';return}
+  out.textContent=affine(document.getElementById('affine-in').value,a,b,dec);
+}
+document.getElementById('affine-enc').addEventListener('click',function(){affineRun(false)});
+document.getElementById('affine-dec').addEventListener('click',function(){affineRun(true)});
+
+// Frequency
+var ENG=[8.2,1.5,2.8,4.3,12.7,2.2,2.0,6.1,7.0,0.15,0.77,4.0,2.4,6.7,7.5,1.9,0.095,6.0,6.3,9.1,2.8,0.98,2.4,0.15,2.0,0.074];
+document.getElementById('freq-run').addEventListener('click',function(){
+  var t=document.getElementById('freq-in').value.toUpperCase().replace(/[^A-Z]/g,'');
+  var chart=document.getElementById('freq-chart');chart.innerHTML='';
+  if(!t.length){return}
+  var counts=new Array(26).fill(0);
+  for(var i=0;i<t.length;i++){counts[A.indexOf(t[i])]++}
+  var maxP=0;for(var j=0;j<26;j++){maxP=Math.max(maxP,counts[j]/t.length*100)}
+  var scale=Math.max(maxP,12.7);
+  for(var k=0;k<26;k++){
+    var wrapCol=document.createElement('div');
+    wrapCol.style.cssText='display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative;flex:1;min-width:14px';
+    // english baseline (pale, behind)
+    var engCol=document.createElement('div');
+    engCol.style.cssText='position:absolute;bottom:18px;left:15%;width:70%;height:'+(ENG[k]/scale*100)+'%;display:flex;align-items:flex-end';
+    var engBar=document.createElement('div');
+    engBar.style.cssText='width:100%;height:100%;background:var(--accent2);opacity:.35';
+    engCol.appendChild(engBar);wrapCol.appendChild(engCol);
+    // ciphertext bar
+    var bar=document.createElement('div');
+    bar.style.cssText='width:100%;height:'+(counts[k]/t.length*100/scale*100)+'%;background:var(--accent);opacity:.8;min-height:2px';
+    wrapCol.appendChild(bar);
+    var lab=document.createElement('div');lab.className='freq-lab';lab.textContent=A[k];
+    wrapCol.appendChild(lab);
+    chart.appendChild(wrapCol);
+  }
+});
+
+// Substitution solver
+var map={};for(var q=0;q<26;q++){map[A[q]]=''}
+var solverIn=document.getElementById('solver-in'),grid=document.getElementById('solver-grid'),solverOut=document.getElementById('solver-out');
+function buildGrid(){
+  grid.innerHTML='';
+  A.split('').forEach(function(c){
+    var cell=document.createElement('div');cell.className='sub-cell';
+    var lab=document.createElement('div');lab.className='lab';lab.textContent=c;
+    var inp=document.createElement('input');inp.maxLength=1;inp.value=map[c]||'';
+    if(map[c]){inp.classList.add('filled')}
+    inp.addEventListener('input',function(){
+      var v=inp.value.toUpperCase().replace(/[^A-Z]/g,'');
+      inp.value=v;map[c]=v;
+      if(v){inp.classList.add('filled')}else{inp.classList.remove('filled')}
+      renderOut();
+    });
+    cell.appendChild(lab);cell.appendChild(inp);grid.appendChild(cell);
+  });
+}
+function renderOut(){
+  var t=solverIn.value.toUpperCase().replace(/[^A-Z ]/g,' ');
+  solverOut.textContent=t.replace(/[A-Z]/g,function(c){return map[c]||'·'});
+}
+solverIn.addEventListener('input',renderOut);
+document.getElementById('solver-clear').addEventListener('click',function(){
+  for(var c in map){map[c]=''}buildGrid();renderOut();
+  document.getElementById('solver-brute').innerHTML='';
+});
+document.getElementById('solver-seed').addEventListener('click',function(){
+  var t=solverIn.value.toUpperCase().replace(/[^A-Z]/g,'');
+  if(!t.length){return}
+  var counts=new Array(26).fill(0);
+  for(var i=0;i<t.length;i++){counts[A.indexOf(t[i])]++}
+  var cipherOrder=A.split('').sort(function(a,b){return counts[A.indexOf(b)]-counts[A.indexOf(a)]});
+  var engOrder=A.split('').sort(function(a,b){return ENG[A.indexOf(b)]-ENG[A.indexOf(a)]});
+  for(var c in map){map[c]=''}
+  cipherOrder.forEach(function(c,i){map[c]=engOrder[i]});
+  buildGrid();renderOut();
+});
+// Brute: offer shift candidates (helps when it's really a Caesar)
+solverIn.addEventListener('change',function(){
+  var t=this.value.toUpperCase().replace(/[^A-Z ]/g,' ');
+  var list=document.getElementById('solver-brute');list.innerHTML='';
+  if(!t.replace(/[^A-Z]/g,'').length){return}
+  var common=['THE','AND','THAT','HAVE','WITH','THIS','FROM'];
+  var best=[];
+  for(var s=1;s<=25;s++){
+    var d=caesar(t,s);
+    var score=0;common.forEach(function(w){if(d.indexOf(w)>-1){score++}});
+    best.push({s:s,d:d,score:score});
+  }
+  best.sort(function(a,b){return b.score-a.score});
+  best.slice(0,12).forEach(function(cand){
+    var div=document.createElement('div');
+    div.innerHTML='<b>'+String(cand.s).padStart(2,'0')+(cand.score?' HIT×'+cand.score:'')+'</b>'+cand.d.slice(0,120);
+    div.addEventListener('click',function(){
+      for(var c in map){map[c]=''}
+      A.split('').forEach(function(c){map[c]=A[mod(A.indexOf(c)+cand.s,26)]});
+      buildGrid();renderOut();
+    });
+    list.appendChild(div);
+  });
+});
+buildGrid();
+})();
+</script>
+</body>
+</html>
