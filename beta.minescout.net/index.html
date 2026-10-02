@@ -10,8 +10,10 @@
 <a class="directory-card" href="projects"><div class="card-top"><span>02</span><span>PRDS</span></div><div><h2>Projects</h2><p>Runnable tools, prototypes, downloads, and things currently being built.</p></div><div class="card-bottom">OPEN PRDS <span>→</span></div></a>
 </section>
 <section class="home-lower"><div><div class="eyebrow">STATUS</div><h3>Research preview online.</h3><p>Minescout Beta is intentionally unfinished. Some projects are polished; others are experiments. That's the point.</p></div><div class="quick-links"><a href="feature-requests"><span>REQUEST</span> Suggest a feature →</a><a href="email"><span>CONTACT</span> Send a message →</a><a href="https://life.minescout.net" target="_blank" rel="noopener"><span>ACCOUNT</span> Minescout Life →</a></div></section>
-</main><footer class="ms-footer"><span>MINESCOUT BETA</span><span>RESEARCH PREVIEW / 2026</span></footer>
-<script src="assets/js/auth.js?v=10"></script><script src="assets/js/filesystem.js?v=10"></script><script>
+</main>
+<footer class="ms-footer"><span>MINESCOUT BETA</span><span>RESEARCH PREVIEW / 2026</span></footer>
+<script src="assets/js/auth.js?v=10"></script><script src="assets/js/filesystem.js?v=11"></script>
+<script>
 window.addEventListener('load',()=>{const last=localStorage.getItem('minescout_last_visit');const articles=window.FILE_SYSTEM?.articles||[];window.missedUpdates=last?articles.filter(a=>a.date&&new Date(a.date)>new Date(last)):[];localStorage.setItem('minescout_last_visit',new Date().toISOString())});
 </script><script src="assets/js/background.js?v=12"></script>
 <script src="assets/js/security.js?v=12"></script>
