@@ -1,6 +1,6 @@
 const FILE_SYSTEM = {
     articles: [
-        { cmd:"open_toolkit", title:"RELEASE: Chop Lab Crypto Toolkit", path:"content/articles/crypto-toolkit-release", desc:"Classical cryptography suite", date:"2026-09-29" },
+        { cmd:"open_toolkit", title:"RELEASE: Minescout Crypto Toolkit", path:"content/articles/crypto-toolkit-release", desc:"Classical cryptography suite", date:"2026-09-29" },
         { cmd:"open_evolution", title:"DESIGN: The Evolution of Minescout Beta", path:"content/articles/minescout-beta-evolution", desc:"From terminal experiment to research archive", date:"2026-08-09" },
         { cmd:"open_vigenere", title:"TOOL: Vigenère Cipher", path:"content/articles/vigenere-release", desc:"Offline cryptography utility", date:"2025-12-05" },
         { cmd:"open_cog", title:"RELEASE: Cognisearch v5", path:"content/articles/cognisearch", desc:"Optimization and naming update", date:"2025-11-30" },
@@ -8,7 +8,7 @@ const FILE_SYSTEM = {
         { cmd:"open_portfolio", title:"RELEASE: Portfolio Projection", path:"content/articles/portfolio-release", desc:"Projection tool release notes", date:"2025-11-18" }
     ],
     projects: [
-        { cmd:"run_toolkit", title:"Chop Lab Crypto Toolkit", path:"content/projects/crypto-toolkit", desc:"Classical cipher suite with solver" },
+        { cmd:"run_toolkit", title:"Minescout Crypto Toolkit", path:"content/projects/crypto-toolkit", desc:"Classical cipher suite with solver" },
         { cmd:"run_writer", title:"AI Writer Suite", path:"content/projects/ai-writer", desc:"Community HTML generator" },
         { cmd:"run_cog", title:"Cognisearch v5", path:"content/projects/cognisearch-v5.zip", desc:"Search / synthesis source archive" },
         { cmd:"run_portfolio", title:"Portfolio Projection", path:"content/projects/portfolio-tool", desc:"Interactive projection tool" },
