@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Toolkit Release // Minescout Beta</title>
+<link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png?v=1">
+<link rel="stylesheet" href="../../assets/css/style.css?theme=msbeta-v12">
+<style>
+.article-content .meta{color:var(--muted);font-size:11px;margin:-4px 0 30px}
+.article-content .rule{height:1px;background:var(--line);margin:28px 0}
+.article-content .entry-label{font-size:10px;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin:0 0 10px}
+.article-content h2{font-size:15px;letter-spacing:1px;color:var(--accent2)!important;margin:28px 0 10px;text-transform:uppercase}
+.article-content p{margin:0 0 15px}
+.article-content ul,.article-content ol{margin:10px 0 22px;padding-left:24px}
+.article-content li{margin:8px 0;padding-left:3px}
+.article-content .callout{margin:20px 0;padding:15px 16px;background:rgba(18,23,20,.8);border:1px solid var(--line);border-left:2px solid var(--accent);color:#b9c2bc}
+.article-content .steps{counter-reset:step;list-style:none;padding-left:0}
+.article-content .steps li{counter-increment:step;display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:start}.article-content .steps .step-copy{min-width:0;display:block}
+.article-content .steps li::before{content:counter(step,decimal-leading-zero);color:var(--accent);font-size:10px;padding-top:2px}
+.article-content .end{margin-top:30px;padding-top:15px;border-top:1px solid var(--line);font-size:10px;letter-spacing:1.3px;color:var(--dim)}
+.article-content .action-link{display:inline-flex;margin:6px 0 20px;padding:10px 12px;border:1px solid var(--line);background:#101412;color:var(--accent2)!important;text-decoration:none!important}
+.article-content .action-link:hover{border-color:var(--accent);background:#151b18}
+</style>
+</head>
+<body class="article-page">
+<header class="ms-topbar"><a class="ms-logo" href="../../index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="../../index">HOME</a><a class="active" href="../../pages">ATLS</a><a href="../../projects">PRDS</a><a href="../../feature-requests">REQUESTS</a><a href="../../email">CONTACT</a></nav><a class="top-login" href="../../login">ACCOUNT ↗</a></header>
+<nav class="article-nav" aria-label="Article navigation"><a href="../../pages">← ATLS / ARTICLES</a><a href="../../index">⌂ MINESCOUT</a></nav>
+<div class="content article-content">
+<h1>RELEASE: Chop Lab Crypto Toolkit</h1>
+<p class="meta">SEP 29, 2026 · CRYPTOGRAPHY SUITE · SINGLE-FILE UTILITY</p>
+<div class="rule"></div>
+<p class="entry-label">System entry / tool deployment</p>
+<p>We have assembled the classical cryptography tools into one deployment: the Chop Lab Crypto Toolkit. Everything runs locally in a single HTML file — no build step, no network calls, no dependencies.</p>
+<div class="callout">Classical ciphers are the fastest way to understand why modern encryption works. Each cipher in this toolkit is a small, breakable lesson — and breaking it is the exercise.</div>
+
+<h2>Why classical ciphers</h2>
+<p>Every cipher in this release was once considered unbreakable. The Caesar shift guarded Roman military correspondence. Atbash appears in the Hebrew Bible. The Vigenère cipher held the title "le chiffre indéchiffrable" for three centuries — until frequency analysis and the Kasiski examination ended its reign. Working with tools you can actually break teaches more about cryptographic strength than any modern library ever will, because you get to watch the failure modes happen.</p>
+
+<h2>What's inside v1.0</h2>
+<ul>
+<li><span class="step-copy"><b>Caesar cipher</b> with an interactive shift slider — scrub through all 25 shifts and watch the plaintext emerge, plus a one-click brute-force of the full keyspace.</span></li>
+<li><span class="step-copy"><b>ROT13 and Atbash</b> — the self-inverse classics, included because every toolkit needs its quick wins.</span></li>
+<li><span class="step-copy"><b>Affine cipher</b> with full key validation (rejects multipliers not coprime with 26) and working decryption via modular inverse.</span></li>
+<li><span class="step-copy"><b>Frequency analysis</b> — a live letter-frequency chart that overlays your ciphertext against average English, the analytical core of the whole suite.</span></li>
+<li><span class="step-copy"><b>Semi-automated substitution solver</b> — frequency-seeded initial mapping, a 26-letter hand-tuning grid, and a common-word brute list that flags candidate decryptions.</span></li>
+<li><span class="step-copy"><b>Vigenère bridge</b> — the existing standalone Vigenère tool links in as the polyalphabetic tier: use the frequency chart here to estimate key length, then finish the attack there.</span></li>
+</ul>
+
+<h2>How to break things, in order</h2>
+<ol class="steps">
+<li><span class="step-copy">Start in the <b>Frequency</b> tab. Flat, noisy letter distribution? Polyalphabetic — go to Vigenère. Spiky distribution that looks like scrambled English? Monoalphabetic — continue.</span></li>
+<li><span class="step-copy">Try <b>Caesar brute</b> first. It's free. 25 candidates, one click.</span></li>
+<li><span class="step-copy">No luck? Open the <b>Substitution solver</b>, seed the mapping from frequency, then swap letters by hand using the plaintext preview until words appear.</span></li>
+<li><span class="step-copy">Stuck on a Vigenère ciphertext? Count the coincidence gaps in the frequency chart to guess the key length, then run the dictionary attack in the Vigenère tool.</span></li>
+</ol>
+
+<h2>Access</h2>
+<a class="action-link" href="../projects/crypto-toolkit">OPEN CRYPTO-TOOLKIT.HTML →</a>
+
+<h2>Roadmap</h2>
+<p>The toolkit is modular by design. Candidates for v2: a full Kasiski examination widget, a Vigenère absorption into the unified interface, and a "modern classics" tier (XOR, Base64, Morse). Requests go to the usual channel.</p>
+<a class="action-link" href="../../feature-requests">SUGGEST A FEATURE →</a>
+
+<div class="end">END OF ENTRY / MINESCOUT BETA</div>
+</div>
+<script src="../../assets/js/background.js?v=12"></script>
+<script src="../../assets/js/security.js?v=12"></script>
+<script src="../../assets/js/article-nav.js?v=12"></script>
+</body>
+</html>
