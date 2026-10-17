@@ -1,6 +1,6 @@
 // app.js — Application Logic & Routing
 
-import { views } from './views.js?v=1.323323';
+import { views } from './views.js?v=1.32332321';
 
 // ── 1. GLOBAL FIREBASE INITIALIZATION (Fixes memory leaks) ─────────
 let globalFirebaseApp = null;
@@ -49,13 +49,13 @@ const MAIN_SECONDARY = [
 ];
 
 const AI_MENU = [
-  { label: 'Overview',       href: '/studio' },
-  { label: 'Pricing',        href: '/studio/pricing' },
-  { label: 'Client Work',    href: '/studio/clients' },
-  { label: 'The Process',    href: '/studio/process' },
-  { label: 'Live Demo',      href: '/studio/demo/' }, 
-  { label: 'Tools I Use',    href: '/studio/tools' },
-  { label: 'ROI Calculator', href: '/studio/roi' }
+  { label: 'Overview',        href: '/studio' },
+  { label: 'Pricing',         href: '/studio/pricing' },
+  { label: 'Client Work',     href: '/studio/clients' },
+  { label: 'The Process',     href: '/studio/process' },
+  { label: 'AI Site Builder', href: '/studio/creation' },
+  { label: 'Tools I Use',     href: '/studio/tools' },
+  { label: 'ROI Calculator',  href: '/studio/roi' }
 ];
 
 const AI_SECONDARY = [
@@ -88,7 +88,7 @@ function updateSidebarNav(path) {
   sidebarNav.innerHTML = buildLinks(isAiSite ? AI_MENU : MAIN_MENU, path);
   sidebarSecondary.innerHTML = buildLinks(isAiSite ? AI_SECONDARY : MAIN_SECONDARY, path);
 
-  const owner = isAiSite ? 'Minescout AI' : 'Thomas Carleton';
+  const owner = isAiSite ? 'Minescout Studio' : 'Thomas Carleton';
   ownerText.textContent = `\u00A9 ${new Date().getFullYear()} ${owner}`;
 }
 
@@ -198,7 +198,7 @@ function setupChatListeners(input, sendBtn, chatWin) {
       }
     });
 
-    const finalSystemPrompt = `STRICT SYSTEM ROLE: You are Sentry AI, the autonomous representative for Thomas Carleton and Minescout AI.
+    const finalSystemPrompt = `STRICT SYSTEM ROLE: You are Sentry AI, the autonomous representative for Thomas Carleton and Minescout Studio.
     CORE RULE: You cannot book appointments. 
     If a user wants to schedule, book, or get a recap, say: 
     "To keep things organized and ensure 100% accuracy, Thomas handles all scheduling and detailed follow-ups personally. Please head to minescout.net/contact to drop your details—he usually responds within the hour."
@@ -373,8 +373,7 @@ function initHQ() {
         const data = await res.json();
         hqState.registry = (data && data.nodes) ? data : {
           nodes: [
-            { id: "handmadebyjayme", name: "Jayme M. Carleton", url: "https://jaymecarleton.com", tier: "Charter Spot", lastSync: "2026-03-15" },
-            { id: "smith_cole_legal", name: "Smith & Cole Legal", url: "https://smithcole.com", tier: "Full AI Upgrade", lastSync: "2026-03-10" }
+            { id: "handmadebyjayme", name: "Jayme M. Carleton", url: "https://jaymecarleton.com", tier: "Charter Spot", lastSync: "2026-03-15" }
           ]
         };
       } else {
@@ -573,10 +572,10 @@ function initROI() {
 
     const btn = document.getElementById('ai-verdict-btn');
     
-    vt.innerHTML = '<span class="ai-loading">Consulting Minescout AI...</span>';
+    vt.innerHTML = '<span class="ai-loading">Consulting Minescout Studio...</span>';
     btn.style.display = 'none';
 
-    const prompt = `You are a Lead Architect and technical advisor for Minescout AI. A potential client just used our ROI calculator.
+    const prompt = `You are a Lead Architect and technical advisor for Minescout Studio. A potential client just used our ROI calculator.
     
     Their Business Inputs:
     - Weekly inquiries: ${vol}
@@ -592,7 +591,7 @@ function initROI() {
 
     Write exactly 1 short paragraph analyzing these numbers. 
     CRITICAL INSTRUCTION: Be brutally honest and objective. Ensure your analysis perfectly aligns with the selected plan rules: 1. Starter Site ($499 one-time), 2. Digital Remodel ($599 one-time), 3. Full AI Upgrade ($799 + $59/mo), 4. Widget ($150 one-time).
-    If the "Projected Net Monthly Value" is negative (shows a loss), you MUST politely advise them that Minescout AI is NOT a good financial fit for them right now, explaining that their current traffic/inquiry volume doesn't justify the infrastructure cost yet. Tell them to wait until they scale.
+    If the "Projected Net Monthly Value" is negative (shows a loss), you MUST politely advise them that Minescout Studio is NOT a good financial fit for them right now, explaining that their current traffic/inquiry volume doesn't justify the infrastructure cost yet. Tell them to wait until they scale.
     If the net value is positive, write a compelling summary of why they should upgrade, focusing on the financial ROI, payback period, and hours reclaimed. 
     Speak directly and professionally to the client ("you"). Do not use markdown headers or greetings. Make it candid and sharp.`;
 
@@ -608,7 +607,7 @@ function initROI() {
     .then(res => res.json())
     .then(async data => {
       const text = data.content || "Based on your metrics, the selected plan offers a strong return on investment.";
-      vt.innerHTML = '<strong>Minescout AI Analysis:</strong> <span id="roi-typing"></span>';
+      vt.innerHTML = '<strong>Minescout Studio Analysis:</strong> <span id="roi-typing"></span>';
       const typeSpan = document.getElementById('roi-typing');
       
       for (let i = 0; i < text.length; i++) {
@@ -638,164 +637,6 @@ function initROI() {
   };
 
   window.calcROI(); 
-}
-
-function initAudit() {
-  const WORKER_API_URL = "https://backend.tmcarleton11.workers.dev/audit"; 
-  let currentMode = 'auto';
-
-  const dateEl = document.getElementById('auto-date');
-  if (dateEl) {
-    dateEl.innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  }
-
-  window.setAuditMode = function(mode) {
-    currentMode = mode;
-    document.getElementById('btn-auto').classList.toggle('active', mode === 'auto');
-    document.getElementById('btn-manual').classList.toggle('active', mode === 'manual');
-    document.getElementById('panel-auto').style.display = mode === 'auto' ? 'block' : 'none';
-    document.getElementById('panel-manual').style.display = mode === 'manual' ? 'block' : 'none';
-    document.getElementById('scan-status').innerText = mode === 'auto' ? 'System Ready (Network Mode)' : 'System Ready (Air-Gap Mode)';
-    document.getElementById('scan-status').className = 'status-text';
-  };
-
-  window.runAuditScan = async function() {
-    const statusEl = document.getElementById('scan-status');
-    if (!statusEl) return;
-    
-    let targetUrl = "";
-    const isCharterOffer = document.getElementById('charter-toggle').checked;
-    let recType = "full"; 
-    let findings = [];
-    let hasChatWidget = false;
-
-    if (currentMode === 'manual') {
-      targetUrl = document.getElementById('manual-url').value;
-      const htmlCode = document.getElementById('manual-code').value;
-      recType = document.getElementById('manual-rec-type').value; 
-      
-      if (!targetUrl || !htmlCode) { alert("Please enter both the URL and paste the source HTML code."); return; }
-      
-      statusEl.className = 'status-text scanning';
-      statusEl.innerText = 'Analyzing Provided Source Code...';
-      await new Promise(r => setTimeout(r, 500)); 
-
-      const lowerHtml = htmlCode.toLowerCase();
-      hasChatWidget = lowerHtml.includes('intercom') || lowerHtml.includes('drift') || lowerHtml.includes('chat widget') || lowerHtml.includes('chat-bubble') || lowerHtml.includes('tidio');
-
-      if (lowerHtml.includes('wp-content') || lowerHtml.includes('wordpress')) {
-        findings.push({ title: "Legacy CMS Architecture", badge: "Sub-Optimal", type: "warn", desc: "Target is utilizing WordPress. This monolithic architecture relies on outdated plugin ecosystems, leading to slower load times and security vulnerabilities compared to modern Headless networks." });
-      }
-      if (lowerHtml.includes('mailto:') || lowerHtml.includes('<form')) {
-        if (!hasChatWidget) findings.push({ title: "Asynchronous Conversion Flow", badge: "Critical Friction", type: "fail", desc: "Relying on static web forms and email links. This creates a 12-24 hour delay in lead response time, causing high-intent customers to abandon the site before getting logistical answers." });
-      }
-      if (!lowerHtml.includes('gtag') && !lowerHtml.includes('google-analytics') && !lowerHtml.includes('fbq')) {
-        findings.push({ title: "Missing Telemetry", badge: "Blind Spot", type: "warn", desc: "No modern conversion tracking (Google Analytics 4 / Meta Pixel) detected. Unable to properly measure traffic sources or optimize lead generation." });
-      }
-    } 
-    else {
-      targetUrl = document.getElementById('target-url').value;
-      if (!targetUrl) { alert("Please enter a URL first."); return; }
-      if (!targetUrl.startsWith('http')) targetUrl = 'https://' + targetUrl;
-
-      statusEl.className = 'status-text scanning';
-      statusEl.innerText = 'Transmitting to Cloudflare Edge...';
-
-      try {
-        const res = await fetch(WORKER_API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: targetUrl })
-        });
-
-        if (!res.ok) throw new Error("Worker request failed.");
-        
-        const data = await res.json();
-        findings = data.findings || [];
-        hasChatWidget = data.hasChatWidget || false;
-        recType = hasChatWidget ? 'remodel' : 'full';
-
-      } catch (err) {
-        alert("Network heavily restricted by firewall. Please switch to 'Manual Override' mode and paste the source code directly.");
-        statusEl.className = 'status-text';
-        statusEl.innerText = 'Network Blocked - Use Manual Mode';
-        return;
-      }
-    }
-
-    if (recType === 'full' && !hasChatWidget) {
-      findings.push({
-        title: "AI Integration Status", badge: "Missing", type: "fail",
-        desc: "No autonomous agent detected. Competitors utilizing custom LLM (Large Language Model) agents are currently capturing off-hours traffic and instantly pre-qualifying leads."
-      });
-    } else if (hasChatWidget) {
-      findings.push({
-        title: "Third-Party Chat Script", badge: "Sub-Optimal", type: "warn",
-        desc: "External chat widget detected. Third-party scripts often increase payload size and latency. Moving to a native, edge-deployed solution improves core performance."
-      });
-    }
-
-    let displayUrl = targetUrl.replace(/^https?:\/\//, '').replace('www.', '');
-    const domain = displayUrl.split('/')[0];
-    const businessName = domain.split('.')[0].toUpperCase();
-
-    document.getElementById('out-url').innerText = domain;
-    document.getElementById('out-name').innerText = businessName;
-
-    const resultsDiv = document.getElementById('audit-results');
-    resultsDiv.innerHTML = '';
-    
-    findings.forEach(f => {
-      resultsDiv.innerHTML += `
-        <div class="diag-card ${f.type}">
-          <div class="diag-title">
-            <span>${f.title}</span>
-            <span class="diag-badge">${f.badge}</span>
-          </div>
-          <div class="diag-desc">${f.desc}</div>
-        </div>
-      `;
-    });
-
-    if(findings.length === 0) {
-      resultsDiv.innerHTML = '<p style="color: var(--success); font-weight: bold;">Initial scan complete. Infrastructure appears modern and optimized. Recommend focusing strictly on AI integration payload.</p>';
-    }
-
-    const solutionBox = document.getElementById('audit-solution');
-    let solHtml = "";
-
-    if (recType === 'full') {
-      if (isCharterOffer) {
-        solHtml = '<h3>The Minescout Upgrade (Charter Phase)</h3>' +
-          '<p>We are selecting 3 local Charter Partners this month to receive a complete architectural overhaul at <strong style="color: var(--accent);">zero setup cost</strong>.</p>' +
-          '<p style="margin-top: 10px;"><strong>1. Custom AI Integration:</strong> We will train an autonomous Llama-3 AI assistant on your exact pricing and policies. It will live on your site, answering client questions instantly, 24/7, and routing qualified leads directly to your inbox.<br>' +
-          '<strong>2. Headless Edge Architecture:</strong> Complete migration to our multi-tenant Edge network, delivering enterprise-grade speed, security, and a private Admin Dashboard.</p>';
-      } else {
-        solHtml = '<h3>The Minescout Upgrade</h3>' +
-          '<p>To resolve these conversion bottlenecks, we recommend a complete architectural overhaul tailored to your specific operational needs.</p>' +
-          '<p style="margin-top: 10px;"><strong>1. Custom AI Integration:</strong> We will train an autonomous Llama-3 AI assistant on your exact pricing and policies. It will live on your site, answering client questions instantly, 24/7, and routing qualified leads directly to your inbox.<br>' +
-          '<strong>2. Headless Edge Architecture:</strong> Complete migration to our multi-tenant Edge network, delivering enterprise-grade speed, security, and a private Admin Dashboard.</p>';
-      }
-    } else { 
-      if (isCharterOffer) {
-        solHtml = '<h3>The Minescout Architectural Remodel (Charter Phase)</h3>' +
-          '<p>We are selecting 3 local Charter Partners this month to receive a complete architectural overhaul at <strong style="color: var(--accent);">zero setup cost</strong>.</p>' +
-          '<p style="margin-top: 10px;"><strong>1. Headless Edge Architecture:</strong> Complete migration to our multi-tenant Edge network, delivering enterprise-grade speed, security, and a private Admin Dashboard.<br>' +
-          '<strong>2. Conversion Optimization:</strong> Streamlining user flows, modernizing visual fidelity, and removing legacy plugins to ensure maximum lead capture efficiency.</p>';
-      } else {
-        solHtml = '<h3>The Minescout Architectural Remodel</h3>' +
-          '<p>To resolve these structural bottlenecks, we recommend a complete architectural remodel tailored to your specific operational needs.</p>' +
-          '<p style="margin-top: 10px;"><strong>1. Headless Edge Architecture:</strong> Complete migration to our multi-tenant Edge network, delivering enterprise-grade speed, security, and a private Admin Dashboard.<br>' +
-          '<strong>2. Conversion Optimization:</strong> Streamlining user flows, modernizing visual fidelity, and removing legacy plugins to ensure maximum lead capture efficiency.</p>';
-      }
-    }
-
-    solutionBox.innerHTML = solHtml;
-
-    statusEl.className = 'status-text done';
-    statusEl.innerText = 'Scan Complete';
-    document.getElementById('doc-stamp').innerText = "Audit Generated";
-  };
 }
 
 function initIntake() {
@@ -1052,7 +893,7 @@ function initPricing() {
   async function fetchNextStep() {
     showLoading();
 
-    const systemPrompt = `You are a technical sales advisor for Minescout AI.
+    const systemPrompt = `You are a technical sales advisor for Minescout Studio.
 
 AVAILABLE PLANS:
 ${plansText}
@@ -1559,12 +1400,180 @@ async function initPortal() {
   });
 }
 
+// ── 3b. CREATION PAGE (AI Site Builder) ─────────────────────────────────
+function initCreation() {
+  const CHAT_WORKER = 'https://thomas-chat.tmcarleton11.workers.dev/';
+  let selectedTemplate = '';
+  let chatHistory = [];
+
+  function addMessage(role, text) {
+    const container = document.getElementById('creation-messages');
+    if (!container) return;
+    const emptyHint = container.querySelector('p');
+    if (emptyHint && chatHistory.length === 0) emptyHint.remove();
+
+    const msgDiv = document.createElement('div');
+    msgDiv.style.cssText = 'margin-bottom: 0.75rem; line-height: 1.5;';
+    msgDiv.innerHTML = `<strong style="color: var(--fg);">${role === 'user' ? 'You' : 'Builder'}:</strong> <span style="color: var(--fg);">${text}</span>`;
+    container.appendChild(msgDiv);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  // Removed: extractCode() and generatePreview() — no longer AI-generating code here.
+  // The chat now focuses on getting a detailed spec, which gets sent to Thomas.
+
+  window.selectTemplate = function(tpl) {
+    selectedTemplate = tpl;
+    document.querySelectorAll('.template-pill').forEach(b => b.style.borderColor = 'var(--border)');
+    const btn = document.querySelector(`.template-pill[data-template="${tpl}"]`);
+    if (btn) btn.style.borderColor = 'var(--accent)';
+
+    const prompts = {
+      portfolio: "I need a portfolio website to showcase my creative work with a gallery, about section, and contact form.",
+      business: "I need a local business website with services, hours, contact info, and a booking option.",
+      photography: "I need a photography portfolio with a full-screen gallery, lightbox viewer, and client booking.",
+      landing: "I need a single-page landing site with a hero section, features list, and a call-to-action button.",
+      custom: ""
+    };
+    const prompt = prompts[tpl] || "";
+    if (prompt) {
+      const input = document.getElementById('creation-input');
+      if (input) { input.value = prompt; input.focus(); }
+    }
+  };
+
+  window.sendCreationMessage = async function() {
+    const input = document.getElementById('creation-input');
+    const sendBtn = document.getElementById('creation-send');
+    const text = input.value.trim();
+    if (!text || sendBtn.disabled) return;
+
+    input.value = '';
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Thinking...';
+
+    addMessage('user', text);
+    chatHistory.push({ role: 'user', content: text });
+
+    const systemPrompt = `You are the Minescout Studio project consultant. Your ONLY job is to interview the client and gather a complete, detailed project specification. You do NOT generate code or previews.
+
+INTERVIEW PROCESS — ask about these topics over multiple turns (don't ask everything at once):
+1. What kind of site they need (portfolio, business, photography, landing page, e-commerce, etc.)
+2. Key pages and sections they need
+3. Design preferences (colors, style, tone, inspiration sites)
+4. Functionality (contact forms, booking, galleries, payments, CMS)
+5. Content (do they have text, photos, logos ready?)
+6. Timeline and budget
+7. Technical requirements (SEO, analytics, custom domain, email)
+
+RULES:
+- Ask 1-2 questions per reply. Don't overwhelm.
+- If they give a vague answer, ask follow-ups to get specifics.
+- Keep track of what you've already learned and don't re-ask.
+- Be warm, professional, and encouraging.
+- Once you have a solid picture of all 7 areas above, say: "I have enough detail to build your spec. Click 'Send Spec To Thomas →' below and I'll include our full conversation so Thomas can build your site."
+- Never mention code generation, previews, or templates. This is a consultation only.`;
+
+    try {
+      const res = await fetch(CHAT_WORKER, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: chatHistory.slice(-8),
+          system_override: systemPrompt,
+          temperature: 0.5
+        })
+      });
+
+      const data = await res.json();
+      const reply = data.content || "Got it! Based on what you've described, I think I have a good picture forming. Let me ask a few more questions to make sure I capture everything.";
+
+      addMessage('assistant', reply);
+      chatHistory.push({ role: 'assistant', content: reply });
+
+      // Show the "Send Spec To Thomas" trigger after first reply
+      const trigger = document.getElementById('creation-claim-trigger');
+      if (trigger) trigger.style.display = 'block';
+
+    } catch (err) {
+      addMessage('assistant', "I'm having trouble connecting right now. Could you try again in a moment?");
+    }
+
+    sendBtn.disabled = false;
+    sendBtn.textContent = 'Send';
+  };
+
+  window.showClaimForm = function() {
+    const form = document.getElementById('creation-claim-form');
+    if (form) {
+      form.style.display = 'block';
+      document.getElementById('claim-extra').style.display = 'block';
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  window.submitClaim = async function() {
+    const name = document.getElementById('claim-name').value.trim();
+    const email = document.getElementById('claim-email').value.trim();
+    const notes = document.getElementById('claim-notes').value.trim();
+    const btn = document.getElementById('claim-submit');
+
+    if (!name || !email) { alert("Please enter your name and email."); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const chatLog = chatHistory.map(m => `${m.role}: ${m.content}`).join('\n\n---\n\n');
+
+    const htmlBody = `
+      <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e8e4dd; border-radius: 8px; overflow: hidden;">
+        <div style="background-color: #1a1916; padding: 20px; text-align: center;">
+          <h2 style="margin: 0; color: #ffffff; font-family: Georgia, serif; letter-spacing: 0.1em; text-transform: uppercase; font-size: 16px;">Minescout Studio / Project Spec</h2>
+        </div>
+        <div style="padding: 30px 20px;">
+          <p style="font-size: 12px; font-weight: bold; letter-spacing: 0.1em; text-transform: uppercase; color: #ff4d1c; margin-bottom: 5px;">New Project Spec</p>
+          <h1 style="margin-top: 0; font-size: 24px; color: #1a1916;">A client completed the consultation.</h1>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Additional Notes:</strong> ${notes || 'None'}</p>
+          <div style="background-color: #f9f8f6; padding: 15px; border-left: 3px solid #ff4d1c; color: #1a1916; font-size: 13px; white-space: pre-wrap; margin-top: 20px;"><strong>Full Consultation Transcript:</strong>\n\n${chatLog}</div>
+        </div>
+      </div>
+    `;
+
+    const payload = {
+      to: ["tmcarleton11@gmail.com"],
+      subject: `Project Spec: ${name} — Website Consultation`,
+      htmlBody: htmlBody,
+      fromName: "Minescout Studio"
+    };
+
+    try {
+      const res = await fetch("https://script.google.com/macros/s/AKfycbz7MJE7mNY1A-SvbdHGV3yI6-ftBElB1wOth4MqEABvJXLI5SNzeqiG2r7PJBpWvcAiOg/exec", {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        document.getElementById('claim-success').style.display = 'block';
+        btn.style.display = 'none';
+        document.getElementById('creation-claim-btn').style.display = 'none';
+      } else throw new Error("GAS rejected.");
+    } catch (err) {
+      alert("Could not send your request. Please email me directly at thomas@minescout.net");
+      btn.disabled = false;
+      btn.textContent = 'Send Spec';
+    }
+  };
+}
+
 // ── 4. BOOTSTRAP ROUTER ──────────────────────────────────────────────────
 let appElement;
 
 function render(path) {
   const cleanPath = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
-  const finalPath = (path === '/studio/demo/') ? '/studio/demo/' : cleanPath;
+  const finalPath = cleanPath;
   const content = views[finalPath] || views['404'];
   
   appElement.innerHTML = content;
@@ -1577,7 +1586,7 @@ function render(path) {
   else if (finalPath === '/guestbook') initGuestbook();
   else if (finalPath === '/hq') initHQ();
   else if (finalPath === '/studio/roi') initROI();
-  else if (finalPath === '/studio/generator/audit') initAudit();
+  else if (finalPath === '/studio/creation') initCreation();
   else if (finalPath === '/studio/intake' || finalPath === '/studio/info') initIntake();
   else if (finalPath === '/studio/pricing') initPricing();
   else if (finalPath === '/studio/legal' || finalPath === '/legal') initLegal();
@@ -1621,7 +1630,7 @@ function initRouter() {
       const htmlBody = `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e8e4dd; border-radius: 8px; overflow: hidden;">
           <div style="background-color: #1a1916; padding: 20px; text-align: center;">
-            <h2 style="margin: 0; color: #ffffff; font-family: Georgia, serif; letter-spacing: 0.1em; text-transform: uppercase; font-size: 16px;">Minescout AI / Operations</h2>
+            <h2 style="margin: 0; color: #ffffff; font-family: Georgia, serif; letter-spacing: 0.1em; text-transform: uppercase; font-size: 16px;">Minescout Studio / Operations</h2>
           </div>
           <div style="padding: 30px 20px;">
             <p style="font-size: 12px; font-weight: bold; letter-spacing: 0.1em; text-transform: uppercase; color: #ff4d1c; margin-bottom: 5px;">New Inquiry</p>

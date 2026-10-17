@@ -29,58 +29,40 @@ function isReleased(dateStr) {
 
 const BLOG_POSTS = [
   {
-    date: "Nov 8, 2026", tag: "tag-growth", tagLabel: "Growth",
-    href: "/blog/sophomore-founder.html", featured: true,
-    title: "Sophomore Founder Retrospective: Lessons Learned Shipping 3 Platforms",
-    excerpt: "Looking back on a year of launching Minescout AI, building custom client SPAs, scaling advanced web platforms, and achieving Eagle Scout.",
-  },
-  {
     date: "Nov 1, 2026", tag: "tag-building", tagLabel: "Building",
-    href: "/blog/performance-benchmarking.html",
+    href: "/blog/performance-benchmarking.html", featured: true,
     title: "Performance Benchmarking: Achieving Sub-Second Global Edge Latency",
-    excerpt: "A deep dive into global latency testing, asset optimization, and edge caching strategies for high-speed web apps.",
-  },
-  {
-    date: "Oct 25, 2026", tag: "tag-leadership", tagLabel: "Leadership",
-    href: "/blog/den-chief.html",
-    title: "Mentorship &amp; Communication: 1,200 Hours as a Den Chief",
-    excerpt: "Key takeaways on patience, task breakdown, and technical leadership gained over years of mentoring Cub Scouts in Pack 551.",
+    excerpt: "Global latency testing, asset optimization, and edge caching strategies for high-speed web applications.",
   },
   {
     date: "Oct 18, 2026", tag: "tag-building", tagLabel: "Building",
     href: "/blog/css-architecture.html",
     title: "CSS Architecture: Building Scalable Design Systems",
-    excerpt: "Moving beyond messy stylesheets. How I use CSS variables and utility classes to build maintainable design systems.",
+    excerpt: "Using CSS custom properties and utility classes to build maintainable, scalable design systems.",
   },
   {
     date: "Oct 11, 2026", tag: "tag-ai", tagLabel: "AI Architecture",
     href: "/blog/ai-guardrails.html",
     title: "AI Guardrails 101: Preventing Hallucinations in Client Support Widgets",
-    excerpt: "Technical methods for implementing system guardrails that prevent LLMs from going off-topic or making up false business policies.",
-  },
-  {
-    date: "Oct 4, 2026", tag: "tag-growth", tagLabel: "Growth",
-    href: "/blog/balancing-high-school.html",
-    title: "The 4.0 Standard: Balancing High School Rigor with Production Code",
-    excerpt: "Strategies for managing time, maintaining a 4.0 GPA at Eastlake High School as a sophomore, and deploying live production software.",
+    excerpt: "System guardrails that prevent LLMs from going off-topic or hallucinating false business policies.",
   },
   {
     date: "Sep 27, 2026", tag: "tag-building", tagLabel: "Building",
     href: "/blog/vanilla-js-edge.html",
     title: "Vanilla JS &amp; Edge Workers: Why I Avoid Heavy Framework Overkill",
-    excerpt: "A technical argument for keeping lightweight web applications simple by leveraging native browser APIs and serverless edge handlers.",
+    excerpt: "Why native browser APIs and serverless edge handlers outperform heavy frameworks for lightweight web applications.",
   },
   {
     date: "Sep 20, 2026", tag: "tag-building", tagLabel: "Building",
     href: "/blog/database-schema-design.html",
     title: "Schema Design: Structuring Data for Multi-Tenant SaaS",
-    excerpt: "Lessons learned from organizing NoSQL databases to keep client data isolated and queries lightning-fast.",
+    excerpt: "How to organize NoSQL databases for multi-tenant isolation and high-speed queries using Firestore and Cloudflare KV.",
   },
   {
     date: "Sep 13, 2026", tag: "tag-ai", tagLabel: "AI Architecture",
     href: "/blog/unstructured-client-data.html",
     title: "AI Architecture: Training Local AI Assistants on Unstructured Client Data",
-    excerpt: "How to ingest unstructured business FAQs and transform them into precise, structured prompt context for client AI agents.",
+    excerpt: "Ingesting unstructured business FAQs and transforming them into precise, structured prompt context for AI agents.",
   },
   {
     date: "Sep 6, 2026", tag: "tag-leadership", tagLabel: "Leadership",
@@ -92,13 +74,13 @@ const BLOG_POSTS = [
     date: "Aug 30, 2026", tag: "tag-building", tagLabel: "Building",
     href: "/blog/sub-second-latency.html",
     title: "Sub-Second Latency: Why Custom SPAs Beat Heavy CMS Platforms",
-    excerpt: "Breaking down how clean-slate rebuilds achieve sub-second global edge latency compared to traditional web platforms.",
+    excerpt: "Why clean-slate rebuilds achieve sub-second global edge latency compared to traditional CMS platforms.",
   },
   {
     date: "Aug 23, 2026", tag: "tag-philosophy", tagLabel: "Philosophy",
     href: "/blog/zero-dollar-stack.html",
     title: "The $0.00 Stack: Bootstrapping SaaS on Serverless Free Tiers &amp; PAYU",
-    excerpt: "Why building on serverless edge layers and Pay-As-You-Use (PAYU) tiers is the ultimate strategy for high school founders.",
+    excerpt: "How serverless edge layers and Pay-As-You-Use (PAYU) tiers enable zero-cost infrastructure for early-stage projects.",
   },
   {
     date: "Aug 16, 2026", tag: "tag-building", tagLabel: "Building",
@@ -110,19 +92,19 @@ const BLOG_POSTS = [
     date: "Aug 9, 2026", tag: "tag-building", tagLabel: "Building",
     href: "/blog/state-management.html",
     title: "State Management: Keeping Complex Web Apps Fast Without React",
-    excerpt: "How I handle complex state logic using Vanilla JavaScript and lightweight proxies instead of heavy frameworks.",
+    excerpt: "Handling complex state logic using Vanilla JavaScript Proxies and native events instead of heavy frameworks.",
   },
   {
     date: "Aug 2, 2026", tag: "tag-ai", tagLabel: "AI Architecture",
     href: "/blog/edge-routing.html",
     title: "Edge Routing Architecture: Blacklists, Whitelists, and AI Worker Compatibility",
-    excerpt: "How I engineered proprietary routing using Cloudflare Workers and KV storage, navigating security filtering and worker compatibility limits.",
+    excerpt: "Engineering edge routing with Cloudflare Workers and KV storage, including security filtering and worker compatibility.",
   },
   {
     date: "Mar 9, 2026", tag: "tag-engineering", tagLabel: "Engineering",
     href: "/blog/minescout-genesis.html",
     title: "Minescout Genesis: The 17-Day Multi-Tenant Pivot",
-    excerpt: "Moving from static sites to a serverless SaaS engine. Here is how I architected the multi-tenant core of Minescout AI.",
+    excerpt: "Moving from static sites to a serverless SaaS engine. Here is how I architected the multi-tenant core of Minescout Studio.",
     footerLabel: "Read case study →",
   },
   {
@@ -231,39 +213,40 @@ export const views = {
       </div>
     </div>
   `,
-  '/now': `
+    '/now': `
     <div class="main--page">
       <div class="page-content now-wrap">
         <p class="page-label">Now</p>
         <h1 class="page-title">What I'm up to</h1>
-        <p class="now-updated">Last updated <span>April 2026</span> — Sammamish, WA</p>
+        <p class="now-updated">Last updated <span>October 2026</span> — Sammamish, WA</p>
         <div class="now-section" style="--delay: 0.3s;">
           <p class="now-section-label">Building & Engineering</p>
           <ul>
-            <li>Wrapping up an incredible season with <a href="https://frc1294.org" target="_blank">FRC Team 1294</a> — we won the Glacier Peak District and advanced all the way to the District Championship (DCMP)!</li>
-            <li>Just rebuilt <a href="https://chop-lab.com" target="_blank">The Chop Lab</a> as a lightning-fast Single Page Application (SPA) with a completely redesigned UI and brand new product lines.</li>
-            <li>Maintaining <a href="https://minescout.net" target="_blank">Minescout AI</a> and its network of nodes.</li>
+            <li>New FRC season is ramping up at <a href="https://packofparts.org" target="_blank">Team 1294</a>! We're in the Trial Period right now — training new members and making sure everyone's ready for the upcoming season.</li>
+            <li>Actively maintaining <a href="https://chop-lab.com" target="_blank">The Chop Lab</a> — it's a live, actively used platform. Check it out!</li>
+            <li>Running <a href="https://minescout.net" target="_blank">Minescout Studio</a> and its growing network of nodes. New client portal and infrastructure improvements shipping regularly.</li>
+            <li>Launched a brand new <a href="/studio/creation">AI Site Builder</a> on October 16 — chat with an AI agent to spec out your ideal website, then I build it with a premium model.</li>
           </ul>
         </div>
         <div class="now-section" style="--delay: 0.45s;">
           <p class="now-section-label">School</p>
-          <ul><li>10th grade at Eastlake High School, focusing on CS and Engineering Design</li><li>Keeping a 4.0 GPA</li></ul>
+          <ul>
+            <li>10th grade at Eastlake High School, focusing on CS and Engineering Design</li>
+            <li>Keeping a 4.0 GPA</li>
+            <li>Started UW Precalc this year</li>
+          </ul>
         </div>
         <div class="now-section" style="--delay: 0.55s;">
-          <p class="now-section-label">Running</p>
-          <ul><li>Distance running — current 5K PR is 26:00. Taking a break from intensive race training to focus on other projects.</li></ul>
+          <p class="now-section-label">Scouting & Leadership</p>
+          <ul>
+            <li>Still serving as Den Chief for Cub Scout Pack 551</li>
+            <li>Earned my Eagle Scout rank — constructed a Little Free Library in Illahee Park.</li>
+          </ul>
         </div>
         <div class="now-section" style="--delay: 0.65s;">
           <p class="now-section-label">Outdoors</p>
           <ul>
             <li>Fly-fishing and hiking in the Pacific Northwest when the weather cooperates.</li>
-            <li>Looking forward to Fly Fishing Camp in June and Scout Summer Camp in August!</li>
-          </ul>
-        </div>
-        <div class="now-section" style="--delay: 0.75s;">
-          <p class="now-section-label">Recently</p>
-          <ul>
-            <li>Earned my Eagle Scout rank — constructed a Little Free Library in Illahee Park.</li>
           </ul>
         </div>
         <p class="now-note">This is a <a href="https://nownownow.com/about" target="_blank">/now page</a> — a simple snapshot of what I'm focused on at this point in my life. I update it whenever something changes.</p>
@@ -295,7 +278,7 @@ export const views = {
             <tr class="year-row"><td colspan="3">2026</td></tr>
             <tr class="entry-row" style="--delay: 100ms;">
               <td class="resume-date">Feb 2026 – Pres.</td>
-              <td class="resume-title">Minescout AI</td>
+              <td class="resume-title">Minescout Studio</td>
               <td><strong>Founder &amp; Systems Architect</strong> — Designed and launched a multi-tenant SaaS platform utilizing AI integrations and cloud-based infrastructure. Engineered application routing systems using Cloudflare Workers and KV storage to achieve sub-second global edge latency. Developed scalable web architecture supporting multiple users and services from a single codebase.</td>
             </tr>
             <tr class="entry-row" style="--delay: 150ms;">
@@ -372,7 +355,7 @@ export const views = {
         <div class="projects">
           <a class="project-card" href="/studio" style="--delay: 100ms;">
             <div class="project-date">Feb<br>2026</div>
-            <div><div class="project-title">Minescout AI</div><div class="project-url">minescout.net/studio</div></div>
+            <div><div class="project-title">Minescout Studio</div><div class="project-url">minescout.net/studio</div></div>
             <div class="project-arrow">→</div>
           </a>
           <a class="project-card" href="https://chop-lab.com" target="_blank" style="--delay: 200ms;">
@@ -454,7 +437,7 @@ export const views = {
         <div class="ai-section-label">What We Build</div>
         <div class="ai-features">
           <a href="/studio/pricing" class="ai-feature"><div class="ai-feature-icon">⚡</div><div><div class="ai-feature-title">Clean Slate Rebuilds</div><div class="ai-feature-desc">A brand new, custom-coded website that grows with your business. No plugins, no bloat, no servers for you to manage.</div></div><span class="ai-feature-badge badge-live">Core</span></a>
-          <a href="/studio/demo/index.html" class="ai-feature"><div class="ai-feature-icon">🤖</div><div><div class="ai-feature-title">An AI Employee for Your Site</div><div class="ai-feature-desc">Imagine every visitor getting an instant answer—even at 2 AM. A chatbot trained specifically on YOUR business.</div></div><span class="ai-feature-badge badge-ready">Demo Ready</span></a>
+          <a href="/studio/creation" class="ai-feature"><div class="ai-feature-icon">✨</div><div><div class="ai-feature-title">AI Site Builder</div><div class="ai-feature-desc">Chat with an AI to build a preview of your new site from a template. Like the result? Drop your email and I'll finish it.</div></div><span class="ai-feature-badge badge-live">New</span></a>
           <a href="/portal" target="_blank" class="ai-feature"><div class="ai-feature-icon">🎭</div><div><div class="ai-feature-title">The "Backstage" Dashboard</div><div class="ai-feature-desc">Your private dashboard where you can edit AI knowledge, see conversations, and manage your site without touching code.</div></div><span class="ai-feature-badge badge-node">Included</span></a>
         </div>
         
@@ -482,7 +465,7 @@ export const views = {
       <div class="page-content clients-wrap">
         <p class="page-label">Portfolio</p>
         <h1 class="page-title">Client Work</h1>
-        <p class="clients-intro">MineScout builds custom websites and AI systems for people who want agency-quality results without agency complexity. Below are our active deployments.</p>
+        <p class="clients-intro">Minescout builds custom websites and AI systems for people who want agency-quality results without agency complexity. Below are our active deployments.</p>
         
         <div class="section-divider">Live Client Deployments</div>
         <div class="client-card" style="--d:0.3s;">
@@ -545,16 +528,6 @@ export const views = {
             <p class="client-note">Designed for high-fidelity visual archiving without sacrificing backend speed. This framework ensures rapid asset delivery globally.<br><a href="https://ferncarleton.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
           </div>
         </div>
-        <div class="client-card" style="--d:0.55s;">
-          <div class="client-card-header"><div><div class="client-name">Smith &amp; Cole Law</div><div class="client-type">Professional Services Demo</div></div><span class="client-status status-demo">Internal Concept</span></div>
-          <div class="client-card-body">
-            <div class="client-detail-grid">
-              <div><div class="client-detail-label">Objective</div><div class="client-detail-val">Lead Triage & Qualification</div></div>
-              <div><div class="client-detail-label">Industry</div><div class="client-detail-val">Legal Consulting</div></div>
-            </div>
-            <p class="client-note">A demonstration of how Minescout can capture and qualify professional service leads 24/7.<br><a href="/studio/demo/index.html" class="view-link">Test AI Agent &rarr;</a></p>
-          </div>
-        </div>
         
         <div class="clients-cta" style="margin-top: 3rem;">
           <a href="/contact" class="btn-primary">Book a Call</a>
@@ -567,7 +540,7 @@ export const views = {
         <p class="page-label">Minescout Studio</p>
         <h1 class="page-title">The Process</h1>
         <div style="display: inline-block; background: var(--fg); color: var(--bg); padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem;">Total time: ~5–7 days</div>
-        <p class="process-intro">From first conversation to live website — here's exactly what working with MineScout looks like, step by step. No surprises, no jargon.</p>
+        <p class="process-intro">From first conversation to live website — here's exactly what working with Minescout looks like, step by step. No surprises, no jargon.</p>
         <div class="timeline">
           <div class="phase" style="--d:0.3s;">
             <div class="phase-dot active">01</div>
@@ -617,21 +590,27 @@ export const views = {
   '/studio/legal': `
     <div class="main--page">
       <div class="page-content legal-wrap">
-        <p class="page-label">Minescout AI</p>
+        <p class="page-label">Minescout Studio</p>
         <h1 class="page-title">Legal &amp; Terms</h1>
         <p class="legal-updated">Last updated: <span id="legal-date"></span></p>
         <div class="legal-section" style="--d:0.28s;">
           <div class="legal-section-title">Who we are</div>
-          <p class="legal-body">Minescout AI is operated by <strong>Thomas Carleton</strong>, based in Sammamish, Washington. This is not a registered business entity. All services are delivered directly by Thomas Carleton as an individual. By engaging Minescout AI, you agree to work with Thomas Carleton personally as your service provider.</p>
+          <p class="legal-body">Minescout Studio is operated by <strong>Thomas Carleton</strong>, based in Sammamish, Washington. This is not a registered business entity. All services are delivered directly by Thomas Carleton as an individual. By engaging Minescout Studio, you agree to work with Thomas Carleton personally as your service provider.</p>
         </div>
         <div class="legal-section" style="--d:0.34s;">
           <div class="legal-section-title">Services &amp; scope</div>
-          <p class="legal-body">Minescout AI provides web development, AI assistant configuration, and related technical services for small businesses. Deliverables, pricing, and timeline are agreed upon in writing before work begins.</p>
+          <p class="legal-body">Minescout Studio provides web development, AI assistant configuration, AI site previews, and related technical services for small businesses. Deliverables, pricing, and timeline are agreed upon in writing before work begins.</p>
           <p class="legal-body">Services are delivered on a best-effort basis. I cannot guarantee specific outcomes such as increased sales, lead conversion rates, or AI response accuracy beyond what is tested and agreed upon at launch.</p>
         </div>
         <div class="legal-section" style="--d:0.4s;">
+          <div class="legal-section-title">AI Site Preview (Studio Creation)</div>
+          <p class="legal-body">The AI Site Preview tool lets you chat with an AI to generate a preview of a potential website based on a template. The preview is for evaluation purposes only and does not constitute a finished website.</p>
+          <p class="legal-body">When you submit your name and email through the "I like this" flow, you are expressing interest in having Thomas Carleton build the site for real. Submission does not create a binding agreement. You will receive a follow-up email with pricing and next steps within 48 hours.</p>
+          <p class="legal-body">Preview data (chat history, selected template, name, email) is stored temporarily and may be reviewed to prepare your quote. No payment is collected through the preview tool.</p>
+        </div>
+        <div class="legal-section" style="--d:0.4s;">
           <div class="legal-section-title">Charter Partner program</div>
-          <p class="legal-body">The Charter Partner program is an invite-only arrangement in which Minescout AI provides the full AI Upgrade at no cost in exchange for a defined set of commitments from the partner. <strong>2 spots are currently available.</strong> <a href="/contact">Get in touch to apply.</a></p>
+          <p class="legal-body">The Charter Partner program is an invite-only arrangement in which Minescout Studio provides the full AI Upgrade at no cost in exchange for a defined set of commitments from the partner. <strong>2 spots are currently available.</strong> <a href="/contact">Get in touch to apply.</a></p>
           <p class="legal-body">The terms of the Charter Partner arrangement are as follows:</p>
           <div class="charter-detail">
             <div class="charter-detail-row"><div class="charter-key">What you receive</div><div class="charter-val">The full AI Upgrade at no cost &mdash; custom-trained AI assistant, website integration, and 12 months of maintenance.</div></div>
@@ -694,9 +673,9 @@ export const views = {
   '/studio/tools': `
     <div class="main--page">
       <div class="page-content tools-wrap">
-        <p class="page-label">Minescout AI</p>
+        <p class="page-label">Minescout Studio</p>
         <h1 class="page-title" style="opacity:0;animation:fadeUp 0.5s ease 0.1s forwards;">Tools I Use</h1>
-        <div class="tools-disclaimer"><strong>Honest reviews only.</strong> No sponsored picks. These are the tools I actually use daily for building Minescout AI, client projects, schoolwork, and FRC robotics. I list where things fall short too.</div>
+        <div class="tools-disclaimer"><strong>Honest reviews only.</strong> No sponsored picks. These are the tools I actually use daily for building Minescout Studio, client projects, schoolwork, and FRC robotics. I list where things fall short too.</div>
         
         <div class="tools-category" style="--cd:0.2s;">AI &amp; Language Models</div>
         <div class="tool-card" style="--td:0.25s;">
@@ -704,7 +683,7 @@ export const views = {
           <div class="tool-body">
             <div class="tool-name-row"><span class="tool-name">Gemini 3.1 Pro</span><span class="tool-badge badge-core">Core</span></div>
             <div class="tool-rating"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span></div>
-            <p class="tool-desc">My advanced reasoning engine. I rely heavily on Gemini 3.1 Pro for deep integration, parsing massive amounts of context, and solving complex architectural problems for Minescout AI.</p>
+            <p class="tool-desc">My advanced reasoning engine. I rely heavily on Gemini 3.1 Pro for deep integration, parsing massive amounts of context, and solving complex architectural problems for Minescout Studio.</p>
             <div class="tool-verdict-grid">
               <div class="verdict-box pro"><div class="verdict-label">Works well for</div><div class="verdict-text">Deep reasoning, contextual understanding across huge workspaces, and integrated ecosystem tasks.</div></div>
               <div class="verdict-box con"><div class="verdict-label">Watch out for</div><div class="verdict-text">Sometimes its strict guardrails can get in the way of highly creative, out-of-the-box coding requests.</div></div>
@@ -747,7 +726,7 @@ export const views = {
           <div class="tool-body">
             <div class="tool-name-row"><span class="tool-name">Cloudflare</span><span class="tool-badge badge-free">Free tier</span><span class="tool-badge badge-core">Core</span></div>
             <div class="tool-rating"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span></div>
-            <p class="tool-desc">The absolute backbone of the Minescout AI platform. DNS, CDN, Edge Workers, and KV Storage—all in one place. It provides sub-second latency and handles my multi-tenant routing perfectly.</p>
+            <p class="tool-desc">The absolute backbone of the Minescout Studio platform. DNS, CDN, Edge Workers, and KV Storage—all in one place. It provides sub-second latency and handles my multi-tenant routing perfectly.</p>
             <div class="tool-verdict-grid">
               <div class="verdict-box pro"><div class="verdict-label">Works well for</div><div class="verdict-text">Serverless architecture, instant global deployments, and maintaining a strict $0.00 risk profile.</div></div>
               <div class="verdict-box con"><div class="verdict-label">Watch out for</div><div class="verdict-text">Serverless environments require a different mental model than traditional server hosting.</div></div>
@@ -868,7 +847,7 @@ export const views = {
         <div class="form-wrapper">
           <div class="form-header">
             <h1>Custom Intelligence Intake</h1>
-            <p>Provide the operational data for your Minescout AI integration.</p>
+            <p>Provide the operational data for your Minescout Studio integration.</p>
           </div>
           <form id="intakeForm" onsubmit="event.preventDefault(); window.openIntakePreview();">
             <div class="form-grid">
@@ -896,7 +875,7 @@ export const views = {
             <div class="plan-container" id="pdfDocument">
               <div class="status-stamp">Client Intake</div>
               <div class="pdf-header">
-                <div class="brand"><h1>Minescout AI</h1><p>Custom Intelligence File</p></div>
+                <div class="brand"><h1>Minescout Studio</h1><p>Custom Intelligence File</p></div>
                 <div style="text-align: right; font-size: 0.85rem; line-height: 1.5; color: var(--fg);">
                   <strong>Client:</strong> <span id="p_client"></span><br>
                   <strong>Project:</strong> Managed AI Integration<br>
@@ -927,7 +906,7 @@ export const views = {
                 </ul>
               </section>
               <div class="pdf-footer">
-                <div>Generated by Minescout AI System</div><div>minescout.net/studio</div>
+                <div>Generated by Minescout Studio System</div><div>minescout.net/studio</div>
               </div>
             </div>
           </div>
@@ -941,76 +920,10 @@ export const views = {
       </div>
     </div>
   `,
-  '/studio/generator/audit': `
-    <div class="main--page" style="display:block; width:100%; max-width:100%; padding: 0;">
-      <div class="audit-root">
-        <div class="app-header no-print">
-          <div class="toolbar-top">
-            <div>
-              <h2 style="font-family: var(--serif); font-size: 1.2rem; margin: 0; line-height: 1; color: var(--fg);">Minescout Operations</h2>
-              <p style="margin: 0; font-size: 0.75rem; color: var(--muted);">Autonomous Target Scanner v4.0 (Edge Linked)</p>
-            </div>
-            <button class="btn" onclick="window.print()">Export Audit PDF</button>
-          </div>
-          <div class="mode-toggle">
-            <button id="btn-auto" class="mode-btn active" onclick="window.setAuditMode('auto')">Auto Scan (Edge API)</button>
-            <button id="btn-manual" class="mode-btn" onclick="window.setAuditMode('manual')">Manual Override (Air-Gap)</button>
-            <label class="offer-settings"><input type="checkbox" id="charter-toggle"> Offer 'Charter' Free Setup</label>
-          </div>
-          <div id="panel-auto" class="scanner-controls">
-            <div class="input-row">
-              <input type="url" id="target-url" placeholder="Enter target URL (e.g., sammamishbotanical.org)" />
-              <button class="btn" onclick="window.runAuditScan()">Run Diagnostic</button>
-            </div>
-          </div>
-          <div id="panel-manual" class="scanner-controls" style="display: none;">
-            <div class="input-row">
-              <input type="url" id="manual-url" placeholder="Target URL (Just for the PDF report)" />
-              <select id="manual-rec-type">
-                <option value="full">Pitch: Full AI Upgrade</option>
-                <option value="rebuild">Pitch: Clean Slate Rebuild (No AI)</option>
-              </select>
-              <button class="btn" onclick="window.runAuditScan()">Run Diagnostic</button>
-            </div>
-            <textarea id="manual-code" placeholder="Right-click target site -> 'View Page Source' -> Paste all HTML code here..."></textarea>
-          </div>
-          <div id="scan-status" class="status-text" style="text-align: left;">System Ready</div>
-        </div>
-
-        <div class="plan-container" contenteditable="true">
-          <div class="status-stamp" id="doc-stamp">Action Required</div>
-          <header>
-            <div class="brand"><h1>Minescout AI</h1><p>Digital Health & Conversion Audit</p></div>
-            <div style="text-align: right; font-size: 0.85rem; line-height: 1.5; color: var(--fg);">
-              <strong>Generated by:</strong> Minescout Engine<br>
-              <strong>Date:</strong> <span id="auto-date"></span>
-            </div>
-          </header>
-          <div class="target-meta">
-            <div class="meta-block"><label>Target Infrastructure</label><div id="out-name">Pending Scan...</div></div>
-            <div class="meta-block"><label>URL Scanned</label><div id="out-url" style="color: var(--accent); font-family: var(--sans);">Pending...</div></div>
-          </div>
-          <section><p>An automated structural scan of your primary web infrastructure was conducted to evaluate lead-conversion efficiency and modern AI readiness. The results indicate friction in your current digital operations.</p></section>
-          <section>
-            <h2>Diagnostic Findings</h2>
-            <div class="diagnostic-grid" id="audit-results"><p style="color: var(--muted); font-size: 0.9rem; font-style: italic;">Select a mode and click "Run Diagnostic" to generate findings...</p></div>
-          </section>
-          <section class="solution-box" id="audit-solution">
-            <h3>The Minescout Upgrade</h3>
-            <p>To resolve these conversion bottlenecks, we recommend a <strong>Clean Slate Rebuild</strong>. We will discard the outdated infrastructure and rebuild the platform from the ground up using modern, lightning-fast architecture.</p>
-          </section>
-          <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
-            <div>Verified by Minescout Lead Architect</div>
-            <div>minescout.net/studio</div>
-          </footer>
-        </div>
-      </div>
-    </div>
-  `,
   '/studio/admin': `
     <div id="admin-root">
       <div id="admin-loading-screen">
-        <div class="ls-logo">Minescout AI</div><div class="ls-sub">Admin</div>
+        <div class="ls-logo">Minescout Studio</div><div class="ls-sub">Admin</div>
         <div class="ls-bar"><div class="ls-fill"></div></div>
       </div>
       <div id="login-screen">
@@ -1024,7 +937,7 @@ export const views = {
       </div>
       <div id="admin">
         <div class="topbar">
-          <div><span class="topbar-logo">Minescout AI</span><span class="topbar-badge">Admin</span></div>
+          <div><span class="topbar-logo">Minescout Studio</span><span class="topbar-badge">Admin</span></div>
           <div class="topbar-right"><span class="topbar-user" id="admin-user-label"></span><button class="signout-btn" onclick="doSignOut()">Sign out</button></div>
         </div>
         <div class="shell">
@@ -1149,12 +1062,56 @@ export const views = {
       <div class="toast" id="toast"></div>
     </div>
   `,
-  '/studio/demo/index.html': `
+  '/studio/creation': `
     <div class="main--page">
-      <div class="page-content">
-        <p class="page-label">Minescout AI</p>
-        <h1 class="page-title">Live Demo</h1>
-        <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.6;">Agent interface placeholder. This space is reserved for the live AI chat widget implementation.</p>
+      <div class="page-content" style="max-width: 720px;">
+        <p class="page-label">Minescout Studio</p>
+        <h1 class="page-title">AI Site Builder</h1>
+        <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          Describe your ideal website and I'll ask detailed questions to build a complete project spec.
+          The transcript of our conversation gets sent to Thomas so he can build your site with a premium model.
+          No live preview — just a thorough consultation.
+        </p>
+
+        <div id="creation-templates" style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+          <button class="btn-ghost template-pill" data-template="portfolio" onclick="window.selectTemplate('portfolio')">Portfolio</button>
+          <button class="btn-ghost template-pill" data-template="business" onclick="window.selectTemplate('business')">Local Business</button>
+          <button class="btn-ghost template-pill" data-template="photography" onclick="window.selectTemplate('photography')">Photography</button>
+          <button class="btn-ghost template-pill" data-template="landing" onclick="window.selectTemplate('landing')">Landing Page</button>
+          <button class="btn-ghost template-pill" data-template="custom" onclick="window.selectTemplate('custom')">Custom</button>
+        </div>
+
+        <div id="creation-chat" class="chat-window" style="height: 300px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); display: flex; flex-direction: column; margin-bottom: 1rem;">
+          <div id="creation-messages" style="flex: 1; overflow-y: auto; padding: 1rem; font-size: 0.85rem; color: var(--muted);">
+            <p style="color: var(--muted); text-align: center; padding: 2rem 1rem; line-height: 1.6;">
+              Pick a template type above or describe your ideal site below.<br>
+              Example: <em>"I'm a wedding photographer needing a clean gallery site with a contact form."</em>
+            </p>
+          </div>
+        </div>
+
+        <div class="chat-input-row" style="display: flex; gap: 0.5rem;">
+          <input type="text" id="creation-input" placeholder="Describe your site..." autocomplete="off" style="flex: 1; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; outline: none;" />
+          <button class="btn-primary" id="creation-send" onclick="window.sendCreationMessage()" style="padding: 0.75rem 1.25rem;">Send</button>
+        </div>
+
+        <!-- Preview section removed — no AI code gen. Chat builds a spec, sent to Thomas. -->
+
+        <div id="creation-claim-trigger" style="display: none; margin-top: 1.5rem;">
+          <button class="btn-primary" id="creation-claim-btn" onclick="window.showClaimForm()" style="width: 100%; padding: 0.9rem; font-size: 1rem;">Send Spec To Thomas &rarr;</button>
+        </div>
+
+        <div id="creation-claim-form" style="display: none; margin-top: 2rem; border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; background: var(--bg);">
+          <h2 style="font-family: var(--serif); font-size: 1.2rem; margin-bottom: 0.5rem;">Send your spec to Thomas</h2>
+          <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.25rem;">Our full conversation transcript will be included so Thomas can build your site with a premium AI model.</p>
+          <div class="form-group"><label>Your Name</label><input type="text" id="claim-name" placeholder="Your full name" /></div>
+          <div class="form-group"><label>Your Email</label><input type="email" id="claim-email" placeholder="your@email.com" /></div>
+          <div id="claim-extra" style="display: none;">
+            <div class="form-group"><label>Notes (optional)</label><textarea id="claim-notes" placeholder="Any additional details..." style="min-height: 80px;"></textarea></div>
+          </div>
+          <button class="btn-primary" id="claim-submit" onclick="window.submitClaim()" style="width: 100%;">Send Spec</button>
+          <div id="claim-success" style="display: none; margin-top: 1rem; padding: 1rem; background: #f0faf4; border: 1px solid #c3e8d0; border-radius: 6px; color: #3b8a62; text-align: center;">✓ Spec sent! Thomas will reach out.</div>
+        </div>
       </div>
     </div>
   `,
@@ -1256,7 +1213,7 @@ export const views = {
         
         <div class="chat-window" id="chat-window">
           <div id="chat-empty" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#aaa; font-size:0.8rem; text-align:center;">
-            <p>I am connected directly to Thomas's live resume and Minescout AI infrastructure. What would you like to know?</p>
+            <p>I am connected directly to Thomas's live resume and Minescout Studio infrastructure. What would you like to know?</p>
           </div>
         </div>
 
@@ -1276,7 +1233,7 @@ export const views = {
         <div class="anchor-bar" style="opacity:0;animation:fadeUp 0.5s ease 0.15s forwards;">
           <div class="anchor-bar-icon">💡</div>
           <div class="anchor-bar-text">
-            This isn't the cheapest option—but it's one of the best values. MineScout competes on <strong>speed, quality, and personal service</strong>, delivering agency-quality results without agency complexity.
+            This isn't the cheapest option—but it's one of the best values. Minescout competes on <strong>speed, quality, and personal service</strong>, delivering agency-quality results without agency complexity.
           </div>
         </div>
 
@@ -1495,7 +1452,7 @@ export const views = {
         <h1 class="page-title">Project Review</h1>
         
         <p style="color: var(--muted); margin-bottom: 2.5rem; max-width: 650px; line-height: 1.6; font-size: 1.05rem;">
-          Thank you for trusting Minescout AI with your digital infrastructure. Your honest feedback helps me improve the platform and shows future clients what to expect when working together.
+          Thank you for trusting Minescout Studio with your digital infrastructure. Your honest feedback helps me improve the platform and shows future clients what to expect when working together.
         </p>
 
         <div style="border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #ffffff; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
@@ -1559,141 +1516,79 @@ function registerPost(route, date, ...args) {
 }
 
 // 1. Minescout Genesis — Mar 9, 2026
-registerPost('/blog/minescout-genesis.html', "Mar 9, 2026", "Engineering",
-  "Minescout Genesis: The 17-Day Multi-Tenant Pivot",
-  "What drove the decision to pivot Minescout from static sites to a serverless SaaS engine?",
-  "Managing separate static codebases for every client was unscalable. I needed a central, multi-tenant architecture where a single codebase could dynamically serve different clients based on edge routing, so I architected the core of Minescout AI and launched it in under three weeks.",
-  `
-  <p style="margin-bottom: 1.25rem;">Minescout didn't start as a multi-tenant SaaS platform. It started as a handful of static sites that I was manually deploying for local projects. But as soon as I had to update a feature across multiple sites, I realized the static approach was completely unscalable.</p>
-  <p style="margin-bottom: 1.25rem;">I needed a central engine. I gave myself a goal: pivot the entire architecture into a multi-tenant platform in under three weeks. Here is how the 17-day sprint went down.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Problem with Static</h3>
-  <p style="margin-bottom: 1.25rem;">Managing separate codebases for every client is a nightmare. I wanted one codebase—a single "brain"—that could serve different content depending on which domain requested it.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Serverless Solution</h3>
-  <p style="margin-bottom: 1.25rem;">I turned to Cloudflare Workers and KV storage. By mapping incoming domains to specific client IDs in a KV namespace, I could use a single Edge Worker to dynamically route requests, pull the correct client data, and inject it into the application shell on the fly.</p>
-  <p style="margin-bottom: 1.25rem;">This meant I could deploy a bug fix once, and every client site would update instantly.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">17 Days Later</h3>
-  <p style="margin-bottom: 1.25rem;">After two weeks of intense coding between school and robotics, the multi-tenant core was live. I launched the first two nodes on the new architecture, and they ran flawlessly. The 17-day pivot taught me that sometimes, you have to tear down what you've built to build something that can actually scale.</p>
-  `
-);
 
 // 2. Launching This Site — Feb 21, 2026
-registerPost('/blog/launching-this-site.html', "Feb 21, 2026", "Building",
-  "Launching This Site",
-  "Why build a custom personal site from scratch instead of using a standard template or just a GitHub profile?",
-  "I wanted a platform that actually felt like me—clean, fast, and entirely custom. Building it from scratch with vanilla JS and edge hosting acts as a live demonstration of my $0 infrastructure philosophy and web architecture skills.",
-  `
-  <p style="margin-bottom: 1.25rem;">For a long time, my "portfolio" was just a collection of repositories on my GitHub profile. While that's fine for other developers, it doesn't do a great job of explaining <em>why</em> I build things to non-technical clients or college reps.</p>
-  <p style="margin-bottom: 1.25rem;">I wanted a personal corner of the internet. Something that felt like me—clean, fast, and entirely custom.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">No Templates, No Bloat</h3>
-  <p style="margin-bottom: 1.25rem;">I built this site using vanilla JavaScript, HTML, and custom CSS. There is no heavy framework, no WordPress backend, and no bulky templates. It's hosted on the edge, meaning it loads almost instantly no matter where you are in the world.</p>
-  <p style="margin-bottom: 1.25rem;">I added a <code>/now</code> page to keep track of my current focus, a <code>/work</code> section for my portfolio, and this <code>/blog</code> to document the things I'm learning along the way.</p>
-  <p style="margin-bottom: 1.25rem;">This site isn't just a resume; it's a live demonstration of how I think web architecture should be built.</p>
-  `
-);
 
-// Post 01 — Edge Routing — Aug 2, 2026
 registerPost('/blog/edge-routing.html', "Aug 2, 2026", "AI Architecture",
   "Edge Routing Architecture: Blacklists, Whitelists, and AI Worker Compatibility",
-  "What were the main architectural hurdles with domain security and worker compatibility when routing traffic for Minescout AI?",
-  "Building multi-tenant routing at the edge requires absolute control over domain validation. I used Cloudflare Workers and KV storage to implement strict domain whitelists and IP blacklists before any AI execution begins. Compatibility between main router workers and specialized sub-workers had to be handled cleanly to avoid latency penalties.",
+  "What are the main architectural considerations for domain security and worker compatibility when routing traffic through edge networks?",
+  "Building multi-tenant routing at the edge requires absolute control over domain validation. Cloudflare Workers and KV storage can implement strict domain whitelists and IP blacklists before any AI execution begins. Compatibility between main router workers and specialized sub-workers must be handled cleanly to avoid latency penalties.",
   `
-  <p style="margin-bottom: 1.25rem;">When I started building a multi-tenant platform, the first thing I had to figure out wasn't how fast the AI could generate text. It was making sure the edge router knew exactly where each request was coming from, if it was allowed, and how to send it to the right place without slowing things down.</p>
-  <p style="margin-bottom: 1.25rem;">For Minescout AI, I picked Cloudflare Workers and KV storage since they run code right at edge locations all over the world. But to get multi-tenant routing working smoothly, I had to solve two main problems: making sure requests were authorized, and making sure different workers could talk to each other without issues.</p>
+  <p style="margin-bottom: 1.25rem;">When building a multi-tenant platform on edge infrastructure, the first priority is ensuring the edge router validates every incoming request before any AI processing begins. This means confirming where each request comes from, whether it is authorized, and routing it to the correct worker without adding latency.</p>
+  <p style="margin-bottom: 1.25rem;">Cloudflare Workers and KV storage run code at edge locations worldwide, making them ideal for multi-tenant routing. Two main problems must be solved: authorizing requests, and ensuring smooth communication between different workers in the pipeline.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Security at the Edge: Blacklists and Whitelists</h3>
-  <p style="margin-bottom: 1.25rem;">Before an AI worker ever parses a user prompt, the edge worker inspects the request origin. To protect client endpoints from unauthorized domain embeds or malicious traffic, I set up a two-tier lookup in Cloudflare KV:</p>
+  <p style="margin-bottom: 1.25rem;">Before an AI worker parses a user prompt, the edge worker inspects the request origin. To protect client endpoints from unauthorized domain embeds or malicious traffic, a two-tier lookup in Cloudflare KV is effective:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Whitelisting:</strong> Ensuring incoming requests originate only from verified client domains.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Blacklisting:</strong> Instantly dropping bad actors or known spam IPs at the edge layer before triggering downstream KV reads or AI inferences.</li>
   </ul>
-  <p style="margin-bottom: 1.25rem;">KV reads are super fast and work everywhere, so this check only takes a few milliseconds. If someone tries to load a chatbot script from a site that isn't allowed, the edge router blocks it right away.</p>
+  <p style="margin-bottom: 1.25rem;">KV reads complete in a few milliseconds. Any request from an unauthorized domain is blocked at the edge before consuming downstream resources.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. AI Worker Compatibility and Pipeline Orchestration</h3>
-  <p style="margin-bottom: 1.25rem;">Another technical challenge was orchestrating specialized sub-workers. A lightweight router worker handles incoming HTTP traffic and domain validation, while a secondary AI worker executes model calls and retrieves client-specific system prompts.</p>
-  <p style="margin-bottom: 1.25rem;">Ensuring smooth communication between these workers required structuring strict JSON payloads and using Cloudflare's Service Bindings. This avoids unnecessary HTTP roundtrips between internal workers, keeping the entire lifecycle - from request ingress to response stream - well under sub-second latency targets.</p>
-  <p style="margin-bottom: 1.25rem;">By putting security and compatibility checks right into the routing layer, I made sure client data stays safe and separated. Plus, everything runs on a lightweight serverless setup.</p>
+  <p style="margin-bottom: 1.25rem;">A clean pipeline separates concerns: a lightweight router worker handles incoming HTTP traffic and domain validation, while a secondary AI worker executes model calls and retrieves client-specific system prompts.</p>
+  <p style="margin-bottom: 1.25rem;">Smooth communication between these workers requires structured JSON payloads and Cloudflare's Service Bindings, which avoid unnecessary HTTP roundtrips between internal workers. This keeps the entire lifecycle - from request ingress to response stream - well under sub-second latency targets.</p>
+  <p style="margin-bottom: 1.25rem;">Putting security and compatibility checks directly into the routing layer keeps client data safe and separated while maintaining a lightweight serverless footprint.</p>
   `
 );
 
-// Post 02 — State Management — Aug 9, 2026
 registerPost('/blog/state-management.html', "Aug 9, 2026", "Building",
   "State Management: Keeping Complex Web Apps Fast Without React",
   "How do you handle complex UI state without a heavy framework like React?",
-  "I use native JavaScript features like Proxies and custom event listeners to create reactive data stores. This keeps the bundle size at zero while providing the same reactive UI benefits.",
+  "Native JavaScript features like Proxies and custom event listeners can create reactive data stores. This keeps the bundle size at zero while providing the same reactive UI benefits as a framework.",
   `
-  <p style="margin-bottom: 1.25rem;">When building interactive applications, managing data that changes over time (state) is usually the hardest part. Many developers immediately reach for React or Vue to solve this problem, but bringing in a huge framework just to manage a few UI toggles and form inputs is often overkill.</p>
+  <p style="margin-bottom: 1.25rem;">When building interactive applications, managing data that changes over time (state) is often the hardest part. Many developers reach for React or Vue to solve this, but importing a framework solely for managing UI toggles and form inputs is often unnecessary overhead.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Native Reactivity with JavaScript Proxies</h3>
-  <p style="margin-bottom: 1.25rem;">Instead of a Virtual DOM, I rely on JavaScript <code>Proxy</code> objects. A Proxy lets you intercept operations on an object—like when a property is read or updated.</p>
-  <p style="margin-bottom: 1.25rem;">By wrapping my application's state in a Proxy, I can automatically trigger UI updates whenever a specific variable changes. If a user adds an item to their cart, the Proxy detects the change to the state object and fires an event to update the cart counter in the navigation bar.</p>
+  <p style="margin-bottom: 1.25rem;">Instead of a Virtual DOM, JavaScript <code>Proxy</code> objects can intercept operations on an object — such as reading or updating a property. By wrapping application state in a Proxy, UI updates can be triggered automatically whenever a specific variable changes. If a user adds an item to their cart, the Proxy detects the change to the state object and fires an event to update the cart counter in the navigation bar.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Event-Driven Architecture</h3>
-  <p style="margin-bottom: 1.25rem;">To keep different parts of the UI decoupled, I use custom event listeners. When the state updates, it dispatches a <code>CustomEvent</code> to the browser's <code>window</code> object. Any component that cares about that data listens for that specific event and updates its own HTML.</p>
-  <p style="margin-bottom: 1.25rem;">This approach gives me all the reactivity of a modern framework with absolutely zero external dependencies to download, parse, or maintain.</p>
+  <p style="margin-bottom: 1.25rem;">To keep different parts of the UI decoupled, custom event listeners work well. When the state updates, it dispatches a <code>CustomEvent</code> to the browser's <code>window</code> object. Any component that cares about that data listens for that specific event and updates its own HTML.</p>
+  <p style="margin-bottom: 1.25rem;">This approach provides all the reactivity of a modern framework with zero external dependencies to download, parse, or maintain.</p>
   `
 );
 
-// Post 03 — Chop Lab SPA — Aug 16, 2026
-registerPost('/blog/chop-lab-spa.html', "Aug 16, 2026", "Building",
-  "Building for the Client: Overhauling The Chop Lab into a Custom SPA",
-  "What was the primary requirement from the client when rebuilding The Chop Lab website?",
-  "The client wanted an easier, streamlined way to update product listings, edit site text, and add new product lines without needing to write code or deal with a bloated dashboard. I built a custom Single Page Application (SPA) architecture to solve this.",
-  `
-  <p style="margin-bottom: 1.25rem;">When small business owners talk about their websites, their biggest complaint is almost never "I want more plugins." It is almost always: <strong>"I just want a simple way to update my text and photos without breaking the site."</strong></p>
-  <p style="margin-bottom: 1.25rem;">That exact feedback drove the complete overhaul of The Chop Lab (v2) - a high-performance digital storefront for an artisanal ceramics firm.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Identifying the Friction</h3>
-  <p style="margin-bottom: 1.25rem;">The original site was static and required manual HTML edits whenever new ceramics runs were fired or product specs changed. For a fast-moving studio, waiting for manual code edits every time a product released created unnecessary friction.</p>
-  <p style="margin-bottom: 1.25rem;">The objective for v2 was clear:</p>
-  <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;">Rebuild the frontend into a custom Single Page Application (SPA) for fast page transitions.</li>
-    <li style="margin-bottom: 0.5rem;">Structure the backend content model so product entries, images, and descriptions could be updated effortlessly by the client.</li>
-    <li style="margin-bottom: 0.5rem;">Ensure the UI reflected the high-craft nature of the artisanal products.</li>
-  </ol>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Architectural Solution</h3>
-  <p style="margin-bottom: 1.25rem;">Instead of installing a heavy e-commerce framework with dozens of third-party plugins, I engineered a lightweight SPA using vanilla JavaScript and structured JSON data sources.</p>
-  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Data Decoupling:</strong> Products and studio descriptions are stored in structured configuration files. Adding a new item or updating inventory requires only editing a simple form interface without touching UI component code.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Instant Page Transitions:</strong> Navigating between gallery views, product details, and the studio history happens instantly in memory without full-page reloads.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Responsive Layout:</strong> The interface was crafted to load fast on mobile devices, ensuring art buyers can browse collections smoothly anywhere.</li>
-  </ul>
-  <p style="margin-bottom: 1.25rem;">When you build software for real people, you have to make it easy for both the visitors and the person running the site. By cutting out all the extra stuff, The Chop Lab ended up with a site that looks custom but is still simple to update.</p>
-  `
-);
 
-// Post 04 — Zero Dollar Stack — Aug 23, 2026
-registerPost('/blog/zero-dollar-stack.html', "Aug 23, 2026", "Philosophy",
-  "The $0.00 Stack: Bootstrapping SaaS on Serverless Free Tiers & PAYU",
-  "How do you approach infrastructure costs as a high school developer without a full-time corporate budget?",
-  "As a student in high school without a full-time job, keeping fixed monthly costs at $0.00 is essential. I leverage serverless free tiers (Cloudflare Workers, Firebase) and Pay-As-You-Use (PAYU) models, allowing projects to launch with zero financial risk and scale affordably as demand grows.",
+registerPost('/blog/zero-dollar-stack.html', "Aug 23, 2026", "Infrastructure",
+  "The $0.00 Stack: Launching SaaS on Serverless Free Tiers & PAYU",
+  "How can developers launch serverless applications with zero fixed monthly costs?",
+  "Serverless free tiers (Cloudflare Workers, Firebase) and Pay-As-You-Use (PAYU) models allow projects to launch with zero financial risk and scale affordably as demand grows. Keeping fixed monthly costs at $0.00 is achievable using modern cloud providers.",
   `
-  <p style="margin-bottom: 1.25rem;">One of the biggest misconceptions in software development is that you need a monthly subscription budget for servers, databases, and deployment pipelines just to launch a project.</p>
-  <p style="margin-bottom: 1.25rem;">As a 10th-grade developer balancing high school, client deployments, and personal projects, spending $50 to $100 per month on cloud server hosting for unproven ideas is simply inefficient. Instead, I built Minescout AI around a strict financial constraint: The $0.00 Fixed-Cost Infrastructure Mandate.</p>
+  <p style="margin-bottom: 1.25rem;">One of the biggest misconceptions in software development is that monthly subscription budgets for servers, databases, and deployment pipelines are required just to launch a project.</p>
+  <p style="margin-bottom: 1.25rem;">Modern cloud providers offer generous free usage tiers for developers building micro-services and serverless architectures. By selecting tools that operate on serverless execution models, infrastructure costs only accrue when code actually runs.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">How the $0.00 Stack Works</h3>
-  <p style="margin-bottom: 1.25rem;">Modern cloud providers offer generous free usage tiers aimed at developers building micro-services and serverless architectures. By selecting tools that operate on serverless execution models, you only pay when code actually runs.</p>
-  <p style="margin-bottom: 1.25rem;">My primary stack includes:</p>
+  <p style="margin-bottom: 1.25rem;">A zero-cost infrastructure stack can include:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Edge Routing & Compute:</strong> Cloudflare Workers (Free tier handles up to 100,000 requests per day at 0 cost).</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Edge Routing & Compute:</strong> Cloudflare Workers (Free tier handles up to 100,000 requests per day at zero cost).</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Global Key-Value Storage:</strong> Cloudflare KV (Free tier offers 100,000 read operations daily).</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Database & Authentication:</strong> Google Firebase / Firestore (Free tier covers initial client data storage and auth instances).</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Database & Authentication:</strong> Google Firebase / Firestore (Free tier covers initial data storage and auth instances).</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Version Control & CI/CD:</strong> GitHub Actions and GitHub Pages for repository tracking and automated deployments.</li>
   </ul>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Why Pay-As-You-Use (PAYU) is the Right Scalability Model</h3>
-  <p style="margin-bottom: 1.25rem;">When a platform grows beyond free tier limits, the transition shouldn't require jumping straight to expensive dedicated servers. Under a PAYU model, billing scales proportionally with actual usage.</p>
-  <p style="margin-bottom: 1.25rem;">This architecture has two massive advantages:</p>
+  <p style="margin-bottom: 1.25rem;">When a platform grows beyond free tier limits, the transition away from free tiers should be proportional. Under a PAYU model, billing scales proportionally with actual usage rather than requiring jumps to expensive dedicated tiers.</p>
+  <p style="margin-bottom: 1.25rem;">This architecture has two advantages:</p>
   <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Zero Financial Risk:</strong> You can experiment, build prototypes, and launch production apps without taking on monthly recurring debt.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Built-In Scaling Efficiency:</strong> Because serverless functions scale down to zero when idle, you never pay for unused server capacity.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Zero Financial Risk:</strong> Experimentation, prototyping, and production launches can happen without taking on monthly recurring costs.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Built-In Scaling Efficiency:</strong> Serverless functions scale down to zero when idle, eliminating payment for unused capacity.</li>
   </ol>
-  <p style="margin-bottom: 1.25rem;">Building lean isn't just about saving money. It actually makes you write cleaner and more efficient code right from the start.</p>
   `
 );
 
-// Post 05 — Sub-Second Latency — Aug 30, 2026
 registerPost('/blog/sub-second-latency.html', "Aug 30, 2026", "Building",
   "Sub-Second Latency: Why Custom SPAs Beat Heavy CMS Platforms",
   "Why do clean-slate Single Page Applications outperform traditional CMS platforms like WordPress?",
   "Traditional platforms bundle excessive plugins, heavy database queries, and redundant CSS/JS scripts that slow down render times. Clean-slate SPAs load only essential markup and assets, fetching dynamic content asynchronously to deliver sub-second global edge performance.",
   `
-  <p style="margin-bottom: 1.25rem;">If you open the developer tools console on a typical small-business WordPress site, you will often find dozens of third-party CSS files, JavaScript bundles, tracking scripts, and unoptimized image payloads loading simultaneously. The result is a sluggish initial page render that frustrates users on mobile connections.</p>
-  <p style="margin-bottom: 1.25rem;">When building web applications for Minescout Studio, I take a Clean Slate Rebuild approach. Here is why lightweight Single Page Applications (SPAs) consistently outperform heavy legacy platforms.</p>
+  <p style="margin-bottom: 1.25rem;">A typical small-business WordPress site often loads dozens of third-party CSS files, JavaScript bundles, tracking scripts, and unoptimized image payloads simultaneously. The result is a sluggish initial page render that frustrates users on mobile connections.</p>
+  <p style="margin-bottom: 1.25rem;">Lightweight Single Page Applications (SPAs) consistently outperform heavy legacy platforms for several concrete reasons.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Eliminating Database Bottlenecks on Initial Render</h3>
-  <p style="margin-bottom: 1.25rem;">When a browser requests a page from a legacy CMS, the server must query a database, assemble HTML templates via PHP, process active plugins, and return the combined output. This process adds hundreds of milliseconds of Server Response Time.</p>
+  <p style="margin-bottom: 1.25rem;">When a browser requests a page from a legacy CMS, the server must query a database, assemble HTML templates via PHP, process active plugins, and return the combined output. This adds hundreds of milliseconds of Server Response Time.</p>
   <p style="margin-bottom: 1.25rem;">In a custom SPA architecture:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">Static markup, CSS, and core logic are served directly from global Edge CDNs.</li>
@@ -1701,64 +1596,35 @@ registerPost('/blog/sub-second-latency.html', "Aug 30, 2026", "Building",
     <li style="margin-bottom: 0.5rem;">Data fetches happen asynchronously via lightweight API calls only when needed.</li>
   </ul>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Zero Unnecessary JavaScript Dependencies</h3>
-  <p style="margin-bottom: 1.25rem;">Many visual site builders inject megabytes of JavaScript libraries simply to render basic layout grids or drop-down menus. By writing modular vanilla JavaScript (ES6+) and using targeted CSS styles, bundle sizes remain minimal.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Real-World Performance Metrics</h3>
-  <p style="margin-bottom: 1.25rem;">On client deployments like The Chop Lab and Handmade by Jayme, eliminating CMS bloat achieved:</p>
+  <p style="margin-bottom: 1.25rem;">Many visual site builders inject megabytes of JavaScript libraries to render basic layout grids or drop-down menus. Modular vanilla JavaScript (ES6+) with targeted CSS keeps bundle sizes minimal.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Measurable Performance Gains</h3>
+  <p style="margin-bottom: 1.25rem;">Eliminating CMS bloat achieves measurable improvements:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">Sub-second first contentful paint (FCP).</li>
     <li style="margin-bottom: 0.5rem;">Perfect 100% scores on Google Lighthouse performance audits.</li>
     <li style="margin-bottom: 0.5rem;">Smooth transitions between views without white-screen flicker between pages.</li>
   </ul>
-  <p style="margin-bottom: 1.25rem;">Speed really matters. If your website loads in under a second, people stick around longer and are more likely to do what you want them to do.</p>
+  <p style="margin-bottom: 1.25rem;">Sub-second load times directly improve user retention and conversion rates.</p>
   `
 );
 
-// Post 06 — Eagle Scout Project — Sep 6, 2026
-registerPost('/blog/eagle-scout-project.html', "Sep 6, 2026", "Leadership",
-  "Project Leadership at 14: Directing an Eagle Scout Project",
-  "What was involved in planning and executing your Eagle Scout service project?",
-  "Achieving the rank of Eagle Scout in Troop 571 required planning, fundraising, and directing a community literacy project. I led a team of youth and adult volunteers over 60+ total hours to build and install a custom Little Free Library at Illahee Park in Sammamish, WA.",
-  `
-  <p style="margin-bottom: 1.25rem;">Achieving the rank of Eagle Scout in Scouting America Troop 571 was one of the most challenging leadership experiences of my life. The centerpiece of the process is the Eagle Scout Leadership Project - a requirement where you must plan, develop, and give leadership to others in a service project benefiting your local community.</p>
-  <p style="margin-bottom: 1.25rem;">My project focused on improving local literacy access by constructing and installing a durable, custom-built Little Free Library at Illahee Park in Sammamish, WA.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 1: Planning and Logistics Approval</h3>
-  <p style="margin-bottom: 1.25rem;">Long before any wood was cut or post holes were dug, the project required thorough documentation and administrative approvals:</p>
-  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;">Drafting structural blueprints for weather-resistant outdoor construction in the Pacific Northwest.</li>
-    <li style="margin-bottom: 0.5rem;">Presenting safety plans, material lists, and budget estimates to city park officials and Scouting leadership.</li>
-    <li style="margin-bottom: 0.5rem;">Coordinating material procurement and tool safety protocols.</li>
-  </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 2: Delegating and Directing Work</h3>
-  <p style="margin-bottom: 1.25rem;">As the project leader, the Eagle guidelines state clearly that you are not there to do all the physical work yourself - you are there to lead.</p>
-  <p style="margin-bottom: 1.25rem;">Managing a team of over 15 volunteers required clear delegation:</p>
-  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Safety First:</strong> Ensuring all volunteers understood proper tool usage, PPE, and job site safety.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Task Division:</strong> Assigning specific teams to woodworking, sanding, weather-proofing coats, and ground excavation for post mounting.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Time Management:</strong> Keeping work shifts organized so progress stayed on schedule across multiple work sessions.</li>
-  </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 3: Lasting Community Impact</h3>
-  <p style="margin-bottom: 1.25rem;">Over 60+ total volunteer hours, the team successfully constructed and anchored the library post in Illahee Park, filling it with donated books for local neighborhood families.</p>
-  <p style="margin-bottom: 1.25rem;">Whether you're leading a group building something or working on a software project, real leadership is about clear communication, being prepared, and making sure everyone stays focused on the goal.</p>
-  `
-);
 
-// Post 07 — Unstructured Client Data — Sep 13, 2026
 registerPost('/blog/unstructured-client-data.html', "Sep 13, 2026", "AI Architecture",
-  "AI Architecture: Training Local AI Assistants on Unstructured Client Data",
-  "How do you turn informal business information into reliable context for customer-facing AI agents?",
-  "Small businesses rarely have neat documentation. I built intake pipelines that take raw client notes, hours, and policies, convert them into structured JSON schemas, and feed them to LLMs with strict system instructions to guarantee accurate answers.",
+  "AI Architecture: Training AI Assistants on Unstructured Business Data",
+  "How can unstructured business information be turned into reliable context for customer-facing AI agents?",
+  "Small businesses rarely have neat documentation. Effective intake pipelines take raw client notes, hours, and policies, convert them into structured JSON schemas, and feed them to LLMs with strict system instructions to guarantee accurate answers.",
   `
-  <p style="margin-bottom: 1.25rem;">When a local business owner signs up for an automated AI employee, they rarely hand over clean API documentation or structured markdown files. More often, their business knowledge lives in informal email threads, napkin notes, or inconsistent website footers.</p>
-  <p style="margin-bottom: 1.25rem;">To make an AI assistant reliable enough to answer real customer questions at 2 AM, you have to bridge the gap between unstructured human knowledge and structured LLM context.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Ingestion via the Intake System</h3>
-  <p style="margin-bottom: 1.25rem;">At Minescout AI, the setup process starts with a structured intake workflow. Clients fill out specific operational modules covering:</p>
+  <p style="margin-bottom: 1.25rem;">Business owners rarely hand over clean API documentation or structured markdown files. Their business knowledge lives in informal email threads, napkin notes, or inconsistent website footers.</p>
+  <p style="margin-bottom: 1.25rem;">To make an AI assistant reliable enough to answer real customer questions around the clock, the gap between unstructured human knowledge and structured LLM context must be bridged.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Structured Intake Workflow</h3>
+  <p style="margin-bottom: 1.25rem;">A structured intake process collects specific operational modules:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">Primary services and exact pricing minimums.</li>
     <li style="margin-bottom: 0.5rem;">Operating hours, holiday schedules, and physical location logistics.</li>
-    <li style="margin-bottom: 0.5rem;">The "Top 5 Time-Wasting Questions" their team answers daily over phone and email.</li>
+    <li style="margin-bottom: 0.5rem;">The most common questions the team answers daily over phone and email.</li>
   </ul>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Cleaning and Structuring Data into JSON Schemas</h3>
-  <p style="margin-bottom: 1.25rem;">Raw text inputs are transformed into deterministic JSON knowledge bases. By structuring data into clean key-value pairs (e.g., services, pricing_tiers, return_policy), the language model can reference facts deterministically during inference.</p>
+  <p style="margin-bottom: 1.25rem;">Raw text inputs are transformed into deterministic JSON knowledge bases. By structuring data into clean key-value pairs (services, pricing_tiers, return_policy), the language model can reference facts deterministically during inference.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. System Prompt Formatting</h3>
   <p style="margin-bottom: 1.25rem;">Rather than dumping raw text into the model's system prompt, context is formatted using clear boundary delimiters and explicit guardrails:</p>
   <pre style="background: #1e1e1e; color: #d4d4d4; padding: 1.25rem; border-radius: 6px; overflow-x: auto; margin: 1.5rem 0; font-size: 0.9rem; font-family: monospace;"><code>{
@@ -1768,95 +1634,66 @@ registerPost('/blog/unstructured-client-data.html', "Sep 13, 2026", "AI Architec
     "custom_orders": "Requires 50% deposit. Lead time 3-4 weeks."
   }
 }</code></pre>
-  <p style="margin-bottom: 1.25rem;">The system prompt explicitly instructs the AI agent:</p>
+  <p style="margin-bottom: 1.25rem;">The system prompt instructs the AI agent:</p>
   <blockquote style="border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--muted); font-style: italic; margin: 1.5rem 0; background: var(--light); padding: 1.25rem; border-radius: 4px;">
     "You are an AI assistant for [Business Name]. Only answer questions using the factual data provided in the Knowledge Context block above. If a customer asks a question outside of this data, politely offer to collect their contact details for a team callback."
   </blockquote>
-  <p style="margin-bottom: 1.25rem;">By combining structured data inputs with strict systemic boundary rules, business owners get a smart representative that answers accurately without making things up.</p>
+  <p style="margin-bottom: 1.25rem;">Combining structured data inputs with strict boundary rules produces an AI assistant that answers accurately without hallucinating information outside its knowledge base.</p>
   `
 );
 
-// Post 08 — Database Schema Design — Sep 20, 2026
 registerPost('/blog/database-schema-design.html', "Sep 20, 2026", "Building",
   "Schema Design: Structuring Data for Multi-Tenant SaaS",
   "What is the most important factor when designing a database for a multi-tenant platform?",
-  "Data isolation and read efficiency. Structuring NoSQL documents so that edge workers can fetch everything they need for a client in a single read operation is crucial for performance and security.",
+  "Data isolation and read efficiency. Structuring NoSQL documents so that edge workers can fetch everything they need for a tenant in a single read operation is crucial for performance and security.",
   `
-  <p style="margin-bottom: 1.25rem;">Building a multi-tenant platform means you are storing data for many different clients in the same database. If you structure that data poorly, you risk leaking one client's data to another, or forcing your edge servers to make dozens of slow queries just to load a single page.</p>
+  <p style="margin-bottom: 1.25rem;">A multi-tenant platform stores data for many different clients in the same database. Poor data structuring risks leaking one client's data to another, or forcing edge servers to make dozens of slow queries just to load a single page.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Power of NoSQL Document Modeling</h3>
-  <p style="margin-bottom: 1.25rem;">When working with Firebase Firestore or Cloudflare KV, data isn't stored in relational tables. It's stored in JSON-like documents. The key to high performance in NoSQL is organizing your data to match how it will be displayed on the screen.</p>
-  <p style="margin-bottom: 1.25rem;">Instead of querying a "Users" table, a "Products" table, and an "Orders" table separately, I structure data hierarchically by client ID. Every client has a master document containing their specific configuration, branding, and nested sub-collections for their data.</p>
+  <p style="margin-bottom: 1.25rem;">In Firebase Firestore or Cloudflare KV, data is stored in JSON-like documents rather than relational tables. The key to high performance in NoSQL is organizing data to match how it will be displayed on screen.</p>
+  <p style="margin-bottom: 1.25rem;">Instead of querying separate "Users", "Products", and "Orders" collections, data can be structured hierarchically by tenant ID. Each client has a master document containing their specific configuration, branding, and nested sub-collections for their operational data.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Security and Isolation</h3>
-  <p style="margin-bottom: 1.25rem;">Security rules are much easier to enforce when data is properly scoped. By placing all of Client A's data under <code>/tenants/{client_a_id}/...</code>, I can write a single Firestore security rule that ensures users can only read or write data if their authentication token matches the top-level tenant ID.</p>
-  <p style="margin-bottom: 1.25rem;">By keeping schemas flat and isolated by tenant, database reads remain lightning-fast and completely secure, even as the platform scales.</p>
+  <p style="margin-bottom: 1.25rem;">Security rules are easier to enforce when data is properly scoped. Placing all of Tenant A's data under <code>/tenants/{tenant_a_id}/...</code> enables a single Firestore security rule that ensures users can only read or write data where their authentication token matches the top-level tenant ID.</p>
+  <p style="margin-bottom: 1.25rem;">Flat, tenant-isolated schemas keep database reads fast and secure as the platform scales.</p>
   `
 );
 
-// Post 09 — Vanilla JS & Edge — Sep 27, 2026
 registerPost('/blog/vanilla-js-edge.html', "Sep 27, 2026", "Building",
-  "Vanilla JS & Edge Workers: Why I Avoid Heavy Framework Overkill",
-  "Why do you prefer using Vanilla JavaScript and direct Edge API calls over complex heavy frameworks for client sites?",
+  "Vanilla JS & Edge Workers: Avoiding Heavy Framework Overkill",
+  "When does using Vanilla JavaScript and Edge API calls make more sense than complex frameworks?",
   "For portfolio sites and local business web applications, importing heavy framework bundles adds unnecessary dependencies and build complexity. Vanilla JavaScript (ES6+), custom modern CSS, and edge execution provide all the power needed with zero framework overhead.",
   `
-  <p style="margin-bottom: 1.25rem;">In modern frontend development, there is a strong tendency to pull in massive framework ecosystems for simple web applications. Developers routinely install hundreds of megabytes of node_modules just to build a four-page website with a contact form.</p>
-  <p style="margin-bottom: 1.25rem;">While frameworks like React and Next.js are great for complex enterprise dashboards, using them for standard business sites often introduces unnecessary build complexity and performance penalties.</p>
-  <p style="margin-bottom: 1.25rem;">Here is why I build many of my projects using Vanilla JavaScript (ES6+), clean HTML5, modern CSS, and lightweight Edge Workers.</p>
+  <p style="margin-bottom: 1.25rem;">Modern frontend development has a strong tendency toward massive framework ecosystems. Developers routinely install hundreds of megabytes of node_modules just to build a four-page website with a contact form.</p>
+  <p style="margin-bottom: 1.25rem;">While frameworks like React and Next.js are excellent for complex enterprise dashboards, using them for standard business sites introduces unnecessary build complexity and performance penalties.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Zero Build Chain Friction</h3>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;">You don't need complex bundlers or transpilation steps just to preview a style change.</li>
-    <li style="margin-bottom: 0.5rem;">Your code deploys instantly to edge CDNs without waiting for heavy build pipelines.</li>
+    <li style="margin-bottom: 0.5rem;">Complex bundlers or transpilation steps are not required to preview a style change.</li>
+    <li style="margin-bottom: 0.5rem;">Code deploys instantly to edge CDNs without waiting for heavy build pipelines.</li>
     <li style="margin-bottom: 0.5rem;">Security vulnerabilities from outdated npm packages drop to near zero.</li>
   </ul>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Native Browser Features Are Incredibly Powerful</h3>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">DOM Manipulation:</strong> querySelector and native ES6 template literals make building reactive UI components straightforward.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Asynchronous Fetching:</strong> The native fetch() API combined with async/await communicates effortlessly with serverless Cloudflare Workers.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">State Management:</strong> Simple state objects with native event listeners handle application state without needing heavy global stores.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Asynchronous Fetching:</strong> The native fetch() API combined with async/await communicates directly with serverless endpoints.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">State Management:</strong> Simple state objects with native event listeners handle application state without needing global stores.</li>
   </ul>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Long-Term Maintainability</h3>
-  <p style="margin-bottom: 1.25rem;">A site built with clean vanilla code written today will still render perfectly in web browsers ten years from now. There are no breaking framework upgrades or deprecated API methods to worry about.</p>
-  <p style="margin-bottom: 1.25rem;">Picking the right tool for the job usually means going with the simplest setup that does what you need and runs fast.</p>
+  <p style="margin-bottom: 1.25rem;">A site built with clean vanilla code will render perfectly in web browsers years from now with no breaking framework upgrades or deprecated API methods to worry about.</p>
+  <p style="margin-bottom: 1.25rem;">The simplest setup that meets requirements and performs well is often the right choice.</p>
   `
 );
 
-// Post 10 — Balancing High School — Oct 4, 2026
-registerPost('/blog/balancing-high-school.html', "Oct 4, 2026", "Growth",
-  "The 4.0 Standard: Balancing High School Rigor with Production Code",
-  "How do you balance maintaining a 4.0 GPA in high school with building real SaaS products and advanced web platforms?",
-  "Maintaining a 4.0 GPA at Eastlake High School while launching Minescout AI and managing client deployments requires strict time management, prioritizing high-impact tasks, and setting clear boundaries between schoolwork, coding sprints, and outdoor rest.",
-  `
-  <p style="margin-bottom: 1.25rem;">People often ask how I manage to maintain a 4.0 GPA as a sophomore at Eastlake High School while running Minescout AI, managing client deployments, and achieving my Eagle Scout rank.</p>
-  <p style="margin-bottom: 1.25rem;">The truth is, there is no secret shortcut. It comes down to structured time management, eliminating low-value distractions, and treating project time with the same discipline as academic coursework.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. High-Efficiency Time Blocking</h3>
-  <p style="margin-bottom: 1.25rem;">I break my days into dedicated focus blocks rather than attempting to multitask:</p>
-  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Academic Block (School Hours + Early Afternoon):</strong> All homework, study sessions, and engineering coursework are completed first.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Development Block (Late Afternoon):</strong> Dedicated hours spent wireframing new interfaces, writing custom UI components, or executing software deployment sprints.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Project & Coding Block (Evening):</strong> Building platform features, optimizing cloud routing, and handling client site updates.</li>
-  </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Using Engineering Thinking for Schoolwork</h3>
-  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Break Down Complex Topics:</strong> Just as complex applications are broken into modular functions, big research projects or exam preps are divided into daily micro-goals.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Iterative Review:</strong> Reviewing class material consistently prevents the need for stressful late-night cramming sessions before exams.</li>
-  </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Knowing When to Step Away</h3>
-  <p style="margin-bottom: 1.25rem;">Sustained output requires rest. Taking time to disconnect - whether running a 5K or spending a weekend hiking in the Pacific Northwest - clears your head and prevents burnout.</p>
-  <p style="margin-bottom: 1.25rem;">If you plan your schedule on purpose, you don't have to pick between getting good grades and building cool projects. You can actually do both.</p>
-  `
-);
 
-// Post 11 — AI Guardrails — Oct 11, 2026
 registerPost('/blog/ai-guardrails.html', "Oct 11, 2026", "AI Architecture",
-  "AI Guardrails 101: Preventing Hallucinations in Client Support Widgets",
-  "How do you guarantee an AI assistant on a client's site won't make up false discounts or hallucinate incorrect information?",
-  "Preventing AI hallucinations requires strict context boundaries, explicit prompt engineering rules, negative constraints, and fallback mechanisms that route unknown questions to human email intake rather than guessing.",
+  "AI Guardrails 101: Preventing Hallucinations in Customer-Facing AI",
+  "How can you ensure an AI assistant on a business site won't make up false discounts or hallucinate incorrect information?",
+  "Preventing AI hallucinations requires strict context boundaries, explicit prompt engineering rules, negative constraints, and fallback mechanisms that route unknown questions to human intake rather than guessing.",
   `
-  <p style="margin-bottom: 1.25rem;">The nightmare scenario for any business owner implementing an AI customer support chat is having the model hallucinate - such as promising a customer a 90% discount or inventing services the company doesn't offer.</p>
-  <p style="margin-bottom: 1.25rem;">When building customer-facing AI agents for Minescout AI, preventing hallucinations is the single highest priority. Here is how I structure prompt guardrails to ensure 100% factual accuracy.</p>
+  <p style="margin-bottom: 1.25rem;">The nightmare scenario for any business implementing an AI customer support chat is having the model hallucinate — promising a customer a 90% discount or inventing services the company does not offer.</p>
+  <p style="margin-bottom: 1.25rem;">When building customer-facing AI agents, preventing hallucinations is the single highest priority. Structured prompt guardrails ensure factual accuracy.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Strict Context Boundaries (The "Open Book Exam" Model)</h3>
-  <p style="margin-bottom: 1.25rem;">To prevent hallucination, I treat the AI agent as if it is taking an open-book exam:</p>
+  <p style="margin-bottom: 1.25rem;">The AI agent operates like an open-book exam:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;">The system prompt contains only the exact, verified business facts provided by the client.</li>
+    <li style="margin-bottom: 0.5rem;">The system prompt contains only the exact, verified business facts provided.</li>
     <li style="margin-bottom: 0.5rem;">The model is instructed never to assume facts not explicitly written in that context block.</li>
   </ul>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Explicit Negative Constraints</h3>
@@ -1864,69 +1701,43 @@ registerPost('/blog/ai-guardrails.html', "Oct 11, 2026", "AI Architecture",
     <strong>Forbidden Actions:</strong><br><br>
     &bull; DO NOT invent pricing, discounts, or promotional codes.<br>
     &bull; DO NOT answer questions regarding legal, medical, or financial matters.<br>
-    &bull; DO NOT discuss competitors or unrelated general trivia.
+    &bull; DO NOT discuss competitors or unrelated general topics.
   </blockquote>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Graceful Fallbacks</h3>
-  <p style="margin-bottom: 1.25rem;">If a visitor asks a question that falls outside the provided knowledge base, the worst thing an AI can do is guess.</p>
+  <p style="margin-bottom: 1.25rem;">If a visitor asks a question outside the provided knowledge base, the worst thing an AI can do is guess.</p>
   <blockquote style="border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--muted); font-style: italic; margin: 1.5rem 0; background: var(--light); padding: 1.25rem; border-radius: 4px;">
     "I want to make sure you get the exact right answer on that! That specific detail isn't in my immediate notes - would you like me to take your email so our owner can follow up with you directly?"
   </blockquote>
-  <p style="margin-bottom: 1.25rem;">This way, if the AI can't answer a question, it still helps the business by getting a lead and keeps the company's reputation safe.</p>
+  <p style="margin-bottom: 1.25rem;">A well-designed fallback converts an unanswerable question into a lead capture opportunity while protecting the business's reputation.</p>
   `
 );
 
-// Post 12 — CSS Architecture — Oct 18, 2026
 registerPost('/blog/css-architecture.html', "Oct 18, 2026", "Building",
   "CSS Architecture: Building Scalable Design Systems",
   "What is the biggest challenge when styling large web applications from scratch?",
-  "Avoiding CSS bloat and specificity wars. I rely heavily on CSS custom properties (variables) to maintain a single source of truth for colors and spacing, keeping the stylesheets lean and predictable.",
+  "Avoiding CSS bloat and specificity wars. CSS custom properties (variables) maintain a single source of truth for colors and spacing, keeping stylesheets lean and predictable.",
   `
-  <p style="margin-bottom: 1.25rem;">When you write all your CSS from scratch without a utility framework like Tailwind, it is incredibly easy for your stylesheet to spiral out of control. Without a strict architecture, you end up with thousands of lines of duplicated colors and unpredictable layout bugs.</p>
+  <p style="margin-bottom: 1.25rem;">When writing CSS from scratch without a utility framework like Tailwind, stylesheets can easily spiral out of control. Without strict architecture, duplicated colors and unpredictable layout bugs are common.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Power of CSS Variables</h3>
-  <p style="margin-bottom: 1.25rem;">The foundation of any scalable design system is CSS custom properties (variables). I define all my spacing scales, typography rules, and color palettes in the <code>:root</code> pseudo-class.</p>
-  <p style="margin-bottom: 1.25rem;">By using variables like <code>var(--primary-color)</code> or <code>var(--spacing-md)</code>, I guarantee that every button, card, and section perfectly matches the design system. If a client wants to rebrand from blue to green, I change exactly one line of code, and the entire application updates instantly.</p>
+  <p style="margin-bottom: 1.25rem;">The foundation of any scalable design system is CSS custom properties (variables). Defining spacing scales, typography rules, and color palettes in the <code>:root</code> pseudo-class provides a single source of truth.</p>
+  <p style="margin-bottom: 1.25rem;">Using variables like <code>var(--primary-color)</code> or <code>var(--spacing-md)</code> ensures every button, card, and section matches the design system. Rebranding from blue to green requires changing exactly one line of code.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Component-Scoped Styling</h3>
-  <p style="margin-bottom: 1.25rem;">To avoid specificity wars, I keep my CSS entirely modular. Global styles are strictly limited to typography and resets. Everything else is scoped to specific component classes, like <code>.blog-card</code> or <code>.hero-layout</code>.</p>
-  <p style="margin-bottom: 1.25rem;">By treating CSS as an engineered system rather than a visual afterthought, the codebase stays clean, maintainable, and incredibly fast to parse.</p>
+  <p style="margin-bottom: 1.25rem;">To avoid specificity wars, CSS should be modular. Global styles are strictly limited to typography and resets. Everything else is scoped to specific component classes like <code>.blog-card</code> or <code>.hero-layout</code>.</p>
+  <p style="margin-bottom: 1.25rem;">Treating CSS as an engineered system rather than a visual afterthought keeps the codebase clean, maintainable, and fast to parse.</p>
   `
 );
 
-// Post 13 — Den Chief — Oct 25, 2026
-registerPost('/blog/den-chief.html', "Oct 25, 2026", "Leadership",
-  "Mentorship & Communication: 1,200 Hours as a Den Chief",
-  "What did serving over 1,200 hours as a Den Chief for Cub Scout Pack 551 teach you about communication and leadership?",
-  "Serving as a Den Chief for Pack 551 and earning the Den Chief Service Award taught me how to break down complex skills into simple, engaging steps, exercise infinite patience, and lead younger scouts by setting a positive personal example.",
-  `
-  <p style="margin-bottom: 1.25rem;">Long before I was explaining multi-tenant cloud routing to business owners, I was explaining how to tie a square knot or build a Pinewood Derby car to eight-year-old Cub Scouts.</p>
-  <p style="margin-bottom: 1.25rem;">Serving as a Den Chief for Pack 551 over two years - accumulating over 1,200 service hours and earning the Den Chief Service Award - was foundational to developing my communication style.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Breaking Complex Skills into Micro-Steps</h3>
-  <p style="margin-bottom: 1.25rem;">When teaching a Cub Scout how to use a pocketknife safely or build a campfire, you cannot dump a textbook of instructions on them at once. Instead, you learn to:</p>
-  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;">Demonstrate the complete skill once visually.</li>
-    <li style="margin-bottom: 0.5rem;">Break the process into clear, single-step actions.</li>
-    <li style="margin-bottom: 0.5rem;">Have them practice each step immediately while providing constructive encouragement.</li>
-  </ul>
-  <p style="margin-bottom: 1.25rem;">I use this same method for technical writing and helping clients get started. Being clear is always better than making things complicated.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Patience and Active Adaptability</h3>
-  <p style="margin-bottom: 1.25rem;">Every Scout learns at a different pace. Some pick up outdoor knots in 30 seconds; others need five different explanations before it clicks.</p>
-  <p style="margin-bottom: 1.25rem;">As a leader, getting frustrated is never an option. If a Scout isn't grasping a concept, it isn't their failure - it means the leader needs to find a clearer way to explain it.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Leading by Example</h3>
-  <p style="margin-bottom: 1.25rem;">Younger Scouts watch everything their Den Chief does. If you show up enthusiastic, prepared, and focused, the energy of the room follows.</p>
-  <p style="margin-bottom: 1.25rem;">Real leadership isn't just telling people what to do. It's about being there with the team, working hard, and helping everyone do their best.</p>
-  `
-);
 
-// Post 14 — Performance Benchmarking — Nov 1, 2026
 registerPost('/blog/performance-benchmarking.html', "Nov 1, 2026", "Building",
   "Performance Benchmarking: Achieving Sub-Second Global Edge Latency",
-  "How do you measure and optimize web performance to guarantee sub-second global load times?",
+  "How can web performance be measured and optimized to guarantee sub-second global load times?",
   "Achieving sub-second latency requires optimizing the entire delivery pipeline: serving HTML directly from edge locations, inlining critical CSS, minimizing render-blocking JavaScript, and leveraging HTTP edge caching for media assets.",
   `
-  <p style="margin-bottom: 1.25rem;">When a user clicks a link to your website, every hundred milliseconds of delay increases the likelihood that they abandon the page. In modern web engineering, sub-second latency is the benchmark for top-tier digital experiences.</p>
-  <p style="margin-bottom: 1.25rem;">When building client platforms like Chris Franz Fine Art and The Chop Lab, achieving zero render-blocking delay required systematically optimizing every layer of the network request stack.</p>
+  <p style="margin-bottom: 1.25rem;">Every hundred milliseconds of page load delay increases the likelihood that users abandon the page. Sub-second latency is the benchmark for top-tier digital experiences.</p>
+  <p style="margin-bottom: 1.25rem;">Achieving zero render-blocking delay requires systematically optimizing every layer of the network request stack.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Edge Delivery via CDN Workers</h3>
-  <p style="margin-bottom: 1.25rem;">Traditional hosting routes all user traffic to a single physical server location. A user requesting the site from Seattle or Tokyo faces high latency due to physical speed-of-light constraints across fiber optic cables.</p>
-  <p style="margin-bottom: 1.25rem;">By deploying assets using Cloudflare Workers:</p>
+  <p style="margin-bottom: 1.25rem;">Traditional hosting routes all user traffic to a single physical server location. A user requesting a site from Seattle or Tokyo faces high latency due to physical speed-of-light constraints across fiber optic cables.</p>
+  <p style="margin-bottom: 1.25rem;">Deploying assets through a CDN edge network ensures:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">HTML, styles, and core assets are cached across hundreds of edge data centers globally.</li>
     <li style="margin-bottom: 0.5rem;">Seattle visitors connect to a local Seattle edge node; London visitors connect to a London edge node.</li>
@@ -1938,34 +1749,97 @@ registerPost('/blog/performance-benchmarking.html', "Nov 1, 2026", "Building",
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Asynchronous Script Loading:</strong> JavaScript logic executes asynchronously, allowing visual text and structural containers to paint on screen immediately.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Modern Asset Formats:</strong> Images are converted to lightweight WebP formats with explicit width/height dimensions to prevent layout shifts (CLS).</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Real-World Audit Verification</h3>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Measurable Benchmarks</h3>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;">First Contentful Paint (FCP) consistently hits &lt; 400ms.</li>
+    <li style="margin-bottom: 0.5rem;">First Contentful Paint (FCP) consistently under 400ms.</li>
     <li style="margin-bottom: 0.5rem;">Time to Interactive (TTI) measures under 700ms on standard mobile connections.</li>
   </ul>
-  <p style="margin-bottom: 1.25rem;">If you build your web software the right way, fast load times just happen.</p>
+  <p style="margin-bottom: 1.25rem;">Optimizing each layer of the delivery pipeline produces fast load times as a natural outcome of good architecture.</p>
   `
 );
 
-// Post 15 — Sophomore Founder — Nov 8, 2026
-registerPost('/blog/sophomore-founder.html', "Nov 8, 2026", "Growth",
-  "Sophomore Founder Retrospective: Lessons Learned Shipping 3 Platforms",
-  "Looking back on your sophomore year, what are the biggest takeaways from shipping multiple projects and leading initiatives?",
-  "Building real-world platforms like Minescout AI and The Chop Lab taught me that execution beats perfection. Action, continuous iteration, clear technical boundaries, and taking pride in craftsmanship are what turn ideas into reality.",
+// Restored from original
+registerPost('/blog/minescout-genesis.html', "Mar 9, 2026", "Engineering",
+  "Minescout Genesis: The 17-Day Multi-Tenant Pivot",
+  "What drove the decision to pivot Minescout from static sites to a serverless SaaS engine?",
+  "Managing separate static codebases for every client was unscalable. A central, multi-tenant architecture was needed where a single codebase could dynamically serve different clients based on edge routing. The core of Minescout Studio was architected and launched in under three weeks.",
   `
-  <p style="margin-bottom: 1.25rem;">Looking back on this year as a sophomore at Eastlake High School, it is rewarding to see how far ideas can go when backed by relentless execution.</p>
-  <p style="margin-bottom: 1.25rem;">From launching Minescout AI as a serverless SaaS engine, to overhauling The Chop Lab storefront, earning my Eagle Scout rank, and scaling advanced web platforms, this year has been an intense masterclass in engineering and leadership.</p>
-  <p style="margin-bottom: 1.25rem;">Here are the four core principles that guided this progress:</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Execution Beats Theory</h3>
-  <p style="margin-bottom: 1.25rem;">You can spend months drafting perfect plans, whiteboarding ideal system architectures, or debating design ideas. But until you ship code to a live domain or test logic with real users, you haven't truly validated anything.</p>
-  <p style="margin-bottom: 1.25rem;">Building real software for real clients forces you to solve actual problems instead of theoretical ones.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Lean Constraints Breed Better Engineering</h3>
-  <p style="margin-bottom: 1.25rem;">Operating under a strict $0.00 infrastructure mandate forced me to master serverless architectures, edge caching, and lightweight vanilla code. When you don't throw money at expensive servers or heavy frameworks, you build leaner, faster, and more resilient systems.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Design and Backend Inform Each Other</h3>
-  <p style="margin-bottom: 1.25rem;">Working on user interfaces made me a better backend architect, and writing clean edge routing made me a more precise UI designer.</p>
-  <p style="margin-bottom: 1.25rem;">Both disciplines require structural organization, understanding the user's flow, and building systems that handle unexpected inputs without failing.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">4. Craftsmanship Matters</h3>
-  <p style="margin-bottom: 1.25rem;">Whether constructing a Little Free Library for a local park or designing an embedded AI chat widget for a business owner, quality shows in the details. Taking pride in clean lines, fast load times, and respectful communication builds lasting trust.</p>
-  <p style="margin-bottom: 1.25rem;">This is just the start. I'm excited to see what I can build next.</p>
+  <p style="margin-bottom: 1.25rem;">Minescout didn't start as a multi-tenant SaaS platform. It started as a handful of static sites that were manually deployed for local projects. But as soon as a feature needed updating across multiple sites, the static approach was immediately unscalable.</p>
+  <p style="margin-bottom: 1.25rem;">A central engine was needed. The goal: pivot the entire architecture into a multi-tenant platform in under three weeks. Here is how the 17-day sprint went down.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Problem with Static</h3>
+  <p style="margin-bottom: 1.25rem;">Managing separate codebases for every client is a nightmare. One codebase was needed — a single "brain" — that could serve different content depending on which domain requested it.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Serverless Solution</h3>
+  <p style="margin-bottom: 1.25rem;">Cloudflare Workers and KV storage solved this. By mapping incoming domains to specific client IDs in a KV namespace, a single Edge Worker can dynamically route requests, pull the correct client data, and inject it into the application shell on the fly.</p>
+  <p style="margin-bottom: 1.25rem;">This means a bug fix deployed once updates every client site instantly.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">17 Days Later</h3>
+  <p style="margin-bottom: 1.25rem;">After two weeks of intense development, the multi-tenant core was live. The first two nodes launched on the new architecture and ran flawlessly. The 17-day sprint demonstrates that sometimes tearing down what you have built is necessary to build something that can actually scale.</p>
   `
 );
+
+registerPost('/blog/launching-this-site.html', "Feb 21, 2026", "Building",
+  "Launching This Site",
+  "Why build a custom personal site from scratch instead of using a standard template or just a GitHub profile?",
+  "A platform was needed that felt clean, fast, and entirely custom. Building it from scratch with vanilla JS and edge hosting acts as a live demonstration of a zero-bloat infrastructure philosophy.",
+  `
+  <p style="margin-bottom: 1.25rem;">For a long time, the portfolio was just a collection of repositories on GitHub. While that works for other developers, it does not explain why projects are built to non-technical clients.</p>
+  <p style="margin-bottom: 1.25rem;">A personal corner of the internet was needed. Something clean, fast, and entirely custom.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">No Templates, No Bloat</h3>
+  <p style="margin-bottom: 1.25rem;">This site is built using vanilla JavaScript, HTML, and custom CSS. There is no heavy framework, no WordPress backend, and no bulky templates. It is hosted on the edge, meaning it loads quickly no matter where the visitor is located.</p>
+  <p style="margin-bottom: 1.25rem;">This site demonstrates how clean web architecture should be built — lightweight, fast, and maintainable.</p>
+  `
+);
+
+registerPost('/blog/chop-lab-spa.html', "Aug 16, 2026", "Building",
+  "Building for the Client: Overhauling The Chop Lab into a Custom SPA",
+  "What was the primary requirement from the client when rebuilding The Chop Lab website?",
+  "The client wanted an easier, streamlined way to update product listings, edit site text, and add new product lines without needing to write code or deal with a bloated dashboard. A custom Single Page Application (SPA) architecture solved this.",
+  `
+  <p style="margin-bottom: 1.25rem;">When small business owners talk about their websites, their biggest complaint is almost never "I want more plugins." It is almost always: <strong>"I just want a simple way to update my text and photos without breaking the site."</strong></p>
+  <p style="margin-bottom: 1.25rem;">That exact feedback drove the complete overhaul of The Chop Lab (v2) — a high-performance digital storefront for an artisanal ceramics firm.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Identifying the Friction</h3>
+  <p style="margin-bottom: 1.25rem;">The original site was static and required manual HTML edits whenever new ceramics runs were fired or product specs changed. For a fast-moving studio, waiting for manual code edits every time a product released created unnecessary friction.</p>
+  <p style="margin-bottom: 1.25rem;">The objective for v2 was clear:</p>
+  <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;">Rebuild the frontend into a custom Single Page Application (SPA) for fast page transitions.</li>
+    <li style="margin-bottom: 0.5rem;">Structure the backend content model so product entries, images, and descriptions could be updated effortlessly by the client.</li>
+    <li style="margin-bottom: 0.5rem;">Ensure the UI reflected the high-craft nature of the artisanal products.</li>
+  </ol>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Architectural Solution</h3>
+  <p style="margin-bottom: 1.25rem;">Instead of installing a heavy e-commerce framework with dozens of third-party plugins, a lightweight SPA was engineered using vanilla JavaScript and structured JSON data sources.</p>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Data Decoupling:</strong> Products and studio descriptions are stored in structured configuration files. Adding a new item or updating inventory requires only editing a simple form interface without touching UI component code.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Instant Page Transitions:</strong> Navigating between gallery views, product details, and the studio history happens instantly in memory without full-page reloads.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Responsive Layout:</strong> The interface was crafted to load fast on mobile devices, ensuring art buyers can browse collections smoothly anywhere.</li>
+  </ul>
+  <p style="margin-bottom: 1.25rem;">When building software for real people, it has to be easy for both the visitors and the person running the site. By cutting out all the extra stuff, The Chop Lab ended up with a site that looks custom but is still simple to update.</p>
+  `
+);
+
+registerPost('/blog/eagle-scout-project.html', "Sep 6, 2026", "Leadership",
+  "Project Leadership at 14: Directing an Eagle Scout Project",
+  "What was involved in planning and executing an Eagle Scout service project?",
+  "Achieving the rank of Eagle Scout required planning, fundraising, and directing a community literacy project. A team of youth and adult volunteers was led over 60+ total hours to build and install a custom Little Free Library at Illahee Park in Sammamish, WA.",
+  `
+  <p style="margin-bottom: 1.25rem;">Achieving the rank of Eagle Scout in Scouting America Troop 571 is one of the most challenging leadership experiences a youth can undertake. The centerpiece of the process is the Eagle Scout Leadership Project — a requirement where the candidate must plan, develop, and give leadership to others in a service project benefiting the local community.</p>
+  <p style="margin-bottom: 1.25rem;">The project focused on improving local literacy access by constructing and installing a durable, custom-built Little Free Library at Illahee Park in Sammamish, WA.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 1: Planning and Logistics Approval</h3>
+  <p style="margin-bottom: 1.25rem;">Long before any wood was cut or post holes were dug, the project required thorough documentation and administrative approvals:</p>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;">Drafting structural blueprints for weather-resistant outdoor construction in the Pacific Northwest.</li>
+    <li style="margin-bottom: 0.5rem;">Presenting safety plans, material lists, and budget estimates to city park officials and Scouting leadership.</li>
+    <li style="margin-bottom: 0.5rem;">Coordinating material procurement and tool safety protocols.</li>
+  </ul>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 2: Delegating and Directing Work</h3>
+  <p style="margin-bottom: 1.25rem;">As the project leader, the Eagle guidelines state clearly that the candidate is not there to do all the physical work themselves — they are there to lead.</p>
+  <p style="margin-bottom: 1.25rem;">Managing a team of over 15 volunteers required clear delegation:</p>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Safety First:</strong> Ensuring all volunteers understood proper tool usage, PPE, and job site safety.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Task Division:</strong> Assigning specific teams to woodworking, sanding, weather-proofing coats, and ground excavation for post mounting.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Time Management:</strong> Keeping work shifts organized so progress stayed on schedule across multiple work sessions.</li>
+  </ul>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 3: Lasting Community Impact</h3>
+  <p style="margin-bottom: 1.25rem;">Over 60+ total volunteer hours, the team successfully constructed and anchored the library post in Illahee Park, filling it with donated books for local neighborhood families.</p>
+  <p style="margin-bottom: 1.25rem;">Whether leading a construction team or a software project, real leadership is about clear communication, preparation, and keeping everyone focused on the goal.</p>
+  `
+);
+
