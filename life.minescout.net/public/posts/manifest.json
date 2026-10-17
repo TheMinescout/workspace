@@ -1,5 +1,17 @@
 [
   {
+    "id": "the-agent-that-wouldn-t-answer-2026",
+    "title": "The Agent That Wouldn't Answer",
+    "category": "Tech",
+    "summary": "A coding AI agent, OpenHands, mysteriously stopped responding to user input despite a fully functioning interface and build pipeline.",
+    "heroImage": "/assests/images/tech/Openhands-journey.png",
+    "timestamp": 1792265573013,
+    "linkUrl": "/post/the-agent-that-wouldn-t-answer-2026",
+    "linkText": "Read the full field report",
+    "date": "Oct 17, 2026",
+    "publishDate": null
+  },
+  {
     "id": "minescout-beta-the-terminal-that-got-out-of-hand-2026",
     "title": "Minescout Beta: The Terminal That Got Out of Hand",
     "category": "Update",

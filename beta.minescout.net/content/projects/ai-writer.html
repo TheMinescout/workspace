@@ -1,35 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta name="referrer" content="strict-origin-when-cross-origin">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOOL // AI_WRITER_COMMUNITY</title>
-    <link rel="icon" type="image/png" href="../../assets/images/BETAFAVICON.png?v=1">
+    <title>AI WRITER // MINESCOUT</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2214%22>✎</text></svg>">
     
-    <!-- EXTERNAL LIBRARIES -->
-    <script src="../../assets/js/firebase-config.js?v=3.2"></script>
-    <script src="https://js.puter.com/v2/"></script>
-
     <!-- PROJECT STYLES -->
-    <link rel="stylesheet" href="css/ai-writer.css?v=40.0">
-    <link rel="stylesheet" href="../../assets/css/style.css?theme=msbeta-v12">
+    <link rel="stylesheet" href="css/ai-writer.css">
 </head>
 <body>
-    <header class="ms-topbar"><a class="ms-logo" href="../../index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="../../index">HOME</a><a href="../../pages">ATLS</a><a href="../../projects">PRDS</a><a href="../../feature-requests">REQUESTS</a><a href="../../email">CONTACT</a></nav><a class="top-login" href="../../login">ACCOUNT ↗</a></header>
-
-
     <div class="main-layout">
         <!-- HEADER -->
         <header>
             <div class="header-left">
-                <h2 onclick="window.toggleCmd()">// AI_WRITER_v40.0</h2>
-                <span class="status-badge" id="auth-status">GUEST MODE</span>
+                <h2 onclick="window.toggleCmd()">// AI_WRITER_v42.0</h2>
+                <span class="status-badge">LOCAL MODE</span>
             </div>
             
             <div class="tabs">
                 <div class="tab active" onclick="setTab('editor')">EDITOR</div>
                 <div class="tab" onclick="setTab('assets')">ASSETS</div>
-                <div class="tab" onclick="setTab('library')">COMMUNITY</div>
+                <div class="tab" onclick="setTab('preview')">PREVIEW</div>
                 <div class="tab" onclick="setTab('logs')">LOGS</div>
             </div>
         </header>
@@ -43,22 +35,26 @@
                     <!-- Config Column -->
                     <div class="config-col">
                         <div>
-                            <label>PROJECT_TITLE:</label>
+                            <label>PROJECT TITLE:</label>
                             <input type="text" id="inp-title" placeholder="My Article">
                         </div>
                         
                         <!-- Saved Projects -->
                         <div class="save-box">
-                            <label class="gold-label">LOCAL_SAVES (IndexedDB):</label>
+                            <label class="gold-label">LOCAL SAVES (IndexedDB):</label>
                             <div id="saved-list"></div>
                             <button class="btn btn-save" onclick="saveProject()">[ SAVE STATE ]</button>
                         </div>
 
                         <!-- AI Controls -->
                         <div>
-                            <label>AI_INSTRUCTIONS:</label>
-                            <textarea id="ai-prompt" rows="3" placeholder="Instructions..."></textarea>
+                            <label>AI INSTRUCTIONS:</label>
+                            <textarea id="ai-prompt" rows="3" placeholder="Describe what you want the AI to write..."></textarea>
                         </div>
+                        <label class="check-label">
+                            <input type="checkbox" id="web-search" checked>
+                            🌐 Search Web for current info (DuckDuckGo)
+                        </label>
                         <button class="btn btn-ai" onclick="generateAI()">[ ✨ GENERATE ]</button>
                         
                         <!-- Admin Panel -->
@@ -87,14 +83,13 @@
                         </div>
 
                         <hr class="separator">
-                        <button class="btn" style="background:#004444; border-color:#0FF; color:#0FF;" onclick="openCurrentInNewTab()">[ ↗ OPEN IN NEW TAB ]</button>
-                        <button class="btn" onclick="openExportMenu()">[ 💾 DOWNLOAD OPTIONS ]</button>
-                        <button class="btn btn-share" onclick="publishToCommunity()">[ ☁ SHARE TO LIBRARY ]</button>
+                        <button class="btn" onclick="openPreviewTab()">[ ↗ PREVIEW ]</button>
+                        <button class="btn" onclick="openExportMenu()">[ 💾 EXPORT ]</button>
                     </div>
 
                     <!-- Text Editor Column -->
                     <div class="text-col">
-                        <label>HTML_BODY_CONTENT (RAW):</label>
+                        <label>HTML BODY CONTENT (RAW):</label>
                         <textarea id="inp-content" spellcheck="false" placeholder="<h1>Title</h1><p>Content...</p>"></textarea>
                     </div>
                 </div>
@@ -102,7 +97,7 @@
 
             <!-- PANEL 2: ASSETS -->
             <div id="panel-assets" class="panel">
-                <h3>// MEDIA_ASSET_MANAGER</h3>
+                <h3>// MEDIA ASSET MANAGER</h3>
                 <div class="asset-input-row">
                     <div class="flex-grow">
                         <label>FILE:</label>
@@ -119,15 +114,16 @@
                 <div id="asset-list"></div>
             </div>
 
-            <!-- PANEL 3: LIBRARY -->
-            <div id="panel-library" class="panel">
-                <div class="library-header">
-                    <h3>// GLOBAL_COMMUNITY_LIBRARY</h3>
-                    <button class="btn small-btn" onclick="loadLibrary()">REFRESH FEED</button>
+            <!-- PANEL 3: PREVIEW -->
+            <div id="panel-preview" class="panel">
+                <div class="preview-toolbar">
+                    <button class="btn" onclick="refreshPreview()">[ REFRESH ]</button>
+                    <button class="btn" onclick="openPreviewInTab()">[ ↗ OPEN IN TAB ]</button>
+                    <button class="btn" onclick="doExport('pdf')">[ 📄 PDF ]</button>
+                    <button class="btn" onclick="doExport('html')">[ 💾 HTML ]</button>
+                    <button class="btn" onclick="doExport('copy')">[ 📋 COPY ]</button>
                 </div>
-                <div id="lib-grid" class="lib-grid">
-                    <div style="color:#555;">Loading secure feed...</div>
-                </div>
+                <iframe id="preview-frame" src="about:blank" sandbox="allow-scripts"></iframe>
             </div>
 
             <!-- PANEL 4: LOGS -->
@@ -152,7 +148,7 @@
             <p class="modal-desc">Select output format:</p>
             
             <button class="btn mb-10" onclick="doExport('html')">DOWNLOAD .HTML (Standalone)</button>
-            <button class="btn mb-10" onclick="doExport('txt')">DOWNLOAD .TXT (Raw Code)</button>
+            <button class="btn mb-10" onclick="doExport('pdf')">PRINT TO PDF</button>
             <button class="btn mb-10" onclick="doExport('copy')">COPY TO CLIPBOARD</button>
             
             <button class="btn btn-danger mt-10" onclick="closeExportMenu()">CANCEL</button>
@@ -168,26 +164,23 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{title}}</title>
-<link rel="stylesheet" href="assets/css/style.css">
 <style>
-    body { overflow-y: auto; padding: 20px; }
-    .page-container { max-width: 900px; margin: 0 auto; border: 1px solid #da7756; background: rgba(0, 10, 0, 0.9); padding: 40px; }
-    h1 { border-bottom: 2px solid #da7756; padding-bottom: 10px; color: #da7756; }
-    h2 { color: #88ff88; margin-top: 30px; border-left: 3px solid #da7756; padding-left: 10px; }
-    p { line-height: 1.6; color: #ccffcc; margin-bottom: 15px; }
-    img, video { max-width: 100%; height: auto; max-height: 600px; object-fit: contain; border: 1px solid #da7756; margin: 15px 0; display: block; margin-left: auto; margin-right: auto; }
-    .media-caption { text-align: center; font-size: 0.8em; color: #005500; margin-top: 5px; font-style: italic; }
+    body { overflow-y: auto; padding: 20px; font-family: sans-serif; background: #f5f5f5; }
+    .page-container { max-width: 900px; margin: 0 auto; background: #fff; padding: 40px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+    h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+    h2 { color: #444; margin-top: 30px; }
+    p { line-height: 1.6; color: #333; margin-bottom: 15px; }
+    img, video { max-width: 100%; height: auto; border-radius: 4px; margin: 15px 0; display: block; margin-left: auto; margin-right: auto; }
+    .media-caption { text-align: center; font-size: 0.85em; color: #888; margin-top: 5px; font-style: italic; }
 </style>
 </head>
 <body>
     <div class="page-container">
         <h1>{{title}}</h1>
-        <p style="color:#005500;">GENERATED: {{date}} | AUTHOR: AI_ASSISTANT</p>
-        <hr style="border-color:rgba(218,119,86,0.12); margin-bottom:30px;">
+        <p style="color:#888;">GENERATED: {{date}}</p>
+        <hr style="margin-bottom:30px;">
         <div id="content">{{AI}}</div>
     </div>
-<script src="../../assets/js/background.js?v=12"></script>
-<script src="../../assets/js/security.js?v=12"></script>
 </body>
 </html>
     </script>
@@ -199,68 +192,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}} - Minescouts Life</title>
+    <title>{{title}}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../assests/css/homepage.css?v=3.02">
-    <link rel="icon" type="image/png" href="../../assests/images/favicon.png?v=2">
-    <style>img,video{max-width:100%;border-radius:8px;margin:20px 0;border:2px solid #333;display:block;margin-left:auto;margin-right:auto;}.media-container{text-align:center;margin-bottom:20px;}.media-caption{font-size:0.9em;color:#666;font-style:italic;margin-top:5px;}</style>
+    <style>body{margin:0;font-family:'Inter',sans-serif;background:#f8f8f8;color:#222;line-height:1.7;padding:40px;max-width:900px;margin:0 auto;}img,video{max-width:100%;border-radius:8px;margin:20px 0;}h1{border-bottom:2px solid #333;padding-bottom:8px;}h2{color:#555;margin-top:32px;}</style>
 </head>
 <body>
-    <header class="main-header">
-        <div class="container site-title-container">
-            <div id="auth-container"><a href="../../login" id="login-link">Login</a></div>
-            <div class="site-title-wrapper">
-                <h1 class="site-title"><a href="../../index" style="color: white; text-decoration: none;">Minescouts Life</a></h1>
-                <p class="tagline">{{category}}</p>
-            </div>
-            <div id="user-display" class="hidden">
-                <a href="../../account"><span id="user-email-display"></span></a>
-                <button id="signOut-btn">Sign Out</button>
-            </div>
-        </div>
-    </header>
-    <div class="main-content-area">
-        <div class="container">
-            <main class="post-main" data-post-id="{{post_id}}">
-                <a href="{{back_link}}" class="back-link">&laquo; Back to {{category}}</a>
-                <article class="post-full">
-                    <h1>{{title}}</h1>
-                    <p class="post-meta">Posted on {{date}} by {{author}}</p>
-                    <img src="../../assests/images/{{header_image}}" alt="Title Image" class="post-image-full" onerror="this.style.display='none'">
-                    <div class="post-content">{{AI}}</div>
-                </article>
-                <section class="comments-section">
-                    <h2>Comments</h2>
-                    <div class="comment-form-container">
-                        <h3>Leave a Comment</h3>
-                        <form>
-                            <div class="form-group"><label for="name">Name:</label><input type="text" id="name" name="name" required></div>
-                            <div class="form-group"><label for="comment">Comment:</label><textarea id="comment" name="comment" rows="5" required></textarea></div>
-                            <button type="submit" class="submit-button">Post Comment</button>
-                        </form>
-                    </div>
-                    <div class="comments-list"></div>
-                </section>
-            </main>
-            <aside id="sidebar"><div id="sidebar-container"></div></aside>
-        </div>
-    </div>
-    <footer class="main-footer"><div class="container"><p id="copyright">© 2025 Minescouts Life. All rights reserved.</p></div></footer>
-    
-    [[SCRIPT type="module" src="../../assests/js/auth.js?v=1.1"]][[CLOSE_SCRIPT]]
-    [[SCRIPT type="module" src="../../assests/js/homepage.js"]][[CLOSE_SCRIPT]]
-    [[SCRIPT src="../../assests/js/loader.js"]][[CLOSE_SCRIPT]]
-<script src="../../assets/js/background.js?v=12"></script>
-<script src="../../assets/js/security.js?v=12"></script>
+    <h1>{{title}}</h1>
+    <p style="color:#888;">Posted on {{date}} by {{author}}</p>
+    <div class="post-content">{{AI}}</div>
 </body>
 </html>
     </script>
 
     <!-- PROJECT LOGIC -->
-    <script src="js/ai-writer.js"></script>
-<script src="../../assets/js/background.js?v=12"></script>
-<script src="../../assets/js/security.js?v=12"></script>
+    <script src="js/ai-writer.js?v=1.01"></script>
 </body>
 </html>
