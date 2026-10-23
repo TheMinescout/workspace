@@ -670,63 +670,63 @@ export const views = {
       </div>
     </div>
   `,
-  '/studio/tools': `
+'/studio/tools': `
     <div class="main--page">
       <div class="page-content tools-wrap">
         <p class="page-label">Minescout Studio</p>
         <h1 class="page-title" style="opacity:0;animation:fadeUp 0.5s ease 0.1s forwards;">Tools I Use</h1>
-        <div class="tools-disclaimer"><strong>Honest reviews only.</strong> No sponsored picks. These are the tools I actually use daily for building Minescout Studio, client projects, schoolwork, and FRC robotics. I list where things fall short too.</div>
+        <div class="tools-disclaimer"><strong>Honest reviews only.</strong> No sponsored picks. I'm no master programmer—rather, I'm a builder and systems architect who understands what you want and knows how to orchestrate the right tools to make it happen. These are the tools I actually use daily for building Minescout Studio, client projects, schoolwork, and FRC robotics. I list where things fall short too.</div>
         
         <div class="tools-category" style="--cd:0.2s;">AI &amp; Language Models</div>
         <div class="tool-card" style="--td:0.25s;">
           <div class="tool-logo">&#10024;</div>
           <div class="tool-body">
-            <div class="tool-name-row"><span class="tool-name">Gemini 3.1 Pro</span><span class="tool-badge badge-core">Core</span></div>
+            <div class="tool-name-row"><span class="tool-name">Gemini 3.1 Pro &amp; 4 Argon</span><span class="tool-badge badge-core">Core</span></div>
             <div class="tool-rating"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span></div>
-            <p class="tool-desc">My advanced reasoning engine. I rely heavily on Gemini 3.1 Pro for deep integration, parsing massive amounts of context, and solving complex architectural problems for Minescout Studio.</p>
+            <p class="tool-desc">My primary reasoning engines. I rely heavily on Gemini 3.1 Pro and 4 Argon for deep integration, parsing massive amounts of context, and solving complex architectural problems for Minescout Studio.</p>
             <div class="tool-verdict-grid">
-              <div class="verdict-box pro"><div class="verdict-label">Works well for</div><div class="verdict-text">Deep reasoning, contextual understanding across huge workspaces, and integrated ecosystem tasks.</div></div>
-              <div class="verdict-box con"><div class="verdict-label">Watch out for</div><div class="verdict-text">Sometimes its strict guardrails can get in the way of highly creative, out-of-the-box coding requests.</div></div>
+              <div class="verdict-box pro"><div class="verdict-label">Works well for</div><div class="verdict-text">Deep reasoning, contextual understanding across huge workspaces, and heavy architectural lifting.</div></div>
+              <div class="verdict-box con"><div class="verdict-label">Watch out for</div><div class="verdict-text">4 Argon can eat into usage limits much faster, and strict guardrails sometimes block creative coding requests.</div></div>
             </div>
           </div>
           <a href="https://gemini.google.com" target="_blank" rel="noopener" class="tool-link tool-link-ghost">Visit</a>
         </div>
 
         <div class="tool-card" style="--td:0.3s;">
-          <div class="tool-logo">&#x1F9E0;</div>
+          <div class="tool-logo">&#x1F500;</div>
           <div class="tool-body">
-            <div class="tool-name-row"><span class="tool-name">Claude Opus 4.6</span></div>
+            <div class="tool-name-row"><span class="tool-name">LibreChat &amp; OpenHands (via OpenRouter)</span><span class="tool-badge badge-free">Free tier</span><span class="tool-badge badge-core">Core</span></div>
             <div class="tool-rating"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span></div>
-            <p class="tool-desc">My go-to for nuanced writing, precise documentation, and drafting professional proposals. It has an incredibly natural tone and acts more like a thoughtful collaborator than a standard chatbot.</p>
+            <p class="tool-desc">A massive upgrade to my daily workflow. Pairing LibreChat's unified interface and OpenHands' autonomous coding agents with free OpenRouter models lets me prototype, test, and iterate without burning through paid API budgets.</p>
             <div class="tool-verdict-grid">
-              <div class="verdict-box pro"><div class="verdict-label">Works well for</div><div class="verdict-text">High-end copywriting, client proposals, drafting complex system prompts, and detailed code explanations.</div></div>
-              <div class="verdict-box con"><div class="verdict-label">Watch out for</div><div class="verdict-text">Usage limits can sneak up on you during heavy development sprints.</div></div>
+              <div class="verdict-box pro"><div class="verdict-label">Works well for</div><div class="verdict-text">Zero-cost model routing, autonomous agentic coding tasks, and testing multiple open-weight models side-by-side.</div></div>
+              <div class="verdict-box con"><div class="verdict-label">Watch out for</div><div class="verdict-text">Initial configuration takes some tinkering, and free OpenRouter endpoints can occasionally hit rate limits during peak hours.</div></div>
             </div>
           </div>
-          <a href="https://claude.ai" target="_blank" rel="noopener" class="tool-link tool-link-ghost">Visit</a>
+          <a href="https://openrouter.ai" target="_blank" rel="noopener" class="tool-link tool-link-ghost">Visit</a>
         </div>
 
-        <div class="tool-card" style="--td:0.34s;">
+        <div class="tool-card" style="--td:0.35s;">
           <div class="tool-logo">&#128171;</div>
           <div class="tool-body">
             <div class="tool-name-row"><span class="tool-name">ChatGPT 5.1</span></div>
-            <div class="tool-rating"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star-empty">&#9733;</span></div>
-            <p class="tool-desc">A highly versatile powerhouse. I use this for rapid coding iterations, general brainstorming, and quick problem-solving. It's incredibly fast and great for getting a working prototype up quickly.</p>
+            <div class="tool-rating"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star-empty">&#9733;</span><span class="star-empty">&#9733;</span></div>
+            <p class="tool-desc">A fast starting point for initial brainstorming and quick one-off prototypes. It shines on the first few prompts, though I rely on it less for sustained, multi-step architecture sessions.</p>
             <div class="tool-verdict-grid">
-              <div class="verdict-box pro"><div class="verdict-label">Works well for</div><div class="verdict-text">Fast code generation, rapid prototyping, and general-purpose technical questions.</div></div>
-              <div class="verdict-box con"><div class="verdict-label">Watch out for</div><div class="verdict-text">Can be confidently incorrect. Always verify its code logic on complex backend implementations.</div></div>
+              <div class="verdict-box pro"><div class="verdict-label">Works well for</div><div class="verdict-text">Initial project kickoffs, rapid first-draft code generation, and quick syntax checks.</div></div>
+              <div class="verdict-box con"><div class="verdict-label">Watch out for</div><div class="verdict-text">After a few follow-up questions, it tends to hyperfocus on the wrong details, leading to cascading small errors.</div></div>
             </div>
           </div>
           <a href="https://chatgpt.com" target="_blank" rel="noopener" class="tool-link tool-link-ghost">Visit</a>
         </div>
 
-        <div class="tools-category" style="--cd:0.48s;">Hosting &amp; Infrastructure</div>
-        <div class="tool-card" style="--td:0.5s;">
+        <div class="tools-category" style="--cd:0.42s;">Hosting &amp; Infrastructure</div>
+        <div class="tool-card" style="--td:0.45s;">
           <div class="tool-logo">&#x26A1;</div>
           <div class="tool-body">
             <div class="tool-name-row"><span class="tool-name">Cloudflare</span><span class="tool-badge badge-free">Free tier</span><span class="tool-badge badge-core">Core</span></div>
             <div class="tool-rating"><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span></div>
-            <p class="tool-desc">The absolute backbone of the Minescout Studio platform. DNS, CDN, Edge Workers, and KV Storage—all in one place. It provides sub-second latency and handles my multi-tenant routing perfectly.</p>
+            <p class="tool-desc">The absolute backbone of the Minescout Studio platform. DNS, CDN, Edge Workers, and KV Storage—all in one place. It provides sub-second latency, handles my multi-tenant routing perfectly, and works seamlessly with all my existing work.</p>
             <div class="tool-verdict-grid">
               <div class="verdict-box pro"><div class="verdict-label">Works well for</div><div class="verdict-text">Serverless architecture, instant global deployments, and maintaining a strict $0.00 risk profile.</div></div>
               <div class="verdict-box con"><div class="verdict-label">Watch out for</div><div class="verdict-text">Serverless environments require a different mental model than traditional server hosting.</div></div>
@@ -735,7 +735,7 @@ export const views = {
           <a href="https://cloudflare.com" target="_blank" rel="noopener" class="tool-link tool-link-ghost">Visit</a>
         </div>
 
-        <div class="tool-card" style="--td:0.53s;">
+        <div class="tool-card" style="--td:0.5s;">
           <div class="tool-logo">&#x1F525;</div>
           <div class="tool-body">
             <div class="tool-name-row"><span class="tool-name">Firebase</span><span class="tool-badge badge-free">Free tier</span><span class="tool-badge badge-core">Core</span></div>
@@ -749,7 +749,7 @@ export const views = {
           <a href="https://firebase.google.com" target="_blank" rel="noopener" class="tool-link tool-link-ghost">Visit</a>
         </div>
 
-        <div class="tools-category" style="--cd:0.55s;">Development</div>
+        <div class="tools-category" style="--cd:0.54s;">Development</div>
         <div class="tool-card" style="--td:0.56s;">
           <div class="tool-logo">&#x1F419;</div>
           <div class="tool-body">
@@ -767,12 +767,24 @@ export const views = {
         <div class="not-for-me">
           <div class="not-header">Tried &mdash; not for me</div>
           <div class="not-item">
+            <div class="not-icon">&#x1F9E0;</div>
+            <div><div class="not-name">Claude</div><div class="not-reason">Great model for writing and documentation, but strict age restrictions make it unnecessarily difficult for me to access and rely on for daily studio work.</div></div>
+          </div>
+          <div class="not-item">
+            <div class="not-icon">&#x1F5B1;&#xFE0F;</div>
+            <div><div class="not-name">Cursor</div><div class="not-reason">Comes with a very limited token budget on the free side, and the agent tends to burn through tokens focusing on files and context you don't actually need it touching.</div></div>
+          </div>
+          <div class="not-item">
+            <div class="not-icon">&#x1F5C4;&#xFE0F;</div>
+            <div><div class="not-name">Supabase</div><div class="not-reason">It's a genuinely great backend platform, but it introduces unnecessary setup friction and complexity when compared to my existing Cloudflare and Firebase workflow.</div></div>
+          </div>
+          <div class="not-item">
             <div class="not-icon">&#128187;</div>
             <div><div class="not-name">Wix</div><div class="not-reason">I initially looked at this for visual building, but it lacked the deep flexibility I needed. Writing raw HTML and custom CSS from scratch gave me vastly more control and resulted in a much better product for me.</div></div>
           </div>
           <div class="not-item">
             <div class="not-icon">&#129302;</div>
-            <div><div class="not-name">GitHub Copilot</div><div class="not-reason">I wanted to like it, but I found it just isn't as good as using ChatGPT directly. I prefer having a dedicated conversational interface to think through problems rather than relying on inline code autocomplete.</div></div>
+            <div><div class="not-name">GitHub Copilot</div><div class="not-reason">I wanted to like it, but I found it just isn't as good as using a chat interface directly. I prefer having a dedicated conversational workspace to think through problems rather than relying on inline code autocomplete.</div></div>
           </div>
           <div class="not-item">
             <div class="not-icon">&#128176;</div>
