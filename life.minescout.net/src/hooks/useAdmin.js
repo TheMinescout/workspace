@@ -1,23 +1,31 @@
 import { useState, useEffect } from "react";
-import { siteConfig } from "../data/posts";
+import { adminLogin, adminLogout, fetchAdminSession } from "../data/posts";
 
 export function useAdmin() {
-  const [isAdmin, setIsAdmin] = useState(
-    () => sessionStorage.getItem("admin_authenticated") === "true"
-  );
+  // null = still checking the server session
+  const [isAdmin, setIsAdmin] = useState(null);
 
-  const login = (password) => {
-    if (password === siteConfig.adminPassword) {
-      sessionStorage.setItem("admin_authenticated", "true");
+  useEffect(() => {
+    let alive = true;
+    fetchAdminSession()
+      .then(res => { if (alive) setIsAdmin(!!res?.isAdmin); })
+      .catch(() => { if (alive) setIsAdmin(false); });
+    return () => { alive = false; };
+  }, []);
+
+  const login = async (password) => {
+    const res = await adminLogin(password);
+    if (res?.ok) {
       setIsAdmin(true);
       return true;
     }
+    setIsAdmin(false);
     return false;
   };
 
-  const logout = () => {
-    sessionStorage.removeItem("admin_authenticated");
+  const logout = async () => {
     setIsAdmin(false);
+    await adminLogout();
   };
 
   return { isAdmin, login, logout };

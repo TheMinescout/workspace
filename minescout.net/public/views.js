@@ -1483,7 +1483,7 @@ export const views = {
       </div>
     </div>
   `,
-};
+  };
 
 // Ensure aliases are set
 views['/studio/info'] = views['/studio/intake'];

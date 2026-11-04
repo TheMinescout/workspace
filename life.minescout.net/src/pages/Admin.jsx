@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import Header from "../components/Header";
 import {
-  fetchPosts, fetchPost, savePost,
+  fetchPosts, fetchPost, savePost, deletePost,
   fetchSidebarConfig, saveSidebarConfig,
   fetchAllComments, deleteComment,
 } from "../data/posts";
@@ -61,6 +61,9 @@ export default function Admin() {
     if (tab === "comments") fetchAllComments().then(setComments);
   }, [tab]);
 
+  if (isAdmin === null) {
+    return (<><Header/><div style={{padding:"80px",textAlign:"center",color:"var(--ink-4)"}}>Checking session…</div></>);
+  }
   if (!isAdmin) return <Navigate to="/login" replace/>;
 
   const sorted = [...posts].sort((a,b)=>b.timestamp-a.timestamp);
@@ -82,11 +85,8 @@ export default function Admin() {
   const deletePostHandler = async (id) => {
     if (!confirm(`Delete "${posts.find(p=>p.id===id)?.title}"? This cannot be undone.`)) return;
     setDeleting(id);
-    const res = await fetch("/api/delete-post", {
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({id})
-    });
-    if (res.ok) setPosts(prev => prev.filter(p=>p.id!==id));
+    const ok = await deletePost(id);
+    if (ok) setPosts(prev => prev.filter(p=>p.id!==id));
     else alert("Delete failed — make sure dev server is running.");
     setDeleting(null);
   };

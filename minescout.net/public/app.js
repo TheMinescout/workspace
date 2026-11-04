@@ -1,6 +1,6 @@
 // app.js — Application Logic & Routing
 
-import { views } from './views.js?v=1.4';
+import { views } from './views.js?v=1.411';
 
 // ── 1. GLOBAL FIREBASE INITIALIZATION (Fixes memory leaks) ─────────
 let globalFirebaseApp = null;
@@ -60,6 +60,7 @@ const AI_MENU = [
 
 const AI_SECONDARY = [
   { label: 'Enquire',      href: '/studio/intake' },
+  { label: '2026 in Review',  href: '/studio/2026' },
   { label: 'Legal',        href: '/studio/legal' },
   { label: 'Portfolio',    href: '/' },
   { label: 'Ask AI',       href: '/ask' },
@@ -1572,6 +1573,11 @@ RULES:
 let appElement;
 
 function render(path) {
+  // Redirect /studio/2026 to standalone presentation
+  if (path === '/studio/2026') {
+    window.location.href = '/ads/studio-2026-year-in-review.html';
+    return;
+  }
   const cleanPath = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
   const finalPath = cleanPath;
   const content = views[finalPath] || views['404'];
@@ -1594,6 +1600,11 @@ function render(path) {
 }
 
 function navigate(path) {
+  // Redirect /studio/2026 to standalone presentation
+  if (path === '/studio/2026') {
+    window.location.href = '/ads/studio-2026-year-in-review.html';
+    return;
+  }
   window.history.pushState({}, '', path);
   render(path);
 }

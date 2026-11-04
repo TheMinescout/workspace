@@ -28,7 +28,7 @@ export default function Comments({ postId }) {
     e.preventDefault();
     if (!text.trim() || !user) return;
     setSubmitting(true);
-    const res = await addComment(postId, user.username, text.trim());
+    const res = await addComment(postId, text.trim());
     if (res.ok) {
       setComments(prev => [...prev, res.comment]);
       setText("");
@@ -39,7 +39,7 @@ export default function Comments({ postId }) {
   const handleVote = async (vote) => {
     if (!user || voting) return;
     setVoting(true);
-    const res = await votePost(postId, user.username, vote);
+    const res = await votePost(postId, vote);
     if (res.ok) {
       setRatings({ up: res.up, down: res.down, userVote: res.userVote });
       if (res.userVote) sessionStorage.setItem(`vote_${postId}`, res.userVote);

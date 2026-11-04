@@ -4,7 +4,6 @@ export const siteConfig = {
     { title: "LifeOS v4 React Rebuild", desc: "No more Firebase — file-based posts.", color: "#22c55e" },
     { title: "Eagle Final Paperwork", desc: "Formatting the binder & project reports.", color: "#eab308" },
   ],
-  adminPassword: "minescout2026",
   eaglePercent: 100,
 };
 
@@ -15,7 +14,7 @@ export async function fetchPosts() {
 }
 
 export async function fetchPost(id) {
-  const res = await fetch(`/posts/${id}.json?t=` + Date.now());
+  const res = await fetch(`/posts/${encodeURIComponent(id)}.json?t=` + Date.now());
   if (!res.ok) return null;
   return res.json();
 }
@@ -56,21 +55,36 @@ export async function saveSidebarConfig(config) {
   return res.ok;
 }
 
+// Admin session (password is verified server-side only)
+export async function adminLogin(password) {
+  const res = await fetch("/api/admin/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "same-origin",
+    body: JSON.stringify({ password }),
+  });
+  return res.json().catch(() => ({ ok: false }));
+}
+
+export async function adminLogout() {
+  await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
+}
+
+export async function fetchAdminSession() {
+  try {
+    const res = await fetch("/api/admin/session", { credentials: "same-origin" });
+    if (!res.ok) return { ok: false, isAdmin: false };
+    return res.json();
+  } catch { return { ok: false, isAdmin: false }; }
+}
+
 // Users
 export async function registerUser(username, password) {
   const res = await fetch("/api/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "same-origin",
     body: JSON.stringify({ username, password }),
-  });
-  return res.json();
-}
-
-export async function updateUserPassword(username, newPassword) {
-  const res = await fetch("/api/reset-password", { 
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, newPassword }),
   });
   return res.json();
 }
@@ -79,15 +93,28 @@ export async function loginUser(username, password) {
   const res = await fetch("/api/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "same-origin",
     body: JSON.stringify({ username, password }),
   });
   return res.json();
 }
 
+export async function logoutUser() {
+  await fetch("/api/logout", { method: "POST", credentials: "same-origin" });
+}
+
+export async function fetchCurrentUser() {
+  try {
+    const res = await fetch("/api/me", { credentials: "same-origin" });
+    if (!res.ok) return { ok: false };
+    return res.json();
+  } catch { return { ok: false }; }
+}
+
 // Comments
 export async function fetchComments(postId) {
   try {
-    const res = await fetch(`/api/comments?postId=${postId}`);
+    const res = await fetch(`/api/comments?postId=${encodeURIComponent(postId)}`);
     if (!res.ok) return [];
     return res.json();
   } catch { return []; }
@@ -95,17 +122,18 @@ export async function fetchComments(postId) {
 
 export async function fetchAllComments() {
   try {
-    const res = await fetch("/api/comments/all");
+    const res = await fetch("/api/comments/all", { credentials: "same-origin" });
     if (!res.ok) return [];
     return res.json();
   } catch { return []; }
 }
 
-export async function addComment(postId, username, text) {
+export async function addComment(postId, text) {
   const res = await fetch("/api/comments", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ postId, username, text }),
+    credentials: "same-origin",
+    body: JSON.stringify({ postId, text }),
   });
   return res.json();
 }
@@ -114,6 +142,7 @@ export async function deleteComment(commentId) {
   const res = await fetch("/api/comments/delete", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "same-origin",
     body: JSON.stringify({ id: commentId }),
   });
   return res.ok;
@@ -122,17 +151,18 @@ export async function deleteComment(commentId) {
 // Ratings
 export async function fetchRatings(postId) {
   try {
-    const res = await fetch(`/api/ratings?postId=${postId}`);
+    const res = await fetch(`/api/ratings?postId=${encodeURIComponent(postId)}`);
     if (!res.ok) return { up: 0, down: 0, userVote: null };
     return res.json();
   } catch { return { up: 0, down: 0, userVote: null }; }
 }
 
-export async function votePost(postId, username, vote) {
+export async function votePost(postId, vote) {
   const res = await fetch("/api/ratings", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ postId, username, vote }),
+    credentials: "same-origin",
+    body: JSON.stringify({ postId, vote }),
   });
   return res.json();
 }
