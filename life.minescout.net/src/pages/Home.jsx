@@ -31,6 +31,31 @@ function isPublished(p) {
   return new Date(p.publishDate) <= new Date();
 }
 
+function PhilosophySection() {
+  return (
+    <section className="philosophy-section" aria-label="Personal philosophy">
+      <div className="philosophy-heading">
+        <span className="philosophy-eyebrow">A PERSONAL PHILOSOPHY</span>
+        <h2>What matters along the way.</h2>
+      </div>
+      <blockquote className="philosophy-feature">
+        <span className="philosophy-mark" aria-hidden="true">“</span>
+        <p>A life well lived is built from things worth doing, people worth loving, and experiences worth remembering.</p>
+      </blockquote>
+      <div className="philosophy-values">
+        <blockquote className="philosophy-value">
+          <span className="philosophy-value-label">BUILD</span>
+          <p>“The best way to predict the future is to build it.”</p>
+        </blockquote>
+        <blockquote className="philosophy-value">
+          <span className="philosophy-value-label">CONTRIBUTE</span>
+          <p>“Leave things better than you found them.”</p>
+        </blockquote>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   const [posts, setPosts]       = useState([]);
   const [catFilter, setCat]     = useState("all");
@@ -92,6 +117,8 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <PhilosophySection />
 
       <div className="page-layout">
         <main id="timeline">
@@ -157,7 +184,10 @@ export default function Home() {
         </main>
         <Sidebar posts={posts} yearFilter={yearFilter} setYear={setYear} allYears={allYears}/>
       </div>
-      <footer className="site-footer"><p>Life of a Smart Kid · v5.0 · <a href="/admin">Admin</a></p></footer>
+      <footer className="site-footer">
+        <p className="footer-philosophy">Leave things better than you found them.</p>
+        <p>Life of a Smart Kid · v5.0 · <a href="/admin">Admin</a></p>
+      </footer>
     </>
   );
 }

@@ -661,3 +661,92 @@ html[data-theme="dark"] .chip-update { background: rgba(107,114,128,.2); color: 
 
 /* ─── ADMIN: status column ─── */
 .posts-table th:nth-child(4), .posts-table td:nth-child(4) { white-space: nowrap; }
+
+
+/* ─── PERSONAL PHILOSOPHY ─── */
+.philosophy-section {
+  max-width: 900px;
+  margin: 0 auto 52px;
+  padding: 30px 32px 0;
+}
+.philosophy-heading { margin-bottom: 18px; }
+.philosophy-eyebrow {
+  display: block;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  margin-bottom: 7px;
+}
+.philosophy-heading h2 {
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  line-height: 1.2;
+}
+.philosophy-feature {
+  position: relative;
+  margin: 0;
+  padding: 26px 30px 28px 58px;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-m);
+  background: var(--paper-2);
+}
+.philosophy-mark {
+  position: absolute;
+  top: 12px;
+  left: 20px;
+  color: var(--accent);
+  font-family: var(--font-serif);
+  font-size: 42px;
+  line-height: 1;
+}
+.philosophy-feature p {
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 2.5vw, 1.65rem);
+  font-weight: 600;
+  line-height: 1.5;
+}
+.philosophy-values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+.philosophy-value {
+  margin: 0;
+  padding: 18px 20px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+  background: var(--paper);
+}
+.philosophy-value-label {
+  display: block;
+  color: var(--accent);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .13em;
+  margin-bottom: 8px;
+}
+.philosophy-value p {
+  color: var(--ink-2);
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1.6;
+}
+.footer-philosophy {
+  color: var(--ink-2);
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-style: italic;
+  margin-bottom: 10px;
+}
+@media (max-width: 600px) {
+  .philosophy-section { padding: 24px 16px 0; margin-bottom: 40px; }
+  .philosophy-feature { padding: 22px 20px 22px 46px; }
+  .philosophy-mark { left: 13px; }
+  .philosophy-values { grid-template-columns: 1fr; gap: 10px; }
+}
