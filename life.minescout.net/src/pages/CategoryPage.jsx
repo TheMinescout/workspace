@@ -72,13 +72,99 @@ function StatsPanel({posts}) {
 }
 
 function FeaturePanel() {
-  return (
-    <div className="admin-card">
-      <h2 className="admin-card-title">Feature Requests</h2>
-      <p style={{color:"var(--ink-3)",marginBottom:"16px"}}>Got an idea? Email <a href="mailto:theminescout@minescout.net" style={{color:"var(--accent)"}}>theminescout@minescout.net</a></p>
-      <div style={{background:"var(--accent-bg)",border:"1px solid rgba(45,106,79,.2)",borderRadius:"var(--radius-s)",padding:"16px",color:"var(--ink-3)",fontSize:"14px"}}>
-        💡 Request board coming in v4.1
+  const [status, setStatus] = useState("");
+  const [sending, setSending] = useState(false);
+
+  async function submitRequest(event) {
+    event.preventDefault();
+    if (sending) return;
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const title = String(data.get("title") || "").trim();
+    const priority = String(data.get("priority") || "Normal");
+    const description = String(data.get("description") || "").trim();
+    if (!title || !description) {
+      setStatus("Please add a title and description.");
+      return;
+    }
+
+    const escapeHtml = value => value.replace(/[&<>"']/g, char => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+    }[char]));
+    const safe = value => escapeHtml(value).replace(/\n/g, "<br>");
+    const htmlBody = `
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1a1916">
+        <div style="background:#1a1916;padding:20px;color:#fff">
+          <h2 style="margin:0;font-family:Georgia,serif">Minescout Life / Feature Request</h2>
+        </div>
+        <div style="padding:24px;border:1px solid #e8e4dd">
+          <p><strong>Request:</strong> ${safe(title)}</p>
+          <p><strong>Submitted by:</strong> ${safe(name || "Not provided")}</p>
+          <p><strong>Reply email:</strong> ${safe(email || "Not provided")}</p>
+          <p><strong>Priority:</strong> ${safe(priority)}</p>
+          <div style="margin-top:18px;padding:16px;background:#f9f8f6;border-left:3px solid #2d6a4f;white-space:normal">
+            ${safe(description)}
+          </div>
+        </div>
       </div>
+    `;
+    const payload = {
+      to: ["theminescout@minescout.net"],
+      subject: `Minescout Life Feature Request: ${title}`,
+      htmlBody,
+      fromName: "Minescout Life Feature Requests"
+    };
+
+    setSending(true);
+    setStatus("Sending request…");
+    try {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbz7MJE7mNY1A-SvbdHGV3yI6-ftBElB1wOth4MqEABvJXLI5SNzeqiG2r7PJBpWvcAiOg/exec", {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error("Email service rejected the request.");
+      form.reset();
+      setStatus("Request sent. Thanks for helping improve Minescout Life!");
+    } catch (error) {
+      setStatus("Could not send the request right now. Please email theminescout@minescout.net directly.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div className="admin-card request-card">
+      <h2 className="admin-card-title">Feature Requests</h2>
+      <p className="request-intro">Have an idea for Minescout Life? Send it over. Requests go directly to <a href="mailto:theminescout@minescout.net">theminescout@minescout.net</a>.</p>
+      <form className="request-form" onSubmit={submitRequest}>
+        <div className="form-group">
+          <label className="form-label" htmlFor="request-name">Name / handle <span>Optional</span></label>
+          <input className="form-input" id="request-name" name="name" maxLength="100" autoComplete="name" placeholder="What should I call you?"/>
+        </div>
+        <div className="form-group">
+          <label className="form-label" htmlFor="request-email">Email <span>Optional, for a reply</span></label>
+          <input className="form-input" id="request-email" name="email" type="email" maxLength="254" autoComplete="email" placeholder="you@example.com"/>
+        </div>
+        <div className="form-group">
+          <label className="form-label" htmlFor="request-title">Feature title</label>
+          <input className="form-input" id="request-title" name="title" required maxLength="160" placeholder="What should be added or improved?"/>
+        </div>
+        <div className="form-group">
+          <label className="form-label" htmlFor="request-priority">Priority</label>
+          <select className="form-select" id="request-priority" name="priority" defaultValue="Normal">
+            <option>Low</option><option>Normal</option><option>High</option>
+          </select>
+        </div>
+        <div className="form-group">
+          <label className="form-label" htmlFor="request-description">Description</label>
+          <textarea className="form-textarea" id="request-description" name="description" required maxLength="5000" rows="7" placeholder="What problem would this solve? How would you use it?"/>
+        </div>
+        <button className="btn-primary request-submit" type="submit" disabled={sending}>{sending ? "Sending…" : "Send feature request →"}</button>
+        {status && <p className="request-status" role="status" aria-live="polite">{status}</p>}
+      </form>
     </div>
   );
 }
