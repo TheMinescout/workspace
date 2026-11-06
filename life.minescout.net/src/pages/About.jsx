@@ -15,8 +15,9 @@ export default function About() {
   return (
     <>
       <Header />
-      <div className="about-layout">
-        <main className="about-article">
+      <div className="page-layout about-page-layout">
+        <main className="about-content-grid">
+          <article className="about-article">
           <div className="about-kicker">Minescout Life / About</div>
           <h1 className="about-title">About Me</h1>
           <article className="about-copy">
@@ -30,18 +31,15 @@ export default function About() {
 
             <p>I try to keep things simple: I think a good life is about doing things that matter, being with people you care about, and making memories you’ll actually remember. A life well lived is built from things worth doing, people worth loving, and experiences worth remembering. I believe in making the future instead of just waiting for it, and in trying to leave things a bit better than I found them.</p>
           </article>
-        </main>
-        <aside className="about-quote-rail" aria-label="Pull quotes">
+          <aside className="about-quote-rail" aria-label="Pull quotes">
           {PULL_QUOTES.map(quote => (
             <blockquote className="about-pullquote" key={quote}>
               <p>“{quote}”</p>
               <cite>— TheMinescout</cite>
             </blockquote>
           ))}
-        </aside>
-      </div>
-      <div className="page-layout">
-        <div />
+          </aside>
+        </main>
         <Sidebar posts={posts} />
       </div>
       <footer className="site-footer">
