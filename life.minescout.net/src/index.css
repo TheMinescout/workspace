@@ -753,13 +753,10 @@ html[data-theme="dark"] .chip-update { background: rgba(107,114,128,.2); color: 
 
 
 /* ─── ABOUT PAGE ─── */
-.about-layout {
+.about-content-grid {
   display: grid;
-  grid-template-columns: minmax(0, 680px) 250px;
-  gap: 64px;
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 42px 32px 88px;
+  grid-template-columns: minmax(0, 1fr) 230px;
+  gap: 48px;
   align-items: start;
 }
 .about-article { min-width: 0; }
@@ -814,11 +811,11 @@ html[data-theme="dark"] .chip-update { background: rgba(107,114,128,.2); color: 
 .request-submit { margin-top: 2px; }
 .request-status { color: var(--ink-3); font-size: 13px; margin-top: 14px; line-height: 1.5; }
 @media (max-width: 820px) {
-  .about-layout { grid-template-columns: 1fr; gap: 36px; }
+  .about-content-grid { grid-template-columns: 1fr; gap: 36px; }
   .about-quote-rail { padding-top: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
 }
 @media (max-width: 560px) {
-  .about-layout { padding: 30px 16px 64px; }
+  .about-page-layout { padding-top: 30px; padding-bottom: 64px; }
   .about-title { letter-spacing: -.7px; }
   .about-quote-rail { grid-template-columns: 1fr; gap: 24px; }
 }
