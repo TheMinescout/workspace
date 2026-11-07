@@ -620,7 +620,7 @@ html[data-theme="dark"] .chip-update { background: rgba(107,114,128,.2); color: 
   width: 100%; padding: 10px 14px;
   border: 1px solid var(--rule); border-radius: var(--radius-s);
   background: var(--paper); color: var(--ink);
-  font-family: var(--font-sans); font-size: 14px;
+  font-family: var(--font-body); font-size: 14px;
   resize: vertical; box-sizing: border-box;
   transition: border-color .15s;
 }
@@ -648,7 +648,7 @@ html[data-theme="dark"] .chip-update { background: rgba(107,114,128,.2); color: 
 
 /* ─── AUTH TABS ─── */
 .auth-page { display: flex; justify-content: center; align-items: center; min-height: 70vh; padding: 40px 16px; }
-.auth-card { width: 100%; max-width: 400px; background: var(--paper); border: 1px solid var(--rule); border-radius: var(--radius); padding: 40px 36px; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,.06); }
+.auth-card { width: 100%; max-width: 400px; background: var(--paper); border: 1px solid var(--rule); border-radius: var(--radius-m); padding: 40px 36px; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,.06); }
 .auth-icon { font-size: 40px; margin-bottom: 12px; }
 .auth-title { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 700; color: var(--ink); margin: 0 0 6px; }
 .auth-sub { font-size: 13px; color: var(--ink-4); margin: 0 0 20px; }
