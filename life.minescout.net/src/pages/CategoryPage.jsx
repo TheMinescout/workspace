@@ -128,7 +128,7 @@ function FeaturePanel() {
       if (!response.ok) throw new Error("Email service rejected the request.");
       form.reset();
       setStatus("Request sent. Thanks for helping improve Minescout Life!");
-    } catch (error) {
+    } catch {
       setStatus("Could not send the request right now. Please email theminescout@minescout.net directly.");
     } finally {
       setSending(false);

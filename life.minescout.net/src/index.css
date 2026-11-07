@@ -819,3 +819,32 @@ html[data-theme="dark"] .chip-update { background: rgba(107,114,128,.2); color: 
   .about-title { letter-spacing: -.7px; }
   .about-quote-rail { grid-template-columns: 1fr; gap: 24px; }
 }
+
+/* ─── BOOT / RENDER FALLBACK ─────────────────────────────────────────────
+   Mirrors the inline styles in index.html so the React error boundary and
+   the pre-bundle boot guard share one look. */
+.boot-panel {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: var(--paper); color: var(--ink);
+}
+.boot-card {
+  max-width: 460px; width: 100%; text-align: center; background: var(--paper);
+  border: 1px solid var(--rule); border-radius: var(--radius-l); padding: 40px 32px;
+  box-shadow: var(--shadow-l);
+}
+.boot-mark { font-size: 40px; line-height: 1; margin-bottom: 12px; }
+.boot-title { font-size: 22px; margin: 0 0 10px; font-weight: 700; }
+.boot-text { font-size: 14px; color: var(--ink-3); margin: 0 0 16px; line-height: 1.6; }
+.boot-detail {
+  font-family: var(--font-mono); font-size: 11px; color: var(--ink-3);
+  background: var(--paper-2); border: 1px solid var(--paper-3);
+  border-radius: var(--radius-m); padding: 10px 12px; margin: 0 0 20px;
+  white-space: pre-wrap; word-break: break-word; text-align: left;
+}
+.boot-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.boot-btn {
+  display: inline-block; font: inherit; font-size: 14px; font-weight: 600;
+  padding: 10px 20px; border-radius: var(--radius-m); cursor: pointer; text-decoration: none;
+  border: 1px solid var(--accent); background: var(--accent); color: #fff;
+}
+.boot-btn-ghost { background: transparent; color: var(--accent); }
