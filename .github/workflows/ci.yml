@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "life.minescout.net/**"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    paths:
+      - "life.minescout.net/**"
+      - ".github/workflows/ci.yml"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: life.minescout.net
+
+jobs:
+  verify:
+    name: Build, lint and render smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: life.minescout.net/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Chromium for the render smoke test
+        run: npx playwright install --with-deps chromium
+
+      - name: Render smoke test (fails on a blank page)
+        run: node scripts/smoke.mjs

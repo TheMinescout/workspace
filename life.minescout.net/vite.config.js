@@ -100,6 +100,10 @@ function applyCors(req, res) {
   const origin = req.headers.origin || "";
   if (ALLOWED_ORIGINS.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
+    // The vault is called cross-origin from beta.minescout.net with
+    // credentials: "include"; without this header the browser drops the
+    // response and the terminal game cannot read its state.
+    res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Vary", "Origin");
   }
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");

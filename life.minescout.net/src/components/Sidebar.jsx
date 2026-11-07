@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { siteConfig, fetchSidebarConfig } from "../data/posts";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const NAV = [
   { label: "Home",             href: "/" },
@@ -16,15 +16,19 @@ const NAV = [
 
 function AIInsight({ posts }) {
   const [text, setText] = useState(null);
+  const recent = useMemo(
+    () => (posts || []).slice(0, 8).map(p => `- ${p.title} (${p.category})`).join("\n"),
+    [posts]
+  );
+
   useEffect(() => {
-    if (!posts?.length) return;
-    const recent = posts.slice(0,8).map(p=>`- ${p.title} (${p.category})`).join("\n");
+    if (!recent) return;
     fetch("https://thomas-chat.tmcarleton11.workers.dev/",{
       method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({client_id:"minescout_life",system_override:"You are an AI in a student dashboard. Analyze recent posts and write 1-2 short encouraging sentences about momentum and focus. No quotes.",messages:[{role:"user",content:`Analyze:\n${recent}`}],temperature:0.3})
     }).then(r=>r.json()).then(d=>setText(d.content||null))
       .catch(()=>setText("Solid momentum lately — the mix of tech reviews and builds shows real range."));
-  }, [posts?.length]);
+  }, [recent]);
   return (
     <p className="ai-insight">
       {text===null ? <><span className="ai-pulse"/>Reflecting...</> : `"${text}"`}
@@ -32,7 +36,7 @@ function AIInsight({ posts }) {
   );
 }
 
-export default function Sidebar({ posts=[], yearFilter, setYear, allYears=[] }) {
+export default function Sidebar({ posts=[], yearFilter, setYear }) {
   const { pathname } = useLocation();
   const [cfg, setCfg] = useState(null);
 
@@ -41,7 +45,6 @@ export default function Sidebar({ posts=[], yearFilter, setYear, allYears=[] }) 
   }, []);
 
   const nowBuilding = cfg?.nowBuilding || siteConfig.nowBuilding;
-  const eaglePercent = cfg?.eaglePercent ?? siteConfig.eaglePercent;
 
   const grouped = {};
   posts.forEach(p => { const y=new Date(p.timestamp).getFullYear(); grouped[y]=(grouped[y]||0)+1; });
