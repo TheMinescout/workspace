@@ -1271,7 +1271,12 @@ function _updateManifest(dir, post, remove) {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
+  // GitHub Pages serves the repo under /<repo>/, so the build needs a matching
+  // base. Life and any other host stay on "/".
+  const base = process.env.GH_PAGES_BASE || "/";
+
   return {
+    base,
     plugins: [react(), apiPlugin(env)],
     server: {
       port: 3000,

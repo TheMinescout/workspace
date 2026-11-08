@@ -1,0 +1,72 @@
+name: Preview on GitHub Pages
+
+# Publishes a static preview of the site. The API routes are dev-server only,
+# so on Pages the posts, images and navigation work but comments, votes and
+# admin sign-in do not.
+on:
+  push:
+    branches:
+      - feat/rematch-verbatim-sec6-and-polish
+    paths:
+      - "life.minescout.net/**"
+      - ".github/workflows/pages-preview.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-preview
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: life.minescout.net
+
+jobs:
+  build:
+    name: Build static preview
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: life.minescout.net/package-lock.json
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          # "/workspace" for this repo; configure-pages fills it in for us.
+          GH_PAGES_BASE: ${{ steps.pages.outputs.base_path }}/
+        run: npm run build
+
+      - name: Add SPA fallback and disable Jekyll
+        run: |
+          cp dist/index.html dist/404.html
+          touch dist/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: life.minescout.net/dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

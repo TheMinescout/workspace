@@ -1,3 +1,4 @@
+import { BASE } from "../lib/base";
 import { Component } from "react";
 
 /**
@@ -36,7 +37,7 @@ export default class ErrorBoundary extends Component {
           <pre className="boot-detail">{detail}</pre>
           <div className="boot-actions">
             <button type="button" className="boot-btn" onClick={this.reload}>Reload</button>
-            <a className="boot-btn boot-btn-ghost" href="/">Back to home</a>
+            <a className="boot-btn boot-btn-ghost" href={BASE}>Back to home</a>
           </div>
         </div>
       </div>
