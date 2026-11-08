@@ -1,15 +1,14 @@
-name: Preview on GitHub Pages
+name: Deploy to GitHub Pages
 
 # Publishes a static preview of the site. The API routes are dev-server only,
 # so on Pages the posts, images and navigation work but comments, votes and
 # admin sign-in do not.
 on:
   push:
-    branches:
-      - feat/rematch-verbatim-sec6-and-polish
+    branches: [main]
     paths:
       - "life.minescout.net/**"
-      - ".github/workflows/pages-preview.yml"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -18,7 +17,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages-preview
+  group: pages
   cancel-in-progress: true
 
 defaults:
