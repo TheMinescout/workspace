@@ -62,7 +62,7 @@
             '<p class="boot-text">Something went wrong loading the app. A reload usually fixes it.</p>' +
             '<pre class="boot-detail">' + String(reason || "Unknown error").slice(0, 300) + "</pre>" +
             '<div class="boot-actions"><button type="button" class="boot-btn" onclick="location.reload()">Reload</button>' +
-            '<a class="boot-btn boot-btn-ghost" href="/">Back to home</a></div>' +
+            '<a class="boot-btn boot-btn-ghost" href="%BASE_URL%">Back to home</a></div>' +
             "</div></div>";
         }
         window.addEventListener("error", function (e) {

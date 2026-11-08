@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Comments from "../components/Comments";
 import { fetchPost, fetchPosts } from "../data/posts";
+import { rewriteContentPaths, assetUrl } from "../lib/base";
 import { useTheme } from "../hooks/useTheme";
 import { useAdmin } from "../hooks/useAdmin";
 
@@ -58,11 +59,11 @@ export default function PostPage() {
             <p className="article-meta">{date}</p>
 
             {post.heroImage && (
-              <img src={post.heroImage} alt={post.title} className="article-hero"
+              <img src={assetUrl(post.heroImage)} alt={post.title} className="article-hero"
                 onError={e=>e.target.style.display="none"}/>
             )}
 
-            <div className="article-body" dangerouslySetInnerHTML={{__html: post.content}}/>
+            <div className="article-body" dangerouslySetInnerHTML={{__html: rewriteContentPaths(post.content)}}/>
           </div>
 
           <div style={{marginTop:"28px",display:"flex",justifyContent:"space-between"}}>

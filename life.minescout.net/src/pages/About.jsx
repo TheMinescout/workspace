@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
+import { withBase } from "../lib/base";
 import { fetchPosts } from "../data/posts";
 
 const PULL_QUOTES = [
@@ -45,7 +46,7 @@ export default function About() {
       </div>
       <footer className="site-footer">
         <p className="footer-philosophy">Leave things better than you found them.</p>
-        <p>Life of a Smart Kid · v5.0 · <a href="/admin">Admin</a></p>
+        <p>Life of a Smart Kid · v5.0 · <a href={withBase("admin")}>Admin</a></p>
       </footer>
     </>
   );

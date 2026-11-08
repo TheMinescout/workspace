@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BASE } from "./lib/base";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
@@ -11,7 +12,7 @@ const SLUGS = ["coding-projects","tech-tips","updates","puppy-life","minecraft-s
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={BASE}>
       <Routes>
         <Route path="/"               element={<Home />} />
         <Route path="/about"          element={<About />} />

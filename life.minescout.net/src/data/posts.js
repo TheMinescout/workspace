@@ -1,3 +1,4 @@
+import { withBase } from "../lib/base";
 export const siteConfig = {
   nowBuilding: [
     { title: "Geo Quiz AI", desc: "Training custom models for terrain recognition.", color: "#f97316" },
@@ -8,13 +9,13 @@ export const siteConfig = {
 };
 
 export async function fetchPosts() {
-  const res = await fetch("/posts/manifest.json?t=" + Date.now());
+  const res = await fetch(withBase("posts/manifest.json?t=" + Date.now()));
   if (!res.ok) return [];
   return res.json();
 }
 
 export async function fetchPost(id) {
-  const res = await fetch(`/posts/${encodeURIComponent(id)}.json?t=` + Date.now());
+  const res = await fetch(withBase(`posts/${encodeURIComponent(id)}.json?t=` + Date.now()));
   if (!res.ok) return null;
   return res.json();
 }

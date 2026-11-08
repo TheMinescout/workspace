@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import PostCard from "../components/PostCard";
+import { withBase } from "../lib/base";
 import { fetchPosts, siteConfig } from "../data/posts";
 import { useAdmin } from "../hooks/useAdmin";
 
@@ -160,7 +161,7 @@ export default function Home() {
       </div>
       <footer className="site-footer">
         <p className="footer-philosophy">Leave things better than you found them.</p>
-        <p>Life of a Smart Kid · v5.0 · <a href="/admin">Admin</a></p>
+        <p>Life of a Smart Kid · v5.0 · <a href={withBase("admin")}>Admin</a></p>
       </footer>
     </>
   );

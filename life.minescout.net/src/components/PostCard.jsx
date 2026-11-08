@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { assetUrl } from "../lib/base";
 
 function chipClass(cat) {
   const c = (cat||"").toLowerCase();
@@ -22,7 +23,7 @@ export default function PostCard({ post }) {
       <p className="card-summary">{post.summary}</p>
       {post.heroImage && (
         <img
-          src={post.heroImage}
+          src={assetUrl(post.heroImage)}
           alt={post.title}
           className="card-hero-img"
           onError={e => e.target.style.display = "none"}
