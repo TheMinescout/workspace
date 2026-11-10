@@ -149,6 +149,30 @@ try {
     });
     await context.close();
   }
+
+  // Regression test: a background request rejecting after the app has painted
+  // must not tear the rendered page down. The boot guard once fired on any
+  // unhandled rejection, replacing a working app with the fallback panel.
+  {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    await stubApi(context);
+    const page = await context.newPage();
+    await page.goto(BASE + "/", { waitUntil: "networkidle", timeout: 30000 }).catch(() => {});
+    const painted = await page.locator("#root").innerHTML().then(h => h.length > 0).catch(() => false);
+    await page.evaluate(() => { Promise.reject(new Error("simulated background request failure")); });
+    await page.waitForTimeout(1500);
+    const stillPainted = await page.locator("#root").innerHTML().then(h => h.length > 0).catch(() => false);
+    const panelAfter = await page.locator("#root .boot-panel").count();
+    const ok = painted && stillPainted && panelAfter === 0;
+    if (!ok) failed = true;
+    results.push({
+      route: "[stray rejection keeps the app]",
+      ok, status: 200, chars: stillPainted ? 1 : 0,
+      bootFailed: 0, bootPanel: panelAfter,
+      errors: ok ? [] : ["a stray promise rejection replaced the rendered app with the boot fallback"],
+    });
+    await context.close();
+  }
 } finally {
   await browser.close();
   stopServer();

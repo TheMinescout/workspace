@@ -8,16 +8,22 @@ export const siteConfig = {
   eaglePercent: 100,
 };
 
+// A rejected fetch here would leave the page stuck on "Loading…" and, before
+// first paint, trip the boot guard. These degrade to empty content instead.
 export async function fetchPosts() {
-  const res = await fetch(withBase("posts/manifest.json?t=" + Date.now()));
-  if (!res.ok) return [];
-  return res.json();
+  try {
+    const res = await fetch(withBase("posts/manifest.json?t=" + Date.now()));
+    if (!res.ok) return [];
+    return res.json();
+  } catch { return []; }
 }
 
 export async function fetchPost(id) {
-  const res = await fetch(withBase(`posts/${encodeURIComponent(id)}.json?t=` + Date.now()));
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    const res = await fetch(withBase(`posts/${encodeURIComponent(id)}.json?t=` + Date.now()));
+    if (!res.ok) return null;
+    return res.json();
+  } catch { return null; }
 }
 
 export async function savePost(post) {

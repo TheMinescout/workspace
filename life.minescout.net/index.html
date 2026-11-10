@@ -51,8 +51,14 @@
       (function () {
         var root = document.getElementById("root");
         var done = false;
+        // Once React has painted, the app owns the page. Background requests
+        // (comments, ratings, sidebar) reject routinely and must never tear
+        // down a working screen, so the guard stops acting after first paint.
+        function mounted() {
+          return !!(root && root.firstElementChild);
+        }
         function fail(reason) {
-          if (done || !root) return;
+          if (done || !root || mounted()) return;
           done = true;
           root.setAttribute("data-boot-failed", "1");
           root.innerHTML =
