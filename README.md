@@ -75,6 +75,70 @@ npm run build
 npm run preview
 ```
 
+### MCP server (let an AI agent write posts)
+
+`life.minescout.net` exposes a [Model Context Protocol](https://modelcontextprotocol.io)
+server at `POST /api/mcp`. It lets an AI agent — Claude Desktop, Cursor, or any
+MCP client — list, read, create, edit and delete posts through the same storage
+path the admin editor uses, so an agent-written post is identical to a
+hand-written one.
+
+The server lives in `server/mcp.js`, is mounted by the Vite API plugin in
+`vite.config.js`, and is served on the same origin as the site (nginx already
+proxies `/api/` to the app server, so no extra hosting is needed).
+
+**Tools**
+
+| Tool | Purpose |
+| --- | --- |
+| `list_posts` | List posts, newest first. Optional `category` filter. |
+| `get_post` | Fetch one post in full, including its content. |
+| `create_post` | Publish a new post. Body may be Markdown or HTML. |
+| `update_post` | Edit an existing post. Only the fields you pass change. |
+| `delete_post` | Permanently delete a post. |
+
+**Authentication**
+
+Every request needs a bearer token, because these tools can publish to the live
+site. The token is supplied to the server as `MCP_TOKEN`; without it the
+endpoint is disabled and returns `503`, so it is off by default. Requests with a
+missing or wrong token get `401`.
+
+The token value itself is a secret and is not stored in this repository. On the
+server, keep it in the app's `.env`, which is gitignored.
+
+**Connecting a client**
+
+Point the client at `https://life.minescout.net/api/mcp` and send the token as
+an `Authorization: Bearer <token>` header. For example, in Claude Desktop's
+`claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "minescout-life": {
+      "type": "http",
+      "url": "https://life.minescout.net/api/mcp",
+      "headers": { "Authorization": "Bearer YOUR_TOKEN_HERE" }
+    }
+  }
+}
+```
+
+Once connected, an agent can publish a post in one call:
+
+> "Write a post about this week's Eagle Scout progress and publish it."
+
+**Notes**
+
+- Posts are written to `public/posts/<id>.json` plus `public/posts/manifest.json`,
+  the same files the admin editor writes. Nothing else needs deploying.
+- Content is sanitized on the way in (scripts, event handlers and unsafe URLs are
+  stripped), and the body is rendered from Markdown when it is not already HTML.
+- Set `publishDate` to a future time to schedule a post; pass an empty string
+  when updating to publish it immediately.
+- `POSTS_DIR` overrides the storage location, which is useful for testing.
+
 ## Minescout Beta (`beta.minescout.net`)
 
 The beta site is a static experimental environment. It includes the terminal-style interface and supporting pages for projects, feature requests, login, email, admin messages, and content. The beta directory also contains shared assets and content data used by those pages.

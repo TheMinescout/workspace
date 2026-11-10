@@ -9,8 +9,10 @@ import {
   hashPassword, verifyPassword, safeEqual,
   signSession, verifySession, parseCookies, serializeCookie,
   isSecureRequest, clientIp, createRateLimiter,
-  isPostId, isUsername, cleanText, isSafeAssetUrl, sanitizeHtml,
+  isPostId, isUsername, cleanText,
 } from "./server/security.js";
+import { savePost as storeSavePost, removePost as storeRemovePost, normalizePost } from "./server/posts-store.js";
+import { mcpMiddleware } from "./server/mcp.js";
 
 // The scraper module lives in the gitignored data/ folder, so it may be absent.
 async function loadScraper() {
@@ -107,7 +109,7 @@ function applyCors(req, res) {
     res.setHeader("Vary", "Origin");
   }
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 }
 
 // Same-origin requests and the known sites are the only ones allowed to mutate state.
@@ -915,26 +917,10 @@ the normal clearance system created it.
           return json(res, { ok: false, error: "Title and summary are required." }, 400);
         }
 
-        const dir = path.resolve("public/posts");
-        const post = {
-          id,
-          title: cleanText(body.title, 200),
-          category: cleanText(body.category, 40) || "Tech",
-          summary: cleanText(body.summary, 400),
-          heroImage: isSafeAssetUrl(body.heroImage) ? body.heroImage : "",
-          content: sanitizeHtml(typeof body.content === "string" ? body.content : ""),
-          linkText: cleanText(body.linkText, 60) || "Read Entry",
-          linkUrl: `/post/${id}`,
-          date: cleanText(body.date, 80),
-          timestamp: Number.isFinite(body.timestamp) ? body.timestamp : Date.now(),
-          publishDate: typeof body.publishDate === "string" ? cleanText(body.publishDate, 40) || null : null,
-          backLabel: cleanText(body.backLabel, 60),
-          backHref: isSafeAssetUrl(body.backHref) ? body.backHref : "/",
-        };
+        const post = normalizePost(body, id);
 
         try {
-          fs.writeFileSync(path.join(dir, `${id}.json`), JSON.stringify(post, null, 2));
-          _updateManifest(dir, post, false);
+          storeSavePost(post);
           json(res, { ok: true });
         } catch (e) {
           console.error("[save-post]", e.message);
@@ -954,10 +940,7 @@ the normal clearance system created it.
         if (!isPostId(id)) return json(res, { ok: false, error: "Invalid post id." }, 400);
 
         try {
-          const dir = path.resolve("public/posts");
-          const file = path.join(dir, `${id}.json`);
-          if (fs.existsSync(file)) fs.unlinkSync(file);
-          _updateManifest(dir, { id }, true);
+          storeRemovePost(id);
           json(res, { ok: true });
         } catch (e) {
           console.error("[delete-post]", e.message);
@@ -1244,28 +1227,16 @@ the normal clearance system created it.
       const scraper = await loadScraper();
       if (scraper && typeof scraper.registerScrapingRoutes === "function") scraper.registerScrapingRoutes(server);
       if (scraper && typeof scraper.registerDebugRoute === "function") scraper.registerDebugRoute(server);
+
+      // ── MCP ───────────────────────────────────────────────────────────
+      // Lets an AI agent read and write posts. Token-gated: the tools can
+      // publish, so the token is checked before any MCP handling runs.
+      if (!env.MCP_TOKEN) {
+        console.warn("[mcp] MCP_TOKEN is not set — the /api/mcp endpoint is disabled.");
+      }
+      server.middlewares.use("/api/mcp", mcpMiddleware(() => String(env.MCP_TOKEN || "")));
     }
   };
-}
-
-function _updateManifest(dir, post, remove) {
-  const mp = path.join(dir, "manifest.json");
-  let manifest = readJSON(mp, []);
-  if (remove) {
-    manifest = manifest.filter(p => p.id !== post.id);
-  } else {
-    const idx = manifest.findIndex(p => p.id === post.id);
-    const entry = {
-      id: post.id, title: post.title, category: post.category,
-      summary: post.summary, heroImage: post.heroImage,
-      timestamp: post.timestamp, linkUrl: post.linkUrl || `/post/${post.id}`,
-      linkText: post.linkText || "Read Entry", date: post.date,
-      publishDate: post.publishDate || null,
-    };
-    if (idx >= 0) manifest[idx] = entry; else manifest.unshift(entry);
-    manifest.sort((a, b) => b.timestamp - a.timestamp);
-  }
-  fs.writeFileSync(mp, JSON.stringify(manifest, null, 2));
 }
 
 export default defineConfig(({ mode }) => {
