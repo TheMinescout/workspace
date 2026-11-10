@@ -1572,6 +1572,31 @@ RULES:
 // ── 4. BOOTSTRAP ROUTER ──────────────────────────────────────────────────
 let appElement;
 
+// Google Tag Manager, loaded only for the Minescout Studio section (/studio*).
+// This SPA renders every page through one document, so a tag in index.html
+// would fire on the portfolio too; it is injected here instead, once, on the
+// first studio route.
+const GTM_ID = 'GTM-54D9Z563';
+let gtmLoaded = false;
+
+function isStudioPath(path) {
+  return path === '/studio' || path.startsWith('/studio/');
+}
+
+function loadGTM() {
+  if (gtmLoaded) return;
+  gtmLoaded = true;
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function gtag(){ dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`;
+  document.head.appendChild(script);
+}
+
 function render(path) {
   // Redirect /studio/2026 to standalone presentation
   if (path === '/studio/2026') {
@@ -1581,7 +1606,9 @@ function render(path) {
   const cleanPath = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
   const finalPath = cleanPath;
   const content = views[finalPath] || views['404'];
-  
+
+  if (isStudioPath(finalPath)) loadGTM();
+
   appElement.innerHTML = content;
   updateSidebarNav(path); 
   window.scrollTo(0, 0);
