@@ -23,6 +23,8 @@ export function TextureSwatch({
     <img
       src={closeup ? texture.closeup : texture.image}
       alt={`${texture.name} texture roller pattern`}
+      loading="lazy"
+      decoding="async"
       className={cn("h-full w-full object-cover", className)}
     />
   );

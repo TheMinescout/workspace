@@ -5,15 +5,20 @@ export function SiteFooter() {
     <footer className="border-t border-border bg-bg-warm">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
-          <p className="font-display text-xl font-medium tracking-tight">The Chop Lab</p>
+          <h2 className="font-display text-xl font-medium tracking-tight">The Chop Lab</h2>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted">
             Custom chops, rollers, and studio tools — engineered in a
             micro-manufacturing lab and printed in PLA Matte for clean clay
             release.
           </p>
         </div>
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-muted">Studio</p>
+        <nav aria-labelledby="footer-studio">
+          <h3
+            id="footer-studio"
+            className="text-xs font-medium uppercase tracking-wider text-muted"
+          >
+            Studio
+          </h3>
           <ul className="mt-3 space-y-2 text-sm">
             <li>
               <Link to="/tools" className="text-fg hover:text-primary">
@@ -31,9 +36,14 @@ export function SiteFooter() {
               </Link>
             </li>
           </ul>
-        </div>
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-muted">Lab</p>
+        </nav>
+        <nav aria-labelledby="footer-lab">
+          <h3
+            id="footer-lab"
+            className="text-xs font-medium uppercase tracking-wider text-muted"
+          >
+            Lab
+          </h3>
           <ul className="mt-3 space-y-2 text-sm">
             <li>
               <Link to="/about" className="text-fg hover:text-primary">
@@ -57,7 +67,7 @@ export function SiteFooter() {
             </li>
             <li className="text-muted">Build volume 256 mm cube</li>
           </ul>
-        </div>
+        </nav>
       </div>
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-5 text-xs text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">

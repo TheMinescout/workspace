@@ -15,7 +15,10 @@ export type Product = {
   hourlyRate: number;
   estimatedHours: number;
   bestSeller?: boolean;
+  /** Primary image, also the first entry of `gallery` when one exists. */
   image?: string;
+  /** Extra product shots for the detail-page gallery. First entry is the hero. */
+  gallery?: { src: string; alt: string }[];
   stlFile?: string;
   features: string[];
   digital?: boolean;
@@ -62,6 +65,28 @@ export const PRODUCTS: Product[] = [
     estimatedHours: 2,
     bestSeller: true,
     image: "/images/chop-complex.jpg",
+    gallery: [
+      {
+        src: "/images/chop-complex.jpg",
+        alt: "A complex custom Chop Lab stamp and its crisp impression pressed into leather-hard clay",
+      },
+      {
+        src: "/images/chop-complex-cad.jpg",
+        alt: "CAD model of a complex custom chop showing the engraved face geometry",
+      },
+      {
+        src: "/images/handle-options.jpg",
+        alt: "Custom chop handles shown in the available color options",
+      },
+      {
+        src: "/images/packaging.jpg",
+        alt: "A finished Chop Lab tool packed and ready to ship",
+      },
+      {
+        src: "/images/care-instructions.jpg",
+        alt: "The care-instructions card included with a Chop Lab tool",
+      },
+    ],
     features: [
       "Any logo, monogram, or original artwork",
       "Consistent depth and crisp edges on leather-hard clay",
@@ -89,6 +114,24 @@ export const PRODUCTS: Product[] = [
     hourlyRate: 15,
     estimatedHours: 1,
     image: "/images/chop-simple.jpg",
+    gallery: [
+      {
+        src: "/images/chop-simple.jpg",
+        alt: "A simple custom Chop Lab stamp and its clean impression in clay",
+      },
+      {
+        src: "/images/handle-options.jpg",
+        alt: "Custom chop handles shown in the available color options",
+      },
+      {
+        src: "/images/packaging.jpg",
+        alt: "A finished Chop Lab tool packed and ready to ship",
+      },
+      {
+        src: "/images/care-instructions.jpg",
+        alt: "The care-instructions card included with a Chop Lab tool",
+      },
+    ],
     features: [
       "Initials, wordmarks, and simple icons",
       "Crisp, consistent impressions",
@@ -116,6 +159,28 @@ export const PRODUCTS: Product[] = [
     hourlyRate: 12,
     estimatedHours: 1.5,
     image: "/images/roller-hex-10in.jpg",
+    gallery: [
+      {
+        src: "/images/roller-hex-10in.jpg",
+        alt: "A ten-inch honeycomb texture roller in the Chop Lab studio",
+      },
+      {
+        src: "/images/roller-hex-closeup.jpg",
+        alt: "Close detail of the honeycomb pattern on the roller surface",
+      },
+      {
+        src: "/images/roller-hex-topdown.jpg",
+        alt: "Top-down view of the ten-inch roller showing the seamless repeating pattern",
+      },
+      {
+        src: "/images/roller-torque.jpg",
+        alt: "The torque-flute spiral pattern rolled across a clay slab",
+      },
+      {
+        src: "/images/roller-mason-4in.jpg",
+        alt: "The masonry-block pattern available in the texture library",
+      },
+    ],
     features: [
       "Seamless repeating geometry",
       "Honeycomb, brick, spiral, and custom patterns",
@@ -142,6 +207,28 @@ export const PRODUCTS: Product[] = [
     hourlyRate: 12,
     estimatedHours: 1,
     image: "/images/roller-mason-4in.jpg",
+    gallery: [
+      {
+        src: "/images/roller-mason-4in.jpg",
+        alt: "A four-inch masonry-block texture roller in the Chop Lab studio",
+      },
+      {
+        src: "/images/roller-mason-closeup.jpg",
+        alt: "Close detail of the masonry-block pattern on the roller surface",
+      },
+      {
+        src: "/images/roller-mason-topdown.jpg",
+        alt: "Top-down view of the four-inch roller showing the seamless repeating pattern",
+      },
+      {
+        src: "/images/roller-torque.jpg",
+        alt: "The torque-flute spiral pattern rolled across a clay slab",
+      },
+      {
+        src: "/images/roller-hex-10in.jpg",
+        alt: "The honeycomb pattern available in the texture library",
+      },
+    ],
     features: [
       "Compact four-inch body",
       "Same seamless pattern library",

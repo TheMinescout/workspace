@@ -7,6 +7,12 @@ import { money } from "@/lib/utils";
 import { checkStudioPasscode, sendInvoiceEmail } from "@/lib/studio-mail";
 
 export const Route = createFileRoute("/invoice")({
+  head: () => ({
+    meta: [
+      { title: "Invoice generator — The Chop Lab" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: InvoicePage,
 });
 

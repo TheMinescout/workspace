@@ -1,8 +1,26 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { FaqList } from "@/components/faq-list";
 import { Button } from "@/components/ui/button";
+import { FAQS } from "@/lib/products";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/faq")({
+  head: () =>
+    pageHead({
+      title: "FAQ — The Chop Lab",
+      description:
+        "Materials, food safety, turnaround, build volume, and how payment works for custom pottery tools from The Chop Lab.",
+      path: "/faq",
+      ld: {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: FAQS.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        })),
+      },
+    }),
   component: FaqPage,
 });
 

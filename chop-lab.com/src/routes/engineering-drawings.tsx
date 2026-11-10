@@ -2,9 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { UploadCloud } from "lucide-react";
 import { BlueprintViewer } from "@/components/blueprint-viewer";
+import { pageHead } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/engineering-drawings")({
+  head: () =>
+    pageHead({
+      title: "Engineering drawings — The Chop Lab",
+      description:
+        "Generate orthographic front, top, and side views with dimensions — plus an isometric render — from our tool library or your own STL.",
+      path: "/engineering-drawings",
+    }),
   component: EngineeringDrawingsPage,
 });
 
