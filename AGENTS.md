@@ -84,6 +84,16 @@ after — `git stash` your edits and re-run if unsure.
   text. `alt=""` is only for genuinely decorative images.
 - Keep the "clay vibe": warm neutrals, generous spacing, Fraunces display type,
   soft `shadow-lift`. Prefer extending tokens over hard-coded colors.
+- Measurement units: **all lengths are stored canonically in millimetres**;
+  display units (`mm`/`in`) are applied only at render time. Use `useLength()`
+  or the `<Length mm={…} />` component (`src/components/length.tsx`) so a unit
+  switch re-renders every measurement — never hard-code `"256 mm"` in JSX. The
+  header's `UnitsToggle` is a sliding segmented control (`.unit-switch` in
+  `src/styles.css`); the preference persists in `localStorage`.
+- Palette/typography: `src/styles.css` holds the warm clay palette
+  (`--color-bg #f4ecdf`, `--color-primary #9a4a2c`), a paper grain on `body`, and
+  Fraunces `SOFT`/`WONK` variation axes. The font link in `__root.tsx` must keep
+  those axis names or the display type loses its warmth.
 
 ## Git
 

@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { Length } from "@/components/length";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { productsIn } from "@/lib/products";
@@ -35,8 +36,8 @@ function FilesPage() {
               after a short review — nothing is charged on this page.
             </p>
             <p className="mt-4 text-sm text-muted">
-              Maximum build volume 256 × 256 × 256 mm. Larger parts need to be
-              sliced into interlocking pieces first.
+              Maximum build volume <Length mm={256} /> cubed. Larger parts need to
+              be sliced into interlocking pieces first.
             </p>
             <Button asChild className="mt-8 w-fit">
               <Link to="/configure" search={{ product: "stl-dual-bevel" }}>

@@ -422,7 +422,7 @@ function InvoiceGenerator() {
               </div>
             ) : null}
 
-            <div className="bg-[#F0EEE9] p-4 sm:p-10">
+            <div className="bg-[#F1EADE] p-4 sm:p-10">
               <InvoicePreview
                 title={title}
                 customerName={email ? email.split("@")[0] : "Client"}
@@ -476,30 +476,30 @@ function InvoicePreview({
     >
       <div
         className="flex items-center gap-3 px-8 pb-6 pt-8 sm:px-10"
-        style={{ borderBottom: "1px solid #EFEAE2" }}
+        style={{ borderBottom: "1px solid #E7DCCB" }}
       >
         <img src="/logo-48.png" alt="" className="size-9" />
         <div>
-          <p className="m-0 text-[15px] font-semibold uppercase tracking-[1.5px] text-[#1C1712]">
+          <p className="m-0 text-[15px] font-semibold uppercase tracking-[1.5px] text-[#241C15]">
             The Chop Lab
           </p>
           <p className="m-0 text-xs font-medium text-[#D86A46]">CAD meets Clay</p>
         </div>
         <div className="ml-auto text-right">
-          <p className="m-0 text-[10px] font-semibold uppercase tracking-wider text-[#8A8176]">
+          <p className="m-0 text-[10px] font-semibold uppercase tracking-wider text-[#978975]">
             Invoice
           </p>
-          <p className="m-0 text-sm font-medium text-[#1C1712]">{date}</p>
+          <p className="m-0 text-sm font-medium text-[#241C15]">{date}</p>
         </div>
       </div>
 
       <div className="px-8 pt-6 sm:px-10">
-        <p className="m-0 text-sm text-[#6F665C]">
-          <span className="font-semibold text-[#1C1712]">Billed to</span> — {customerName}
+        <p className="m-0 text-sm text-[#6D6153]">
+          <span className="font-semibold text-[#241C15]">Billed to</span> — {customerName}
         </p>
-        <h2 className="mb-0 mt-1 font-display text-xl font-medium text-[#1C1712]">{title}</h2>
+        <h2 className="mb-0 mt-1 font-display text-xl font-medium text-[#241C15]">{title}</h2>
 
-        <p className="mt-5 whitespace-pre-wrap rounded-md bg-[#F7F3EB] p-4 text-sm leading-relaxed text-[#3A3F42]">
+        <p className="mt-5 whitespace-pre-wrap rounded-md bg-[#FBF6EC] p-4 text-sm leading-relaxed text-[#463C32]">
           {notes}
         </p>
 
@@ -507,14 +507,14 @@ function InvoicePreview({
           <thead>
             <tr>
               <th
-                className="px-0 py-2 text-left text-[11px] font-semibold uppercase tracking-wider text-[#8A8176]"
-                style={{ borderBottom: "1.5px solid #1C1712" }}
+                className="px-0 py-2 text-left text-[11px] font-semibold uppercase tracking-wider text-[#978975]"
+                style={{ borderBottom: "1.5px solid #241C15" }}
               >
                 Description
               </th>
               <th
-                className="w-24 px-0 py-2 text-right text-[11px] font-semibold uppercase tracking-wider text-[#8A8176]"
-                style={{ borderBottom: "1.5px solid #1C1712" }}
+                className="w-24 px-0 py-2 text-right text-[11px] font-semibold uppercase tracking-wider text-[#978975]"
+                style={{ borderBottom: "1.5px solid #241C15" }}
               >
                 Total
               </th>
@@ -523,25 +523,25 @@ function InvoicePreview({
           <tbody>
             {lineItems.length === 0 ? (
               <tr>
-                <td colSpan={2} className="px-0 py-6 text-center text-[#8A8176]">
+                <td colSpan={2} className="px-0 py-6 text-center text-[#978975]">
                   Add a catalog item or logged hours to build the invoice.
                 </td>
               </tr>
             ) : (
               lineItems.map((li) => (
-                <tr key={li.id} style={{ borderBottom: "1px solid #EFEAE2" }}>
+                <tr key={li.id} style={{ borderBottom: "1px solid #E7DCCB" }}>
                   <td className="px-0 py-3.5 align-top">
-                    <span className="font-medium text-[#1C1712]">{li.label}</span>
+                    <span className="font-medium text-[#241C15]">{li.label}</span>
                     {li.note ? (
                       <>
                         <br />
-                        <span className="text-xs text-[#8A8176]">{li.note}</span>
+                        <span className="text-xs text-[#978975]">{li.note}</span>
                       </>
                     ) : null}
                   </td>
-                  <td className="px-0 py-3.5 text-right align-top text-[#1C1712]">
+                  <td className="px-0 py-3.5 text-right align-top text-[#241C15]">
                     {li.amount === 0 ? (
-                      <span className="text-[#8A8176]">Included</span>
+                      <span className="text-[#978975]">Included</span>
                     ) : (
                       money(li.amount)
                     )}
@@ -550,9 +550,9 @@ function InvoicePreview({
               ))
             )}
             {discountAmount > 0 ? (
-              <tr style={{ borderBottom: "1px solid #EFEAE2" }}>
+              <tr style={{ borderBottom: "1px solid #E7DCCB" }}>
                 <td className="px-0 py-3.5 align-top">
-                  <span className="font-medium text-[#1C1712]">
+                  <span className="font-medium text-[#241C15]">
                     {discountType === "percent"
                       ? `Discount (${discountVal}%)`
                       : `Discount ($${discountVal.toFixed(2)})`}
@@ -566,15 +566,15 @@ function InvoicePreview({
           </tbody>
         </table>
 
-        <div className="mt-6 flex items-center justify-between rounded-md bg-[#1C1712] px-5 py-4">
-          <span className="text-sm font-medium uppercase tracking-wider text-[#F3EEE4]/70">
+        <div className="mt-6 flex items-center justify-between rounded-md bg-[#241C15] px-5 py-4">
+          <span className="text-sm font-medium uppercase tracking-wider text-[#F4ECDF]/70">
             Amount due
           </span>
-          <span className="text-2xl font-medium text-[#F3EEE4]">{money(total)}</span>
+          <span className="text-2xl font-medium text-[#F4ECDF]">{money(total)}</span>
         </div>
 
-        <div className="my-8 rounded-lg border border-[#D6CCBC] bg-[#F7F3EB] p-6 text-center">
-          <p className="m-0 text-sm font-medium text-[#3A3F42]">
+        <div className="my-8 rounded-lg border border-[#DDD0BA] bg-[#FBF6EC] p-6 text-center">
+          <p className="m-0 text-sm font-medium text-[#463C32]">
             Settle this invoice securely via Venmo
           </p>
           <a
@@ -586,12 +586,12 @@ function InvoicePreview({
           >
             Pay {money(total)}
           </a>
-          <p className="m-0 text-xs text-[#8A8176]">@{venmoHandle}</p>
+          <p className="m-0 text-xs text-[#978975]">@{venmoHandle}</p>
         </div>
       </div>
 
       <div className="px-8 pb-8 text-center sm:px-10">
-        <p className="m-0 text-xs text-[#8A8176]">Thank you for trusting The Chop Lab.</p>
+        <p className="m-0 text-xs text-[#978975]">Thank you for trusting The Chop Lab.</p>
       </div>
     </div>
   );
@@ -622,12 +622,12 @@ function buildInvoiceEmailHtml({
     .map(
       (li) => `
       <tr>
-        <td style="padding:14px 0;border-bottom:1px solid #EFEAE2;vertical-align:top;">
-          <span style="font-weight:600;color:#1C1712;">${escapeHtml(li.label)}</span>
-          ${li.note ? `<br><span style="font-size:12px;color:#8A8176;">${escapeHtml(li.note)}</span>` : ""}
+        <td style="padding:14px 0;border-bottom:1px solid #E7DCCB;vertical-align:top;">
+          <span style="font-weight:600;color:#241C15;">${escapeHtml(li.label)}</span>
+          ${li.note ? `<br><span style="font-size:12px;color:#978975;">${escapeHtml(li.note)}</span>` : ""}
         </td>
-        <td style="padding:14px 0;border-bottom:1px solid #EFEAE2;vertical-align:top;text-align:right;color:${
-          li.amount === 0 ? "#8A8176" : "#1C1712"
+        <td style="padding:14px 0;border-bottom:1px solid #E7DCCB;vertical-align:top;text-align:right;color:${
+          li.amount === 0 ? "#978975" : "#241C15"
         };">
           ${li.amount === 0 ? "Included" : money(li.amount)}
         </td>
@@ -638,10 +638,10 @@ function buildInvoiceEmailHtml({
   const discountRow =
     discountAmount > 0
       ? `<tr>
-          <td style="padding:14px 0;border-bottom:1px solid #EFEAE2;vertical-align:top;">
-            <span style="font-weight:600;color:#1C1712;">${escapeHtml(discountLabel)}</span>
+          <td style="padding:14px 0;border-bottom:1px solid #E7DCCB;vertical-align:top;">
+            <span style="font-weight:600;color:#241C15;">${escapeHtml(discountLabel)}</span>
           </td>
-          <td style="padding:14px 0;border-bottom:1px solid #EFEAE2;vertical-align:top;text-align:right;color:#059669;">
+          <td style="padding:14px 0;border-bottom:1px solid #E7DCCB;vertical-align:top;text-align:right;color:#059669;">
             -${money(discountAmount)}
           </td>
         </tr>`
@@ -656,32 +656,32 @@ function buildInvoiceEmailHtml({
 <body style="margin:0;padding:32px 16px;background-color:#EDE7DC;font-family:Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background-color:#FFFFFF;border-radius:12px;overflow:hidden;box-shadow:0 8px 30px rgba(28,23,18,0.08);">
     <tr>
-      <td style="padding:32px 40px 24px 40px;border-bottom:1px solid #EFEAE2;">
+      <td style="padding:32px 40px 24px 40px;border-bottom:1px solid #E7DCCB;">
         <table role="presentation" cellpadding="0" cellspacing="0"><tr>
           <td style="vertical-align:middle;padding-right:12px;">
             <img src="https://chop-lab.com/logo-48.png" width="36" height="36" alt="The Chop Lab" style="display:block;" />
           </td>
           <td style="vertical-align:middle;">
-            <p style="margin:0;font-size:15px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1C1712;">The Chop Lab</p>
+            <p style="margin:0;font-size:15px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#241C15;">The Chop Lab</p>
             <p style="margin:0;font-size:12px;font-weight:600;color:#D86A46;">CAD meets Clay</p>
           </td>
           <td style="vertical-align:middle;text-align:right;width:100%;">
-            <p style="margin:0;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8A8176;">Invoice</p>
-            <p style="margin:0;font-size:14px;font-weight:600;color:#1C1712;">${escapeHtml(date)}</p>
+            <p style="margin:0;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#978975;">Invoice</p>
+            <p style="margin:0;font-size:14px;font-weight:600;color:#241C15;">${escapeHtml(date)}</p>
           </td>
         </tr></table>
       </td>
     </tr>
     <tr>
       <td style="padding:24px 40px 0 40px;">
-        <p style="margin:0;font-size:14px;color:#6F665C;"><strong style="color:#1C1712;">Billed to</strong> — ${escapeHtml(customerName)}</p>
-        <p style="margin:16px 0 0 0;padding:16px;background-color:#F7F3EB;border-radius:8px;font-size:14px;line-height:1.6;color:#3A3F42;white-space:pre-wrap;">${escapeHtml(notes)}</p>
+        <p style="margin:0;font-size:14px;color:#6D6153;"><strong style="color:#241C15;">Billed to</strong> — ${escapeHtml(customerName)}</p>
+        <p style="margin:16px 0 0 0;padding:16px;background-color:#FBF6EC;border-radius:8px;font-size:14px;line-height:1.6;color:#463C32;white-space:pre-wrap;">${escapeHtml(notes)}</p>
 
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;font-size:14px;">
           <thead>
             <tr>
-              <th align="left" style="padding:0 0 8px 0;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8A8176;border-bottom:2px solid #1C1712;">Description</th>
-              <th align="right" style="padding:0 0 8px 0;width:100px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8A8176;border-bottom:2px solid #1C1712;">Total</th>
+              <th align="left" style="padding:0 0 8px 0;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#978975;border-bottom:2px solid #241C15;">Description</th>
+              <th align="right" style="padding:0 0 8px 0;width:100px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#978975;border-bottom:2px solid #241C15;">Total</th>
             </tr>
           </thead>
           <tbody>
@@ -690,19 +690,19 @@ function buildInvoiceEmailHtml({
           </tbody>
         </table>
 
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;background-color:#1C1712;border-radius:8px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;background-color:#241C15;border-radius:8px;">
           <tr>
             <td style="padding:16px 20px;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(243,238,228,0.7);">Amount due</td>
-            <td style="padding:16px 20px;text-align:right;font-size:24px;font-weight:600;color:#F3EEE4;">${money(total)}</td>
+            <td style="padding:16px 20px;text-align:right;font-size:24px;font-weight:600;color:#F4ECDF;">${money(total)}</td>
           </tr>
         </table>
 
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:32px;">
           <tr>
-            <td style="padding:24px;background-color:#F7F3EB;border:1px solid #D6CCBC;border-radius:10px;text-align:center;">
-              <p style="margin:0;font-size:14px;font-weight:600;color:#3A3F42;">Settle this invoice securely via Venmo</p>
+            <td style="padding:24px;background-color:#FBF6EC;border:1px solid #DDD0BA;border-radius:10px;text-align:center;">
+              <p style="margin:0;font-size:14px;font-weight:600;color:#463C32;">Settle this invoice securely via Venmo</p>
               <a href="${venmoUrl}" target="_blank" style="display:inline-block;margin:16px 0;background-color:#008CFF;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:30px;font-weight:700;font-size:14px;">Pay ${money(total)}</a>
-              <p style="margin:0;font-size:12px;color:#8A8176;">@${escapeHtml(venmoHandle)}</p>
+              <p style="margin:0;font-size:12px;color:#978975;">@${escapeHtml(venmoHandle)}</p>
             </td>
           </tr>
         </table>
@@ -710,7 +710,7 @@ function buildInvoiceEmailHtml({
     </tr>
     <tr>
       <td style="padding:32px 40px 40px 40px;text-align:center;">
-        <p style="margin:0;font-size:12px;color:#8A8176;">Thank you for trusting The Chop Lab.</p>
+        <p style="margin:0;font-size:12px;color:#978975;">Thank you for trusting The Chop Lab.</p>
       </td>
     </tr>
   </table>

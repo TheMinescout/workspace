@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { Length } from "@/components/length";
 import { Button } from "@/components/ui/button";
 import { pageHead } from "@/lib/seo";
 
@@ -61,19 +62,22 @@ function AboutPage() {
       <section className="mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-3">
         {[
           {
+            k: "studio",
             t: "For the studio, not the table",
             b: "FDM prints have layer lines that can harbor bacteria. These tools are for raw clay — not for food or drink.",
           },
           {
+            k: "invoice",
             t: "Invoice after the CAD",
             b: "You send specs. Thomas engineers the model and emails a quote. Production starts when you approve it. Nothing is charged in the configurator.",
           },
           {
-            t: "256 mm cube",
+            k: "volume",
+            t: <>A <Length mm={256} /> cube</>,
             b: "That is the maximum build volume. Larger parts are sliced into interlocking pieces so they still come off the printer true.",
           },
         ].map((item) => (
-          <article key={item.t}>
+          <article key={item.k}>
             <h3 className="font-display text-2xl font-medium tracking-tight">{item.t}</h3>
             <p className="mt-3 text-sm leading-relaxed text-muted">{item.b}</p>
           </article>

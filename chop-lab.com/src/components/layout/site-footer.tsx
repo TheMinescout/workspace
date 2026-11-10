@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Length } from "@/components/length";
 
 export function SiteFooter() {
   return (
@@ -65,7 +66,9 @@ export function SiteFooter() {
                 Invoice generator
               </Link>
             </li>
-            <li className="text-muted">Build volume 256 mm cube</li>
+            <li className="text-muted">
+              Build volume <Length mm={256} /> cube
+            </li>
           </ul>
         </nav>
       </div>

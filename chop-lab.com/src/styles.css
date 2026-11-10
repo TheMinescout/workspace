@@ -5,19 +5,22 @@
   --font-display: "Fraunces", "Times New Roman", serif;
   --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
 
-  --color-bg: #f3eee4;
-  --color-bg-warm: #e8dfd0;
-  --color-surface: #f7f3eb;
-  --color-fg: #1c1712;
-  --color-muted: #6f665c;
-  --color-subtle: #8a8176;
-  --color-primary: #7a3e2b;
-  --color-primary-fg: #f7f3eb;
-  --color-border: #d6ccbc;
-  --color-kiln: #1c1712;
-  --color-kiln-fg: #f3eee4;
-  --color-clay: #c4a484;
-  --color-impression: #a67c52;
+  /* Warm, paper-and-clay palette. Slightly more saturated than a plain
+     cream so the site reads handmade rather than clinical. */
+  --color-bg: #f4ecdf;
+  --color-bg-warm: #ebdfcb;
+  --color-surface: #fbf6ec;
+  --color-fg: #241c15;
+  --color-muted: #6d6153;
+  --color-subtle: #8a7c68;
+  --color-primary: #9a4a2c;
+  --color-primary-strong: #7f3a20;
+  --color-primary-fg: #fbf6ec;
+  --color-border: #ddd0ba;
+  --color-kiln: #201913;
+  --color-kiln-fg: #f4ecdf;
+  --color-clay: #c8a781;
+  --color-impression: #a87c52;
 
   --radius-sm: 0.375rem;
   --radius-md: 0.75rem;
@@ -25,11 +28,13 @@
   --radius-xl: 1.5rem;
 
   --shadow-lift:
-    0px 0px 0px 1px rgb(28 23 18 / 0.06), 0px 1px 2px -1px rgb(28 23 18 / 0.06),
-    0px 2px 4px 0px rgb(28 23 18 / 0.04);
+    0px 0px 0px 1px rgb(36 28 21 / 0.06), 0px 1px 2px -1px rgb(36 28 21 / 0.07),
+    0px 2px 4px 0px rgb(36 28 21 / 0.04);
   --shadow-lift-hover:
-    0px 0px 0px 1px rgb(28 23 18 / 0.1), 0px 1px 2px -1px rgb(28 23 18 / 0.08),
-    0px 4px 10px 0px rgb(28 23 18 / 0.06);
+    0px 0px 0px 1px rgb(36 28 21 / 0.1), 0px 1px 2px -1px rgb(36 28 21 / 0.08),
+    0px 4px 10px 0px rgb(36 28 21 / 0.06);
+  --shadow-press:
+    inset 0px 1px 2px rgb(36 28 21 / 0.14), inset 0px 0px 0px 1px rgb(36 28 21 / 0.06);
 
   --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
   --duration-micro: 80ms;
@@ -55,6 +60,10 @@
   body {
     font-family: var(--font-sans);
     line-height: 1.5;
+    /* A whisper of paper grain over the whole page keeps large flat areas
+       from looking plasticky. */
+    background-image: var(--paper-grain);
+    background-attachment: fixed;
   }
 
   h1,
@@ -62,8 +71,15 @@
   h3 {
     text-wrap: balance;
     font-family: var(--font-display);
-    letter-spacing: -0.03em;
-    line-height: 1.15;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    /* Fraunces' SOFT axis rounds the terminals a touch for a warmer,
+       hand-cut feel; WONK adds the optical quirks on display sizes. */
+    font-variation-settings: "SOFT" 40, "WONK" 1;
+  }
+
+  h1 {
+    font-variation-settings: "SOFT" 55, "WONK" 1;
   }
 
   p {
@@ -81,6 +97,23 @@
   }
 }
 
+/* Fine, low-contrast grain. Two offset dot grids read as tooth/pulp at
+   100% and never resolve into a visible pattern. */
+:root {
+  --paper-grain:
+    radial-gradient(rgb(36 28 21 / 0.028) 0.5px, transparent 0.5px),
+    radial-gradient(rgb(36 28 21 / 0.022) 0.5px, transparent 0.5px);
+  --paper-grain-size: 5px 5px, 7px 7px;
+  --paper-grain-pos: 0 0, 3px 4px;
+}
+
+@layer base {
+  body {
+    background-size: var(--paper-grain-size);
+    background-position: var(--paper-grain-pos);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -92,7 +125,7 @@
 }
 
 .img-frame {
-  outline: 1px solid rgb(28 23 18 / 0.1);
+  outline: 1px solid rgb(36 28 21 / 0.1);
   outline-offset: -1px;
 }
 
@@ -110,6 +143,56 @@
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+/* Sliding segmented unit switch (mm ↔ in). The thumb is a single element
+   that translates between the two options. */
+.unit-switch {
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  align-items: center;
+  height: 2.25rem;
+  padding: 0.2rem;
+  border-radius: 9999px;
+  background: var(--color-bg-warm);
+  box-shadow: var(--shadow-press);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.unit-switch__thumb {
+  position: absolute;
+  top: 0.2rem;
+  bottom: 0.2rem;
+  width: calc(50% - 0.2rem);
+  border-radius: 9999px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lift);
+  transition: transform var(--duration-fast) var(--ease-out-smooth);
+}
+.unit-switch[data-unit="mm"] .unit-switch__thumb {
+  transform: translateX(0);
+}
+.unit-switch[data-unit="in"] .unit-switch__thumb {
+  transform: translateX(100%);
+}
+.unit-switch__option {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  height: 100%;
+  min-width: 2.4rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: var(--color-muted);
+  transition: color var(--duration-quick) ease;
+}
+.unit-switch__option[aria-pressed="true"] {
+  color: var(--color-fg);
 }
 
 @keyframes rise-in {
