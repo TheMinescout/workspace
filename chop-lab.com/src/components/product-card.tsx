@@ -34,7 +34,9 @@ export function ProductCard({
         {product.image ? (
           <img
             src={product.image}
-            alt=""
+            alt={product.name}
+            loading="lazy"
+            decoding="async"
             className="img-frame h-full w-full object-cover"
           />
         ) : product.stlFile ? (

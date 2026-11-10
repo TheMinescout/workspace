@@ -1,20 +1,53 @@
+import { useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { ChopPreview } from "@/components/chop-preview";
+import { ChopPreview, type ChopFontId } from "@/components/chop-preview";
 import { ProductCard } from "@/components/product-card";
+import { ProductGallery } from "@/components/product-gallery";
 import { ToolIllustration } from "@/components/tool-drawings";
 import { StlThumbnail } from "@/components/stl-thumbnail";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { getProduct, PRODUCTS, quoteFor } from "@/lib/products";
+import { absoluteUrl, pageHead } from "@/lib/seo";
 import { money } from "@/lib/utils";
 
 export const Route = createFileRoute("/tools/$slug")({
+  head: ({ params }) => {
+    const product = getProduct(params.slug);
+    if (!product) return {};
+    return {
+      ...pageHead({
+        title: `${product.name} — The Chop Lab`,
+        description: product.description,
+        path: `/tools/${product.slug}`,
+        ld: {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          description: product.description,
+          image: product.image ? absoluteUrl(product.image) : undefined,
+          brand: { "@type": "Brand", name: "The Chop Lab" },
+          category: product.digital ? "Digital 3D file" : "Pottery tool",
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "USD",
+            price: quoteFor(product).toFixed(2),
+            availability: "https://schema.org/InStock",
+            url: absoluteUrl(`/tools/${product.slug}`),
+          },
+        },
+      }),
+    };
+  },
   component: ProductPage,
 });
 
 function ProductPage() {
   const { slug } = Route.useParams();
   const product = getProduct(slug);
+  const [mark, setMark] = useState("TL");
+  const [markFont, setMarkFont] = useState<ChopFontId>("segoe");
   if (!product) throw notFound();
 
   const related = PRODUCTS.filter(
@@ -33,25 +66,29 @@ function ProductPage() {
       </p>
 
       <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:items-start">
-        <div className="overflow-hidden rounded-xl bg-bg-warm shadow-lift">
-          {product.image ? (
-            <img
-              src={product.image}
-              alt={product.name}
-              className="img-frame aspect-[4/3] w-full object-cover"
-            />
-          ) : product.stlFile ? (
-            <StlThumbnail
-              url={product.stlFile}
-              alt={product.name}
-              className="img-frame aspect-[4/3] w-full object-cover"
-            />
-          ) : (
-            <div className="flex aspect-[4/3] items-center justify-center text-muted">
-              <ToolIllustration drawing={product.drawing} className="h-48 w-48" />
-            </div>
-          )}
-        </div>
+        {product.gallery?.length ? (
+          <ProductGallery images={product.gallery} />
+        ) : (
+          <div className="overflow-hidden rounded-xl bg-bg-warm shadow-lift">
+            {product.image ? (
+              <img
+                src={product.image}
+                alt={product.name}
+                className="img-frame aspect-[4/3] w-full object-cover"
+              />
+            ) : product.stlFile ? (
+              <StlThumbnail
+                url={product.stlFile}
+                alt={product.name}
+                className="img-frame aspect-[4/3] w-full object-cover"
+              />
+            ) : (
+              <div className="flex aspect-[4/3] items-center justify-center text-muted">
+                <ToolIllustration drawing={product.drawing} className="h-48 w-48" />
+              </div>
+            )}
+          </div>
+        )}
 
         <div>
           {product.bestSeller ? (
@@ -97,12 +134,31 @@ function ProductPage() {
           </dl>
 
           {product.kind === "chop" ? (
-            <div className="mt-8 flex items-center gap-4">
-              <ChopPreview text="TL" size="sm" />
-              <p className="text-sm text-muted">
-                Type your mark in the configurator to preview the impression before
-                you send it.
-              </p>
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+              <ChopPreview
+                text={mark}
+                size="sm"
+                font={markFont}
+                interactive
+                onFontChange={setMarkFont}
+                className="mx-auto shrink-0"
+              />
+              <div className="min-w-0 flex-1">
+                <label htmlFor="product-mark" className="text-xs font-medium uppercase tracking-wider text-muted">
+                  Try your mark
+                </label>
+                <Input
+                  id="product-mark"
+                  value={mark}
+                  maxLength={8}
+                  onChange={(e) => setMark(e.target.value)}
+                  className="mt-2"
+                />
+                <p className="mt-2 text-xs text-muted">
+                  Preview the impression before you send it. Designs with more than
+                  three letters have a higher chance of impression issues.
+                </p>
+              </div>
             </div>
           ) : null}
 

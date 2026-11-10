@@ -1,8 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/about")({
+  head: () =>
+    pageHead({
+      title: "About — The Chop Lab",
+      description:
+        "The Chop Lab is Thomas, a robotics student and CAD designer turning parametric modeling and FDM printing into better pottery tools.",
+      path: "/about",
+    }),
   component: AboutPage,
 });
 
@@ -27,6 +35,8 @@ function AboutPage() {
           <img
             src="/images/thomas-maker.jpg"
             alt="Thomas, the lab technician behind The Chop Lab, working at the pottery wheel"
+            loading="lazy"
+            decoding="async"
             className="img-frame h-full min-h-72 w-full object-cover"
           />
           <div className="flex flex-col justify-center px-4 py-12 sm:px-8">

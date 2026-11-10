@@ -1,8 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ProductCard } from "@/components/product-card";
 import { CATEGORIES, productsIn } from "@/lib/products";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/tools/")({
+  head: () =>
+    pageHead({
+      title: "Tools — The Chop Lab",
+      description:
+        "Custom chops, texture rollers, sponge baskets, and slab rails. Every tool is modeled parametrically and printed in PLA Matte.",
+      path: "/tools",
+    }),
   component: ToolsIndex,
 });
 

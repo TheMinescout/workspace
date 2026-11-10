@@ -21,12 +21,17 @@ function UnitsToggle() {
   const unit = useUnits((s) => s.unit);
   const setUnit = useUnits((s) => s.setUnit);
   return (
-    <div className="inline-flex h-10 items-center rounded-full bg-bg-warm p-1 text-xs font-medium">
+    <div
+      role="group"
+      aria-label="Measurement units"
+      className="inline-flex h-10 items-center rounded-full bg-bg-warm p-1 text-xs font-medium"
+    >
       {(["mm", "in"] as const).map((u) => (
         <button
           key={u}
           type="button"
           onClick={() => setUnit(u)}
+          aria-pressed={unit === u}
           className={cn(
             "h-8 min-w-10 rounded-full px-2.5 uppercase tracking-wide transition-colors duration-quick",
             unit === u ? "bg-surface text-fg shadow-lift" : "text-muted hover:text-fg",
@@ -51,7 +56,7 @@ export function SiteHeader() {
           <span className="font-display text-lg font-medium tracking-tight">The Chop Lab</span>
         </Link>
 
-        <nav className="hidden items-center gap-7 md:flex">
+        <nav aria-label="Main" className="hidden items-center gap-7 md:flex">
           {NAV.map((item) => (
             <Link
               key={item.to}
@@ -80,6 +85,8 @@ export function SiteHeader() {
             className="inline-flex size-11 items-center justify-center rounded-md text-fg md:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -87,8 +94,8 @@ export function SiteHeader() {
       </div>
 
       {open ? (
-        <div className="border-t border-border bg-bg px-4 py-4 md:hidden">
-          <nav className="flex flex-col gap-1">
+        <div id="mobile-nav" className="border-t border-border bg-bg px-4 py-4 md:hidden">
+          <nav aria-label="Mobile" className="flex flex-col gap-1">
             {NAV.map((item) => (
               <Link
                 key={item.to}

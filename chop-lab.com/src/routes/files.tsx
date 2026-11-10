@@ -3,8 +3,16 @@ import { ArrowRight } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { productsIn } from "@/lib/products";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/files")({
+  head: () =>
+    pageHead({
+      title: "Digital files — The Chop Lab",
+      description:
+        "Download STL models of our pottery tools and print them in your own lab. $5 base plus $1 per hour of quoted print time.",
+      path: "/files",
+    }),
   component: FilesPage,
 });
 
@@ -41,6 +49,9 @@ function FilesPage() {
             <img
               src="/images/printer-action.jpg"
               alt="Desktop 3D printer running a job, ready to print a downloaded STL"
+              width={1536}
+              height={1024}
+              decoding="async"
               className="img-frame h-full w-full object-cover"
             />
           </div>

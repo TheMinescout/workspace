@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://chop-lab.com/</loc><priority>1.0</priority></url>
+  <url><loc>https://chop-lab.com/tools</loc><priority>0.9</priority></url>
+  <url><loc>https://chop-lab.com/files</loc><priority>0.8</priority></url>
+  <url><loc>https://chop-lab.com/about</loc><priority>0.7</priority></url>
+  <url><loc>https://chop-lab.com/faq</loc><priority>0.7</priority></url>
+  <url><loc>https://chop-lab.com/engineering-drawings</loc><priority>0.6</priority></url>
+  <url><loc>https://chop-lab.com/tools/custom-chop-complex</loc><priority>0.9</priority></url>
+  <url><loc>https://chop-lab.com/tools/custom-chop-simple</loc><priority>0.8</priority></url>
+  <url><loc>https://chop-lab.com/tools/texture-roller-10</loc><priority>0.8</priority></url>
+  <url><loc>https://chop-lab.com/tools/texture-roller-4</loc><priority>0.8</priority></url>
+  <url><loc>https://chop-lab.com/tools/sponge-basket</loc><priority>0.8</priority></url>
+  <url><loc>https://chop-lab.com/tools/slab-rails</loc><priority>0.8</priority></url>
+  <url><loc>https://chop-lab.com/tools/stl-sponge-basket</loc><priority>0.6</priority></url>
+  <url><loc>https://chop-lab.com/tools/stl-dual-bevel</loc><priority>0.6</priority></url>
+  <url><loc>https://chop-lab.com/tools/stl-slab-rails</loc><priority>0.6</priority></url>
+</urlset>

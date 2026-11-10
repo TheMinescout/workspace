@@ -98,11 +98,18 @@ function Estimate({ product }: { product: Product }) {
   );
 }
 
-export function ConsultationForm({ initialSlug }: { initialSlug?: string }) {
+export function ConsultationForm({
+  initialSlug,
+  initialTexture,
+}: {
+  initialSlug?: string;
+  initialTexture?: TextureId;
+}) {
   const [step, setStep] = useState(initialSlug ? 1 : 0);
   const [form, setForm] = useState<FormState>({
     ...empty,
     productSlug: initialSlug ?? "",
+    texture: initialTexture ?? empty.texture,
   });
   const [error, setError] = useState("");
   const [done, setDone] = useState<LabRequest | null>(null);

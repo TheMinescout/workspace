@@ -8,9 +8,20 @@ import { TextureSwatch } from "@/components/texture-swatch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PROCESS, PRODUCTS } from "@/lib/products";
+import { ORGANIZATION_LD, pageHead } from "@/lib/seo";
 import { TEXTURES, type TextureId } from "@/lib/textures";
 
-export const Route = createFileRoute("/")({ component: Home });
+export const Route = createFileRoute("/")({
+  head: () =>
+    pageHead({
+      title: "The Chop Lab — Custom Engineered Pottery Tools",
+      description:
+        "Custom chops, texture rollers, and studio tools for potters — engineered parametrically and printed in PLA Matte for clean, low-friction clay release.",
+      path: "/",
+      ld: ORGANIZATION_LD,
+    }),
+  component: Home,
+});
 
 function Home() {
   const [mark, setMark] = useState("TL");
@@ -39,7 +50,7 @@ function Home() {
             <div className="rise-in-4 mt-8 flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
                 <Link to="/configure">
-                  Configure a chop
+                  Configure a tool
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
@@ -62,12 +73,12 @@ function Home() {
                 <Input
                   id="hero-mark"
                   value={mark}
-                  maxLength={4}
+                  maxLength={8}
                   className="mt-2 max-w-40"
                   onChange={(e) => setMark(e.target.value)}
                 />
                 <p className="mt-2 text-xs text-muted">
-                  Live impression · 1–4 characters · any font, any font size
+                  Live impression · up to 8 characters · any font, any font size
                 </p>
               </div>
             </div>
@@ -76,6 +87,9 @@ function Home() {
             <img
               src="/images/chop-complex.jpg"
               alt="A custom Chop Lab stamp and its crisp impression pressed into leather-hard clay"
+              width={1227}
+              height={924}
+              decoding="async"
               className="img-frame h-full w-full object-cover lg:absolute lg:inset-0"
             />
           </div>
@@ -103,7 +117,9 @@ function Home() {
           <div className="overflow-hidden rounded-xl bg-bg-warm shadow-lift">
             <img
               src="/images/chop-simple.jpg"
-              alt=""
+              alt="A simple custom chop and the clean impression it leaves in clay"
+              loading="lazy"
+              decoding="async"
               className="img-frame aspect-[4/3] w-full object-cover"
             />
           </div>
@@ -193,6 +209,7 @@ function Home() {
                 key={t.id}
                 type="button"
                 onClick={() => setTexture(t.id)}
+                aria-pressed={texture === t.id}
                 className={`overflow-hidden rounded-lg shadow-lift ${texture === t.id ? "ring-2 ring-primary" : ""}`}
               >
                 <div className="h-28 sm:h-36">
@@ -202,6 +219,12 @@ function Home() {
               </button>
             ))}
           </div>
+          <Button asChild variant="secondary" className="mt-6">
+            <Link to="/configure" search={{ product: "texture-roller-10", texture }}>
+              Configure this texture
+              <ArrowRight className="size-4" />
+            </Link>
+          </Button>
         </div>
       </section>
 
@@ -227,6 +250,8 @@ function Home() {
           <img
             src="/images/thomas-maker.jpg"
             alt="Thomas, the lab technician behind The Chop Lab, trimming a piece on the wheel"
+            loading="lazy"
+            decoding="async"
             className="img-frame aspect-[4/3] w-full object-cover"
           />
         </div>

@@ -48,10 +48,16 @@ function RootDocument() {
       </head>
       <body className="min-h-dvh bg-bg font-sans text-fg">
         <PreviewHostBridge />
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-fg focus:shadow-lift"
+        >
+          Skip to content
+        </a>
         <AuthProvider>
           <div className="flex min-h-dvh flex-col">
             <SiteHeader />
-            <div className="flex-1">
+            <div id="main" tabIndex={-1} className="flex-1 outline-none">
               <Outlet />
             </div>
             <SiteFooter />
