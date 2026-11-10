@@ -36,10 +36,10 @@ function buildDimGroup(
   canvas.width = 256;
   canvas.height = 64;
   const ctx = canvas.getContext("2d")!;
-  ctx.fillStyle = "#f3eee4";
+  ctx.fillStyle = "#f4ecdf";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.font = "bold 34px Instrument Sans, sans-serif";
-  ctx.fillStyle = "#7a3e2b";
+  ctx.fillStyle = "#9a4a2c";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(label, canvas.width / 2, canvas.height / 2);

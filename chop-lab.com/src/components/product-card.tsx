@@ -21,13 +21,13 @@ export function ProductCard({
       className={cn(
         "group flex flex-col overflow-hidden rounded-xl bg-surface shadow-lift",
         "transition-[box-shadow,transform] duration-fast ease-out-smooth",
-        "hover:shadow-lift-hover",
+        "hover:-translate-y-0.5 hover:shadow-lift-hover",
         featured && "sm:flex-row sm:min-h-72",
       )}
     >
       <div
         className={cn(
-          "relative bg-bg-warm",
+          "relative overflow-hidden bg-bg-warm",
           featured ? "sm:w-1/2 min-h-52" : "aspect-[4/3]",
         )}
       >
@@ -37,7 +37,7 @@ export function ProductCard({
             alt={product.name}
             loading="lazy"
             decoding="async"
-            className="img-frame h-full w-full object-cover"
+            className="img-frame h-full w-full object-cover transition-transform duration-slow ease-out-smooth group-hover:scale-[1.03]"
           />
         ) : product.stlFile ? (
           <StlThumbnail

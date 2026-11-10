@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useUnits } from "@/lib/units";
+import { useUnits, UNITS } from "@/lib/units";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -21,23 +21,18 @@ function UnitsToggle() {
   const unit = useUnits((s) => s.unit);
   const setUnit = useUnits((s) => s.setUnit);
   return (
-    <div
-      role="group"
-      aria-label="Measurement units"
-      className="inline-flex h-10 items-center rounded-full bg-bg-warm p-1 text-xs font-medium"
-    >
-      {(["mm", "in"] as const).map((u) => (
+    <div className="unit-switch" role="group" aria-label="Measurement units" data-unit={unit}>
+      <span className="unit-switch__thumb" aria-hidden />
+      {UNITS.map((u) => (
         <button
-          key={u}
+          key={u.id}
           type="button"
-          onClick={() => setUnit(u)}
-          aria-pressed={unit === u}
-          className={cn(
-            "h-8 min-w-10 rounded-full px-2.5 uppercase tracking-wide transition-colors duration-quick",
-            unit === u ? "bg-surface text-fg shadow-lift" : "text-muted hover:text-fg",
-          )}
+          onClick={() => setUnit(u.id)}
+          aria-pressed={unit === u.id}
+          title={u.full}
+          className="unit-switch__option"
         >
-          {u}
+          {u.label}
         </button>
       ))}
     </div>
@@ -49,28 +44,38 @@ export function SiteHeader() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-bg">
+    <header className="sticky top-0 z-40 border-b border-border bg-bg/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2.5 text-fg" onClick={() => setOpen(false)}>
-          <ChopMark className="size-7" />
+          <ChopMark className="size-7 rounded-full" />
           <span className="font-display text-lg font-medium tracking-tight">The Chop Lab</span>
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-7 md:flex">
-          {NAV.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={cn(
-                "text-sm transition-colors duration-quick",
-                pathname === item.to || pathname.startsWith(`${item.to}/`)
-                  ? "text-fg"
-                  : "text-muted hover:text-fg",
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV.map((item) => {
+            const active =
+              pathname === item.to || pathname.startsWith(`${item.to}/`);
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "group relative py-1 text-sm transition-colors duration-quick",
+                  active ? "text-fg" : "text-muted hover:text-fg",
+                )}
+              >
+                {item.label}
+                <span
+                  aria-hidden
+                  className={cn(
+                    "absolute -bottom-0.5 left-0 h-px w-full origin-left bg-primary transition-transform duration-fast ease-out-smooth",
+                    active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-50",
+                  )}
+                />
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-2">

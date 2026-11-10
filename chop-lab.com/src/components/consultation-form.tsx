@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Check, ChevronLeft, ChevronRight, Upload } from "lucide-react";
 import { ChopPreview, CHOP_FONTS, type ChopFontId } from "@/components/chop-preview";
+import { Length } from "@/components/length";
 import { TextureSwatch } from "@/components/texture-swatch";
 import { StlThumbnail } from "@/components/stl-thumbnail";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,7 @@ import {
 } from "@/lib/products";
 import { loadRequests, saveRequest, type LabRequest } from "@/lib/requests";
 import { TEXTURES, type TextureId } from "@/lib/textures";
-import { useUnits } from "@/lib/units";
+import { formatLength, trim, useLength } from "@/lib/units";
 import { cn, money, requestId } from "@/lib/utils";
 import { sendStudioEmail, STUDIO_EMAIL } from "@/lib/studio-mail";
 import { buildRequestReceiptEmail, buildStudioNotificationEmail } from "@/lib/request-email";
@@ -32,9 +33,10 @@ type FormState = {
   texture: TextureId;
   customTexture: string;
   handleColor: string;
-  lipMm: string;
-  thicknessMm: string;
-  widthMm: string;
+  /** Canonical millimetres — display units are applied at render time. */
+  lipMm: number;
+  thicknessMm: number;
+  widthMm: number;
   name: string;
   email: string;
   studio: string;
@@ -49,15 +51,58 @@ const empty: FormState = {
   texture: "hex",
   customTexture: "",
   handleColor: "white",
-  lipMm: "4",
-  thicknessMm: "10",
-  widthMm: "80",
+  lipMm: 4,
+  thicknessMm: 10,
+  widthMm: 80,
   name: "",
   email: "",
   studio: "",
   notes: "",
   files: [],
 };
+
+/**
+ * A numeric length field that always shows (and accepts) the current display
+ * unit while the form keeps the canonical millimetre value. Switching units in
+ * the header re-labels the field and reformats the number in place.
+ */
+function LengthInput({
+  id,
+  valueMm,
+  onChangeMm,
+  describedBy,
+}: {
+  id: string;
+  valueMm: number;
+  onChangeMm: (mm: number) => void;
+  describedBy?: string;
+}) {
+  const { unit, toDisplay, fromDisplay } = useLength();
+  const [text, setText] = useState(() => String(toDisplay(valueMm)));
+  const unitRef = useRef(unit);
+
+  useEffect(() => {
+    if (unitRef.current !== unit) {
+      unitRef.current = unit;
+      setText(String(toDisplay(valueMm)));
+    }
+  }, [unit, valueMm, toDisplay]);
+
+  return (
+    <Input
+      id={id}
+      inputMode="decimal"
+      aria-describedby={describedBy}
+      value={text}
+      onChange={(e) => {
+        const next = e.target.value;
+        setText(next);
+        const parsed = Number.parseFloat(next);
+        if (Number.isFinite(parsed)) onChangeMm(trim(fromDisplay(parsed)));
+      }}
+    />
+  );
+}
 
 function ProductThumb({ product, className }: { product: Product; className?: string }) {
   if (product.image) {
@@ -116,8 +161,8 @@ export function ConsultationForm({
   const [sending, setSending] = useState(false);
   const [emailWarning, setEmailWarning] = useState("");
   const [recent] = useState(() => loadRequests());
-  const unit = useUnits((s) => s.unit);
-  const formatMm = useUnits((s) => s.formatMm);
+  const { unit } = useLength();
+  const fmt = useCallback((mm: number) => formatLength(mm, unit), [unit]);
 
   const product = form.productSlug ? getProduct(form.productSlug) : undefined;
 
@@ -135,13 +180,13 @@ export function ConsultationForm({
       s.Texture = TEXTURES.find((t) => t.id === form.texture)?.name ?? form.texture;
       if (form.customTexture) s["Custom pattern"] = form.customTexture;
     }
-    if (product.kind === "basket") s["Bucket lip"] = formatMm(Number(form.lipMm) || 0);
+    if (product.kind === "basket") s["Bucket lip"] = fmt(form.lipMm);
     if (product.kind === "rails") {
-      s.Thickness = formatMm(Number(form.thicknessMm) || 0);
-      s.Width = formatMm(Number(form.widthMm) || 0);
+      s.Thickness = fmt(form.thicknessMm);
+      s.Width = fmt(form.widthMm);
     }
     return s;
-  }, [product, form, formatMm]);
+  }, [product, form, fmt]);
 
   function next() {
     setError("");
@@ -471,13 +516,13 @@ export function ConsultationForm({
             {product.kind === "basket" ? (
               <div className="space-y-2">
                 <Label htmlFor="lip">Bucket lip thickness ({unit})</Label>
-                <Input
+                <LengthInput
                   id="lip"
-                  inputMode="decimal"
-                  value={form.lipMm}
-                  onChange={(e) => patch({ lipMm: e.target.value })}
+                  valueMm={form.lipMm}
+                  onChangeMm={(mm) => patch({ lipMm: mm })}
+                  describedBy="lip-help"
                 />
-                <p className="text-xs text-muted">
+                <p id="lip-help" className="text-xs text-muted">
                   Measure the thickness of your bucket’s top lip. The basket is
                   engineered to hang on a standard pottery water bucket.
                 </p>
@@ -493,13 +538,14 @@ export function ConsultationForm({
                       <button
                         key={mm}
                         type="button"
-                        onClick={() => patch({ thicknessMm: String(mm) })}
+                        onClick={() => patch({ thicknessMm: mm })}
+                        aria-pressed={form.thicknessMm === mm}
                         className={cn(
                           "h-11 rounded-full bg-surface px-3.5 text-sm tabular-nums shadow-lift",
-                          form.thicknessMm === String(mm) && "ring-2 ring-primary",
+                          form.thicknessMm === mm && "ring-2 ring-primary",
                         )}
                       >
-                        {formatMm(mm)}
+                        {fmt(mm)}
                       </button>
                     ))}
                   </div>
@@ -510,11 +556,10 @@ export function ConsultationForm({
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="width">Rail spacing / slab width ({unit})</Label>
-                  <Input
+                  <LengthInput
                     id="width"
-                    inputMode="decimal"
-                    value={form.widthMm}
-                    onChange={(e) => patch({ widthMm: e.target.value })}
+                    valueMm={form.widthMm}
+                    onChangeMm={(mm) => patch({ widthMm: mm })}
                   />
                 </div>
               </div>
@@ -524,7 +569,8 @@ export function ConsultationForm({
               <p className="text-sm leading-relaxed text-muted">
                 You are purchasing a digital STL to 3D print yourself. Your file
                 link and invoice will be emailed. Pricing is a $5 base fee plus $1
-                per hour of print time. Maximum build volume is 256 × 256 × 256 mm.
+                per hour of print time. Maximum build volume is{" "}
+                <Length mm={256} /> cubed.
               </p>
             ) : null}
 
@@ -706,7 +752,8 @@ function FileDrop({
             : "Drop a sketch, logo, or photo — SVG, PNG, or PDF preferred"}
         </span>
         <span className="mt-1 text-xs text-muted">
-          Files stay on this device with your request summary. Max build 256 mm cube.
+          Files stay on this device with your request summary. Max build{" "}
+          <Length mm={256} /> cube.
         </span>
         <input
           id="files"

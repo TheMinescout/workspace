@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { ChopPreview, type ChopFontId } from "@/components/chop-preview";
 import { FaqList } from "@/components/faq-list";
+import { Length } from "@/components/length";
 import { ProductCard } from "@/components/product-card";
 import { TextureSwatch } from "@/components/texture-swatch";
 import { Button } from "@/components/ui/button";
@@ -100,11 +101,11 @@ function Home() {
         <div className="mx-auto grid max-w-6xl grid-cols-2 gap-px bg-border sm:grid-cols-4">
           {[
             ["Material", "PLA Matte"],
-            ["Build volume", "256 mm cube"],
+            ["Build volume", <span key="bv"><Length mm={256} /> cube</span>],
             ["Turnaround", "3–5 days"],
             ["Payment", "Invoice after CAD"],
-          ].map(([k, v]) => (
-            <div key={k} className="bg-bg px-4 py-5 sm:px-6">
+          ].map(([k, v], i) => (
+            <div key={i} className="bg-bg px-4 py-5 sm:px-6">
               <p className="text-xs uppercase tracking-wider text-muted">{k}</p>
               <p className="mt-1 font-display text-lg font-medium">{v}</p>
             </div>

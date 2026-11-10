@@ -102,7 +102,7 @@ export function ChopPreview({
           </defs>
 
           <circle cx="100" cy="100" r="100" fill={`url(#clayFill-${uid})`} />
-          <circle cx="100" cy="100" r="82" fill="none" stroke="#f3eee4" strokeOpacity="0.35" strokeWidth="2" />
+          <circle cx="100" cy="100" r="82" fill="none" stroke="#f4ecdf" strokeOpacity="0.35" strokeWidth="2" />
           <circle cx="100" cy="100" r="74" fill="#8f6844" stroke="#6e4e32" strokeWidth="1" />
 
           <g clipPath={`url(#faceClip-${uid})`}>
@@ -110,7 +110,7 @@ export function ChopPreview({
               x="100"
               y="108"
               textAnchor="middle"
-              fill="#f3eee4"
+              fill="#f4ecdf"
               fontFamily={fontStack}
               fontSize={fontSize}
               fontWeight="600"
