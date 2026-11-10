@@ -32,7 +32,9 @@ if (!existsSync(path.join(DIST, "index.html"))) {
 
 // Build the route list: fixed pages plus a real post pulled from the manifest.
 function routes() {
-  const fixed = ["/", "/about", "/pages/tech-tips", "/pages/coding-projects", "/pages/updates"];
+  // The unknown id must degrade to "Post not found." — a 200 SPA fallback that
+  // is not JSON once made res.json() reject and left the page on "Loading…".
+  const fixed = ["/", "/about", "/pages/tech-tips", "/pages/coding-projects", "/pages/updates", "/post/this-post-does-not-exist"];
   try {
     const manifest = JSON.parse(readFileSync(path.join(DIST, "posts/manifest.json"), "utf8"));
     const ids = (Array.isArray(manifest) ? manifest : []).map(p => p.id).filter(Boolean).slice(0, 2);
