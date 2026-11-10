@@ -43,3 +43,6 @@ jobs:
 
       - name: Render smoke test (fails on a blank page)
         run: node scripts/smoke.mjs
+
+      - name: MCP server integration test
+        run: node scripts/mcp-smoke.mjs
