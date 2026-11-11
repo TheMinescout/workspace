@@ -8,16 +8,22 @@ export const siteConfig = {
   eaglePercent: 100,
 };
 
+// A rejected fetch here would leave the page stuck on "Loading…" and, before
+// first paint, trip the boot guard. These degrade to empty content instead.
 export async function fetchPosts() {
-  const res = await fetch(withBase("posts/manifest.json?t=" + Date.now()));
-  if (!res.ok) return [];
-  return res.json();
+  try {
+    const res = await fetch(withBase("posts/manifest.json?t=" + Date.now()));
+    if (!res.ok) return [];
+    return await res.json();
+  } catch { return []; }
 }
 
 export async function fetchPost(id) {
-  const res = await fetch(withBase(`posts/${encodeURIComponent(id)}.json?t=` + Date.now()));
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    const res = await fetch(withBase(`posts/${encodeURIComponent(id)}.json?t=` + Date.now()));
+    if (!res.ok) return null;
+    return await res.json();
+  } catch { return null; }
 }
 
 export async function savePost(post) {
@@ -43,7 +49,7 @@ export async function fetchSidebarConfig() {
   try {
     const res = await fetch("/api/sidebar-config");
     if (!res.ok) return null;
-    return res.json();
+    return await res.json();
   } catch { return null; }
 }
 
@@ -75,7 +81,7 @@ export async function fetchAdminSession() {
   try {
     const res = await fetch("/api/admin/session", { credentials: "same-origin" });
     if (!res.ok) return { ok: false, isAdmin: false };
-    return res.json();
+    return await res.json();
   } catch { return { ok: false, isAdmin: false }; }
 }
 
@@ -108,7 +114,7 @@ export async function fetchCurrentUser() {
   try {
     const res = await fetch("/api/me", { credentials: "same-origin" });
     if (!res.ok) return { ok: false };
-    return res.json();
+    return await res.json();
   } catch { return { ok: false }; }
 }
 
@@ -117,7 +123,7 @@ export async function fetchComments(postId) {
   try {
     const res = await fetch(`/api/comments?postId=${encodeURIComponent(postId)}`);
     if (!res.ok) return [];
-    return res.json();
+    return await res.json();
   } catch { return []; }
 }
 
@@ -125,7 +131,7 @@ export async function fetchAllComments() {
   try {
     const res = await fetch("/api/comments/all", { credentials: "same-origin" });
     if (!res.ok) return [];
-    return res.json();
+    return await res.json();
   } catch { return []; }
 }
 
@@ -154,7 +160,7 @@ export async function fetchRatings(postId) {
   try {
     const res = await fetch(`/api/ratings?postId=${encodeURIComponent(postId)}`);
     if (!res.ok) return { up: 0, down: 0, userVote: null };
-    return res.json();
+    return await res.json();
   } catch { return { up: 0, down: 0, userVote: null }; }
 }
 

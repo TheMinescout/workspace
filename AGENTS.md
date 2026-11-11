@@ -95,8 +95,39 @@ after — `git stash` your edits and re-run if unsure.
   Fraunces `SOFT`/`WONK` variation axes. The font link in `__root.tsx` must keep
   those axis names or the display type loses its warmth.
 
+## Minescout Life (`life.minescout.net/`)
+
+```bash
+npm run dev      # Vite dev server on 127.0.0.1:3000
+npm run build    # vite build -> dist/
+npm run check    # lint (oxlint) + render smoke + MCP smoke
+```
+
+- The API is a **dev-server-only Vite plugin** (`apiPlugin` in `vite.config.js`),
+  mounted in `configureServer`. It only exists while `npm run dev` runs; there is
+  no `configurePreviewServer`, so `vite preview` has no backend.
+- Posts are plain files: `public/posts/<id>.json` plus `public/posts/manifest.json`.
+  `src/data/posts.js` fetches them. An unknown id gets the 200 HTML app shell
+  back from the SPA fallback — not a 404 — so `res.json()` throws.
+- **`return res.json()` inside a `try` in an `async` function does not catch
+  parse failures.** The rejection escapes the `catch`, because the promise is
+  returned without being awaited. Always `return await res.json()`. This was a
+  real bug across every helper in `src/data/posts.js`.
+- The boot guard in `index.html` fires on any `unhandledrejection`. It must stop
+  acting once React has painted (`root.firstElementChild`), or a routine
+  background-request rejection wipes the whole rendered app. `scripts/smoke.mjs`
+  guards both this and the unknown-id path.
+- `src/data/` matches the `data/` rule in `life.minescout.net/.gitignore`, but
+  `src/data/posts.js` is tracked. Stage it with `git add -u`, not `git add`.
+- Two posts have an empty `content` in git history (`gemini-cuboid-oracle`,
+  `gpt-number-guessing`) — pre-existing at the V4 upgrade, never populated.
+
 ## Git
 
 Shallow clone — run `git fetch --unshallow` before anything needing full history.
 `node_modules/`, `.vercel/`, and `.agents_tmp/` are not part of the source tree;
 do not commit them.
+
+The `origin` remote's embedded token can go stale; if a push prompts for a
+password, reset the remote to use `$GITHUB_TOKEN`:
+`git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/TheMinescout/workspace.git"`
