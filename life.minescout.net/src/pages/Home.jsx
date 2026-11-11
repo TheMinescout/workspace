@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import PostCard from "../components/PostCard";
 import { withBase } from "../lib/base";
-import { fetchPosts, siteConfig } from "../data/posts";
+import { fetchPosts, siteConfig, visiblePosts } from "../data/posts";
 import { useAdmin } from "../hooks/useAdmin";
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -27,12 +27,6 @@ function filterByCategory(all, key) {
   });
 }
 
-function isPublished(p) {
-  if (!p.publishDate) return true;
-  return new Date(p.publishDate) <= new Date();
-}
-
-
 export default function Home() {
   const [posts, setPosts]       = useState([]);
   const [catFilter, setCat]     = useState("all");
@@ -44,7 +38,7 @@ export default function Home() {
   useEffect(() => {
     fetchPosts().then(data => {
       // Filter out future-scheduled posts for non-admins
-      const visible = isAdmin ? data : data.filter(isPublished);
+      const visible = visiblePosts(data, isAdmin);
       setPosts(visible);
       const tech = visible.filter(p=>p.category?.toLowerCase().includes("tech")).length;
       const app  = visible.filter(p=>p.category?.toLowerCase().includes("app")).length;

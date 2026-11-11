@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Comments from "../components/Comments";
-import { fetchPost, fetchPosts } from "../data/posts";
+import { fetchPost, fetchPosts, visiblePosts } from "../data/posts";
 import { rewriteContentPaths, assetUrl } from "../lib/base";
 import { useTheme } from "../hooks/useTheme";
 import { useAdmin } from "../hooks/useAdmin";
@@ -33,9 +33,20 @@ export default function PostPage() {
   }, [id]);
 
   if (loading) return (<><Header/><div style={{padding:"80px",textAlign:"center",color:"var(--ink-4)"}}>Loading…</div></>);
-  if (!post)   return (<><Header/><div style={{padding:"80px",textAlign:"center"}}><p>Post not found.</p><Link to="/" className="read-link">← Home</Link></div></>);
 
-  const isScheduled = post.publishDate && new Date(post.publishDate) > new Date();
+  const isScheduled = !!post && !!post.publishDate && new Date(post.publishDate) > new Date();
+
+  // A scheduled post is only readable by an admin. While the session check is
+  // still resolving (isAdmin === null) we can't tell, so hold instead of
+  // flashing "not found" at an admin who navigated straight to the draft.
+  if (isScheduled && isAdmin === null) {
+    return (<><Header/><div style={{padding:"80px",textAlign:"center",color:"var(--ink-4)"}}>Checking session…</div></>);
+  }
+
+  if (!post || (isScheduled && !isAdmin)) {
+    return (<><Header/><div style={{padding:"80px",textAlign:"center"}}><p>Post not found.</p><Link to="/" className="read-link">← Home</Link></div></>);
+  }
+
   const date = post.date || new Date(post.timestamp).toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});
 
   return (
@@ -73,7 +84,7 @@ export default function PostPage() {
 
           <Comments postId={id} />
         </main>
-        <Sidebar posts={allPosts}/>
+        <Sidebar posts={visiblePosts(allPosts, isAdmin)}/>
       </div>
       <footer className="site-footer"><p>Life of a Smart Kid · v5.0</p></footer>
     </>

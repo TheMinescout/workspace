@@ -8,6 +8,24 @@ export const siteConfig = {
   eaglePercent: 100,
 };
 
+// A post with a future `publishDate` is scheduled: hidden from everyone except
+// an admin session. `publishDate` is a local datetime string; an absent or
+// unparseable value means the post is live.
+export function isPublished(post, now = Date.now()) {
+  if (!post || !post.publishDate) return true;
+  const at = new Date(post.publishDate).getTime();
+  return Number.isNaN(at) ? true : at <= now;
+}
+
+// The one place that decides which posts a viewer may see. `isAdmin` is the
+// value from useAdmin(): true for admins, false/null otherwise (including the
+// brief window before the session check resolves, when scheduled posts stay
+// hidden).
+export function visiblePosts(posts, isAdmin) {
+  const list = Array.isArray(posts) ? posts : [];
+  return isAdmin ? list : list.filter(isPublished);
+}
+
 // A rejected fetch here would leave the page stuck on "Loading…" and, before
 // first paint, trip the boot guard. These degrade to empty content instead.
 export async function fetchPosts() {

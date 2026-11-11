@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import PostCard from "../components/PostCard";
-import { fetchPosts } from "../data/posts";
+import { fetchPosts, visiblePosts } from "../data/posts";
 import { useTheme } from "../hooks/useTheme";
+import { useAdmin } from "../hooks/useAdmin";
 
 const CFG = {
   "coding-projects": {title:"Coding Projects",span:"Archive",sub:"Apps, tools, and dev projects.",filter:p=>["app","coding","dev"].some(k=>(p.category||"").toLowerCase().includes(k))},
@@ -18,8 +19,9 @@ const CFG = {
 
 export default function CategoryPage({ slug }) {
   const [posts, setPosts] = useState([]);
+  const { isAdmin } = useAdmin();
   useTheme();
-  useEffect(() => { fetchPosts().then(setPosts); }, []);
+  useEffect(() => { fetchPosts().then(data => setPosts(visiblePosts(data, isAdmin))); }, [isAdmin]);
   const cfg = CFG[slug]||{title:"Category",span:"Archive",sub:"",filter:()=>true};
   const filtered = cfg.filter ? posts.filter(cfg.filter).sort((a,b)=>b.timestamp-a.timestamp) : [];
 

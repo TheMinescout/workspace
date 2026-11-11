@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import { withBase } from "../lib/base";
-import { fetchPosts } from "../data/posts";
+import { fetchPosts, visiblePosts } from "../data/posts";
+import { useAdmin } from "../hooks/useAdmin";
 
 const PULL_QUOTES = [
   "There’s always something else to learn or try or build.",
@@ -11,7 +12,8 @@ const PULL_QUOTES = [
 
 export default function About() {
   const [posts, setPosts] = useState([]);
-  useEffect(() => { fetchPosts().then(setPosts); }, []);
+  const { isAdmin } = useAdmin();
+  useEffect(() => { fetchPosts().then(data => setPosts(visiblePosts(data, isAdmin))); }, [isAdmin]);
 
   return (
     <>
