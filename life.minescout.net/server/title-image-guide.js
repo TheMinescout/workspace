@@ -1,0 +1,372 @@
+// The "how I make the title image" instructions, verbatim.
+//
+// These are the exact notes that ship as
+// public/assests/images/how-to-make-a-title.txt, served to MCP clients as the
+// 'how-to-make-a-title' resource and the 'make_title_image' prompt. The
+// create_title_image tool automates the recipe below, but the reasoning still
+// matters: an agent that understands WHY the card is built this way produces a
+// card in the right family, instead of a one-off that does not match the blog.
+//
+// Kept as a module rather than a runtime file read so the text ships with the
+// server and can never 404 or depend on the working directory.
+
+export const TITLE_IMAGE_GUIDE = `================================================================================
+HOW I MADE THE TITLE IMAGE — step by step
+For: life.minescout.net post headers
+Made: November 2026
+================================================================================
+
+--------------------------------------------------------------------------------
+THE SHORT VERSION
+--------------------------------------------------------------------------------
+
+There is no AI image generator available in this environment, so instead of
+"generating" the picture I DESIGNED it as a web page and photographed it with
+a headless browser.
+
+That sounds hacky. It is actually the more reliable approach for a title card,
+because:
+
+  - It uses your site's real fonts and real colors, so the card matches the site
+  - The text is crisp and correctly spelled (generators mangle text constantly)
+  - You can change one word and re-render in two seconds
+  - The whole thing is a text file you can keep in version control
+
+The trade-off: it looks designed and graphic, not photographic. For a
+comparison post like this one, that is the right call. For an illustrated
+article hero, you would still want a real image generator.
+
+--------------------------------------------------------------------------------
+WHAT YOU NEED
+--------------------------------------------------------------------------------
+
+  1. Chromium (already installed in this sandbox at /usr/bin/chromium)
+     Check:    command -v chromium
+
+  2. An internet connection the first time, to pull Google Fonts.
+     If fonts fail to load, the card still renders, but in DejaVu instead of
+     Lora/Inter and it will look noticeably worse.
+
+  3. Python + Pillow, ONLY if you want to verify the result automatically.
+     Check:    python3 -c "import PIL; print(PIL.__version__)"
+     Install:  pip install pillow
+
+--------------------------------------------------------------------------------
+STEP 1 — DECIDE THE SIZE
+--------------------------------------------------------------------------------
+
+Use 1600 x 900 (16:9). That matches your other title cards:
+
+    AI-Agent-Blog-Fix.png ....... 1024 x 559   (1.83)
+    terra-cotta-title.png ....... 1024 x 559   (1.83)
+    geomaster-pro.png ........... 1024 x 572   (1.79)
+
+If you want it sharper on high-DPI screens, render at 2x (see Step 5).
+
+--------------------------------------------------------------------------------
+STEP 2 — GRAB YOUR SITE'S DESIGN TOKENS
+--------------------------------------------------------------------------------
+
+Do not invent colors. Open:
+
+    life.minescout.net/src/index.css
+
+and copy the :root block. These are the ones I used:
+
+    --ink:      #1a1814     near-black, main text
+    --ink-2:    #3d3830
+    --ink-3:    #6b6158     muted text
+    --ink-4:    #9e9188     faint text, labels
+    --paper:    #faf8f5     page background
+    --paper-2:  #f2efe9
+    --paper-3:  #e8e4dc
+    --rule:     #ddd9d0     hairline borders
+    --accent:   #2d6a4f     the green
+    --accent-2: #40916c
+    --blue:     #1d4ed8
+    --amber:    #d97706
+    --red:      #c0392b
+
+Fonts, also from index.css:
+
+    Display / headings .... Lora        (serif)
+    Body / labels .......... Inter       (sans)
+    Numbers / code ......... JetBrains Mono
+
+--------------------------------------------------------------------------------
+STEP 3 — WRITE THE CARD AS HTML
+--------------------------------------------------------------------------------
+
+Save this as title.html. This is the ACTUAL file I used for the rematch card,
+so you can copy it and just change the words.
+
+--------------------------------------------------------------------------------
+<title.html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1814; --ink-2:#3d3830; --ink-3:#6b6158; --ink-4:#9e9188;
+    --paper:#faf8f5; --paper-2:#f2efe9; --paper-3:#e8e4dc; --rule:#ddd9d0;
+    --accent:#2d6a4f; --accent-2:#40916c; --accent-3:#b7e4c7;
+    --blue:#1d4ed8; --amber:#d97706; --red:#c0392b;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1600px;height:900px;overflow:hidden}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:'Inter',sans-serif; position:relative;
+    display:flex; flex-direction:column; justify-content:space-between;
+    padding:88px 104px 80px;
+  }
+  /* faint dot grid over the whole card */
+  body::before{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background-image:radial-gradient(rgba(26,24,20,.05) 1px, transparent 1px);
+    background-size:24px 24px;
+  }
+  .topbar{
+    position:relative; z-index:2;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:16px; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--accent);
+  }
+  .topbar .date{ color:var(--ink-4); font-weight:500; letter-spacing:.16em; }
+
+  .head{ position:relative; z-index:2; }
+  h1{
+    font-family:'Lora',serif; font-weight:700;
+    font-size:114px; line-height:1; letter-spacing:-.022em;
+  }
+  h1 em{ font-style:normal; color:var(--accent); }
+  .sub{
+    font-family:'Lora',serif; font-style:italic; font-weight:400;
+    font-size:56px; color:var(--ink-3); margin-top:16px;
+  }
+
+  .foot{ position:relative; z-index:2; }
+  .rule{ height:1px; background:var(--rule); }
+
+  .models{ display:flex; align-items:stretch; padding:26px 0 30px; }
+  .model{ flex:1; padding-right:26px; }
+  .model + .model{ padding-left:26px; border-left:1px solid var(--rule); }
+  .dot{ width:13px; height:13px; border-radius:50%; margin-bottom:14px; }
+  .mname{ font-size:25px; font-weight:600; letter-spacing:-.01em; line-height:1.2; }
+  .mmeta{
+    font-family:'JetBrains Mono',monospace; font-size:16px;
+    color:var(--ink-4); margin-top:7px; letter-spacing:.02em;
+  }
+
+  /* the finish-line graphic at the bottom */
+  .finish{ position:relative; height:96px; margin-top:4px; }
+  .finish .cap{
+    position:absolute; left:0; top:-2px;
+    font-size:15px; font-weight:600; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--ink-4);
+  }
+  .lane{ position:absolute; left:0; right:74px; height:1px; background:var(--paper-3); }
+  .lane b{
+    position:absolute; top:-6.5px; width:14px; height:14px;
+    border-radius:50%; box-shadow:0 1px 3px rgba(0,0,0,.16);
+  }
+  .fline{
+    position:absolute; top:30px; bottom:6px; right:64px; width:2px;
+    background:var(--ink-4); opacity:.45;
+  }
+  .ftext{
+    position:absolute; right:0; top:36px; width:56px;
+    font-size:13px; font-weight:600; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--ink-4); text-align:right; line-height:1.5;
+  }
+</style></head>
+<body>
+
+  <div class="topbar">
+    <span>Minescout &nbsp;&middot;&nbsp; Tech</span>
+    <span class="date">November 2026</span>
+  </div>
+
+  <div class="head">
+    <h1>Who&rsquo;s the Best AI <em>Now?</em></h1>
+    <div class="sub">The 2026 Rematch</div>
+  </div>
+
+  <div class="foot">
+    <div class="rule"></div>
+    <div class="models">
+      <div class="model">
+        <div class="dot" style="background:var(--accent)"></div>
+        <div class="mname">Gemini 3.1 Pro</div>
+        <div class="mmeta">4.56 avg</div>
+      </div>
+      <div class="model">
+        <div class="dot" style="background:var(--blue)"></div>
+        <div class="mname">ChatGPT Luna</div>
+        <div class="mmeta">4.38 avg</div>
+      </div>
+      <div class="model">
+        <div class="dot" style="background:var(--amber)"></div>
+        <div class="mname">DeepSeek Flash</div>
+        <div class="mmeta">4.19 avg</div>
+      </div>
+      <div class="model">
+        <div class="dot" style="background:var(--red)"></div>
+        <div class="mname">Grok 4.3</div>
+        <div class="mmeta">3.94 avg</div>
+      </div>
+    </div>
+    <div class="finish">
+      <div class="cap">Eight categories &nbsp;&middot;&nbsp; Photo finish</div>
+      <div class="lane" style="top:34px"><b style="background:var(--accent); right:6px"></b></div>
+      <div class="lane" style="top:52px"><b style="background:var(--blue); right:22px"></b></div>
+      <div class="lane" style="top:70px"><b style="background:var(--amber); right:44px"></b></div>
+      <div class="lane" style="top:88px"><b style="background:var(--red); right:96px"></b></div>
+      <div class="fline"></div>
+      <div class="ftext">Finish</div>
+    </div>
+  </div>
+
+</body></html>
+--------------------------------------------------------------------------------
+</title.html>
+
+--------------------------------------------------------------------------------
+STEP 4 — RENDER IT
+--------------------------------------------------------------------------------
+
+One command. This is the exact command I ran:
+
+    chromium --headless --no-sandbox --disable-gpu --hide-scrollbars \\
+      --force-device-scale-factor=1 \\
+      --window-size=1600,900 \\
+      --virtual-time-budget=10000 \\
+      --screenshot=/tmp/title.png \\
+      file:///tmp/title.html
+
+What each flag does:
+
+    --headless ................ no window, just render and exit
+    --no-sandbox .............. required in this container
+    --disable-gpu ............. no GPU here, render in software
+    --hide-scrollbars ......... so no scrollbar sneaks into the image
+    --force-device-scale-factor=1   output at 1x. Use 2 for a retina-sized card
+    --window-size=1600,900 .... sets the canvas, must match your CSS
+    --virtual-time-budget=10000
+        THE IMPORTANT ONE. Waits up to 10s for network + fonts before
+        shooting. Without this you often capture the card before Lora/Inter
+        load and get ugly fallback fonts. If your card still looks like the
+        wrong font, raise this to 20000.
+    --screenshot=... .......... where to write the PNG
+
+It will spam dbus errors to the terminal. Ignore them. What matters is the
+line near the end that says how many bytes were written.
+
+--------------------------------------------------------------------------------
+STEP 5 — WANT IT SHARPER? (2x)
+--------------------------------------------------------------------------------
+
+Same command, change two numbers:
+
+    --force-device-scale-factor=2 --window-size=1600,900
+
+Output is 3200 x 1800 and will look sharp on any screen. File size roughly
+triples. Both are fine for a hero image.
+
+--------------------------------------------------------------------------------
+STEP 6 — VERIFY IT ACTUALLY WORKED
+--------------------------------------------------------------------------------
+
+Eyeballing is best, but here is the automated check I ran to be sure the card
+was not blank or clipped:
+
+    python3 -c "
+    from PIL import Image
+    im=Image.open('/tmp/title.png').convert('L'); W,H=im.size; px=im.load()
+    def dark(y): return sum(1 for x in range(W) if px[x,y]<110)
+    bands=[]; start=None
+    for y in range(H):
+        d=dark(y)
+        if d>3 and start is None: start=y
+        elif d<=3 and start is not None:
+            if y-start>=4: bands.append((start,y))
+            start=None
+    if start is not None: bands.append((start,H))
+    print('size:', (W,H))
+    for a,b in bands: print(f'  text band y {a}-{b}  height {b-a}')
+    edge=sum(1 for y in range(H) for x in list(range(0,40))+list(range(W-40,W)) if px[x,y]<110)
+    print('dark px in 40px edge zone:', edge, '->', 'OK' if edge<50 else 'CLIPPED')
+    "
+
+Read it like this:
+
+    A band of height ~89px near the top-middle  = the 114px headline rendered
+    A band of height ~42px below it            = the 56px subtitle
+    Small bands near the bottom                = the model names and dots
+    "dark px in edge zone: 0"                  = nothing is clipped
+
+If you get ZERO bands, the render failed or the fonts never loaded. Re-run
+with a higher --virtual-time-budget.
+
+--------------------------------------------------------------------------------
+STEP 7 — PUT IT IN THE REPO
+--------------------------------------------------------------------------------
+
+    cp /tmp/title.png \\
+      life.minescout.net/public/assests/images/tech/<folder>/<name>.png
+
+Then in the admin form, Hero Image Path:
+
+    /assests/images/tech/<folder>/<name>.png
+
+NOTE: your asset folder is spelled "assests" (a-s-s-e-s-t-s), not "assets".
+That is not a typo I introduced — it is how the site has always been. Match it
+exactly or the image will 404.
+
+--------------------------------------------------------------------------------
+GOTCHAS I HIT (so you do not have to)
+--------------------------------------------------------------------------------
+
+1. FONTS. The container only has DejaVu installed. Lora and Inter only work
+   because the HTML pulls them from Google Fonts at render time. So the render
+   step needs internet. If you are offline, the card will still render but in
+   DejaVu and it will look wrong. That is the single most likely way to get a
+   bad card.
+
+2. THE 10-SECOND BUDGET. If your headline ever looks like a plain sans-serif,
+   this is why. Raise --virtual-time-budget.
+
+3. HEADLINE WIDTH. The headline is 114px and the usable width is 1600 minus
+   2x104 padding = 1392px. My headline fits on one line. If you write a longer
+   title it will wrap and may collide with the subtitle. Either shorten it or
+   drop the font-size to ~96px.
+
+4. ONE HTML TAG PER LINE of content. Keep the markup flat. Do not nest the
+   model divs inside extra wrappers, or the flex spacing changes.
+
+5. THE DOT GRID. body::before draws a 24px dot pattern. It is very faint on
+   purpose. If you remove it the card looks flat.
+
+6. EDITING LATER. To change anything, edit the HTML and re-run Step 4. Never
+   edit the PNG. Keep the HTML next to the PNG in the repo so the card is
+   reproducible.
+
+--------------------------------------------------------------------------------
+HOW TO REUSE THIS FOR A DIFFERENT POST
+--------------------------------------------------------------------------------
+
+Change these four things and re-render:
+
+  a) The h1 text (and the <em> word you want in green)
+  b) The .sub line
+  c) The .topbar left span (Minescout . <Category>)
+  d) The four .model blocks — name, avg, and dot color
+
+Everything else can stay. It will look like a sibling of this card, which is
+what you want: a consistent family of title images across the blog.
+
+================================================================================`;
+
+export const GUIDE_URI = 'minescout-life://guides/how-to-make-a-title';
