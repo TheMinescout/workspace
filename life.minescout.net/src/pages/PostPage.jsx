@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Comments from "../components/Comments";
-import { fetchPost, fetchPosts, visiblePosts } from "../data/posts";
+import { fetchPost, fetchPosts, visiblePosts, isScheduled, publishTime } from "../data/posts";
 import { rewriteContentPaths, assetUrl } from "../lib/base";
 import { useTheme } from "../hooks/useTheme";
 import { useAdmin } from "../hooks/useAdmin";
@@ -34,16 +34,16 @@ export default function PostPage() {
 
   if (loading) return (<><Header/><div style={{padding:"80px",textAlign:"center",color:"var(--ink-4)"}}>Loading…</div></>);
 
-  const isScheduled = !!post && !!post.publishDate && new Date(post.publishDate) > new Date();
+  const scheduled = isScheduled(post);
 
   // A scheduled post is only readable by an admin. While the session check is
   // still resolving (isAdmin === null) we can't tell, so hold instead of
   // flashing "not found" at an admin who navigated straight to the draft.
-  if (isScheduled && isAdmin === null) {
+  if (scheduled && isAdmin === null) {
     return (<><Header/><div style={{padding:"80px",textAlign:"center",color:"var(--ink-4)"}}>Checking session…</div></>);
   }
 
-  if (!post || (isScheduled && !isAdmin)) {
+  if (!post || (scheduled && !isAdmin)) {
     return (<><Header/><div style={{padding:"80px",textAlign:"center"}}><p>Post not found.</p><Link to="/" className="read-link">← Home</Link></div></>);
   }
 
@@ -56,9 +56,9 @@ export default function PostPage() {
         <main>
           <Link to={post.backHref||"/"} className="back-link">← {post.backLabel||"Back"}</Link>
 
-          {isAdmin && isScheduled && (
+          {isAdmin && scheduled && (
             <div style={{background:"#fff3cd",border:"1px solid #f97316",borderRadius:"8px",padding:"10px 14px",marginBottom:"16px",fontSize:"13px",color:"#92400e"}}>
-              ⏰ <strong>Admin preview</strong> — this post is scheduled and won't appear on the timeline until {new Date(post.publishDate).toLocaleString()}
+              ⏰ <strong>Admin preview</strong> — this post is scheduled and won't appear on the timeline until {new Date(publishTime(post)).toLocaleString()}
             </div>
           )}
 

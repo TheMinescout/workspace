@@ -121,11 +121,15 @@ npm run check    # lint (oxlint) + render smoke + MCP smoke
   `src/data/posts.js` is tracked. Stage it with `git add -u`, not `git add`.
 - Two posts have an empty `content` in git history (`gemini-cuboid-oracle`,
   `gpt-number-guessing`) — pre-existing at the V4 upgrade, never populated.
-- A post with a future `publishDate` is scheduled. `isPublished()` and
-  `visiblePosts(posts, isAdmin)` in `src/data/posts.js` are the single source of
-  truth for who may see it: non-admins (and the pre-session-check `isAdmin ===
-  null` window) never see it on the timeline, category pages, sidebars, or by
-  direct `/post/<id>` URL. Filter through `visiblePosts`, never inline.
+- A post is scheduled while either its `publishDate` (ISO datetime) or its show
+  `date` (e.g. "November 14, 2026") is in the future. `publishTime()`,
+  `isPublished()`/`isScheduled()`, and `visiblePosts(posts, isAdmin)` in
+  `src/data/posts.js` are the single source of truth for who may see it:
+  non-admins (and the pre-session-check `isAdmin === null` window) never see a
+  scheduled post on the timeline, category pages, sidebars, or by direct
+  `/post/<id>` URL. Route every list through `visiblePosts`, never inline.
+  `filter(isPublished)` is wrong — `filter` passes the index as the `now`
+  argument; `visiblePosts` wraps it in an arrow for this reason.
 - The MCP server (`server/mcp.js`) also renders **title images**: the
   `create_title_image` tool (and the `titleImage` option on `create_post` /
   `update_post`) builds a 1600x900 card by rendering HTML in headless chromium

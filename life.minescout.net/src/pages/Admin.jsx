@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import {
   fetchPosts, fetchPost, savePost, deletePost,
   fetchSidebarConfig, saveSidebarConfig,
-  fetchAllComments, deleteComment,
+  fetchAllComments, deleteComment, isScheduled,
 } from "../data/posts";
 import { useAdmin } from "../hooks/useAdmin";
 import { useTheme } from "../hooks/useTheme";
@@ -167,8 +167,6 @@ export default function Admin() {
   const cfg = sidebarCfg || defaultSidebarCfg;
 
   const tabStyle = t => `tab-btn${tab===t?" active":""}`;
-
-  const isScheduled = (p) => p.publishDate && new Date(p.publishDate) > new Date();
 
   return (
     <>
