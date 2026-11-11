@@ -121,6 +121,22 @@ npm run check    # lint (oxlint) + render smoke + MCP smoke
   `src/data/posts.js` is tracked. Stage it with `git add -u`, not `git add`.
 - Two posts have an empty `content` in git history (`gemini-cuboid-oracle`,
   `gpt-number-guessing`) — pre-existing at the V4 upgrade, never populated.
+- The MCP server (`server/mcp.js`) also renders **title images**: the
+  `create_title_image` tool (and the `titleImage` option on `create_post` /
+  `update_post`) builds a 1600x900 card by rendering HTML in headless chromium
+  via Playwright and screenshotting it. There is no image generator in this
+  environment, so that is the intended path, not a workaround.
+  - The card HTML and design tokens live in `server/title-image.js`; the
+    how-to instructions live in `server/title-image-guide.js` and are served
+    over MCP as the `how-to-make-a-title` resource and `make_title_image`
+    prompt. Keep those two in step with
+    `public/assests/images/how-to-make-a-title.txt`.
+  - Images are written to `public/assests/images/<folder>/` — note the
+    long-standing `assests` spelling. `IMAGES_DIR` overrides it for tests.
+  - Chromium must be present: `CHROMIUM_PATH`, else `/usr/bin/chromium`, else
+    Playwright's bundled build. `scripts/mcp-smoke.mjs` renders a real card.
+  - The render needs internet for Google Fonts (Lora/Inter). The tool reports
+    `fontsLoaded` so a DejaVu-fallback card is visible, not silent.
 
 ## Git
 

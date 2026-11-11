@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1814; --ink-2:#3d3830; --ink-3:#6b6158; --ink-4:#9e9188;
+    --paper:#faf8f5; --paper-2:#f2efe9; --paper-3:#e8e4dc; --rule:#ddd9d0;
+    --accent:#2d6a4f; --accent-2:#40916c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1600px;height:900px;overflow:hidden}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:'Inter',sans-serif; position:relative;
+    display:flex; flex-direction:column; justify-content:space-between;
+    padding:88px 104px 80px;
+  }
+  body::before{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background-image:radial-gradient(rgba(26,24,20,.05) 1px, transparent 1px);
+    background-size:24px 24px;
+  }
+  .topbar{
+    position:relative; z-index:2;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:16px; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--accent);
+  }
+  .topbar .date{ color:var(--ink-4); font-weight:500; letter-spacing:.16em; }
+  .head{ position:relative; z-index:2; }
+  h1{
+    font-family:'Lora',serif; font-weight:700;
+    font-size:114px; line-height:1.02; letter-spacing:-.022em;
+  }
+  h1 em{ font-style:normal; color:var(--accent); }
+  .sub{
+    font-family:'Lora',serif; font-style:italic; font-weight:400;
+    font-size:56px; color:var(--ink-3); margin-top:16px;
+  }
+  .foot{ position:relative; z-index:2; }
+  .rule{ height:1px; background:var(--rule); }
+  .models{ display:flex; align-items:stretch; padding:26px 0 6px; }
+  .model{ flex:1; padding-right:26px; }
+  .model + .model{ padding-left:26px; border-left:1px solid var(--rule); }
+  .dot{ width:13px; height:13px; border-radius:50%; margin-bottom:14px; }
+  .mname{ font-size:25px; font-weight:600; letter-spacing:-.01em; line-height:1.2; }
+  .mmeta{ font-family:'JetBrains Mono',monospace; font-size:16px; color:var(--ink-4); margin-top:7px; }
+  .caption{
+    padding-top:22px; font-size:15px; font-weight:600; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--ink-4);
+  }
+</style></head>
+<body>
+
+  <div class="topbar">
+    <span>Minescout &nbsp;&middot;&nbsp; Tech</span>
+    <span class="date">November 14, 2026</span>
+  </div>
+
+  <div class="head">
+    <h1>Argon and <em>Carbon</em></h1>
+    <div class="sub">The periodic table inside Google&#39;s Gemini 4</div>
+  </div>
+
+  <div class="foot">
+    <div class="rule"></div>
+    <div class="models">
+      <div class="model">
+        <div class="dot" style="background:#2d6a4f"></div>
+        <div class="mname">Gemini 4 Argon</div>
+        <div class="mmeta">the flagship</div>
+      </div>
+      <div class="model">
+        <div class="dot" style="background:#1d4ed8"></div>
+        <div class="mname">Gemini 4 Carbon</div>
+        <div class="mmeta">the fast one</div>
+      </div>
+    </div>
+  </div>
+
+</body></html>

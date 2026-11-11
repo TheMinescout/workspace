@@ -93,9 +93,62 @@ proxies `/api/` to the app server, so no extra hosting is needed).
 | --- | --- |
 | `list_posts` | List posts, newest first. Optional `category` filter. |
 | `get_post` | Fetch one post in full, including its content. |
-| `create_post` | Publish a new post. Body may be Markdown or HTML. |
-| `update_post` | Edit an existing post. Only the fields you pass change. |
+| `create_post` | Publish a new post. Body may be Markdown or HTML. Optional `titleImage` renders a hero card in the same call. |
+| `update_post` | Edit an existing post. Only the fields you pass change. Optional `titleImage` renders a hero card. |
+| `create_title_image` | Render a title card (hero image) for a post and save it to the site. |
 | `delete_post` | Permanently delete a post. |
+
+The server also exposes the title-card recipe as a **resource**
+(`minescout-life://guides/how-to-make-a-title`) and a **prompt**
+(`make_title_image`), so a client can read the same instructions the human
+method documents.
+
+**Title images**
+
+`create_title_image` builds a 1600×900 (or 3200×1800 at `scale: 2`) title card
+and writes it under `public/assests/images/<folder>/`. There is no image
+generator in this environment, so the card is **designed as a web page and
+photographed with a headless browser**: it uses the site's real fonts (Lora,
+Inter, JetBrains Mono) and real colors, so it matches the blog, the text is
+crisp, and every card is reproducible from the HTML saved beside the PNG.
+
+```jsonc
+// create_title_image
+{
+  "title": "Argon and Carbon",        // headline — short fits one line
+  "accentWord": "Carbon",             // one word set in green
+  "subtitle": "The periodic table inside Gemini 4",
+  "category": "Tech",
+  "date": "November 2026",
+  "models": [                          // optional comparison footer (max 4)
+    { "name": "Gemini 4 Argon", "meta": "1M tokens", "color": "accent" },
+    { "name": "Gemini 4 Carbon", "meta": "AA 59", "color": "blue" }
+  ]
+}
+```
+
+It returns the hero path to use, e.g.
+`/assests/images/tech/argon-and-carbon-title.png`. Or skip the second step and
+let `create_post` render it for you:
+
+```jsonc
+// create_post
+{
+  "title": "My New Post",
+  "summary": "One-line teaser.",
+  "content": "## Markdown works",
+  "titleImage": { "subtitle": "A subtitle for the card" }
+}
+```
+
+`color` takes a design-token name (`accent`, `blue`, `amber`, `red`) or a hex
+value; the headline size steps down automatically for long titles. Note the
+asset folder is spelled `assests` (not `assets`) — that is how the site has
+always been, and the path must match exactly.
+
+The render step needs internet access, because Lora and Inter are pulled from
+Google Fonts at render time; offline, the card falls back to a system font and
+the tool says so in its result.
 
 **Authentication**
 
@@ -133,11 +186,14 @@ Once connected, an agent can publish a post in one call:
 
 - Posts are written to `public/posts/<id>.json` plus `public/posts/manifest.json`,
   the same files the admin editor writes. Nothing else needs deploying.
+- Title cards are written to `public/assests/images/<folder>/` as a PNG plus the
+  source HTML. Commit both so the card stays reproducible.
 - Content is sanitized on the way in (scripts, event handlers and unsafe URLs are
   stripped), and the body is rendered from Markdown when it is not already HTML.
 - Set `publishDate` to a future time to schedule a post; pass an empty string
   when updating to publish it immediately.
-- `POSTS_DIR` overrides the storage location, which is useful for testing.
+- `POSTS_DIR` overrides the post storage location and `IMAGES_DIR` overrides the
+  title-image location, which is useful for testing.
 
 ## Minescout Beta (`beta.minescout.net`)
 
