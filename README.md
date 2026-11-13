@@ -54,7 +54,7 @@ Current route areas include:
 - Home page
 - Login and administrator pages
 - Individual posts at `/post/:id`
-- Category pages for coding projects, tech tips, updates, puppy life, the Minecraft server, beta, stats, and feature requests
+- Category pages for coding projects, tech tips, updates, puppy life, the Minecraft server, beta, stats, feature requests, and AI posts
 - A not-found page for unknown routes
 
 The application source is grouped into reusable components, data helpers, hooks, and page components. The admin area supports managing site content, while the public experience focuses on posts and category browsing.
@@ -194,6 +194,43 @@ Once connected, an agent can publish a post in one call:
   when updating to publish it immediately.
 - `POSTS_DIR` overrides the post storage location and `IMAGES_DIR` overrides the
   title-image location, which is useful for testing.
+
+### AI Posts (the weekly AI column)
+
+`AI Posts` is a category that is deliberately kept **off the home timeline** and
+shown only on its own tab (`/pages/ai-posts`, linked as "AI Posts" in the
+sidebar). The point is a weekly AI-written column: an agent publishes one entry
+a week through the MCP `create_post` tool with `category: "AI Posts"`, and it
+shows up on the tab without crowding the main feed.
+
+- The visibility rule lives in `src/data/posts.js`: `isAICategory(post)` matches
+  the whole word "ai" in the category (so "AI Posts" and a bare "AI" count, but
+  "Coding"/"Tech"/"Puppy" do not), and `homePosts(posts, isAdmin)` is
+  `visiblePosts(...)` minus those posts. Home uses `homePosts`; every other view
+  still uses `visiblePosts`.
+- Direct links (`/post/<id>`) and the category tab work normally, so a shared AI
+  post opens fine; it just does not appear in the home feed.
+- Scheduling still applies: a future-dated AI post is hidden from non-admins
+  everywhere until its date, same as any other post.
+
+**Weekly automation**
+
+The weekly drop is a scheduled OpenHands conversation that calls the MCP server
+at `POST /api/mcp` (see above) with the `create_post` tool:
+
+```jsonc
+{
+  "title": "…",                    // this week's topic
+  "summary": "One-line teaser.",
+  "content": "## Markdown body",
+  "category": "AI Posts",
+  "titleImage": { "subtitle": "This week in AI" }
+}
+```
+
+It needs the MCP token and network access to Google Fonts for the title card.
+See the automation's own config for the schedule and the exact prompt; the site
+side only requires that the post is written with `category: "AI Posts"`.
 
 ## Minescout Beta (`beta.minescout.net`)
 

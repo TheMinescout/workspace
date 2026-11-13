@@ -18,6 +18,7 @@ import {
 import { isPostId, cleanText, safeEqual } from "./security.js";
 import { renderTitleCard } from "./title-image.js";
 import { TITLE_IMAGE_GUIDE, GUIDE_URI } from "./title-image-guide.js";
+import { isScheduled, publishTime } from "../src/lib/scheduling.js";
 
 const SERVER_INFO = { name: "minescout-life", version: "1.0.0" };
 
@@ -40,6 +41,8 @@ function errorResult(text) {
 }
 
 // Trimmed view for listings — full post bodies are large and rarely wanted.
+// `scheduled` mirrors the site's rule: a post is scheduled while either its
+// publishDate or its show date is in the future.
 function summarize(post) {
   return {
     id: post.id,
@@ -48,7 +51,7 @@ function summarize(post) {
     summary: post.summary,
     date: post.date,
     publishDate: post.publishDate || null,
-    scheduled: !!(post.publishDate && new Date(post.publishDate) > new Date()),
+    scheduled: isScheduled(post),
   };
 }
 
@@ -137,7 +140,9 @@ function buildServer() {
       }
       if (!posts.length) return textResult("No posts found.");
       const lines = posts.map(p => {
-        const when = p.publishDate ? `scheduled ${p.publishDate}` : (p.date || "no date");
+        const when = isScheduled(p)
+          ? `scheduled until ${new Date(publishTime(p)).toISOString()}`
+          : (p.date || "no date");
         return `- ${p.id}\n  ${p.title} [${p.category || "Tech"}] — ${when}\n  ${p.summary || ""}`;
       });
       return textResult(`${posts.length} post(s):\n\n${lines.join("\n")}`);
@@ -176,7 +181,7 @@ function buildServer() {
         summary: z.string().describe("One-sentence teaser shown on cards and in the list."),
         content: z.string().describe("Post body, as Markdown or HTML."),
         id: z.string().optional().describe("URL slug. Derived from the title when omitted."),
-        category: z.string().optional().describe("Category, e.g. Tech, Life, Updates. Defaults to Tech."),
+        category: z.string().optional().describe("Category, e.g. Tech, App, Updates. Use 'AI Posts' for the weekly AI column — it is kept off the home timeline and shown only on its own tab. Defaults to Tech."),
         date: z.string().optional().describe("Display date, e.g. 'November 6, 2026'. Defaults to today."),
         heroImage: z.string().optional().describe("Hero image URL, or a path beginning with /."),
         linkText: z.string().optional().describe("Card link label. Defaults to 'Read Entry'."),

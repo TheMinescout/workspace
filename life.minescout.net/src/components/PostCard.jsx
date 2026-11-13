@@ -3,6 +3,7 @@ import { assetUrl } from "../lib/base";
 
 function chipClass(cat) {
   const c = (cat||"").toLowerCase();
+  if (/\bai\b/.test(c))      return "chip-ai";
   if (c.includes("tech"))   return "chip-tech";
   if (c.includes("app"))    return "chip-app";
   if (c.includes("eagle"))  return "chip-eagle";

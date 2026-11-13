@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import PostCard from "../components/PostCard";
-import { fetchPosts, visiblePosts } from "../data/posts";
+import { fetchPosts, visiblePosts, isAICategory } from "../data/posts";
 import { useTheme } from "../hooks/useTheme";
 import { useAdmin } from "../hooks/useAdmin";
 
@@ -15,6 +15,7 @@ const CFG = {
   "beta":            {title:"Beta",span:"Archive",sub:"Experimental features and early access.",filter:p=>(p.category||"").toLowerCase().includes("beta")||(p.id||"").includes("beta")},
   "stats":           {title:"Stats",span:"Dashboard",sub:"Site analytics and achievement tracking.",isStats:true},
   "feature-request": {title:"Feature Requests",span:"Board",sub:"Suggest new features for MineScout Life.",isFeature:true},
+  "ai-posts":        {title:"AI Posts",span:"Weekly",sub:"A new entry written by an AI agent every week.",filter:isAICategory},
 };
 
 export default function CategoryPage({ slug }) {

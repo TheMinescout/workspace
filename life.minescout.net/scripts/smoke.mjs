@@ -34,7 +34,7 @@ if (!existsSync(path.join(DIST, "index.html"))) {
 function routes() {
   // The unknown id must degrade to "Post not found." — a 200 SPA fallback that
   // is not JSON once made res.json() reject and left the page on "Loading…".
-  const fixed = ["/", "/about", "/pages/tech-tips", "/pages/coding-projects", "/pages/updates", "/post/this-post-does-not-exist"];
+      const fixed = ["/", "/about", "/pages/tech-tips", "/pages/coding-projects", "/pages/updates", "/pages/ai-posts", "/post/this-post-does-not-exist"];
   try {
     const manifest = JSON.parse(readFileSync(path.join(DIST, "posts/manifest.json"), "utf8"));
     const ids = (Array.isArray(manifest) ? manifest : []).map(p => p.id).filter(Boolean).slice(0, 2);

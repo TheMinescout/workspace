@@ -38,6 +38,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Unit tests
+        run: npm test
+
       - name: Install Chromium for the render smoke test
         run: npx playwright install --with-deps chromium
 

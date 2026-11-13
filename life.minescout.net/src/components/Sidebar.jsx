@@ -9,6 +9,7 @@ const NAV = [
   { label: "Tech Tips",        href: "/pages/tech-tips" },
   { label: "Updates",          href: "/pages/updates" },
   { label: "Puppy Life",       href: "/pages/puppy-life" },
+  { label: "AI Posts",         href: "/pages/ai-posts" },
   { label: "Beta",             href: "/pages/beta" },
   { label: "Stats",            href: "/pages/stats" },
   { label: "Feature Request",  href: "/pages/feature-request" },
