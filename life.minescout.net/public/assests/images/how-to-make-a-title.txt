@@ -31,9 +31,11 @@ WHAT YOU NEED
   1. Chromium (already installed in this sandbox at /usr/bin/chromium)
      Check:    command -v chromium
 
-  2. An internet connection the first time, to pull Google Fonts.
-     If fonts fail to load, the card still renders, but in DejaVu instead of
-     Lora/Inter and it will look noticeably worse.
+  2. No internet needed. The site fonts (Lora, Inter, JetBrains Mono) are
+     bundled in server/fonts and inlined into the card as base64 @font-face
+     rules, so the card renders the same offline as online. (The manual
+     <title.html> recipe below still links Google Fonts for illustration; the
+     create_title_image tool inlines them.)
 
   3. Python + Pillow, ONLY if you want to verify the result automatically.
      Check:    python3 -c "import PIL; print(PIL.__version__)"
@@ -317,14 +319,17 @@ exactly or the image will 404.
 GOTCHAS I HIT (so you do not have to)
 --------------------------------------------------------------------------------
 
-1. FONTS. The container only has DejaVu installed. Lora and Inter only work
-   because the HTML pulls them from Google Fonts at render time. So the render
-   step needs internet. If you are offline, the card will still render but in
-   DejaVu and it will look wrong. That is the single most likely way to get a
-   bad card.
+1. FONTS. The container only has DejaVu installed, so the card must supply its
+   own fonts. The create_title_image tool inlines Lora/Inter/JetBrains Mono
+   from server/fonts as base64 @font-face rules, so it needs no network and
+   renders the same everywhere. If you are building the HTML by hand instead,
+   link Google Fonts (as in the <title.html> recipe above) and make sure the
+   render host can reach them — otherwise you get DejaVu and it looks wrong.
 
-2. THE 10-SECOND BUDGET. If your headline ever looks like a plain sans-serif,
-   this is why. Raise --virtual-time-budget.
+2. THE 10-SECOND BUDGET. Only relevant to the hand-built HTML path. If your
+   headline ever looks like a plain sans-serif, the fonts had not loaded before
+   the shot; raise --virtual-time-budget. The create_title_image tool waits on
+   document.fonts.ready, so it does not have this problem.
 
 3. HEADLINE WIDTH. The headline is 114px and the usable width is 1600 minus
    2x104 padding = 1392px. My headline fits on one line. If you write a longer

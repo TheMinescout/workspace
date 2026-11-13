@@ -155,8 +155,12 @@ npm run check    # lint (oxlint) + render smoke + MCP smoke
     long-standing `assests` spelling. `IMAGES_DIR` overrides it for tests.
   - Chromium must be present: `CHROMIUM_PATH`, else `/usr/bin/chromium`, else
     Playwright's bundled build. `scripts/mcp-smoke.mjs` renders a real card.
-  - The render needs internet for Google Fonts (Lora/Inter). The tool reports
-    `fontsLoaded` so a DejaVu-fallback card is visible, not silent.
+  - The fonts (Lora/Inter/JetBrains Mono) are bundled in `server/fonts/` and
+    inlined into the card as base64 `@font-face` rules, so the render needs no
+    network and works offline. The tool still reports `fontsLoaded` so a
+    fallback card is visible, not silent. The render waits on
+    `document.fonts.ready` (with a 5s cap) rather than `networkidle`, so a
+    stalled resource can never hang the render and leave an empty hero image.
 
 ## Git
 
