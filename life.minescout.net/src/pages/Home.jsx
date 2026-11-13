@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import PostCard from "../components/PostCard";
 import { withBase } from "../lib/base";
-import { fetchPosts, siteConfig, visiblePosts } from "../data/posts";
+import { fetchPosts, siteConfig, homePosts } from "../data/posts";
 import { useAdmin } from "../hooks/useAdmin";
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -37,8 +37,8 @@ export default function Home() {
 
   useEffect(() => {
     fetchPosts().then(data => {
-      // Filter out future-scheduled posts for non-admins
-      const visible = visiblePosts(data, isAdmin);
+      // Home shows published posts except the home-hidden categories (AI Posts).
+      const visible = homePosts(data, isAdmin);
       setPosts(visible);
       const tech = visible.filter(p=>p.category?.toLowerCase().includes("tech")).length;
       const app  = visible.filter(p=>p.category?.toLowerCase().includes("app")).length;

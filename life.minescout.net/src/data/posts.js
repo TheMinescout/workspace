@@ -1,4 +1,9 @@
 import { withBase } from "../lib/base";
+import { parseShowDate, publishTime, isPublished, isScheduled } from "../lib/scheduling";
+
+// Re-exported so components keep importing scheduling from here.
+export { parseShowDate, publishTime, isPublished, isScheduled };
+
 export const siteConfig = {
   nowBuilding: [
     { title: "Geo Quiz AI", desc: "Training custom models for terrain recognition.", color: "#f97316" },
@@ -8,47 +13,6 @@ export const siteConfig = {
   eaglePercent: 100,
 };
 
-// The `date` field is the human-readable show date on a post ("November 14,
-// 2026", "Aug. 11, 2026"). Parse it to local midnight so a future show date can
-// schedule the post. Returns null for free-text/unparseable values, which then
-// impose no constraint.
-const MONTHS = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
-export function parseShowDate(value) {
-  if (typeof value !== "string") return null;
-  const m = /^\s*([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})\s*$/.exec(value);
-  if (!m) return null;
-  const month = MONTHS.indexOf(m[1].slice(0, 3).toLowerCase());
-  const day = Number(m[2]);
-  const year = Number(m[3]);
-  if (month < 0 || day < 1 || day > 31) return null;
-  return new Date(year, month, day).getTime();
-}
-
-// The instant a post goes live: the later of its scheduled `publishDate` (an
-// ISO datetime) and its show `date`. Either may be absent or unparseable, in
-// which case it imposes no constraint; a post with neither is always live.
-export function publishTime(post) {
-  if (!post) return 0;
-  const times = [];
-  if (typeof post.publishDate === "string" && post.publishDate) {
-    const at = new Date(post.publishDate).getTime();
-    if (!Number.isNaN(at)) times.push(at);
-  }
-  const show = parseShowDate(post.date);
-  if (show !== null) times.push(show);
-  return times.length ? Math.max(...times) : 0;
-}
-
-// A post is scheduled — hidden from everyone except an admin session — while its
-// publish time is still in the future.
-export function isPublished(post, now = Date.now()) {
-  return publishTime(post) <= now;
-}
-
-export function isScheduled(post, now = Date.now()) {
-  return publishTime(post) > now;
-}
-
 // The one place that decides which posts a viewer may see. `isAdmin` is the
 // value from useAdmin(): true for admins, false/null otherwise (including the
 // brief window before the session check resolves, when scheduled posts stay
@@ -56,6 +20,34 @@ export function isScheduled(post, now = Date.now()) {
 export function visiblePosts(posts, isAdmin) {
   const list = Array.isArray(posts) ? posts : [];
   return isAdmin ? list : list.filter(p => isPublished(p));
+}
+
+// The category the weekly AI writes to. Matched on the whole word "ai", so
+// "AI Posts" (and a bare "AI") count, while "Coding"/"Tech"/"Puppy" never do.
+export const AI_CATEGORY = "AI Posts";
+
+function categoryWords(post) {
+  return String((post && post.category) || "")
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean);
+}
+
+export function isAICategory(post) {
+  return categoryWords(post).includes("ai");
+}
+
+// Posts that belong to a category kept off the home timeline. They are still
+// reachable from their own tab and by direct link; they just do not mix into the
+// main feed. Today only the AI Posts tab opts out.
+export function isHomeHidden(post) {
+  return isAICategory(post);
+}
+
+// The posts the home timeline shows: everything a viewer may see, minus the
+// home-hidden categories.
+export function homePosts(posts, isAdmin) {
+  return visiblePosts(posts, isAdmin).filter(p => !isHomeHidden(p));
 }
 
 // A rejected fetch here would leave the page stuck on "Loading…" and, before

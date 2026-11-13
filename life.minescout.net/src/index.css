@@ -289,12 +289,14 @@ html[data-theme="dark"] .site-header { background: rgba(22,20,15,0.92); }
 .chip-eagle   { background: rgba(217,119,6,.1);   color: #b45309; }
 .chip-coding  { background: rgba(124,58,237,.1);  color: #6d28d9; }
 .chip-puppy   { background: rgba(234,88,12,.1);   color: #c2410c; }
+.chip-ai      { background: rgba(13,148,136,.1);  color: #0f766e; }
 .chip-update  { background: rgba(107,114,128,.1); color: #374151; }
 html[data-theme="dark"] .chip-tech   { background: rgba(29,78,216,.2);   color: #93c5fd; }
 html[data-theme="dark"] .chip-app    { background: rgba(5,150,105,.2);   color: #6ee7b7; }
 html[data-theme="dark"] .chip-eagle  { background: rgba(217,119,6,.2);   color: #fcd34d; }
 html[data-theme="dark"] .chip-coding { background: rgba(124,58,237,.2);  color: #c4b5fd; }
 html[data-theme="dark"] .chip-puppy  { background: rgba(234,88,12,.2);   color: #fed7aa; }
+html[data-theme="dark"] .chip-ai     { background: rgba(13,148,136,.2);  color: #5eead4; }
 html[data-theme="dark"] .chip-update { background: rgba(107,114,128,.2); color: #d1d5db; }
 
 .card-date { font-size: 11px; color: var(--ink-4); }

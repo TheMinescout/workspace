@@ -8,7 +8,7 @@ import PostPage from "./pages/PostPage";
 import CategoryPage from "./pages/CategoryPage";
 import NotFound from "./pages/NotFound";
 
-const SLUGS = ["coding-projects","tech-tips","updates","puppy-life","minecraft-server","beta","stats","feature-request"];
+const SLUGS = ["coding-projects","tech-tips","updates","puppy-life","minecraft-server","beta","stats","feature-request","ai-posts"];
 
 export default function App() {
   return (

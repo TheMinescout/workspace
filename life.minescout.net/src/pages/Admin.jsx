@@ -9,7 +9,15 @@ import {
 import { useAdmin } from "../hooks/useAdmin";
 import { useTheme } from "../hooks/useTheme";
 
-const CATS = ["Tech","App","Eagle","Coding","Puppy","Update"];
+const CATS = ["Tech","App","Eagle","Coding","Puppy","Update","AI Posts"];
+
+// Where a post's "Back" link points, by category. Falls back to Tech Tips.
+const BACK_LINKS = {
+  Puppy:      { label: "Puppy Life",      href: "/pages/puppy-life" },
+  Eagle:      { label: "Updates",         href: "/pages/updates" },
+  App:        { label: "Coding Projects", href: "/pages/coding-projects" },
+  "AI Posts": { label: "AI Posts",        href: "/pages/ai-posts" },
+};
 
 function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,""); }
 
@@ -117,8 +125,8 @@ export default function Admin() {
       date: form.date || new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"}),
       timestamp: existing?.timestamp || Date.now(),
       publishDate: form.publishDate || null,
-      backLabel: form.category==="Puppy"?"Puppy Life":form.category==="Eagle"?"Updates":form.category==="App"?"Coding Projects":"Tech Tips",
-      backHref:  form.category==="Puppy"?"/pages/puppy-life":form.category==="Eagle"?"/pages/updates":form.category==="App"?"/pages/coding-projects":"/pages/tech-tips",
+      backLabel: BACK_LINKS[form.category]?.label || "Tech Tips",
+      backHref:  BACK_LINKS[form.category]?.href  || "/pages/tech-tips",
     };
     const ok = await savePost(post);
     setSaving(false);
