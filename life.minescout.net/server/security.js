@@ -166,7 +166,15 @@ export function isSafeAssetUrl(value) {
 // ── HTML sanitizing for post bodies ─────────────────────────────────────────
 const DROP_TAGS = ["script", "style", "iframe", "object", "embed", "form", "base", "meta", "link", "svg", "math"];
 const URL_ATTRS = ["href", "src", "action", "formaction", "xlink:href", "poster", "data"];
-const BAD_URL = /^\s*(javascript|vbscript|data:text\/html|data:application\/javascript)/i;
+const BAD_URL = /^(javascript|vbscript|data:text\/html|data:application\/javascript)/i;
+
+// A browser strips ASCII whitespace and control characters from a URL before it
+// resolves the scheme, so "java\nscript:" is navigated as "javascript:". A scheme
+// check must therefore run on the de-obfuscated value, not the raw attribute —
+// otherwise the payload passes the test and executes when clicked.
+function deobfuscateUrl(value) {
+  return String(value).replace(/[\u0000-\u0020\u007F]/g, "");
+}
 
 export function sanitizeHtml(html) {
   if (typeof html !== "string" || !html) return "";
@@ -182,11 +190,11 @@ export function sanitizeHtml(html) {
         $(el).removeAttr(name);
         continue;
       }
-      if (URL_ATTRS.includes(attr) && BAD_URL.test(String(value))) {
+      if (URL_ATTRS.includes(attr) && BAD_URL.test(deobfuscateUrl(value))) {
         $(el).removeAttr(name);
         continue;
       }
-      if (attr === "style" && /expression\s*\(|javascript:/i.test(String(value))) {
+      if (attr === "style" && /expression\s*\(|javascript:/i.test(deobfuscateUrl(value))) {
         $(el).removeAttr(name);
       }
     }
