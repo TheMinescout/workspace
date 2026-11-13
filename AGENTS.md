@@ -164,6 +164,9 @@ npm run check    # lint (oxlint) + render smoke + MCP smoke
 
 ## Git
 
+When committing on a new branch, go ahead and open the pull request — do not
+stop to ask first.
+
 Shallow clone — run `git fetch --unshallow` before anything needing full history.
 `node_modules/`, `.vercel/`, and `.agents_tmp/` are not part of the source tree;
 do not commit them.
