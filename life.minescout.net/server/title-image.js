@@ -9,6 +9,7 @@
 // agent can produce a card that sits in the same family as the hand-made ones.
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import { slugify } from "./posts-store.js";
 import { cleanText } from "./security.js";
 
@@ -37,9 +38,40 @@ const COLOR_TOKENS = {
 // Used for the comparison dots when the caller does not name a colour.
 const DOT_COLORS = ["#2d6a4f", "#1d4ed8", "#d97706", "#c0392b"];
 
-const FONT_LINK =
-  "https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600" +
-  "&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap";
+// The card used to pull Lora/Inter/JetBrains Mono from Google Fonts with a
+// <link>. That made rendering depend on outbound network access: on a host with
+// no route to fonts.googleapis.com the stylesheet request hangs, the
+// `networkidle` wait never fires, and the whole render times out with an empty
+// hero image. The fonts are now bundled under server/fonts and inlined as
+// base64 @font-face rules, so a card renders identically with no network at
+// all. They are variable fonts (one file covers every weight we use) under the
+// SIL Open Font License; see server/fonts/OFL.txt.
+const FONT_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "fonts");
+
+const FONT_FACES = [
+  { family: "Lora", file: "Lora-normal.woff2", weight: "400 700", style: "normal" },
+  { family: "Lora", file: "Lora-italic.woff2", weight: "400 700", style: "italic" },
+  { family: "Inter", file: "Inter-normal.woff2", weight: "100 900", style: "normal" },
+  { family: "JetBrains Mono", file: "JetBrains-Mono-normal.woff2", weight: "400 800", style: "normal" },
+];
+
+let cachedFontCss = null;
+function fontFaceCss() {
+  if (cachedFontCss !== null) return cachedFontCss;
+  cachedFontCss = FONT_FACES.flatMap(({ family, file, weight, style }) => {
+    let b64;
+    try {
+      b64 = fs.readFileSync(path.join(FONT_DIR, file)).toString("base64");
+    } catch {
+      // A missing font must not fail the whole render — fall back to the
+      // system font for that face and let `fontsLoaded` report it.
+      return [];
+    }
+    return `@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};` +
+      `font-display:block;src:url(data:font/woff2;base64,${b64}) format('woff2');}`;
+  }).join("\n");
+  return cachedFontCss;
+}
 
 // Images live beside the posts under the site's long-standing "assests"
 // spelling. IMAGES_DIR lets tests point at a scratch directory.
@@ -108,10 +140,8 @@ export function buildCardHtml(card) {
 
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="${FONT_LINK}" rel="stylesheet">
 <style>
+${fontFaceCss()}
   :root{
     --ink:#1a1814; --ink-2:#3d3830; --ink-3:#6b6158; --ink-4:#9e9188;
     --paper:#faf8f5; --paper-2:#f2efe9; --paper-3:#e8e4dc; --rule:#ddd9d0;
@@ -247,9 +277,14 @@ export async function renderTitleCard(opts = {}) {
       deviceScaleFactor: scale,
     });
     const page = await context.newPage();
-    await page.setContent(html, { waitUntil: "networkidle", timeout: 45000 });
+    await page.setContent(html, { waitUntil: "domcontentloaded", timeout: 20000 });
+    // Fonts are inlined data URIs, so this resolves almost instantly; the race
+    // is a belt-and-braces guard so a stalled font can never hang the render.
     const fontsLoaded = await page.evaluate(async () => {
-      await document.fonts.ready;
+      await Promise.race([
+        document.fonts.ready,
+        new Promise(resolve => setTimeout(resolve, 5000)),
+      ]);
       return document.fonts.check("700 114px Lora") && document.fonts.check("400 16px Inter");
     });
     fs.mkdirSync(dir, { recursive: true });

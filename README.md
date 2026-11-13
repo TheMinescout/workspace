@@ -146,9 +146,12 @@ value; the headline size steps down automatically for long titles. Note the
 asset folder is spelled `assests` (not `assets`) — that is how the site has
 always been, and the path must match exactly.
 
-The render step needs internet access, because Lora and Inter are pulled from
-Google Fonts at render time; offline, the card falls back to a system font and
-the tool says so in its result.
+The fonts are bundled under `server/fonts/` and inlined into the card as base64
+`@font-face` rules, so the render needs **no network access** and produces the
+same card offline as online. (Earlier versions linked Google Fonts at render
+time, which hung and failed on a host without an outbound route to
+fonts.googleapis.com.) The fonts are variable fonts under the SIL Open Font
+License; see `server/fonts/OFL.txt`.
 
 **Authentication**
 
@@ -228,7 +231,7 @@ at `POST /api/mcp` (see above) with the `create_post` tool:
 }
 ```
 
-It needs the MCP token and network access to Google Fonts for the title card.
+It needs the MCP token (no network access is needed for the title card).
 See the automation's own config for the schedule and the exact prompt; the site
 side only requires that the post is written with `category: "AI Posts"`.
 
