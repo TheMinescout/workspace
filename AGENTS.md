@@ -155,6 +155,16 @@ npm run check    # lint (oxlint) + render smoke + MCP smoke
     long-standing `assests` spelling. `IMAGES_DIR` overrides it for tests.
   - Chromium must be present: `CHROMIUM_PATH`, else `/usr/bin/chromium`, else
     Playwright's bundled build. `scripts/mcp-smoke.mjs` renders a real card.
+  - **If the server's browser cannot launch** (a missing system library such as
+    `libglib-2.0.so.0`, which needs root to install), do not give up on the
+    card: render it on the client instead. `render_title_card_html` returns the
+    card HTML URL; screenshot it at 1600x900 (or 2x) anywhere a browser works,
+    then `upload_title_image` (or `titleImage.pngBase64` on `create_post` /
+    `update_post`) stores the PNG. The server still owns storage and naming, so
+    the resulting path is identical. `scripts/render-title-card.mjs`
+    (`npm run render-title-card`) does the whole loop in one command. Keep
+    uploads under ~1 MB — nginx sets no `client_max_body_size`, so its 1 MB
+    default applies to the base64 body; prefer `scale` 1.
   - The fonts (Lora/Inter/JetBrains Mono) are bundled in `server/fonts/` and
     inlined into the card as base64 `@font-face` rules, so the render needs no
     network and works offline. The tool still reports `fontsLoaded` so a

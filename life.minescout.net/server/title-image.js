@@ -209,6 +209,136 @@ ${card.subtitle ? `    <div class="sub">${esc(card.subtitle)}</div>\n` : ""}  </
 </body></html>`;
 }
 
+// ── card resolution (shared by render, export and store) ────────────────────
+// Every entry point below needs the same normalized card and the same validated
+// target paths, so a card built by the server, exported for a client to render,
+// or uploaded from a client always lands in the same place with the same name.
+function resolveCard(opts = {}) {
+  const title = cleanText(opts.title, 160).trim();
+  if (!title) return { error: "A title is required." };
+
+  const folder = folderFor(opts.category, opts.folder);
+  const requested = slugify(String(opts.filename || "").replace(/\.png$/i, ""));
+  const base = requested || `${slugify(title) || "title"}-title`;
+  if (!SAFE_SEGMENT.test(base)) return { error: `Unsafe file name: "${base}".` };
+
+  const root = imagesDir();
+  const dir = path.join(root, folder);
+  const png = path.join(dir, `${base}.png`);
+  const htmlFile = path.join(dir, `${base}.html`);
+  if (!png.startsWith(root + path.sep)) {
+    return { error: "Refusing to write outside the images directory." };
+  }
+
+  const card = {
+    title,
+    accentWord: cleanText(opts.accentWord, 40).trim(),
+    subtitle: cleanText(opts.subtitle, 160).trim(),
+    category: cleanText(opts.category, 40).trim() || "Tech",
+    date: cleanText(opts.date, 60).trim(),
+    caption: cleanText(opts.caption, 120).trim(),
+    models: Array.isArray(opts.models) ? opts.models.map(m => ({
+      name: cleanText(m && m.name, 60).trim(),
+      meta: cleanText(m && m.meta, 60).trim(),
+      color: m && m.color,
+    })) : [],
+    headlineSize: opts.headlineSize,
+  };
+
+  return { card, root, dir, base, folder, png, htmlFile, publicPath: `/assests/images/${folder}/${base}.png` };
+}
+
+// A card is a 1600x900 PNG; accept the 2x size too. Used to reject a client
+// upload that is not actually a card (wrong format, wrong shape, corrupt).
+export const CARD_SCALE_SIZES = [[CARD_WIDTH, CARD_HEIGHT], [CARD_WIDTH * 2, CARD_HEIGHT * 2]];
+
+const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+
+// Read width/height straight from the IHDR chunk, so a client PNG can be
+// checked without an image library. Returns null when `buf` is not a PNG.
+export function pngSize(buf) {
+  if (!Buffer.isBuffer(buf) || buf.length < 24) return null;
+  if (!buf.subarray(0, 8).equals(PNG_MAGIC)) return null;
+  if (buf.toString("ascii", 12, 16) !== "IHDR") return null;
+  return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+}
+
+// Decode a client-supplied base64 PNG, rejecting anything that is not one.
+// A data: URL prefix is tolerated because that is what a browser hands back.
+export function decodePng(base64, maxBytes = 4 * 1024 * 1024) {
+  const raw = String(base64 || "").trim().replace(/^data:image\/png;base64,/i, "").replace(/\s+/g, "");
+  if (!raw) return { error: "pngBase64 is required." };
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(raw) || raw.length % 4 !== 0) {
+    return { error: "pngBase64 is not valid base64." };
+  }
+  const buf = Buffer.from(raw, "base64");
+  if (buf.length > maxBytes) {
+    return { error: `The PNG is ${Math.round(buf.length / 1024)} KB; the limit is ${Math.round(maxBytes / 1024)} KB.` };
+  }
+  const size = pngSize(buf);
+  if (!size) return { error: "The upload is not a PNG (bad signature)." };
+  return { buf, size };
+}
+
+// The client half of the client-side render flow: hand back the exact HTML the
+// card should be, so an agent renders it wherever a browser actually works and
+// uploads the PNG. The HTML is written beside the (future) PNG so the card
+// stays reproducible from source, exactly like a server-side render.
+export function exportTitleCardHtml(opts = {}) {
+  const r = resolveCard(opts);
+  if (r.error) return { ok: false, error: r.error };
+  const html = buildCardHtml(r.card);
+  try {
+    fs.mkdirSync(r.dir, { recursive: true });
+    fs.writeFileSync(r.htmlFile, html);
+  } catch (e) {
+    return { ok: false, error: `Could not write the card HTML: ${e.message}` };
+  }
+  return {
+    ok: true,
+    html,
+    path: r.publicPath,
+    htmlPath: r.publicPath.replace(/\.png$/, ".html"),
+    htmlFile: r.htmlFile,
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    headlineSize: headlineSize(r.card.title, r.card.headlineSize),
+  };
+}
+
+// Store a PNG rendered elsewhere (the client-side path). `html` is optional: when
+// omitted the canonical card HTML is regenerated and saved beside the PNG, so the
+// source of record always matches the card definition the client was given.
+export function storeTitleImage(opts = {}, pngBase64, html) {
+  const r = resolveCard(opts);
+  if (r.error) return { ok: false, error: r.error };
+  const decoded = decodePng(pngBase64);
+  if (decoded.error) return { ok: false, error: decoded.error };
+
+  const { width, height } = decoded.size;
+  const expected = CARD_SCALE_SIZES.some(([w, h]) => w === width && h === height);
+  try {
+    fs.mkdirSync(r.dir, { recursive: true });
+    fs.writeFileSync(r.png, decoded.buf);
+    fs.writeFileSync(r.htmlFile, typeof html === "string" && html.trim() ? html : buildCardHtml(r.card));
+  } catch (e) {
+    return { ok: false, error: `Could not write the image: ${e.message}` };
+  }
+  return {
+    ok: true,
+    path: r.publicPath,
+    file: r.png,
+    htmlFile: r.htmlFile,
+    width,
+    height,
+    bytes: decoded.buf.length,
+    // A non-card shape still stores, but the caller is told so it can re-render
+    // at the right size rather than shipping a squashed hero.
+    expectedSize: expected,
+    headlineSize: headlineSize(r.card.title, r.card.headlineSize),
+  };
+}
+
 const LAUNCH_ARGS = ["--no-sandbox", "--disable-gpu", "--hide-scrollbars", "--force-color-profile=srgb"];
 
 // Prefer an explicit CHROMIUM_PATH, then the usual system locations, then
@@ -235,39 +365,27 @@ async function launchBrowser() {
   return chromium.launch({ args: LAUNCH_ARGS });
 }
 
+// A browser that cannot start at all (missing shared libraries, no sandbox) is
+// the single most common failure on a locked-down host, and Playwright reports
+// it as the opaque "Target page, context or browser has been closed". Translate
+// that into the cause and the fix, and point at the client-side path that needs
+// no browser on the server.
+const BROWSER_FAILED = /Target page, context or browser has been closed|browser has been closed|Failed to launch|error while loading shared libraries/i;
+
+function browserFailureMessage(raw) {
+  return `${raw}\n\nThe headless browser could not start on this server. This usually means a ` +
+    `system library is missing (for example libglib-2.0.so.0) and installing it needs root. ` +
+    `You do not need it: render the card on the client instead — call render_title_card_html to ` +
+    `get the card HTML, screenshot it with a local browser, then call upload_title_image with the ` +
+    `PNG as pngBase64 (or pass titleImage.pngBase64 to create_post / update_post).`;
+}
+
 export async function renderTitleCard(opts = {}) {
-  const title = cleanText(opts.title, 160).trim();
-  if (!title) return { ok: false, error: "A title is required." };
-
-  const folder = folderFor(opts.category, opts.folder);
-  const requested = slugify(String(opts.filename || "").replace(/\.png$/i, ""));
-  const base = requested || `${slugify(title) || "title"}-title`;
-  if (!SAFE_SEGMENT.test(base)) return { ok: false, error: `Unsafe file name: "${base}".` };
-
-  const root = imagesDir();
-  const dir = path.join(root, folder);
-  const png = path.join(dir, `${base}.png`);
-  const htmlFile = path.join(dir, `${base}.html`);
-  if (!png.startsWith(root + path.sep)) {
-    return { ok: false, error: "Refusing to write outside the images directory." };
-  }
+  const r = resolveCard(opts);
+  if (r.error) return { ok: false, error: r.error };
+  const { card, dir, png, htmlFile } = r;
 
   const scale = Number(opts.scale) === 2 ? 2 : 1;
-  const card = {
-    title,
-    accentWord: cleanText(opts.accentWord, 40).trim(),
-    subtitle: cleanText(opts.subtitle, 160).trim(),
-    category: cleanText(opts.category, 40).trim() || "Tech",
-    date: cleanText(opts.date, 60).trim(),
-    caption: cleanText(opts.caption, 120).trim(),
-    models: Array.isArray(opts.models) ? opts.models.map(m => ({
-      name: cleanText(m && m.name, 60).trim(),
-      meta: cleanText(m && m.meta, 60).trim(),
-      color: m && m.color,
-    })) : [],
-    headlineSize: opts.headlineSize,
-  };
-
   const html = buildCardHtml(card);
   let browser;
   try {
@@ -294,17 +412,18 @@ export async function renderTitleCard(opts = {}) {
     await context.close();
     return {
       ok: true,
-      path: `/assests/images/${folder}/${base}.png`,
+      path: r.publicPath,
       file: png,
       htmlFile,
       width: CARD_WIDTH * scale,
       height: CARD_HEIGHT * scale,
       bytes,
       fontsLoaded,
-      headlineSize: headlineSize(title, opts.headlineSize),
+      headlineSize: headlineSize(card.title, card.headlineSize),
     };
   } catch (e) {
-    return { ok: false, error: e && e.message ? e.message : String(e) };
+    const raw = e && e.message ? e.message : String(e);
+    return { ok: false, error: BROWSER_FAILED.test(raw) ? browserFailureMessage(raw) : raw };
   } finally {
     if (browser) { try { await browser.close(); } catch { /* already gone */ } }
   }

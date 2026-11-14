@@ -101,8 +101,8 @@ async function main() {
 
   const { tools } = await client.listTools();
   const names = tools.map(t => t.name).sort();
-  check("exposes the 6 post tools",
-    names.join(",") === "create_post,create_title_image,delete_post,get_post,list_posts,update_post",
+  check("exposes the 8 post tools",
+    names.join(",") === "create_post,create_title_image,delete_post,get_post,list_posts,render_title_card_html,update_post,upload_title_image",
     names.join(", "));
 
   // The title-card recipe ships as a resource and a prompt, so a client can read
@@ -209,6 +209,82 @@ async function main() {
     check("writes the source HTML beside it", !!abs && existsSync(abs.replace(/\.png$/, ".html")));
     check("keeps the PNG non-trivial", !!abs && existsSync(abs) && readFileSync(abs).length > 5000);
     check("warns when the fonts did not load", /Fonts \(Lora, Inter\) loaded|fonts did not load/.test(imgText));
+  }
+
+  // ── client-side render flow ───────────────────────────────────────────────
+  // The path for a host whose headless browser cannot launch: export the card
+  // HTML, render it wherever a browser works, and upload the PNG. These checks
+  // need a real PNG, so they render one here with the same chromium the test
+  // already relies on; the export and upload paths themselves are pure file I/O.
+  const exported = await client.callTool({
+    name: "render_title_card_html",
+    arguments: { title: "Client Render Check", subtitle: "Rendered off-server", category: "Tech" },
+  });
+  check("render_title_card_html builds a card", !exported.isError, exported.content[0].text.split("\n")[0]);
+  const exportedText = exported.content[0].text;
+  const htmlPath = (exportedText.match(/Open or fetch it at: (\S+)/) || [])[1];
+  check("returns the card HTML URL", !!htmlPath && /\/assests\/images\/.*\.html$/.test(htmlPath), String(htmlPath));
+
+  // Render that exact HTML with chromium, the way a client would.
+  let clientPng = null;
+  try {
+    const { chromium } = await import("playwright");
+    const exe = [process.env.CHROMIUM_PATH, "/usr/bin/chromium", "/usr/bin/chromium-browser", "/usr/bin/google-chrome"]
+      .find(p => p && existsSync(p));
+    const browser = await chromium.launch({
+      ...(exe ? { executablePath: exe } : {}),
+      args: ["--no-sandbox", "--disable-gpu"],
+    });
+    const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+    const htmlRel = new URL(htmlPath).pathname.replace(/^\/assests\/images\//, "");
+    await page.setContent(readFileSync(path.join(imagesDir, htmlRel), "utf8"), { waitUntil: "domcontentloaded" });
+    await page.evaluate(() => Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 5000))]));
+    clientPng = await page.screenshot({ type: "png" });
+    await browser.close();
+  } catch { /* no chromium here; the upload checks below still run with a synthetic PNG */ }
+  if (!clientPng) {
+    // A minimal valid 1x1 PNG, enough to exercise validation without chromium.
+    clientPng = Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+      "base64");
+  }
+
+  const uploaded = await client.callTool({
+    name: "upload_title_image",
+    arguments: { title: "Client Render Check", category: "Tech", pngBase64: clientPng.toString("base64") },
+  });
+  check("upload_title_image stores a client PNG", !uploaded.isError, uploaded.content[0].text.split("\n")[0]);
+  const upRel = (uploaded.content[0].text.match(/Hero image path: (\S+)/) || [])[1];
+  const upAbs = upRel ? path.join(imagesDir, upRel.replace(/^\/assests\/images\//, "")) : "";
+  check("writes the uploaded PNG", !!upAbs && existsSync(upAbs));
+  check("writes the source HTML beside the upload", !!upAbs && existsSync(upAbs.replace(/\.png$/, ".html")));
+  check("uploaded PNG matches the bytes sent",
+    !!upAbs && existsSync(upAbs) && readFileSync(upAbs).equals(clientPng));
+
+  check("rejects a non-PNG upload",
+    (await client.callTool({
+      name: "upload_title_image",
+      arguments: { title: "Bad Upload", category: "Tech", pngBase64: Buffer.from("not a png").toString("base64") },
+    })).isError === true);
+
+  // create_post can take a client-rendered PNG as the hero in the same call.
+  const clientPost = await client.callTool({
+    name: "create_post",
+    arguments: {
+      title: "Post With A Client Card",
+      summary: "Exercises titleImage.pngBase64.",
+      content: "Body.",
+      titleImage: { title: "Client Card", category: "Tech", pngBase64: clientPng.toString("base64") },
+    },
+  });
+  check("create_post accepts titleImage.pngBase64", !clientPost.isError, clientPost.content[0].text.split("\n")[0]);
+  if (!clientPost.isError) {
+    const cpId = (clientPost.content[0].text.match(/id: ([a-z0-9-]+)/) || [])[1];
+    const stored = JSON.parse(readFileSync(path.join(postsDir, `${cpId}.json`), "utf8"));
+    check("pngBase64 becomes the heroImage",
+      typeof stored.heroImage === "string" && stored.heroImage.startsWith("/assests/images/"),
+      String(stored.heroImage));
+    await client.callTool({ name: "delete_post", arguments: { id: cpId } });
   }
 
   // create_post can render the card in the same call and set it as the hero.

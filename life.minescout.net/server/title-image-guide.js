@@ -37,6 +37,39 @@ comparison post like this one, that is the right call. For an illustrated
 article hero, you would still want a real image generator.
 
 --------------------------------------------------------------------------------
+WHO RENDERS THE CARD (read this if the render fails)
+--------------------------------------------------------------------------------
+
+The card is a web page, so SOMETHING has to photograph it. That can be either
+side of the MCP call:
+
+  SERVER-SIDE (the default). create_title_image renders the card on the
+  machine running the MCP server. This needs a working Chromium THERE. It is
+  the simplest path when that host has one.
+
+  CLIENT-SIDE (the fallback). If the server's browser cannot start — usually a
+  missing system library such as libglib-2.0.so.0, which needs root to install
+  — render on YOUR side instead:
+
+      1. render_title_card_html   -> builds the card HTML and returns its URL
+      2. screenshot that URL at 1600x900 (or 3200x1800 for 2x) with any browser
+      3. upload_title_image       -> stores the PNG as the hero (pngBase64)
+
+  You can also pass titleImage.pngBase64 to create_post / update_post to do
+  step 3 in the same call as the post.
+
+The server still owns storage and naming either way, so the resulting path is
+identical. There is a turnkey script for the client path:
+
+    node scripts/render-title-card.mjs --title "..." --category Tech \
+      --url https://life.minescout.net/api/mcp --token "$MCP_TOKEN"
+
+It renders locally with the same HTML the server would have used, then uploads.
+An upload is a base64 PNG; keep it under ~1 MB so it fits nginx's default
+client_max_body_size (a 1x card is well under that; prefer scale 1 unless you
+need 2x).
+
+--------------------------------------------------------------------------------
 WHAT YOU NEED
 --------------------------------------------------------------------------------
 
@@ -342,6 +375,14 @@ GOTCHAS I HIT (so you do not have to)
    headline ever looks like a plain sans-serif, the fonts had not loaded before
    the shot; raise --virtual-time-budget. The create_title_image tool waits on
    document.fonts.ready, so it does not have this problem.
+
+2b. THE SERVER BROWSER WON'T LAUNCH. If create_title_image fails with
+   "error while loading shared libraries: libglib-2.0.so.0" (or Playwright's
+   opaque "Target page, context or browser has been closed"), the server's
+   Chromium is missing an OS library. Installing it needs root, which you may
+   not have. Do NOT stop there: use the client-side flow (render_title_card_html
+   -> screenshot -> upload_title_image), which needs no browser on the server.
+   The render_title_card_html error message says this too.
 
 3. HEADLINE WIDTH. The headline is 114px and the usable width is 1600 minus
    2x104 padding = 1392px. My headline fits on one line. If you write a longer
