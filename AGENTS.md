@@ -11,7 +11,7 @@ runtime and build:
 | Directory | Site | Stack |
 | --- | --- | --- |
 | `minescout.net/` | Main portfolio | Static HTML/CSS/JS, served from `public/` |
-| `life.minescout.net/` | Minescout Life | React 19 + Vite + React Router + Firebase |
+| `life.minescout.net/` | Minescout Life | React 19 + Vite + React Router (file-based posts, no Firebase) |
 | `beta.minescout.net/` | Staging | Static HTML with clean-URL routing |
 | `chop-lab.com/` | The Chop Lab storefront | React 19 + Vite + TanStack Start/Router, Tailwind v4 |
 
@@ -40,8 +40,12 @@ A change is done when all of these pass:
    (1280x800) and mobile (390x844): non-blank body text, **no console/page
    errors**, **no horizontal overflow**. Check the screenshots it writes.
 
-`npm test` has pre-existing failures unrelated to most work (they exercise the
-platform template's `.grok/` skill scaffolding, which is absent here). Confirm
+`npm test` has 16 pre-existing failures (of 195) unrelated to most work, in two
+groups. Eight read App Builder template scaffolding this repo does not ship —
+`.grok/skills/**` and `.grok/app-env.json` (`brand-check`, `write-atomic`,
+`with-app-env`, `check-auth-invariant`). The other eight (`grok-pwa-plugin`)
+expect the document `<title>` to become `og:title`, but the committed
+`src/lib/og/site.json` pins the app title to "The Chop Lab", which wins. Confirm
 your change did not add failures by comparing the failing-test count before and
 after — `git stash` your edits and re-run if unsure.
 
@@ -65,8 +69,11 @@ after — `git stash` your edits and re-run if unsure.
   before large changes. It owns the preview/port/branding rules.
 - Never put `og:*` or `twitter:card` tags in a route `head()`. The platform PWA
   injector (`scripts/grok-pwa-plugin.mjs`) **strips and rewrites** them on every
-  response. Per-page document `<title>` and `description` are safe and are what
-  the injector reads for share cards.
+  response. Share-card `og:title` comes from `src/lib/og/site.json` (currently
+  pinned to "The Chop Lab"), falling back to the document `<title>` only when
+  that file has no title; `og:description` comes from `site.description`. So a
+  per-page document `<title>` is safe to set but does not drive the share card
+  while `site.json` pins the title.
 - Keep the `0.0.0.0:8080` dev / `127.0.0.1:8081` preview port contract and
   `PreviewHostBridge` intact.
 
@@ -118,7 +125,9 @@ npm run check    # lint (oxlint) + render smoke + MCP smoke
   background-request rejection wipes the whole rendered app. `scripts/smoke.mjs`
   guards both this and the unknown-id path.
 - `src/data/` matches the `data/` rule in `life.minescout.net/.gitignore`, but
-  `src/data/posts.js` is tracked. Stage it with `git add -u`, not `git add`.
+  `src/data/posts.js` is tracked. Naming that path explicitly (`git add
+  src/data/posts.js`) is refused as ignored; stage it with `git add -u` (or
+  `git add .`) instead.
 - Two posts have an empty `content` in git history (`gemini-cuboid-oracle`,
   `gpt-number-guessing`) — pre-existing at the V4 upgrade, never populated.
 - A post is scheduled while either its `publishDate` (ISO datetime) or its show
@@ -138,9 +147,9 @@ npm run check    # lint (oxlint) + render smoke + MCP smoke
   `homePosts` in `src/data/posts.js` own that rule (whole-word "ai" match). Home
   uses `homePosts`; every other view keeps using `visiblePosts`. Scheduling still
   applies to AI posts.
-- `npm test` runs `node --test scripts/*.test.mjs` (currently the scheduling
-  unit tests). `npm run check` chains lint, build, test, render smoke, and the
-  MCP smoke.
+- `npm test` runs `node --test scripts/*.test.mjs` (the scheduling and post-body
+  sanitizer unit tests). `npm run check` chains lint, build, test, render smoke,
+  and the MCP smoke.
 - The MCP server (`server/mcp.js`) also renders **title images**: the
   `create_title_image` tool (and the `titleImage` option on `create_post` /
   `update_post`) builds a 1600x900 card by rendering HTML in headless chromium
@@ -162,14 +171,25 @@ npm run check    # lint (oxlint) + render smoke + MCP smoke
     `document.fonts.ready` (with a 5s cap) rather than `networkidle`, so a
     stalled resource can never hang the render and leave an empty hero image.
 
+## CI
+
+`.github/workflows/ci.yml` runs only for `life.minescout.net/**` changes: install,
+lint, build, test, then `scripts/smoke.mjs` and `scripts/mcp-smoke.mjs`
+(Chromium installed via Playwright). `pages.yml` publishes a static Life preview
+to GitHub Pages — its API routes are dev-server-only, so comments, votes and
+admin sign-in do not work there. The Chop Lab has no CI; verify it by hand with
+the commands above.
+
 ## Git
 
 When committing on a new branch, go ahead and open the pull request — do not
 stop to ask first.
 
 Shallow clone — run `git fetch --unshallow` before anything needing full history.
-`node_modules/`, `.vercel/`, and `.agents_tmp/` are not part of the source tree;
-do not commit them.
+Build output and dependencies are not source: `life.minescout.net/` gitignores
+its `node_modules/` and `dist/`, and `chop-lab.com/.vercel/` (written by
+`npm run build`) is untracked. `chop-lab.com/node_modules/` is committed in git
+anyway, so an install there dirties thousands of files — do not stage them.
 
 The `origin` remote's embedded token can go stale; if a push prompts for a
 password, reset the remote to use `$GITHUB_TOKEN`:
