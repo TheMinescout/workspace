@@ -152,34 +152,45 @@ npm run check    # lint (oxlint) + render smoke + MCP smoke
   and the MCP smoke.
 - The MCP server (`server/mcp.js`) also renders **title images**: the
   `create_title_image` tool (and the `titleImage` option on `create_post` /
-  `update_post`) builds a 1600x900 card by rendering HTML in headless chromium
-  via Playwright and screenshotting it. There is no image generator in this
-  environment, so that is the intended path, not a workaround.
-  - The card HTML and design tokens live in `server/title-image.js`; the
-    how-to instructions live in `server/title-image-guide.js` and are served
-    over MCP as the `how-to-make-a-title` resource and `make_title_image`
-    prompt. Keep those two in step with
-    `public/assests/images/how-to-make-a-title.txt`.
+  `update_post`) builds a 1600x900 card and saves it as the post hero. There is
+  no image generator in this environment, so a card is DESIGNED from the site's
+  tokens, not generated — that is the intended path, not a workaround.
+  - **The default renderer needs no browser.** `server/title-image-render.js`
+    lays the card out with `satori` (pure JS) and rasterizes it with
+    `@resvg/resvg-js`, whose only runtime deps are libc/libm/libgcc. That means
+    `create_title_image` works on a host where Chromium cannot start (for
+    example `libglib-2.0.so.0` is missing and there is no root to install it),
+    so an MCP client needs nothing but the tool call. `server/title-image.js`
+    also exports `buildCardHtml`/`exportTitleCardHtml`, which write the card as
+    a human-editable HTML source of record beside the PNG. Keep
+    `title-image-render.js` in step with `buildCardHtml` — the two must draw the
+    same card. `scripts/title-image-render.test.mjs` guards the layout (it
+    asserts every band has ink, which catches an overflow such as a missing
+    `box-sizing: border-box`).
+  - The **browser** renderer is opt-in: `renderer:"browser"` (or
+    `TITLE_IMAGE_RENDERER=browser`) photographs the card HTML in headless
+    Chromium via Playwright. Chromium must then be present: `CHROMIUM_PATH`,
+    else `/usr/bin/chromium`, else Playwright's bundled build. Same card; use it
+    for pixel QA of the default renderer.
+  - The card design tokens live in `server/title-image.js`; the how-to
+    instructions live in `server/title-image-guide.js` and are served over MCP
+    as the `how-to-make-a-title` resource and `make_title_image` prompt. Keep
+    those two in step with `public/assests/images/how-to-make-a-title.txt`.
   - Images are written to `public/assests/images/<folder>/` — note the
     long-standing `assests` spelling. `IMAGES_DIR` overrides it for tests.
-  - Chromium must be present: `CHROMIUM_PATH`, else `/usr/bin/chromium`, else
-    Playwright's bundled build. `scripts/mcp-smoke.mjs` renders a real card.
-  - **If the server's browser cannot launch** (a missing system library such as
-    `libglib-2.0.so.0`, which needs root to install), do not give up on the
-    card: render it on the client instead. `render_title_card_html` returns the
-    card HTML URL; screenshot it at 1600x900 (or 2x) anywhere a browser works,
-    then `upload_title_image` (or `titleImage.pngBase64` on `create_post` /
-    `update_post`) stores the PNG. The server still owns storage and naming, so
-    the resulting path is identical. `scripts/render-title-card.mjs`
-    (`npm run render-title-card`) does the whole loop in one command. Keep
-    uploads under ~1 MB — nginx sets no `client_max_body_size`, so its 1 MB
+  - **Client-side render is an optional escape hatch** (never required):
+    `render_title_card_html` returns the card HTML URL; screenshot it at
+    1600x900 (or 2x) anywhere a browser works, then `upload_title_image` (or
+    `titleImage.pngBase64` on `create_post` / `update_post`) stores the PNG. The
+    server still owns storage and naming, so the resulting path is identical.
+    Keep uploads under ~1 MB — nginx sets no `client_max_body_size`, so its 1 MB
     default applies to the base64 body; prefer `scale` 1.
   - The fonts (Lora/Inter/JetBrains Mono) are bundled in `server/fonts/` and
-    inlined into the card as base64 `@font-face` rules, so the render needs no
-    network and works offline. The tool still reports `fontsLoaded` so a
-    fallback card is visible, not silent. The render waits on
-    `document.fonts.ready` (with a 5s cap) rather than `networkidle`, so a
-    stalled resource can never hang the render and leave an empty hero image.
+    embedded directly by both renderers, so the render needs no network and
+    works offline. `satori` matches a face by an exact numeric weight, so
+    `fontBuffers()` registers each weight the card uses (a variable font
+    registered only at 400 makes the 700 headline render thin). The tool reports
+    `fontsLoaded` so a fallback card is visible, not silent.
 
 ## CI
 
