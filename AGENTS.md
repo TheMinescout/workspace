@@ -131,11 +131,14 @@ npm run check    # lint (oxlint) + render smoke + MCP smoke
 - Two posts have an empty `content` in git history (`gemini-cuboid-oracle`,
   `gpt-number-guessing`) — pre-existing at the V4 upgrade, never populated.
 - A post is scheduled while either its `publishDate` (ISO datetime) or its show
-  `date` (e.g. "November 14, 2026") is in the future. The pure helpers live in
+  `date` is in the future. The pure helpers live in
   `src/lib/scheduling.js` (`parseShowDate`/`publishTime`/`isPublished`/
   `isScheduled`), imported by both the app (`src/data/posts.js`, which
   re-exports them) and the MCP server (`server/mcp.js`), so the site and the
-  tools agree. `visiblePosts(posts, isAdmin)` in `src/data/posts.js` is the
+  tools agree. `parseShowDate` must read every shape a `date` can take —
+  "November 14, 2026", "14 November 2026", "2026-11-14", "11/14/2026" — because
+  a future date it cannot parse is silently treated as "always live" and leaks
+  to non-admins. `visiblePosts(posts, isAdmin)` in `src/data/posts.js` is the
   single source of truth for who may see a post: non-admins (and the
   pre-session-check `isAdmin === null` window) never see a scheduled post on the
   timeline, category pages, sidebars, or by direct `/post/<id>` URL. Route every

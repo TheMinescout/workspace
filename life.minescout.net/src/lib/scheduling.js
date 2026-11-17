@@ -3,20 +3,55 @@
 // both runtimes can import it unchanged and the "is this post live?" answer
 // never drifts between the site and the tools that write to it.
 
-// The `date` field is the human-readable show date ("November 14, 2026",
-// "Aug. 11, 2026"). Parse it to local midnight so a future show date can
-// schedule the post. Returns null for free-text/unparseable values, which then
-// impose no constraint.
+// The `date` field is the human-readable show date. Accept every shape a post
+// might carry — "November 14, 2026", "Aug. 11, 2026", "14 November 2026",
+// "2026-11-14", "11/14/2026" — so a future date always schedules the post no
+// matter how it was written. A format we cannot read returns null, which then
+// imposes no constraint (see publishTime).
 const MONTHS = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+
+function monthIndex(name) {
+  return MONTHS.indexOf(String(name || "").slice(0, 3).toLowerCase());
+}
+
+// Local midnight for the parts, or null when they are not a real calendar day.
+// The round-trip check rejects overflow like "November 31" or "February 29" in
+// a non-leap year, which Date would otherwise roll into the next month.
+function atMidnight(year, month, day) {
+  if (!Number.isInteger(year) || month < 0 || month > 11 || day < 1 || day > 31) return null;
+  const d = new Date(year, month, day);
+  if (d.getFullYear() !== year || d.getMonth() !== month || d.getDate() !== day) return null;
+  return d.getTime();
+}
+
 export function parseShowDate(value) {
   if (typeof value !== "string") return null;
-  const m = /^\s*([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})\s*$/.exec(value);
-  if (!m) return null;
-  const month = MONTHS.indexOf(m[1].slice(0, 3).toLowerCase());
-  const day = Number(m[2]);
-  const year = Number(m[3]);
-  if (month < 0 || day < 1 || day > 31) return null;
-  return new Date(year, month, day).getTime();
+  const s = value.trim();
+  if (!s) return null;
+
+  // Year-first: 2026-11-14, 2026/11/14, 2026.11.14
+  let m = /^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/.exec(s);
+  if (m) return atMidnight(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+
+  // Month-first: "November 14, 2026", "Aug. 11 2026", "Nov 14th, 2026"
+  m = /^([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})$/.exec(s);
+  if (m) return atMidnight(Number(m[3]), monthIndex(m[1]), Number(m[2]));
+
+  // Day-first: "14 November 2026", "14th Nov, 2026"
+  m = /^(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]{3,9})\.?,?\s+(\d{4})$/.exec(s);
+  if (m) return atMidnight(Number(m[3]), monthIndex(m[2]), Number(m[1]));
+
+  // Numeric dates: 11/14/2026 or 11-14-2026. Prefer month-first (US), but fall
+  // back to day-first when the first number cannot be a month ("25/12/2026").
+  m = /^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/.exec(s);
+  if (m) {
+    const a = Number(m[1]), b = Number(m[2]), year = Number(m[3]);
+    if (a >= 1 && a <= 12) return atMidnight(year, a - 1, b);
+    if (b >= 1 && b <= 12) return atMidnight(year, b - 1, a);
+    return null;
+  }
+
+  return null;
 }
 
 // The instant a post goes live: the later of its scheduled `publishDate` (an

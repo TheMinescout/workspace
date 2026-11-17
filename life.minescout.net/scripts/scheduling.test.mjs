@@ -12,6 +12,31 @@ test("parseShowDate accepts the formats the site stores", () => {
   assert.equal(parseShowDate("March 1st, 2025"), new Date(2025, 2, 1).getTime());
 });
 
+test("parseShowDate reads the other shapes a post date may take", () => {
+  const at = (y, mo, d) => new Date(y, mo, d).getTime();
+  assert.equal(parseShowDate("14 November 2026"), at(2026, 10, 14));
+  assert.equal(parseShowDate("14th Nov, 2026"), at(2026, 10, 14));
+  assert.equal(parseShowDate("2026-11-14"), at(2026, 10, 14));
+  assert.equal(parseShowDate("2026/11/14"), at(2026, 10, 14));
+  assert.equal(parseShowDate("11/14/2026"), at(2026, 10, 14));
+  assert.equal(parseShowDate("11-14-2026"), at(2026, 10, 14));
+  // A first number above 12 can only be a day, so read it day-first.
+  assert.equal(parseShowDate("25/12/2026"), at(2026, 11, 25));
+});
+
+test("parseShowDate rejects impossible calendar days", () => {
+  assert.equal(parseShowDate("November 31, 2026"), null);
+  assert.equal(parseShowDate("February 29, 2025"), null);
+  assert.equal(parseShowDate("2026-13-01"), null);
+  assert.equal(parseShowDate("2026-00-10"), null);
+});
+
+test("a future date in any readable format is scheduled", () => {
+  for (const date of ["November 25, 2026", "25 November 2026", "2026-11-25", "11/25/2026"]) {
+    assert.equal(isScheduled({ date }, NOW), true, date);
+  }
+});
+
 test("parseShowDate returns null for anything it cannot read", () => {
   assert.equal(parseShowDate("Summer 2026"), null);
   assert.equal(parseShowDate(""), null);
