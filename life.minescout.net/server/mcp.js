@@ -16,7 +16,7 @@ import {
   normalizePost, postExists,
 } from "./posts-store.js";
 import { isPostId, cleanText, safeEqual } from "./security.js";
-import { renderTitleCard } from "./title-image.js";
+import { renderTitleCard, exportTitleCardHtml, storeTitleImage } from "./title-image.js";
 import { TITLE_IMAGE_GUIDE, GUIDE_URI } from "./title-image-guide.js";
 import { isScheduled, publishTime } from "../src/lib/scheduling.js";
 
@@ -38,6 +38,37 @@ function textResult(text) {
 
 function errorResult(text) {
   return { content: [{ type: "text", text }], isError: true };
+}
+
+// The title-card step shared by create_post and update_post. A client-rendered
+// PNG (pngBase64) is stored directly; otherwise the server renders it. Returns
+// either { error } or { heroImage, note }.
+async function resolveTitleImage(titleImage, fallbackTitle, fallbackCategory, fallbackDate) {
+  const args = {
+    ...titleImage,
+    title: titleImage.title || fallbackTitle,
+    category: titleImage.category || fallbackCategory,
+    date: titleImage.date || fallbackDate,
+  };
+
+  if (args.pngBase64) {
+    const stored = storeTitleImage(args, args.pngBase64);
+    if (!stored.ok) return { error: stored.error };
+    let note = `\nTitle image: ${stored.path} (stored a client-rendered PNG)`;
+    if (!stored.expectedSize) {
+      note += `\nWARNING: the PNG is ${stored.width}x${stored.height}; a card is ` +
+        `1600x900 (or 3200x1800 at 2x). It was stored as-is — re-render at the right size if it looks squashed.`;
+    }
+    return { heroImage: stored.path, note };
+  }
+
+  const rendered = await renderTitleCard(args);
+  if (!rendered.ok) return { error: rendered.error };
+  return {
+    heroImage: rendered.path,
+    note: `\nTitle image: ${rendered.path}` +
+      (rendered.fontsLoaded ? "" : " (WARNING: site fonts did not load — re-render)"),
+  };
 }
 
 // Trimmed view for listings — full post bodies are large and rarely wanted.
@@ -73,6 +104,11 @@ const titleImageShape = z.object({
   filename: z.string().optional().describe("File base name."),
   scale: z.number().optional().describe("1 for 1600x900, 2 for 3200x1800."),
   headlineSize: z.number().optional().describe("Force the headline size in px."),
+  pngBase64: z.string().optional().describe(
+    "A pre-rendered PNG (base64, optional data: prefix) to store instead of rendering on the server. " +
+    "Use this when the server's headless browser cannot launch: call render_title_card_html, screenshot " +
+    "it locally, and pass the result here. Overrides the server-side render."
+  ),
 });
 
 function buildServer() {
@@ -209,21 +245,15 @@ function buildServer() {
 
       const date = args.date || new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
-      // Render the title card before writing, so a render failure never leaves
-      // a half-finished post behind.
+      // Render (or store) the title card before writing, so a failure never
+      // leaves a half-finished post behind.
       let heroImage = args.heroImage;
       let imageNote = "";
       if (args.titleImage) {
-        const rendered = await renderTitleCard({
-          ...args.titleImage,
-          title: args.titleImage.title || title,
-          category: args.titleImage.category || args.category,
-          date: args.titleImage.date || date,
-        });
-        if (!rendered.ok) return errorResult(`Could not create the title image: ${rendered.error}`);
-        heroImage = rendered.path;
-        imageNote = `\nTitle image: ${rendered.path}` +
-          (rendered.fontsLoaded ? "" : " (WARNING: site fonts did not load — re-render)");
+        const img = await resolveTitleImage(args.titleImage, title, args.category, date);
+        if (img.error) return errorResult(`Could not create the title image: ${img.error}`);
+        heroImage = img.heroImage;
+        imageNote = img.note;
       }
 
       const post = normalizePost(
@@ -277,20 +307,19 @@ function buildServer() {
       const existing = readPost(id);
       if (!existing) return errorResult(`No post with id "${id}".`);
 
-      // Render before merging so a render failure leaves the post untouched.
+      // Render (or store) before merging so a failure leaves the post untouched.
       let heroImage = args.heroImage;
       let imageNote = "";
       if (args.titleImage) {
-        const rendered = await renderTitleCard({
-          ...args.titleImage,
-          title: args.titleImage.title || args.title || existing.title,
-          category: args.titleImage.category || args.category || existing.category,
-          date: args.titleImage.date || args.date || existing.date,
-        });
-        if (!rendered.ok) return errorResult(`Could not create the title image: ${rendered.error}`);
-        heroImage = rendered.path;
-        imageNote = `\nTitle image: ${rendered.path}` +
-          (rendered.fontsLoaded ? "" : " (WARNING: site fonts did not load — re-render)");
+        const img = await resolveTitleImage(
+          args.titleImage,
+          args.title || existing.title,
+          args.category || existing.category,
+          args.date || existing.date
+        );
+        if (img.error) return errorResult(`Could not create the title image: ${img.error}`);
+        heroImage = img.heroImage;
+        imageNote = img.note;
       }
 
       // Start from the stored post so untouched fields survive, then overlay.
@@ -349,6 +378,11 @@ function buildServer() {
         "web page and photographed with a headless browser, so it uses the site's real fonts and colors. " +
         "Returns the public path to pass as heroImage. Read the 'how-to-make-a-title' resource for the " +
         "full method. Use short, punchy titles — long ones wrap and collide with the subtitle.\n\n" +
+        "If this server cannot launch a browser (a missing system library and no root to install it), " +
+        "the call fails with that explanation. In that case use the client-side flow instead: call " +
+        "render_title_card_html, screenshot the HTML with a browser on your side, then call " +
+        "upload_title_image (or pass titleImage.pngBase64 to create_post / update_post). You may also " +
+        "pass pngBase64 here directly.\n\n" +
         "Example: title 'Argon and Carbon', accentWord 'Carbon', subtitle 'The periodic table inside " +
         "Gemini 4', category 'Tech', date 'November 2026', and four models for a comparison footer.",
       inputSchema: titleImageShape.extend({
@@ -356,6 +390,20 @@ function buildServer() {
       }),
     },
     async (args) => {
+      if (args.pngBase64) {
+        const stored = storeTitleImage(args, args.pngBase64);
+        if (!stored.ok) return errorResult(`Could not store the title image: ${stored.error}`);
+        const notes = [
+          `Stored the title image (${stored.width}x${stored.height}, ${Math.round(stored.bytes / 1024)} KB).`,
+          `Hero image path: ${stored.path}`,
+          `Source HTML kept at ${stored.path.replace(/\.png$/, ".html")} — edit and re-render, never edit the PNG.`,
+        ];
+        if (!stored.expectedSize) {
+          notes.push(`WARNING: the PNG is ${stored.width}x${stored.height}; a card is 1600x900 (or 3200x1800 at 2x).`);
+        }
+        return textResult(notes.join("\n"));
+      }
+
       const result = await renderTitleCard(args);
       if (!result.ok) return errorResult(`Could not create the title image: ${result.error}`);
       const notes = [
@@ -366,6 +414,74 @@ function buildServer() {
           ? "Fonts (Lora, Inter) loaded."
           : "WARNING: the site fonts did not load — the card rendered in a fallback font. Check internet access and try again.",
       ];
+      return textResult(notes.join("\n"));
+    }
+  );
+
+  server.registerTool(
+    "render_title_card_html",
+    {
+      title: "Render title card HTML (for a client-side screenshot)",
+      description:
+        "Build the exact HTML for a title card and save it beside where the PNG will go. Use this when " +
+        "this server cannot launch a headless browser: take the returned html, screenshot it at " +
+        "1600x900 (or 3200x1800 for 2x) with a browser on your side, then call upload_title_image with " +
+        "the PNG. The card is a normal web page — open it in any browser, or drive one with Playwright " +
+        "or Puppeteer. This is the documented fallback when the server has no usable Chromium and you " +
+        "cannot install its system libraries (no root).",
+      inputSchema: titleImageShape.extend({
+        title: z.string().describe("Headline text. Short is better — 24 characters or fewer fits one line."),
+      }),
+    },
+    async (args) => {
+      const result = exportTitleCardHtml(args);
+      if (!result.ok) return errorResult(`Could not build the card HTML: ${result.error}`);
+      const url = `${String(process.env.SITE_ORIGIN || "https://life.minescout.net").replace(/\/$/, "")}${result.htmlPath}`;
+      const notes = [
+        `Card HTML ready (${result.width}x${result.height} viewport, ${result.headlineSize}px headline).`,
+        `Open or fetch it at: ${url}`,
+        `(on the server it is the file ${result.htmlFile})`,
+        "",
+        "The page is self-contained — the site fonts are inlined, so it renders the same anywhere. " +
+        "Screenshot it at " + `${result.width}x${result.height}` + " with device scale factor 1 (or 2 for a " +
+        "3200x1800 card), then store the PNG:",
+        `  upload_title_image with the SAME title/category/filename as above and the PNG as pngBase64.`,
+        `It will land at: ${result.path}`,
+        "",
+        "With Playwright that is roughly:",
+        `  const page = await browser.newPage({ viewport: { width: ${result.width}, height: ${result.height} } });`,
+        `  await page.goto(${JSON.stringify(url)}, { waitUntil: "networkidle" });`,
+        `  await page.screenshot({ path: "card.png" });`,
+      ];
+      return textResult(notes.join("\n"));
+    }
+  );
+
+  server.registerTool(
+    "upload_title_image",
+    {
+      title: "Upload a title image rendered elsewhere",
+      description:
+        "Store a PNG you rendered on the client as the post's title card. Pairs with " +
+        "render_title_card_html: build the HTML there, screenshot it, and upload the result here. The " +
+        "server validates that the bytes are a real PNG and writes them to the site's images folder. " +
+        "Pass the same title/category/filename you used for the HTML so the path matches. Max 4 MB.",
+      inputSchema: titleImageShape.extend({
+        title: z.string().describe("Headline text. Must match the HTML you rendered so the path lines up."),
+        pngBase64: z.string().describe("The rendered PNG as base64 (a data:image/png;base64, prefix is fine)."),
+      }),
+    },
+    async (args) => {
+      const result = storeTitleImage(args, args.pngBase64);
+      if (!result.ok) return errorResult(`Could not store the title image: ${result.error}`);
+      const notes = [
+        `Stored the title image (${result.width}x${result.height}, ${Math.round(result.bytes / 1024)} KB).`,
+        `Hero image path: ${result.path}`,
+        `Source HTML kept at ${result.path.replace(/\.png$/, ".html")}.`,
+      ];
+      if (!result.expectedSize) {
+        notes.push(`WARNING: the PNG is ${result.width}x${result.height}; a card is 1600x900 (or 3200x1800 at 2x).`);
+      }
       return textResult(notes.join("\n"));
     }
   );
