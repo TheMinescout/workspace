@@ -21,8 +21,7 @@ THE SHORT VERSION
 --------------------------------------------------------------------------------
 
 There is no AI image generator available in this environment, so instead of
-"generating" the picture I DESIGNED it as a web page and photographed it with
-a headless browser.
+"generating" the picture I DESIGNED it as a web page and rendered it to a PNG.
 
 That sounds hacky. It is actually the more reliable approach for a title card,
 because:
@@ -37,19 +36,28 @@ comparison post like this one, that is the right call. For an illustrated
 article hero, you would still want a real image generator.
 
 --------------------------------------------------------------------------------
-WHO RENDERS THE CARD (read this if the render fails)
+HOW THE CARD IS RENDERED (read this if the render fails)
 --------------------------------------------------------------------------------
 
-The card is a web page, so SOMETHING has to photograph it. That can be either
-side of the MCP call:
+The card is a web page, and the create_title_image tool turns it into a PNG on
+the server — you do not have to do anything. The default renderer needs NO
+browser:
 
-  SERVER-SIDE (the default). create_title_image renders the card on the
-  machine running the MCP server. This needs a working Chromium THERE. It is
-  the simplest path when that host has one.
+  DEFAULT (server-side, no browser). The card is laid out with satori and
+  rasterized with @resvg/resvg-js. Both run as ordinary Node code — satori is
+  pure JavaScript, and resvg is a prebuilt native library whose only runtime
+  dependencies are libc/libm/libgcc. That means it works on a locked-down host
+  where Chromium cannot even start (for example when libglib-2.0.so.0 is
+  missing and you have no root to install it). This is what create_title_image
+  uses, so an MCP client needs nothing but the tool call.
 
-  CLIENT-SIDE (the fallback). If the server's browser cannot start — usually a
-  missing system library such as libglib-2.0.so.0, which needs root to install
-  — render on YOUR side instead:
+  BROWSER (opt-in). Pass renderer:"browser" (or set TITLE_IMAGE_RENDERER=browser)
+  to photograph the card HTML with headless Chromium instead. It produces the
+  same card and is useful for pixel-for-pixel QA of the default renderer, but it
+  needs a working Chromium on the server, so it is not the default.
+
+  CLIENT-SIDE (optional escape hatch). If you would rather render the card
+  yourself, you can:
 
       1. render_title_card_html   -> builds the card HTML and returns its URL
       2. screenshot that URL at 1600x900 (or 3200x1800 for 2x) with any browser
@@ -58,22 +66,19 @@ side of the MCP call:
   You can also pass titleImage.pngBase64 to create_post / update_post to do
   step 3 in the same call as the post.
 
-The server still owns storage and naming either way, so the resulting path is
-identical. There is a turnkey script for the client path:
-
-    node scripts/render-title-card.mjs --title "..." --category Tech \
-      --url https://life.minescout.net/api/mcp --token "$MCP_TOKEN"
-
-It renders locally with the same HTML the server would have used, then uploads.
-An upload is a base64 PNG; keep it under ~1 MB so it fits nginx's default
-client_max_body_size (a 1x card is well under that; prefer scale 1 unless you
-need 2x).
+The server owns storage and naming in every case, so the resulting path is
+identical. You do NOT need the client path to make a card — it exists only if
+you want to render somewhere other than the server. An upload is a base64 PNG;
+keep it under ~1 MB so it fits nginx's default client_max_body_size (a 1x card
+is well under that; prefer scale 1 unless you need 2x).
 
 --------------------------------------------------------------------------------
 WHAT YOU NEED
 --------------------------------------------------------------------------------
 
-  1. Chromium (already installed in this sandbox at /usr/bin/chromium)
+  1. Nothing to install. The default renderer (satori + resvg) is a normal
+     dependency of the server, so create_title_image works out of the box.
+     Chromium is only needed if you pass renderer:"browser".
      Check:    command -v chromium
 
   2. No internet needed. The site fonts (Lora, Inter, JetBrains Mono) are
@@ -366,23 +371,24 @@ GOTCHAS I HIT (so you do not have to)
 
 1. FONTS. The container only has DejaVu installed, so the card must supply its
    own fonts. The create_title_image tool inlines Lora/Inter/JetBrains Mono
-   from server/fonts as base64 @font-face rules, so it needs no network and
-   renders the same everywhere. If you are building the HTML by hand instead,
-   link Google Fonts (as in the <title.html> recipe above) and make sure the
-   render host can reach them — otherwise you get DejaVu and it looks wrong.
+   from server/fonts as base64, so it needs no network and renders the same
+   everywhere. If you are building the HTML by hand instead, link Google Fonts
+   (as in the <title.html> recipe above) and make sure the render host can
+   reach them — otherwise you get DejaVu and it looks wrong.
 
 2. THE 10-SECOND BUDGET. Only relevant to the hand-built HTML path. If your
    headline ever looks like a plain sans-serif, the fonts had not loaded before
-   the shot; raise --virtual-time-budget. The create_title_image tool waits on
-   document.fonts.ready, so it does not have this problem.
+   the shot; raise --virtual-time-budget. The default renderer embeds the fonts
+   directly, so it does not have this problem.
 
-2b. THE SERVER BROWSER WON'T LAUNCH. If create_title_image fails with
-   "error while loading shared libraries: libglib-2.0.so.0" (or Playwright's
-   opaque "Target page, context or browser has been closed"), the server's
-   Chromium is missing an OS library. Installing it needs root, which you may
-   not have. Do NOT stop there: use the client-side flow (render_title_card_html
-   -> screenshot -> upload_title_image), which needs no browser on the server.
-   The render_title_card_html error message says this too.
+2b. IF A RENDER EVER FAILS. The default renderer needs no browser, so the old
+   "libglib-2.0.so.0" / "Target page, context or browser has been closed"
+   failure no longer applies to create_title_image. If you DO pass
+   renderer:"browser" and see those errors, the server's Chromium is missing an
+   OS library and installing it needs root. Just drop renderer:"browser" (the
+   default satori renderer will work), or use the client-side flow
+   (render_title_card_html -> screenshot -> upload_title_image), which needs no
+   browser on the server.
 
 3. HEADLINE WIDTH. The headline is 114px and the usable width is 1600 minus
    2x104 padding = 1392px. My headline fits on one line. If you write a longer

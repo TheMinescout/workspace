@@ -114,7 +114,7 @@ async function main() {
 
   const guide = await client.readResource({ uri: "minescout-life://guides/how-to-make-a-title" });
   check("the guide explains the method",
-    guide.contents[0].text.includes("headless browser") &&
+    guide.contents[0].text.includes("satori") &&
     guide.contents[0].text.includes("assests"));
 
   const { prompts } = await client.listPrompts();
@@ -198,18 +198,21 @@ async function main() {
     },
   });
   const imgText = titleImg.content[0].text;
-  if (/Playwright is not installed|Could not create the title image/.test(imgText) && !existsSync("/usr/bin/chromium")) {
-    check("create_title_image renders a card", true, "skipped — no chromium in this environment");
-  } else {
-    check("create_title_image renders a card", !titleImg.isError, imgText.split("\n")[0]);
-    const rel = (imgText.match(/Hero image path: (\S+)/) || [])[1];
-    check("returns an /assests path", !!rel && rel.startsWith("/assests/images/"), String(rel));
-    const abs = rel ? path.join(imagesDir, rel.replace(/^\/assests\/images\//, "")) : "";
-    check("writes the PNG", !!abs && existsSync(abs));
-    check("writes the source HTML beside it", !!abs && existsSync(abs.replace(/\.png$/, ".html")));
-    check("keeps the PNG non-trivial", !!abs && existsSync(abs) && readFileSync(abs).length > 5000);
-    check("warns when the fonts did not load", /Fonts \(Lora, Inter\) loaded|fonts did not load/.test(imgText));
+  // The default renderer needs no browser, so this must pass even where
+  // chromium cannot start — that is the whole point of the change.
+  check("create_title_image renders a card without a browser", !titleImg.isError, imgText.split("\n")[0]);
+  const rel = (imgText.match(/Hero image path: (\S+)/) || [])[1];
+  check("returns an /assests path", !!rel && rel.startsWith("/assests/images/"), String(rel));
+  const abs = rel ? path.join(imagesDir, rel.replace(/^\/assests\/images\//, "")) : "";
+  check("writes the PNG", !!abs && existsSync(abs));
+  check("writes the source HTML beside it", !!abs && existsSync(abs.replace(/\.png$/, ".html")));
+  check("keeps the PNG non-trivial", !!abs && existsSync(abs) && readFileSync(abs).length > 5000);
+  if (abs && existsSync(abs)) {
+    const { PNG } = await import("pngjs");
+    const png = PNG.sync.read(readFileSync(abs));
+    check("renders at 1600x900", png.width === 1600 && png.height === 900, `${png.width}x${png.height}`);
   }
+  check("reports the fonts loaded", /Fonts \(Lora, Inter, JetBrains Mono\) loaded/.test(imgText), imgText.split("\n").pop());
 
   // ── client-side render flow ───────────────────────────────────────────────
   // The path for a host whose headless browser cannot launch: export the card

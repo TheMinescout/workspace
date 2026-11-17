@@ -18,7 +18,7 @@ export const CARD_HEIGHT = 900;
 
 // Copied from src/index.css so a generated card matches the site. The tool
 // takes token names, so an agent never has to invent a hex value.
-const COLOR_TOKENS = {
+export const COLOR_TOKENS = {
   ink: "#1a1814",
   "ink-2": "#3d3830",
   "ink-3": "#6b6158",
@@ -36,7 +36,7 @@ const COLOR_TOKENS = {
 };
 
 // Used for the comparison dots when the caller does not name a colour.
-const DOT_COLORS = ["#2d6a4f", "#1d4ed8", "#d97706", "#c0392b"];
+export const DOT_COLORS = ["#2d6a4f", "#1d4ed8", "#d97706", "#c0392b"];
 
 // The card used to pull Lora/Inter/JetBrains Mono from Google Fonts with a
 // <link>. That made rendering depend on outbound network access: on a host with
@@ -92,12 +92,36 @@ export function folderFor(category, override) {
   return CATEGORY_FOLDERS[c] || slugify(c) || "tech";
 }
 
-function esc(value) {
+// Read the bundled font files for a renderer that takes raw font data rather
+// than CSS (satori). satori matches a face by an exact numeric weight, so the
+// variable fonts must be registered once per weight the card actually uses —
+// otherwise the 700 headline silently falls back to 400 and renders thin.
+// Mirrors the faces used in buildCardHtml; a missing file is skipped, not fatal.
+const SATORI_WEIGHTS = [
+  { family: "Lora", file: "Lora-normal.woff2", weights: [700], style: "normal" },
+  { family: "Lora", file: "Lora-italic.woff2", weights: [400], style: "italic" },
+  { family: "Inter", file: "Inter-normal.woff2", weights: [400, 600], style: "normal" },
+  { family: "JetBrains Mono", file: "JetBrains-Mono-normal.woff2", weights: [400], style: "normal" },
+];
+
+export function fontBuffers() {
+  return SATORI_WEIGHTS.flatMap(({ family, file, weights, style }) => {
+    let data;
+    try {
+      data = fs.readFileSync(path.join(FONT_DIR, file));
+    } catch {
+      return [];
+    }
+    return weights.map(weight => ({ name: family, data, weight, style }));
+  });
+}
+
+export function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, ch =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
 }
 
-function resolveColor(value, fallback) {
+export function resolveColor(value, fallback) {
   const v = String(value || "").trim().toLowerCase();
   if (COLOR_TOKENS[v]) return COLOR_TOKENS[v];
   return /^#[0-9a-f]{3,8}$/.test(v) ? v : fallback;
@@ -367,26 +391,21 @@ async function launchBrowser() {
 
 // A browser that cannot start at all (missing shared libraries, no sandbox) is
 // the single most common failure on a locked-down host, and Playwright reports
-// it as the opaque "Target page, context or browser has been closed". Translate
-// that into the cause and the fix, and point at the client-side path that needs
-// no browser on the server.
+// it as the opaque "Target page, context or browser has been closed".
 const BROWSER_FAILED = /Target page, context or browser has been closed|browser has been closed|Failed to launch|error while loading shared libraries/i;
 
 function browserFailureMessage(raw) {
-  return `${raw}\n\nThe headless browser could not start on this server. This usually means a ` +
-    `system library is missing (for example libglib-2.0.so.0) and installing it needs root. ` +
-    `You do not need it: render the card on the client instead — call render_title_card_html to ` +
-    `get the card HTML, screenshot it with a local browser, then call upload_title_image with the ` +
-    `PNG as pngBase64 (or pass titleImage.pngBase64 to create_post / update_post).`;
+  return `${raw}\n\nThe headless browser could not start on this server (usually a missing system ` +
+    `library such as libglib-2.0.so.0, which needs root to install). The default renderer does not ` +
+    `use a browser — retry without renderer:"browser".`;
 }
 
-export async function renderTitleCard(opts = {}) {
-  const r = resolveCard(opts);
-  if (r.error) return { ok: false, error: r.error };
-  const { card, dir, png, htmlFile } = r;
-
-  const scale = Number(opts.scale) === 2 ? 2 : 1;
-  const html = buildCardHtml(card);
+// Photograph the card HTML with a headless browser. This is now the OPT-IN path
+// (renderer:"browser"); the default renderer is browser-free so the tool works
+// on a host where Chromium cannot start. Kept because a browser reproduces the
+// HTML exactly, which is useful for pixel-for-pixel QA of the default render.
+async function renderTitleCardWithBrowser(r, card, html, scale) {
+  const { dir, png, htmlFile } = r;
   let browser;
   try {
     browser = await launchBrowser();
@@ -411,14 +430,9 @@ export async function renderTitleCard(opts = {}) {
     const bytes = fs.statSync(png).size;
     await context.close();
     return {
-      ok: true,
-      path: r.publicPath,
-      file: png,
-      htmlFile,
-      width: CARD_WIDTH * scale,
-      height: CARD_HEIGHT * scale,
-      bytes,
-      fontsLoaded,
+      ok: true, path: r.publicPath, file: png, htmlFile,
+      width: CARD_WIDTH * scale, height: CARD_HEIGHT * scale, bytes, fontsLoaded,
+      renderer: "browser",
       headlineSize: headlineSize(card.title, card.headlineSize),
     };
   } catch (e) {
@@ -426,5 +440,46 @@ export async function renderTitleCard(opts = {}) {
     return { ok: false, error: BROWSER_FAILED.test(raw) ? browserFailureMessage(raw) : raw };
   } finally {
     if (browser) { try { await browser.close(); } catch { /* already gone */ } }
+  }
+}
+
+// Render a title card to a PNG on the server. By default this needs no browser:
+// the card is laid out with satori and rasterized with resvg, both of which run
+// without Chromium, so the tool works on a locked-down host that is missing the
+// browser's shared libraries. The card HTML is still written beside the PNG as
+// the human-editable source of record. Pass renderer:"browser" to use the
+// headless browser instead (same output, needs Chromium to be runnable).
+export async function renderTitleCard(opts = {}) {
+  const r = resolveCard(opts);
+  if (r.error) return { ok: false, error: r.error };
+  const { card, dir, png, htmlFile } = r;
+  const scale = Number(opts.scale) === 2 ? 2 : 1;
+  const html = buildCardHtml(card);
+
+  if (opts.renderer === "browser" || process.env.TITLE_IMAGE_RENDERER === "browser") {
+    return renderTitleCardWithBrowser(r, card, html, scale);
+  }
+
+  try {
+    const { renderCardPng } = await import("./title-image-render.js");
+    const { png: buf, fontsLoaded } = await renderCardPng(card, scale);
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(png, buf);
+    fs.writeFileSync(htmlFile, html);
+    return {
+      ok: true,
+      path: r.publicPath,
+      file: png,
+      htmlFile,
+      width: CARD_WIDTH * scale,
+      height: CARD_HEIGHT * scale,
+      bytes: buf.length,
+      fontsLoaded,
+      renderer: "satori",
+      headlineSize: headlineSize(card.title, card.headlineSize),
+    };
+  } catch (e) {
+    const raw = e && e.message ? e.message : String(e);
+    return { ok: false, error: `Could not render the title card: ${raw}` };
   }
 }

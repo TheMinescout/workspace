@@ -104,10 +104,15 @@ const titleImageShape = z.object({
   filename: z.string().optional().describe("File base name."),
   scale: z.number().optional().describe("1 for 1600x900, 2 for 3200x1800."),
   headlineSize: z.number().optional().describe("Force the headline size in px."),
+  renderer: z.enum(["satori", "browser"]).optional().describe(
+    "How the server draws the card. Default 'satori' needs no browser and works on a host that " +
+    "cannot run Chromium. 'browser' photographs the card HTML with headless Chromium — use it only " +
+    "where Chromium is known to run."
+  ),
   pngBase64: z.string().optional().describe(
     "A pre-rendered PNG (base64, optional data: prefix) to store instead of rendering on the server. " +
-    "Use this when the server's headless browser cannot launch: call render_title_card_html, screenshot " +
-    "it locally, and pass the result here. Overrides the server-side render."
+    "Optional escape hatch: only needed if you would rather render the card yourself. Overrides the " +
+    "server-side render."
   ),
 });
 
@@ -374,15 +379,10 @@ function buildServer() {
     {
       title: "Create title image",
       description:
-        "Render a title card (hero image) for a post and save it to the site. The card is designed as a " +
-        "web page and photographed with a headless browser, so it uses the site's real fonts and colors. " +
-        "Returns the public path to pass as heroImage. Read the 'how-to-make-a-title' resource for the " +
+        "Render a title card (hero image) for a post and save it to the site. The server draws the card " +
+        "with the site's real fonts and colors and returns the public path to pass as heroImage — no " +
+        "browser and no work on your side is needed. Read the 'how-to-make-a-title' resource for the " +
         "full method. Use short, punchy titles — long ones wrap and collide with the subtitle.\n\n" +
-        "If this server cannot launch a browser (a missing system library and no root to install it), " +
-        "the call fails with that explanation. In that case use the client-side flow instead: call " +
-        "render_title_card_html, screenshot the HTML with a browser on your side, then call " +
-        "upload_title_image (or pass titleImage.pngBase64 to create_post / update_post). You may also " +
-        "pass pngBase64 here directly.\n\n" +
         "Example: title 'Argon and Carbon', accentWord 'Carbon', subtitle 'The periodic table inside " +
         "Gemini 4', category 'Tech', date 'November 2026', and four models for a comparison footer.",
       inputSchema: titleImageShape.extend({
@@ -411,8 +411,8 @@ function buildServer() {
         `Hero image path: ${result.path}`,
         `Source HTML kept at ${result.path.replace(/\.png$/, ".html")} — edit and re-render, never edit the PNG.`,
         result.fontsLoaded
-          ? "Fonts (Lora, Inter) loaded."
-          : "WARNING: the site fonts did not load — the card rendered in a fallback font. Check internet access and try again.",
+          ? "Fonts (Lora, Inter, JetBrains Mono) loaded."
+          : "WARNING: a bundled font was unreadable — the card fell back to a system font. Check server/fonts.",
       ];
       return textResult(notes.join("\n"));
     }
@@ -421,14 +421,13 @@ function buildServer() {
   server.registerTool(
     "render_title_card_html",
     {
-      title: "Render title card HTML (for a client-side screenshot)",
+      title: "Render title card HTML (optional; for a client-side screenshot)",
       description:
-        "Build the exact HTML for a title card and save it beside where the PNG will go. Use this when " +
-        "this server cannot launch a headless browser: take the returned html, screenshot it at " +
-        "1600x900 (or 3200x1800 for 2x) with a browser on your side, then call upload_title_image with " +
-        "the PNG. The card is a normal web page — open it in any browser, or drive one with Playwright " +
-        "or Puppeteer. This is the documented fallback when the server has no usable Chromium and you " +
-        "cannot install its system libraries (no root).",
+        "Build the exact HTML for a title card and save it beside where the PNG goes. You do NOT need " +
+        "this — create_title_image renders the PNG on the server with no browser. Use it only when you " +
+        "want to screenshot the card yourself: take the returned html, screenshot it at 1600x900 (or " +
+        "3200x1800 for 2x) with a browser on your side, then call upload_title_image with the PNG. The " +
+        "page is a normal, self-contained web page (fonts inlined).",
       inputSchema: titleImageShape.extend({
         title: z.string().describe("Headline text. Short is better — 24 characters or fewer fits one line."),
       }),
@@ -462,10 +461,11 @@ function buildServer() {
     {
       title: "Upload a title image rendered elsewhere",
       description:
-        "Store a PNG you rendered on the client as the post's title card. Pairs with " +
-        "render_title_card_html: build the HTML there, screenshot it, and upload the result here. The " +
-        "server validates that the bytes are a real PNG and writes them to the site's images folder. " +
-        "Pass the same title/category/filename you used for the HTML so the path matches. Max 4 MB.",
+        "Store a PNG you rendered elsewhere as the post's title card. Optional escape hatch: " +
+        "create_title_image already renders the card on the server, so you only need this if you chose " +
+        "to render the card yourself (see render_title_card_html). The server validates that the bytes " +
+        "are a real PNG and writes them to the site's images folder. Pass the same " +
+        "title/category/filename you used for the HTML so the path matches. Max 4 MB.",
       inputSchema: titleImageShape.extend({
         title: z.string().describe("Headline text. Must match the HTML you rendered so the path lines up."),
         pngBase64: z.string().describe("The rendered PNG as base64 (a data:image/png;base64, prefix is fine)."),
