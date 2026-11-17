@@ -1,5 +1,29 @@
 [
   {
+    "id": "qwen4-max-alibaba-s-flagship-arrives-pricier-than-the-models-it-chases",
+    "title": "Qwen4-Max: Alibaba's Flagship Arrives Pricier Than the Models It Chases",
+    "category": "AI Posts",
+    "summary": "Alibaba's new Qwen4-Max tops its own lineup at 43 on the Artificial Analysis Intelligence Index, but it costs more per task than GPT-6.1 Sol — which scores 12 points higher.",
+    "heroImage": "/assests/images/ai-posts/qwen4-max-is-live-title.png",
+    "timestamp": 1794936755888,
+    "linkUrl": "/post/qwen4-max-alibaba-s-flagship-arrives-pricier-than-the-models-it-chases",
+    "linkText": "Read Entry",
+    "date": "November 17, 2026",
+    "publishDate": null
+  },
+  {
+    "id": "chatgpt-gets-a-wallet",
+    "title": "ChatGPT Gets a Wallet",
+    "category": "AI Posts",
+    "summary": "OpenAI's dots can now buy things for you, paying with a token instead of your card number.",
+    "heroImage": "/assests/images/ai-posts/chatgpt-gets-a-wallet-title.png",
+    "timestamp": 1794899808229,
+    "linkUrl": "/post/chatgpt-gets-a-wallet",
+    "linkText": "Read Entry",
+    "date": "November 16, 2026",
+    "publishDate": null
+  },
+  {
     "id": "gemini-4-hydrogen-the-budget-model-that-beat-google-s-own-flagship",
     "title": "Gemini 4 Hydrogen: The Budget Model That Beat Google's Own Flagship",
     "category": "AI Posts",
