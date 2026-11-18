@@ -8,6 +8,7 @@ import {
 } from "../data/posts";
 import { useAdmin } from "../hooks/useAdmin";
 import { useTheme } from "../hooks/useTheme";
+import { wrapContentTables } from "../lib/content";
 
 const CATS = ["Tech","App","Eagle","Coding","Puppy","Update","AI Posts"];
 
@@ -304,7 +305,7 @@ export default function Admin() {
                     </p>
                   </>
                 ) : (
-                  <div className="article-body" style={{padding:"20px",background:"var(--paper-2)",border:"1px solid var(--rule)",borderRadius:"var(--radius-s)",minHeight:"200px"}} dangerouslySetInnerHTML={{__html:form.content||"<p><em>Nothing to preview yet.</em></p>"}}/>
+                  <div className="article-body" style={{padding:"20px",background:"var(--paper-2)",border:"1px solid var(--rule)",borderRadius:"var(--radius-s)",minHeight:"200px"}} dangerouslySetInnerHTML={{__html: wrapContentTables(form.content||"<p><em>Nothing to preview yet.</em></p>")}}/>
                 )}
               </div>
 
