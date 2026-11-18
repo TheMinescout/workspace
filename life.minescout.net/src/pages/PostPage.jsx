@@ -5,6 +5,7 @@ import Sidebar from "../components/Sidebar";
 import Comments from "../components/Comments";
 import { fetchPost, fetchPosts, visiblePosts, isScheduled, publishTime } from "../data/posts";
 import { rewriteContentPaths, assetUrl } from "../lib/base";
+import { wrapContentTables } from "../lib/content";
 import { useTheme } from "../hooks/useTheme";
 import { useAdmin } from "../hooks/useAdmin";
 
@@ -75,7 +76,7 @@ export default function PostPage() {
                 onError={e=>e.target.style.display="none"}/>
             )}
 
-            <div className="article-body" dangerouslySetInnerHTML={{__html: rewriteContentPaths(post.content)}}/>
+            <div className="article-body" dangerouslySetInnerHTML={{__html: wrapContentTables(rewriteContentPaths(post.content))}}/>
           </div>
 
           <div style={{marginTop:"28px",display:"flex",justifyContent:"space-between"}}>
