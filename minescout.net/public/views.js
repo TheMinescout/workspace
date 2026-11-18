@@ -487,6 +487,17 @@ export const views = {
             <p style="margin: 0;"><a href="https://chrisdfranz.com" class="view-link" target="_blank">View Live Site &rarr;</a></p>
           </div>
         </div>
+        <div class="client-card" style="--d:0.4s;">
+          <div class="client-card-header"><div><div class="client-name">Tactile Menus</div><div class="client-type">Accessibility &amp; Restaurant Services</div></div><span class="client-status status-live">Live</span></div>
+          <div class="client-card-body">
+            <div class="client-detail-grid">
+              <div><div class="client-detail-label">Deployment</div><div class="client-detail-val">November 2026</div></div>
+              <div><div class="client-detail-label">Solution</div><div class="client-detail-val">Search Indexing &amp; Analytics Telemetry</div></div>
+              <div><div class="client-detail-label">Program</div><div class="client-detail-val">Charter Partner</div></div>
+            </div>
+            <p class="client-note">Establishing search visibility and real-time traffic telemetry for Eastside accessibility startup Tactile Menus. We configured Google Search Console domain verification and deployed a Google Tag Manager container directly into their CI/CD pipeline to track search keyword performance and user engagement.<br><a href="https://tactilemenus.netlify.app" class="view-link" target="_blank">View Live Site &rarr;</a></p>
+          </div>
+        </div>
         <div class="client-card" style="--d:0.35s;">
           <div class="client-card-header"><div><div class="client-name">The Chop Lab</div><div class="client-type">Manufacturing & Robotics Automation</div></div><span class="client-status status-live">Live</span></div>
           <div class="client-card-body">
