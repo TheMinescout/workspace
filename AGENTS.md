@@ -86,6 +86,15 @@ after — `git stash` your edits and re-run if unsure.
   `eager` for the hero), `decoding="async"`, and a fixed aspect wrapper so the
   layout does not shift. `src/components/product-gallery.tsx` does this for
   product shots; `texture-swatch.tsx` and `product-card.tsx` for cards.
+- Merchant Center: `public/merchant-center-feed.tsv` is the Google Shopping
+  feed, generated from `PRODUCTS` by `scripts/merchant-feed.mjs`
+  (`npm run feed:merchant`). Never hand-edit it — regenerate after touching
+  `products.ts`; `scripts/merchant-feed.test.mjs` fails when the committed file
+  is stale. It lists only physical products that have a photo: digital STLs are
+  skipped (Merchant Center has no downloadable-goods listing), and
+  `sponge-basket` / `slab-rails` are skipped until someone adds a real photo to
+  `public/images/` and sets `product.image`. `price` is the numeric `basePrice`,
+  matching the Product JSON-LD, not the quote estimate.
 - Accessibility: keep the skip link (`#main`) in `__root.tsx`, label navs
   (`aria-label="Main"` / `"Mobile"`), and give content images meaningful `alt`
   text. `alt=""` is only for genuinely decorative images.
