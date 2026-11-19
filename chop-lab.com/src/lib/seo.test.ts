@@ -116,7 +116,7 @@ describe("product page heads", () => {
 
 describe("sitemap", () => {
   it("lists the dedicated 3D printing page", () => {
-    assert.ok(locs().includes("https://chop-lab.com/3d-printing"));
+    assert.ok(locs().some((u) => u === "https://chop-lab.com/3d-printing"));
   });
 
   it("lists every indexable static route", () => {
