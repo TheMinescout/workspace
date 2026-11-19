@@ -114,14 +114,22 @@ after — `git stash` your edits and re-run if unsure.
   q, a, `<html>`)` call at the bottom of the file. `registerPost` only defines
   the view when `isReleased(date)` is true, so a future date makes the post
   invisible on the index *and* 404 on direct navigation.
-- A new post needs three things to be complete: an entry in `BLOG_POSTS`, a
-  matching `registerPost` call, and a tag colour in `main.css` (`.tag-*`, which
-  is duplicated in two blocks — update both).
+- A new post needs four things to be complete: an entry in `BLOG_POSTS`, a
+  matching `registerPost` call, a tag colour in `main.css` (`.tag-*`, which
+  is duplicated in two blocks — update both), and a `<url>` in
+  `public/sitemap.xml`. The sitemap has a `<!-- Blog Posts -->` block at the end
+  listing every post; `scripts/blog-posts.test.mjs` fails if a post in
+  `BLOG_POSTS` has no sitemap entry.
+- Prices quoted in a post must match `views['/studio/pricing']` — that page is
+  the source of truth for what the studio charges. The test suite reads the tier
+  and monthly prices out of it and fails if the e-commerce post stops mentioning
+  one of them.
 - Cache-busting is manual: bump `?v=` on the `app.js` script tag in `index.html`
   and on the `views.js` import in `app.js` after editing either file.
 - `npm test` here is `node --test minescout.net/scripts/*.test.mjs` from inside
   `minescout.net/`; `scripts/blog-posts.test.mjs` asserts every index entry has a
-  view and that the new posts are released.
+  view and a sitemap entry, that the new posts are released, and that the
+  e-commerce post's prices trace back to the pricing page.
 
 ## Minescout Life (`life.minescout.net/`)
 

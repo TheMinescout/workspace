@@ -38,7 +38,7 @@ export const BLOG_POSTS = [
     date: "Nov 12, 2026", tag: "tag-business", tagLabel: "Business",
     href: "/blog/custom-ecommerce-cost-2026.html",
     title: "How Much Does a Custom E-Commerce Website Cost in 2026?",
-    excerpt: "A straight breakdown of what a custom storefront costs in 2026, what drives the price up, and what should never be an add-on.",
+    excerpt: "What a custom storefront actually costs in 2026 — the real starting prices, what drives the number, and what should never be an add-on.",
   },
   {
     date: "Nov 8, 2026", tag: "tag-building", tagLabel: "Building",
@@ -1915,17 +1915,21 @@ registerPost('/blog/slow-websites-cost-customers.html', "Nov 19, 2026", "Busines
 
 registerPost('/blog/custom-ecommerce-cost-2026.html', "Nov 12, 2026", "Business",
   "How Much Does a Custom E-Commerce Website Cost in 2026?",
-  "What should a custom e-commerce website cost in 2026, and what actually drives that number up or down?",
-  "Custom storefronts in 2026 typically land between $2,500 and $15,000 up front, plus $20–$200 a month in hosting and platform fees. Price is driven by catalog complexity, checkout and payment needs, and how much custom configuration the products require — not by page count.",
+  "What does a custom e-commerce website actually cost in 2026, and what drives that number up or down?",
+  "A custom storefront starts at $2,500, or $3,500 with an AI assistant built in. Ongoing hosting and maintenance run $15–$75 a month and are optional. The final quote is driven by how configurable your products are, how checkout is handled, and who owns the catalog after launch — not by page count.",
   `
-  <p style="margin-bottom: 1.25rem;">Most pricing pages for e-commerce work answer this question with a range so wide it is useless. So here is the honest version: the number depends on four things, and you can estimate your own project once you know what they are.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The 2026 ranges</h3>
+  <p style="margin-bottom: 1.25rem;">Most pricing pages for e-commerce work answer this question with a range so wide it is useless. So here is the straight version, using the prices I actually charge rather than an industry average.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The 2026 starting prices</h3>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Template store, configured.</strong> Roughly $500–$2,500 up front. A hosted platform with a theme, a payment processor, and a product list. Fastest to launch, hardest to make feel like your brand.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Custom storefront, small catalog.</strong> Roughly $2,500–$6,000 up front. Bespoke design and build, a curated product set, and checkout handled by a payment provider rather than reinvented.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Custom storefront, complex catalog.</strong> Roughly $6,000–$15,000 up front. Configurable products, variants with real constraints, quote flows, and integrations with inventory or email.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Ongoing.</strong> Roughly $20–$200 a month for hosting, a payment processor's percentage, and any platform subscription. A static edge storefront sits at the low end because there is no application server to keep running.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Portfolio Website — from $750.</strong> A custom design, responsive layout, contact form, SEO basics, and fast hosting setup. Right for a maker or freelancer with a handful of products and no real checkout.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Professional Website — from $1,500.</strong> Multiple pages, booking and contact integrations, analytics, and performance work. Right for a small catalog that needs a proper product story.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Business Website — from $2,500.</strong> Discovery meeting, fully custom design, advanced SEO, custom forms, and an AI-ready foundation. This is the tier a real storefront starts in.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Business + AI — from $3,500.</strong> Everything above plus a custom AI assistant, a knowledge base, automation, and a dashboard.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Students, nonprofits, first-time founders — $250–$750.</strong> A limited number of discounted projects each semester, depending on scope.</li>
   </ul>
+  <p style="margin-bottom: 1.25rem;">Those are <em>starting</em> prices, and they are quoted per project. A store with six fixed items lands near the bottom of a tier. A store with configurable products, quote flows, and inventory integrations sits above it. The pricing page is the source of truth; treat any number here as a floor, not a ceiling.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Ongoing costs, which are optional</h3>
+  <p style="margin-bottom: 1.25rem;">You are free to host and maintain the site yourself. If you would rather not, the support plans are $10 a month for priority care, $15 for edge hosting and SSL, $40 for hosting plus updates and backups, and $75 for hosting, updates, backups, AI maintenance, and priority support. None of them is required to work with me.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What actually drives the price</h3>
   <p style="margin-bottom: 1.25rem;"><strong style="color: var(--fg);">1. How configurable the products are.</strong> A store that sells six fixed items is a different project from one that sells a tool built to a customer's exact drawing. The second needs a configurator, validation, and a way to hand a real specification to the maker. That logic, not the page count, is where custom work lives.</p>
   <p style="margin-bottom: 1.25rem;"><strong style="color: var(--fg);">2. Checkout and payments.</strong> Building checkout from scratch is almost never worth it in 2026. Stripe or an equivalent handles cards, tax, and receipts for a small percentage. Budget for the integration, not for a payments team.</p>
@@ -1934,14 +1938,14 @@ registerPost('/blog/custom-ecommerce-cost-2026.html', "Nov 12, 2026", "Business"
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What should never cost extra</h3>
   <p style="margin-bottom: 1.25rem;">Speed, mobile layout, and basic search visibility are not premium features in 2026. Neither is a contact path for people who are not ready to buy. If a quote lists those as add-ons, the base price is being held artificially low.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">How to get a real number</h3>
-  <p style="margin-bottom: 1.25rem;">Write down three things before you ask for a quote: how many products you sell, which of them need configuration, and who will add new products after launch. Those three answers move the estimate more than any other detail, and any honest quote will start by asking for them.</p>
+  <p style="margin-bottom: 1.25rem;">Write down three things before you ask for a quote: how many products you sell, which of them need configuration, and who will add new products after launch. Those three answers move the estimate more than any other detail, and any honest quote will start by asking for them. You can also check the <a href="/studio/pricing" style="color: var(--accent);">current pricing page</a> for the tiers in full.</p>
   `
 );
 
 registerPost('/blog/chop-lab-storefront.html', "Nov 8, 2026", "Building",
   "How I Built a Fast Online Storefront for a Local Ceramics Brand",
   "What goes into building a fast storefront for a small maker, where every product is built to order?",
-  "The Chop Lab needed typed product data, measurements stored canonically in millimetres, and a configurator that turns a customer's drawing into a quote. Static delivery keeps the pages instant; the product model keeps the catalog honest.",
+  "The Chop Lab needed typed product data, measurements stored canonically in millimetres, and a configurator that turns a customer's drawing into a quote. Server-rendered pages keep the first paint instant; the product model keeps the catalog honest.",
   `
   <p style="margin-bottom: 1.25rem;"><a href="https://chop-lab.com" target="_blank" rel="noopener" style="color: var(--accent);">The Chop Lab</a> is a ceramics tooling studio. The catalog is small but nothing in it is a fixed SKU: custom chops cut from a maker's logo, texture rollers with repeating geometry, slab rails in a customer's exact width. A standard product grid with a quantity box would have been the wrong shape for the business.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Start with the data model, not the design</h3>
@@ -1958,8 +1962,8 @@ registerPost('/blog/chop-lab-storefront.html', "Nov 8, 2026", "Building",
 }</code></pre>
   <p style="margin-bottom: 1.25rem;">Keeping that in a typed TypeScript file instead of a database meant the catalog is versioned with the site, type-checked at build time, and impossible to ship with a missing field.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Millimetres in the data, inches on the screen</h3>
-  <p style="margin-bottom: 1.25rem;">Ceramics work in both metric and imperial, and a maker will switch depending on the tool. So every length is stored canonically in millimetres and converted at render time by a single hook. There is no hard-coded "10 in" anywhere in the markup — flipping the units toggle re-renders every measurement on the page at once.</p>
-  <p style="margin-bottom: 1.25rem;">This is the kind of detail that looks like polish and is actually correctness. A spec sheet that says 254 mm on one product and 10 in on the next reads as careless to the exact audience the studio is selling to.</p>
+  <p style="margin-bottom: 1.25rem;">Ceramics work in both metric and imperial, and a maker will switch depending on the tool. So the configurator keeps every length it collects in millimetres and converts at render time through one hook. Flipping the units toggle re-renders every measurement in the form at once, and a stored 254 mm reads as 10 in the moment you switch.</p>
+  <p style="margin-bottom: 1.25rem;">This is the kind of detail that looks like polish and is actually correctness. A configurator that silently keeps one product's input in inches and the next in millimetres hands the maker a specification that cannot be cut.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">A configurator that ends in a quote</h3>
   <p style="margin-bottom: 1.25rem;">The configurator lets a customer pick a product, choose a texture from the library, and send a mark or a dimension. No payment is collected there. The submission becomes a specification the maker can price and cut, which is what the business actually needs — a dead shopping cart is worse than a good intake form.</p>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Keeping it fast</h3>
@@ -1967,7 +1971,7 @@ registerPost('/blog/chop-lab-storefront.html', "Nov 8, 2026", "Building",
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Fixed aspect wrappers</strong> around every product image, with <code>loading="lazy"</code> and <code>decoding="async"</code> below the fold. The layout never shifts as photos arrive.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Eager hero, lazy gallery.</strong> The first product shot loads immediately; the rest wait.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Design tokens</strong> for colour, spacing, and shadow, so the warm clay palette is one file rather than a hundred inline values.</li>
-    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Static output.</strong> Pages are built ahead of time, so a customer on a phone in a studio gets text immediately.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Server rendering.</strong> The first response already contains the product markup, so a customer on a phone in a studio reads the specs before the JavaScript bundle finishes loading.</li>
   </ul>
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What I would tell another maker</h3>
   <p style="margin-bottom: 1.25rem;">If your products are made to order, do not force them into a cart. Model what the product actually is — dimensions, options, the work behind it — and let the site end in a conversation. The storefront is fast because the architecture is simple, and it is simple because the data model matched the business instead of fighting it.</p>
