@@ -1,5 +1,6 @@
 import type { MetaDescriptor } from "@tanstack/react-router";
 import type * as React from "react";
+import type { Product } from "@/lib/products";
 
 /**
  * Canonical origin for the site. Used for absolute canonical links, the
@@ -8,8 +9,10 @@ import type * as React from "react";
  */
 export const SITE_URL = "https://chop-lab.com";
 
+/** Absolute URL for a root-relative path; the site root has no trailing slash. */
 export function absoluteUrl(path: string) {
-  return new URL(path, SITE_URL).toString();
+  const url = new URL(path, SITE_URL).toString();
+  return url === `${SITE_URL}/` ? SITE_URL : url;
 }
 
 /**
@@ -48,6 +51,34 @@ export function pageHead({ title, description, path, ld }: PageHeadInput): PageH
     meta: meta as unknown as PageHead["meta"],
     links: [{ rel: "canonical", href: absoluteUrl(path) }],
   };
+}
+
+/**
+ * `Product` structured data for a tool page. `price` is the numeric starting
+ * price (base fee before hourly CAD time) so Product Snippets and Merchant
+ * Center can parse it; the quote breakdown lives in the page copy.
+ */
+export function productLd(product: Product) {
+  const url = absoluteUrl(`/tools/${product.slug}`);
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.headline,
+    description: product.seoDescription,
+    sku: product.slug,
+    image: product.image ? [absoluteUrl(product.image)] : undefined,
+    brand: { "@type": "Brand", name: "The Chop Lab" },
+    category: product.digital ? "Digital 3D file" : "Pottery tool",
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "USD",
+      price: product.basePrice,
+      availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+      url,
+      seller: { "@type": "Organization", name: "The Chop Lab", url: SITE_URL },
+    },
+  } satisfies Record<string, unknown>;
 }
 
 export const ORGANIZATION_LD = {

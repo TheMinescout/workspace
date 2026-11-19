@@ -185,6 +185,24 @@ function Home() {
         </ol>
       </section>
 
+      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-muted">The lab</p>
+            <h2 className="mt-2 font-display text-4xl font-medium tracking-tight">
+              Custom 3D printing, not just pottery tools.
+            </h2>
+          </div>
+          <Button asChild variant="secondary">
+            <Link to="/3d-printing">3D printing & prototyping</Link>
+          </Button>
+        </div>
+        <p className="mt-4 max-w-2xl text-muted leading-relaxed">
+          The same lab prints replacement parts, studio jigs, and one-off prototypes
+          in PLA Matte and PETG. Local to Sammamish and the Eastside, WA.
+        </p>
+      </section>
+
       <section className="border-y border-border bg-surface py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="flex flex-wrap items-end justify-between gap-4">

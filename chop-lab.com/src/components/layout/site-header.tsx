@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { to: "/tools", label: "Tools" },
+  { to: "/3d-printing", label: "3D printing" },
   { to: "/files", label: "Digital files" },
   { to: "/engineering-drawings", label: "Drawings" },
   { to: "/about", label: "About" },

@@ -10,6 +10,10 @@ export type Product = {
   drawing: ToolDrawing;
   tagline: string;
   description: string;
+  /** Keyword-forward H1 and page `<title>` subject for search intent. */
+  headline: string;
+  /** Keyword-rich meta description, distinct from the card `description`. */
+  seoDescription: string;
   longDescription: string;
   basePrice: number;
   hourlyRate: number;
@@ -58,6 +62,9 @@ export const PRODUCTS: Product[] = [
     tagline: "High-fidelity detail from logos and original artwork.",
     description:
       "High-fidelity detail extraction for complex logos and original artwork. Our most requested piece.",
+    headline: "Custom 3D-Printed Clay Stamp & Maker's Mark",
+    seoDescription:
+      "A custom 3D-printed clay stamp and maker's mark for potters. We extract high-fidelity detail from your logo or artwork and print it in PLA Matte for crisp impressions. Quotes start at $3 plus CAD time.",
     longDescription:
       "The tool that defines your studio. We extract high-fidelity detail from your logos or original artwork and engineer it into a custom, ergonomic stamp — printed in specialized PLA Matte for clean, low-friction clay release every time.",
     basePrice: 3,
@@ -108,6 +115,9 @@ export const PRODUCTS: Product[] = [
     tagline: "Initials, text, or a clean logo mark.",
     description:
       "Initials, text, or clean logo marks engineered for crisp, consistent impressions.",
+    headline: "Custom Pottery Stamp for Initials & Logos",
+    seoDescription:
+      "A custom pottery stamp for initials, text, or a clean logo mark. Engineered for crisp, consistent impressions in leather-hard clay and printed in PLA Matte. Quotes start at $3 plus CAD time.",
     longDescription:
       "Standard text, initials, or a clean logo mark, modeled so the impression reads clearly in leather-hard clay. Best when the design is a few letters or a simple mark — more than three letters raises the chance of impression issues.",
     basePrice: 3,
@@ -153,6 +163,9 @@ export const PRODUCTS: Product[] = [
     tagline: "Seamless pattern across any slab.",
     description:
       "Continuous pattern rolling in honeycomb, brick, spiral, and more — seamless across any slab.",
+    headline: "10-Inch Pottery Texture Roller",
+    seoDescription:
+      "A 10-inch pottery texture roller with seamless repeating patterns — honeycomb, brick, spiral, or your own design. Printed in PLA Matte for clean release across any clay slab.",
     longDescription:
       "A ten-inch roller with engineered, repeating geometry so the pattern tiles cleanly as you travel across a slab. Choose from the texture library or send a pattern of your own.",
     basePrice: 3,
@@ -201,6 +214,9 @@ export const PRODUCTS: Product[] = [
     drawing: "roller-4",
     tagline: "Compact roller for tiles and accent work.",
     description: "Compact texture roller for smaller pieces, tiles, and accent work.",
+    headline: "4-Inch Pottery Texture Roller",
+    seoDescription:
+      "A compact 4-inch pottery texture roller for tiles, rims, and accent work. Same seamless pattern library as the full-length roller, printed in PLA Matte for low-friction release.",
     longDescription:
       "The same engineered patterns in a four-inch format — easier to control on tiles, rims, and smaller slabs where a full-length roller is more tool than you need.",
     basePrice: 3,
@@ -250,6 +266,9 @@ export const PRODUCTS: Product[] = [
     tagline: "Hex-lattice storage that hangs on the bucket.",
     description:
       "Shallow, breathable hex-lattice storage — lets your sponges drain right into the bucket.",
+    headline: "Pottery Wheel Sponge Holder & Tool Basket",
+    seoDescription:
+      "A pottery wheel sponge holder and tool basket that hangs on a standard water bucket. The breathable hex lattice drains sponges instead of letting them sit sour — sized to your bucket lip.",
     longDescription:
       "Engineered to hang on a standard pottery water bucket. The hex lattice lets sponges drain instead of sitting sour, and the hang geometry is sized from the thickness of your bucket's top lip.",
     basePrice: 12,
@@ -277,6 +296,9 @@ export const PRODUCTS: Product[] = [
     tagline: "Interlocking rails for consistent slabs.",
     description:
       "10-inch interlocking rails — custom thickness and width for consistent slabs and tiles every time.",
+    headline: "Pottery Slab Thickness Rails",
+    seoDescription:
+      "Interlocking 10-inch pottery slab thickness rails for consistent slabs and tiles every time. Custom thickness and width, printed in PLA Matte and easy to wipe down.",
     longDescription:
       "A matched pair of interlocking rails, ten inches long as standard. Set the thickness you throw to — or ask for a custom height — and roll slabs that actually match from edge to edge.",
     basePrice: 3,
@@ -303,6 +325,9 @@ export const PRODUCTS: Product[] = [
     drawing: "basket",
     tagline: "Print the parametric basket in your own lab.",
     description: "Download the parametric model to 3D print in your own lab.",
+    headline: "Sponge Basket STL — 3D-Printed Pottery Tool",
+    seoDescription:
+      "Download the parametric sponge basket STL and 3D print a pottery wheel sponge holder in your own lab. $5 base plus $1 per hour of quoted print time; file emailed after review.",
     longDescription:
       "The sponge basket as a digital file. You are purchasing an STL to print yourself. The file link and invoice are emailed after a short review. Pricing is a $5 base fee plus $1 per hour of quoted print time.",
     basePrice: 5,
@@ -330,6 +355,9 @@ export const PRODUCTS: Product[] = [
     drawing: "cutter",
     tagline: "45° and 60° foot-ring cutter.",
     description: "45° & 60° foot ring cutter — download and print it yourself.",
+    headline: "Dual Bevel Foot-Ring Cutter STL",
+    seoDescription:
+      "Download the dual bevel foot-ring cutter STL with 45° and 60° edges and 3D print it yourself. $5 base plus $1 per hour of quoted print time; file emailed after review.",
     longDescription:
       "A dual-bevel foot-ring cutter at 45° and 60°. Digital STL only — print it on your own machine. File link and invoice are emailed after review.",
     basePrice: 5,
@@ -357,6 +385,9 @@ export const PRODUCTS: Product[] = [
     drawing: "rails",
     tagline: "Print the standard rail pair yourself.",
     description: "Download the standard slab rail model to print yourself.",
+    headline: "Slab Thickness Rails STL for Pottery",
+    seoDescription:
+      "Download the interlocking slab thickness rails STL and 3D print a matched pottery rail pair in your own lab. $5 base plus $1 per hour of quoted print time; file emailed after review.",
     longDescription:
       "The standard interlocking slab-rail pair as an STL. Print it in your own lab. File link and invoice are emailed after review.",
     basePrice: 5,

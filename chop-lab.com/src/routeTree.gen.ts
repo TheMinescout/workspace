@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as R3dPrintingRouteImport } from './routes/3d-printing'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ConfigureRouteImport } from './routes/configure'
 import { Route as EngineeringDrawingsRouteImport } from './routes/engineering-drawings'
@@ -23,6 +24,11 @@ import { Route as ToolsSlugRouteImport } from './routes/tools.$slug'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const R3dPrintingRoute = R3dPrintingRouteImport.update({
+  id: '/3d-printing',
+  path: '/3d-printing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -73,6 +79,7 @@ const ToolsSlugRoute = ToolsSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/3d-printing': typeof R3dPrintingRoute
   '/about': typeof AboutRoute
   '/configure': typeof ConfigureRoute
   '/engineering-drawings': typeof EngineeringDrawingsRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/3d-printing': typeof R3dPrintingRoute
   '/about': typeof AboutRoute
   '/configure': typeof ConfigureRoute
   '/engineering-drawings': typeof EngineeringDrawingsRoute
@@ -97,6 +105,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/3d-printing': typeof R3dPrintingRoute
   '/about': typeof AboutRoute
   '/configure': typeof ConfigureRoute
   '/engineering-drawings': typeof EngineeringDrawingsRoute
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/3d-printing'
     | '/about'
     | '/configure'
     | '/engineering-drawings'
@@ -123,6 +133,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/3d-printing'
     | '/about'
     | '/configure'
     | '/engineering-drawings'
@@ -134,6 +145,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/3d-printing'
     | '/about'
     | '/configure'
     | '/engineering-drawings'
@@ -147,6 +159,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  R3dPrintingRoute: typeof R3dPrintingRoute
   AboutRoute: typeof AboutRoute
   ConfigureRoute: typeof ConfigureRoute
   EngineeringDrawingsRoute: typeof EngineeringDrawingsRoute
@@ -163,6 +176,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/3d-printing': {
+      id: '/3d-printing'
+      path: '/3d-printing'
+      fullPath: '/3d-printing'
+      preLoaderRoute: typeof R3dPrintingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -245,6 +265,7 @@ const ToolsRouteWithChildren = ToolsRoute._addFileChildren(ToolsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  R3dPrintingRoute: R3dPrintingRoute,
   AboutRoute: AboutRoute,
   ConfigureRoute: ConfigureRoute,
   EngineeringDrawingsRoute: EngineeringDrawingsRoute,
