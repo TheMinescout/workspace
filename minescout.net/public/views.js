@@ -598,7 +598,7 @@ export const views = {
       </div>
     </div>
   `,
-  '/studio/legal': \`
+  '/studio/legal': `
     <div class="main--page">
       <div class="page-content legal-wrap">
         <p class="page-label">Minescout Studio</p>
