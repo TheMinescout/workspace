@@ -1085,6 +1085,7 @@
   /* Blog tags */
   .tag-engineering { background: #1a1916; color: #fff; }
   .tag-building { background: var(--accent); color: #fff; }
+  .tag-business { background: #2f5d50; color: #fff; }
   
   /* Tool badge variants */
   .badge-core { background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd; }
@@ -1349,6 +1350,7 @@
   .hero-links { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
   .tag-engineering { background: #1a1916; color: #fff; }
   .tag-building { background: var(--accent); color: #fff; }
+  .tag-business { background: #2f5d50; color: #fff; }
   .badge-core { background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd; }
   .badge-free { background: #f0faf4; color: #3b8a62; border: 1px solid #c3e8d0; }
   .tool-body { flex: 1; min-width: 0; }

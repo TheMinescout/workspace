@@ -102,6 +102,35 @@ after — `git stash` your edits and re-run if unsure.
   Fraunces `SOFT`/`WONK` variation axes. The font link in `__root.tsx` must keep
   those axis names or the display type loses its warmth.
 
+## The Minescout blog (`minescout.net/public/views.js`)
+
+`/blog` is not a separate app or a file-per-post directory. Everything lives in
+`minescout.net/public/views.js`, which is the whole SPA's template module:
+
+- `BLOG_POSTS` is the index metadata (date, tag, `href`, title, excerpt). Order
+  in the array is display order; the first released post with `featured: true`
+  gets the "Latest" badge.
+- Each post body is a `registerPost('/blog/<slug>.html', "Mon D, YYYY", "Category",
+  q, a, `<html>`)` call at the bottom of the file. `registerPost` only defines
+  the view when `isReleased(date)` is true, so a future date makes the post
+  invisible on the index *and* 404 on direct navigation.
+- A new post needs four things to be complete: an entry in `BLOG_POSTS`, a
+  matching `registerPost` call, a tag colour in `main.css` (`.tag-*`, which
+  is duplicated in two blocks — update both), and a `<url>` in
+  `public/sitemap.xml`. The sitemap has a `<!-- Blog Posts -->` block at the end
+  listing every post; `scripts/blog-posts.test.mjs` fails if a post in
+  `BLOG_POSTS` has no sitemap entry.
+- Prices quoted in a post must match `views['/studio/pricing']` — that page is
+  the source of truth for what the studio charges. The test suite reads the tier
+  and monthly prices out of it and fails if the e-commerce post stops mentioning
+  one of them.
+- Cache-busting is manual: bump `?v=` on the `app.js` script tag in `index.html`
+  and on the `views.js` import in `app.js` after editing either file.
+- `npm test` here is `node --test minescout.net/scripts/*.test.mjs` from inside
+  `minescout.net/`; `scripts/blog-posts.test.mjs` asserts every index entry has a
+  view and a sitemap entry, that the new posts are released, and that the
+  e-commerce post's prices trace back to the pricing page.
+
 ## Minescout Life (`life.minescout.net/`)
 
 ```bash
@@ -197,9 +226,11 @@ npm run check    # lint (oxlint) + render smoke + MCP smoke
 
 ## CI
 
-`.github/workflows/ci.yml` runs only for `life.minescout.net/**` changes: install,
-lint, build, test, then `scripts/smoke.mjs` and `scripts/mcp-smoke.mjs`
-(Chromium installed via Playwright). `pages.yml` publishes a static Life preview
+`.github/workflows/ci.yml` runs for `life.minescout.net/**` and
+`minescout.net/**` changes. The Life job installs, lints, builds, tests, then runs
+`scripts/smoke.mjs` and `scripts/mcp-smoke.mjs` (Chromium installed via Playwright).
+The `minescout-net` job just runs `npm test` (the blog tests in
+`minescout.net/scripts/`). `pages.yml` publishes a static Life preview
 to GitHub Pages — its API routes are dev-server-only, so comments, votes and
 admin sign-in do not work there. The Chop Lab has no CI; verify it by hand with
 the commands above.
