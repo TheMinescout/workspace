@@ -679,7 +679,7 @@ export const views = {
         </div>
       </div>
     </div>
-  \`,
+  `,
 
 '/studio/tools': `
     <div class="main--page">
