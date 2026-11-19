@@ -598,89 +598,89 @@ export const views = {
       </div>
     </div>
   `,
-  '/studio/legal': `
+  '/studio/legal': \`
     <div class="main--page">
       <div class="page-content legal-wrap">
         <p class="page-label">Minescout Studio</p>
-        <h1 class="page-title">Legal &amp; Terms</h1>
-        <p class="legal-updated">Last updated: <span id="legal-date"></span></p>
+        <h1 class="page-title">How Studio Works</h1>
+        <p class="legal-updated">Transparency &amp; service information · Last reviewed November 18, 2026</p>
+
         <div class="legal-section" style="--d:0.28s;">
-          <div class="legal-section-title">Who we are</div>
-          <p class="legal-body">Minescout Studio is operated by <strong>Thomas Carleton</strong>, based in Sammamish, Washington. This is not a registered business entity. All services are delivered directly by Thomas Carleton as an individual. By engaging Minescout Studio, you agree to work with Thomas Carleton personally as your service provider.</p>
+          <div class="legal-section-title">A note about this page</div>
+          <p class="legal-body">This page is here to help you understand who is behind Minescout Studio, how projects generally work, what technology may be involved, and what to expect when you reach out. It is an informational overview—not a required click-through contract, a project quote, or a substitute for a separate written agreement.</p>
+          <p class="legal-body">You do not have to sign up to a project by reading this page or sending an enquiry. If you and I decide to work together, we can choose to put the details for that particular build into a separate written agreement. Whether to do that is up to both of us. If we do not create one, we should still discuss and confirm the practical details clearly before work begins.</p>
+          <p class="legal-body">Nothing on this page is intended to take away rights that cannot legally be waived or to promise that every situation will be handled in a particular way.</p>
         </div>
+
         <div class="legal-section" style="--d:0.34s;">
-          <div class="legal-section-title">Services &amp; scope</div>
-          <p class="legal-body">Minescout Studio provides web development, AI assistant configuration, AI site previews, and related technical services for small businesses. Deliverables, pricing, and timeline are agreed upon in writing before work begins.</p>
-          <p class="legal-body">Services are delivered on a best-effort basis. I cannot guarantee specific outcomes such as increased sales, lead conversion rates, or AI response accuracy beyond what is tested and agreed upon at launch.</p>
+          <div class="legal-section-title">Who is behind Minescout Studio?</div>
+          <p class="legal-body">Minescout Studio is the name I use for my independent web-development and technology work. It is operated by me, Thomas Carleton, as an individual—not by a corporation or LLC. I work directly with clients on project planning, development, and communication.</p>
+          <p class="legal-body">Minescout Studio is a project and working name; it should not be mistaken for a separate registered company.</p>
         </div>
+
         <div class="legal-section" style="--d:0.4s;">
-          <div class="legal-section-title">AI Site Preview (Studio Creation)</div>
-          <p class="legal-body">The AI Site Preview tool lets you chat with an AI to generate a preview of a potential website based on a template. The preview is for evaluation purposes only and does not constitute a finished website.</p>
-          <p class="legal-body">When you submit your name and email through the "I like this" flow, you are expressing interest in having Thomas Carleton build the site for real. Submission does not create a binding agreement. You will receive a follow-up email with pricing and next steps within 48 hours.</p>
-          <p class="legal-body">Preview data (chat history, selected template, name, email) is stored temporarily and may be reviewed to prepare your quote. No payment is collected through the preview tool.</p>
+          <div class="legal-section-title">Services, scope &amp; expectations</div>
+          <p class="legal-body">Projects may include website design and development, site rebuilds, hosting or deployment setup, AI-assisted features, integrations, and related technical work. The exact work depends on the project.</p>
+          <p class="legal-body">Before starting a build, we should discuss what is included, what is not included, the expected timeline, pricing (if any), who supplies content and accounts, and how changes or ongoing support will be handled. A quote or conversation is an estimate of the proposed work, not a promise of results.</p>
+          <p class="legal-body">Websites depend on hosting providers, networks, browsers, APIs, and other services outside my direct control. I aim to build and maintain projects carefully, but uninterrupted availability, specific search rankings, traffic, sales, lead volume, or business outcomes cannot be guaranteed.</p>
         </div>
-        <div class="legal-section" style="--d:0.4s;">
-          <div class="legal-section-title">Charter Partner program</div>
-          <p class="legal-body">The Charter Partner program is an invite-only arrangement in which Minescout Studio provides the full AI Upgrade at no cost in exchange for a defined set of commitments from the partner. <strong>2 spots are currently available.</strong> <a href="/contact">Get in touch to apply.</a></p>
-          <p class="legal-body">The terms of the Charter Partner arrangement are as follows:</p>
-          <div class="charter-detail">
-            <div class="charter-detail-row"><div class="charter-key">What you receive</div><div class="charter-val">The full AI Upgrade at no cost &mdash; custom-trained AI assistant, website integration, and 12 months of maintenance.</div></div>
-            <div class="charter-detail-row"><div class="charter-key">Testimonial</div><div class="charter-val">A signed written testimonial about your experience, provided within 30 days of the AI going live. The testimonial may be published on minescout.net and used in marketing materials.</div></div>
-            <div class="charter-detail-row"><div class="charter-key">Case study</div><div class="charter-val">Permission for a named, published case study documenting the project &mdash; including your business name, what was built, and measurable outcomes where available. You will be given the opportunity to review the case study before publication.</div></div>
-            <div class="charter-detail-row"><div class="charter-key">Feedback commitment</div><div class="charter-val">12 months of active participation in the feedback loop &mdash; reviewing AI responses via your client portal, submitting corrections when the AI gets something wrong, and responding to occasional check-in messages (no more than once per month).</div></div>
-            <div class="charter-detail-row"><div class="charter-key">Corrections &amp; updates</div><div class="charter-val">Corrections may be submitted at any time via your client portal. All corrections are applied within <strong>48 hours</strong>. Scheduled content updates (changed hours, new services, pricing changes) are processed in the monthly maintenance cycle. Urgent updates are handled within 24 hours on request.</div></div>
-            <div class="charter-detail-row"><div class="charter-key">Early termination</div><div class="charter-val">If a Charter Partner exits the program before 12 months, the free setup benefit is forfeited. A standard, pro-rated setup fee may be invoiced at my discretion. Partners who have already delivered a signed testimonial and published case study may exit without penalty after 6 months.</div></div>
-          </div>
-        </div>
+
         <div class="legal-section" style="--d:0.46s;">
-          <div class="legal-section-title">AI accuracy &amp; limitations</div>
-          <p class="legal-body">AI assistants are trained on content you provide. <strong>Response accuracy depends directly on the accuracy of your source material.</strong> I am not responsible for incorrect responses resulting from outdated, incomplete, or inaccurate content supplied by the client.</p>
-          <p class="legal-body">The client portal exists to catch and fix these issues. Corrections submitted will be applied within 48 hours.</p>
-          <ul class="legal-list">
-            <li>AI assistants may occasionally produce incorrect or incomplete responses.</li>
-            <li>AI assistants should not be relied upon for legal, medical, or financial advice.</li>
-            <li>Guardrails keep responses on-topic but cannot guarantee complete coverage.</li>
-          </ul>
+          <div class="legal-section-title">AI tools &amp; generated content</div>
+          <p class="legal-body">Some Studio tools use AI to help discuss project requirements, organize information, or support website and assistant workflows. AI output can be incomplete, inaccurate, or out of date. It should be reviewed by a person before being published or relied on—especially for pricing, policies, health, legal, financial, safety, or other important information.</p>
+          <p class="legal-body">The AI Site Builder is a project-discovery and specification conversation. It helps collect information about a possible website; it does not itself create a finished, approved, or production-ready website. If you choose to send your specification to me, the conversation and the details you submit may be forwarded so I can review the request and respond.</p>
+          <p class="legal-body">Please do not enter passwords, payment-card details, government identification numbers, private customer records, confidential business secrets, or sensitive personal or health information into an AI tool or enquiry form. If a project genuinely requires handling sensitive information, that needs to be discussed separately before any data is submitted or processed.</p>
         </div>
+
         <div class="legal-section" style="--d:0.52s;">
-          <div class="legal-section-title">Data &amp; privacy</div>
-          <p class="legal-body">Conversations are logged to your private client portal. <strong>You own your data.</strong> I do not share conversation logs with third parties.</p>
-          <p class="legal-body">The AI infrastructure uses:</p>
-          <ul class="legal-list">
-            <li><strong>Cloudflare Workers AI (Llama 3)</strong> &mdash; processes messages. Subject to <a href="https://www.cloudflare.com/privacypolicy/" target="_blank">Cloudflare's Privacy Policy</a>.</li>
-            <li><strong>Cloudflare Workers</strong> &mdash; routes requests. Subject to <a href="https://www.cloudflare.com/privacypolicy/" target="_blank">Cloudflare's Privacy Policy</a>.</li>
-            <li><strong>Firebase / Firestore</strong> &mdash; stores conversation logs and client data. Subject to <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a>.</li>
-          </ul>
-          <p class="legal-body">No personally identifiable information is stored beyond what appears in the conversation itself.</p>
+          <div class="legal-section-title">Information &amp; privacy</div>
+          <p class="legal-body">Depending on how you use the site or a Studio project, information you choose to provide may include your name, email address, business or project details, messages, AI Site Builder conversation, and feedback. Please only submit information you are comfortable sharing for the purpose of your enquiry or project.</p>
+          <p class="legal-body">The AI Site Builder sends conversation messages to a server-side service for processing. If you choose to send your specification to me, the submitted conversation and contact details may also be forwarded by email for follow-up. Studio's client portal uses Firebase Authentication and Firestore for account access and client-related records, which may include business information, FAQs, corrections, usage statistics, and conversation records.</p>
+          <p class="legal-body">The Studio pages load Google Tag Manager. Depending on the tags configured in that container, analytics or other third-party technologies may collect technical or usage information. The exact tags and their behavior should be reviewed in the relevant provider settings; this page does not claim that no third party ever receives information.</p>
+          <p class="legal-body">These services are operated by their respective providers and are subject to their own terms and privacy practices. Relevant information is available from <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Cloudflare</a>, <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google</a>, and <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Firebase</a>.</p>
+          <p class="legal-body">I use submitted information to respond to enquiries, plan and deliver requested work, operate project features, troubleshoot issues, and maintain the services. I do not intend to sell personal information. No online service can be described as perfectly secure, and I cannot promise that every provider or network is free from risk.</p>
+          <p class="legal-body">If you have a question about information you submitted through a Studio tool or project, contact me at <a href="mailto:thomas@minescout.net">thomas@minescout.net</a>. I will review reasonable requests about access, correction, or deletion, subject to applicable requirements and any records that need to be retained.</p>
         </div>
+
         <div class="legal-section" style="--d:0.58s;">
-          <div class="legal-section-title">Payment &amp; cancellation</div>
-          <p class="legal-body">Setup fees are due before work begins. Monthly fees are due at the start of each billing period. Rates for the Full AI Upgrade and monthly maintenance are outlined in your individual service agreement. No long-term contracts or lock-ins &mdash; monthly services can be cancelled with 7 days written notice.</p>
-          <p class="legal-body">On cancellation: the widget is removed, all training data is returned in a readable format, and charges stop within one billing cycle. Setup fees are non-refundable once work has begun.</p>
+          <div class="legal-section-title">Client content, code &amp; project ownership</div>
+          <p class="legal-body">You remain responsible for having the rights and permissions needed to provide logos, photos, text, customer information, and other materials for a project. Please do not send material you are not authorized to share.</p>
+          <p class="legal-body">A website build can include client-provided material, custom work created for that project, reusable tools or components, open-source software, fonts, libraries, APIs, and third-party services. Those categories can have different ownership and license terms. This overview does not automatically transfer ownership of every part of a project to either side.</p>
+          <p class="legal-body">If ownership, source-code access, licenses, portfolio examples, confidentiality, or handoff requirements matter to your project, we should spell them out in the project discussion or a separate written agreement before work begins. I will ask before using non-public project details as a public case study or testimonial.</p>
         </div>
-        <div class="legal-section" style="--d:0.62s;">
-          <div class="legal-section-title">Affiliate links</div>
-          <p class="legal-body">The <a href="/studio/tools">Tools I Use</a> page contains affiliate links, clearly labeled. I earn a small commission if you sign up through them at no cost to you. This does not influence what I recommend.</p>
+
+        <div class="legal-section" style="--d:0.64s;">
+          <div class="legal-section-title">Pricing, payments &amp; ongoing support</div>
+          <p class="legal-body">Pricing depends on the requested work and any ongoing services. A specific quote should explain the proposed price and what it covers. Do not assume that a price shown for one package or project automatically applies to another.</p>
+          <p class="legal-body">Payment timing, deposits, subscriptions, refunds, cancellation, hosting, maintenance, and support arrangements should be discussed for the particular project before anyone commits. Unless we separately agree otherwise, this page does not create a payment obligation or a subscription.</p>
         </div>
-        <div class="legal-section" style="--d:0.66s;">
-          <div class="legal-section-title">Intellectual property</div>
-          <p class="legal-body">Code and content I produce for clients becomes the client's property upon full payment. I retain the right to reference the engagement in my portfolio unless a confidentiality agreement is in place. Charter Partners explicitly grant permission for a named case study as detailed above.</p>
-        </div>
+
         <div class="legal-section" style="--d:0.7s;">
-          <div class="legal-section-title">Limitation of liability</div>
-          <p class="legal-body">Services are provided "as is." Thomas Carleton shall not be liable for any indirect, incidental, or consequential damages. Total liability is limited to the amount paid for the specific service in question.</p>
+          <div class="legal-section-title">Charter Partners, free work &amp; testimonials</div>
+          <p class="legal-body">From time to time, I may offer a project or service at no cost or at a reduced rate in exchange for feedback or the opportunity to document the work. Any expectations for a particular partner should be discussed directly and voluntarily before the project starts.</p>
+          <p class="legal-body">If someone receives free or discounted work and later provides a testimonial, review, or endorsement, that relationship should be clearly disclosed wherever the endorsement is published. A testimonial should reflect the person's honest experience; positive feedback is never required as the price of receiving a service.</p>
+          <p class="legal-body">A case study, business name, logo, quote, or other identifiable client material will only be used publicly with the appropriate permission.</p>
         </div>
+
+        <div class="legal-section" style="--d:0.76s;">
+          <div class="legal-section-title">Third-party services &amp; practical limitations</div>
+          <p class="legal-body">A project may rely on services such as Cloudflare, Google, Firebase, domain registrars, AI model providers, or other vendors. Their availability, pricing, features, policies, and technical behavior can change. A provider outage, account restriction, API change, or service discontinuation may affect a project even when its code has not changed.</p>
+          <p class="legal-body">Clients should keep control of their own domain registrations and important business accounts where practical, use strong unique passwords and multi-factor authentication, and maintain copies of important business content. The exact backup, security, monitoring, and maintenance responsibilities should be clarified for each project.</p>
+        </div>
+
+        <div class="legal-section" style="--d:0.82s;">
+          <div class="legal-section-title">Affiliate links</div>
+          <p class="legal-body">Some recommendations on the <a href="/studio/tools">Tools I Use</a> page may contain affiliate links. Where a link is an affiliate link, I may receive a commission if you sign up or make a purchase through it. That does not add a cost to you unless the provider says otherwise, and it should not be treated as an independent endorsement of every product or service.</p>
+        </div>
+
         <div class="legal-contact">
-          <div class="legal-contact-title">Questions about these terms?</div>
-          <div class="legal-contact-body">Reach out directly &mdash; happy to clarify anything. <a href="/contact">Contact page</a> or <a href="mailto:thomas@minescout.net">thomas@minescout.net</a>.</div>
-        </div>
-        
-        <div style="margin-top: 3rem; text-align: center;">
-          <a href="https://scamadviser.com/check-website/minescout.net" target="_blank" ><img src="https://files.scamadviser.com/thumbs/scamadviser-logo-4ad94.jpg_900x.jpg" alt="Check My Site on ScamAdviser.com" style="width:260px;height:auto;"></a>
+          <div class="legal-contact-title">Questions or want to discuss a project?</div>
+          <div class="legal-contact-body">If anything here is unclear, or you want to discuss a separate written agreement for a particular build, reach out directly. <a href="/contact">Contact page</a> or <a href="mailto:thomas@minescout.net">thomas@minescout.net</a>.</div>
         </div>
       </div>
     </div>
-  `,
+  \`,
+
 '/studio/tools': `
     <div class="main--page">
       <div class="page-content tools-wrap">
