@@ -1,5 +1,17 @@
 [
   {
+    "id": "gpt-6-2-astra-great-benchmarks-bad-reviews",
+    "title": "GPT-6.2 Astra: Great Benchmarks, Bad Reviews",
+    "category": "AI Posts",
+    "summary": "OpenAI's GPT-6.2 Astra ties Claude Fable 5.2 on the Epoch index at a fraction of the price and cuts API costs 20 percent — but early testers called it unusable, and coding scores flatlined.",
+    "heroImage": "/assests/images/ai-posts/gpt-6-2-astra-great-benchmarks-bad-reviews.png",
+    "timestamp": 1795109685972,
+    "linkUrl": "/post/gpt-6-2-astra-great-benchmarks-bad-reviews",
+    "linkText": "Read Entry",
+    "date": "November 19, 2026",
+    "publishDate": null
+  },
+  {
     "id": "chatgpt-gets-a-wallet",
     "title": "ChatGPT Gets a Wallet",
     "category": "AI Posts",
