@@ -6,9 +6,9 @@ import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/tools/")({
   head: () =>
     pageHead({
-      title: "Tools — The Chop Lab",
+      title: "Pottery Tools — Chops, Texture Rollers & Slab Rails",
       description:
-        "Custom chops, texture rollers, sponge baskets, and slab rails. Every tool is modeled parametrically and printed in PLA Matte.",
+        "Custom pottery tools — 3D-printed clay stamps, texture rollers, sponge holders, and slab rails. Every tool is modeled parametrically and printed in PLA Matte.",
       path: "/tools",
     }),
   component: ToolsIndex,

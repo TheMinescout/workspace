@@ -27,6 +27,11 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
+              <Link to="/3d-printing" className="text-fg hover:text-primary">
+                3D printing
+              </Link>
+            </li>
+            <li>
               <Link to="/files" className="text-fg hover:text-primary">
                 Digital files
               </Link>
@@ -75,7 +80,16 @@ export function SiteFooter() {
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-5 text-xs text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <p>The Chop Lab — tools for working clay, not for serving food.</p>
-          <p>Invoice after CAD approval. No payment collected today.</p>
+          <p>
+            Built by{" "}
+            <a
+              href="https://minescout.net"
+              className="underline decoration-border underline-offset-2 hover:text-primary"
+            >
+              Minescout Studio
+            </a>
+            {" · "}Invoice after CAD approval
+          </p>
         </div>
       </div>
     </footer>

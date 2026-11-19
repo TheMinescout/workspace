@@ -9,36 +9,19 @@ import { StlThumbnail } from "@/components/stl-thumbnail";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getProduct, PRODUCTS, quoteFor } from "@/lib/products";
-import { absoluteUrl, pageHead } from "@/lib/seo";
+import { pageHead, productLd } from "@/lib/seo";
 import { money } from "@/lib/utils";
 
 export const Route = createFileRoute("/tools/$slug")({
   head: ({ params }) => {
     const product = getProduct(params.slug);
     if (!product) return {};
-    return {
-      ...pageHead({
-        title: `${product.name} — The Chop Lab`,
-        description: product.description,
-        path: `/tools/${product.slug}`,
-        ld: {
-          "@context": "https://schema.org",
-          "@type": "Product",
-          name: product.name,
-          description: product.description,
-          image: product.image ? absoluteUrl(product.image) : undefined,
-          brand: { "@type": "Brand", name: "The Chop Lab" },
-          category: product.digital ? "Digital 3D file" : "Pottery tool",
-          offers: {
-            "@type": "Offer",
-            priceCurrency: "USD",
-            price: quoteFor(product).toFixed(2),
-            availability: "https://schema.org/InStock",
-            url: absoluteUrl(`/tools/${product.slug}`),
-          },
-        },
-      }),
-    };
+    return pageHead({
+      title: `${product.headline} — The Chop Lab`,
+      description: product.seoDescription,
+      path: `/tools/${product.slug}`,
+      ld: productLd(product),
+    });
   },
   component: ProductPage,
 });
@@ -95,8 +78,11 @@ function ProductPage() {
             <p className="text-xs font-medium uppercase tracking-wider text-primary">Best seller</p>
           ) : null}
           <h1 className="mt-1 font-display text-4xl font-medium tracking-tight sm:text-5xl">
-            {product.name}
+            {product.headline}
           </h1>
+          <p className="mt-2 text-sm text-muted">
+            {product.name} · {product.tagline}
+          </p>
           <p className="mt-4 text-lg leading-relaxed text-muted">{product.longDescription}</p>
 
           <div className="mt-8 grid grid-cols-2 gap-4 border-y border-border py-5 text-sm">
