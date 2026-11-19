@@ -8,37 +8,15 @@ import { ToolIllustration } from "@/components/tool-drawings";
 import { StlThumbnail } from "@/components/stl-thumbnail";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getProduct, PRODUCTS, quoteFor } from "@/lib/products";
-import { absoluteUrl, pageHead } from "@/lib/seo";
+import { getProduct, PRODUCTS, productSeo, quoteFor } from "@/lib/products";
+import { productHead } from "@/lib/seo";
 import { money } from "@/lib/utils";
 
 export const Route = createFileRoute("/tools/$slug")({
   head: ({ params }) => {
     const product = getProduct(params.slug);
     if (!product) return {};
-    return {
-      ...pageHead({
-        title: `${product.name} — The Chop Lab`,
-        description: product.description,
-        path: `/tools/${product.slug}`,
-        ld: {
-          "@context": "https://schema.org",
-          "@type": "Product",
-          name: product.name,
-          description: product.description,
-          image: product.image ? absoluteUrl(product.image) : undefined,
-          brand: { "@type": "Brand", name: "The Chop Lab" },
-          category: product.digital ? "Digital 3D file" : "Pottery tool",
-          offers: {
-            "@type": "Offer",
-            priceCurrency: "USD",
-            price: quoteFor(product).toFixed(2),
-            availability: "https://schema.org/InStock",
-            url: absoluteUrl(`/tools/${product.slug}`),
-          },
-        },
-      }),
-    };
+    return productHead(product);
   },
   component: ProductPage,
 });
@@ -54,6 +32,7 @@ function ProductPage() {
     (p) => p.slug !== product.slug && (p.category === product.category || p.kind === product.kind),
   ).slice(0, 3);
   const estimate = quoteFor(product);
+  const seo = productSeo(product);
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
@@ -95,8 +74,13 @@ function ProductPage() {
             <p className="text-xs font-medium uppercase tracking-wider text-primary">Best seller</p>
           ) : null}
           <h1 className="mt-1 font-display text-4xl font-medium tracking-tight sm:text-5xl">
-            {product.name}
+            {seo.heading}
           </h1>
+          {seo.heading === product.name ? null : (
+            <p className="mt-2 text-sm font-medium uppercase tracking-wider text-muted">
+              {product.name}
+            </p>
+          )}
           <p className="mt-4 text-lg leading-relaxed text-muted">{product.longDescription}</p>
 
           <div className="mt-8 grid grid-cols-2 gap-4 border-y border-border py-5 text-sm">

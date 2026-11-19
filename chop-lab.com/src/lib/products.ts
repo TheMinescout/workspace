@@ -2,6 +2,16 @@ export type ProductKind = "chop" | "roller" | "basket" | "rails" | "stl";
 export type ProductCategory = "chops" | "storage" | "slab" | "digital";
 export type ToolDrawing = "chop" | "roller-10" | "roller-4" | "basket" | "rails" | "cutter";
 
+export type ProductSeo = {
+  /** `<title>` and the on-page H1 — search-intent copy, not just the name. */
+  title: string;
+  heading: string;
+  /** Meta description, kept under ~165 characters. */
+  description: string;
+  /** Terms the product should rank for, also emitted in Product JSON-LD. */
+  keywords: string[];
+};
+
 export type Product = {
   slug: string;
   name: string;
@@ -23,6 +33,7 @@ export type Product = {
   features: string[];
   digital?: boolean;
   specs: { label: string; value: string }[];
+  seo: ProductSeo;
 };
 
 export const CATEGORIES: { id: ProductCategory; name: string; blurb: string }[] = [
@@ -51,6 +62,19 @@ export const CATEGORIES: { id: ProductCategory; name: string; blurb: string }[] 
 export const PRODUCTS: Product[] = [
   {
     slug: "custom-chop-complex",
+    seo: {
+      title: "Custom 3D-Printed Pottery Stamp & Maker's Mark",
+      heading: "Custom 3D-Printed Pottery Stamp & Maker's Mark",
+      description:
+        "A custom 3D-printed pottery stamp for logos, crests, and maker's marks. High-detail clay stamp engineered from your artwork in PLA Matte.",
+      keywords: [
+        "custom pottery stamp",
+        "maker's mark stamp",
+        "ceramic signature stamp",
+        "3D printed clay stamp",
+        "potter's mark",
+      ],
+    },
     name: "Custom Chop — Complex",
     kind: "chop",
     category: "chops",
@@ -101,6 +125,19 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: "custom-chop-simple",
+    seo: {
+      title: "Initials & Text Pottery Stamp for Clay",
+      heading: "Initials & Text Pottery Stamp for Clay",
+      description:
+        "A simple 3D-printed pottery stamp for initials, text, and clean logo marks. Crisp, consistent impressions in leather-hard clay, printed in PLA Matte.",
+      keywords: [
+        "initials clay stamp",
+        "pottery signature stamp",
+        "ceramic text stamp",
+        "3D printed pottery stamp",
+        "clay monogram stamp",
+      ],
+    },
     name: "Custom Chop — Simple",
     kind: "chop",
     category: "chops",
@@ -146,6 +183,19 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: "texture-roller-10",
+    seo: {
+      title: "10-Inch Pottery Texture Roller for Clay Slabs",
+      heading: "10-Inch Pottery Texture Roller",
+      description:
+        "A 10-inch pottery texture roller that tiles a seamless honeycomb, brick, or spiral pattern across any clay slab. Choose a library pattern or send your own.",
+      keywords: [
+        "pottery texture roller",
+        "clay texture roller",
+        "10 inch texture roller",
+        "ceramic slab texture",
+        "texture roller for clay",
+      ],
+    },
     name: "Texture Roller 10in",
     kind: "roller",
     category: "chops",
@@ -195,6 +245,18 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: "texture-roller-4",
+    seo: {
+      title: "4-Inch Clay Texture Roller for Pottery Tiles",
+      heading: "4-Inch Clay Texture Roller",
+      description:
+        "A compact 4-inch clay texture roller for pottery tiles, rims, and accent work. The same seamless pattern library as the full-length roller.",
+      keywords: [
+        "clay texture roller",
+        "pottery texture roller",
+        "tile texture roller",
+        "small texture roller for clay",
+      ],
+    },
     name: "Texture Roller 4in",
     kind: "roller",
     category: "chops",
@@ -243,6 +305,19 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: "sponge-basket",
+    seo: {
+      title: "Pottery Wheel Sponge Holder & Tool Basket",
+      heading: "Pottery Wheel Sponge Holder & Tool Basket",
+      description:
+        "A 3D-printed pottery sponge holder that hangs on your wheel bucket. Breathable hex lattice drains sponges and keeps ribs and small tools within reach.",
+      keywords: [
+        "pottery sponge holder",
+        "pottery wheel sponge basket",
+        "clay tool basket",
+        "3D printed pottery tools",
+        "sponge basket for clay",
+      ],
+    },
     name: "Sponge Basket",
     kind: "basket",
     category: "storage",
@@ -270,6 +345,18 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: "slab-rails",
+    seo: {
+      title: "Interlocking Slab Rails for Pottery & Clay Slabs",
+      heading: "Interlocking Slab Rails for Pottery",
+      description:
+        "A matched pair of 10-inch interlocking slab rails for pottery, sized to the thickness you throw. Custom thickness and width for repeatable slabs and tiles.",
+      keywords: [
+        "slab rails pottery",
+        "pottery slab thickness rails",
+        "clay slab rails",
+        "interlocking slab rails",
+      ],
+    },
     name: "Slab Thickness Rails",
     kind: "rails",
     category: "slab",
@@ -297,6 +384,18 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: "stl-sponge-basket",
+    seo: {
+      title: "Pottery Sponge Basket STL File",
+      heading: "Pottery Sponge Basket STL File",
+      description:
+        "Download the parametric pottery sponge basket STL and 3D print your own wheel-side sponge holder. $5 base plus $1 per hour of quoted print time.",
+      keywords: [
+        "pottery STL",
+        "sponge basket STL",
+        "3D print pottery tools",
+        "clay sponge holder file",
+      ],
+    },
     name: "Sponge Basket — STL",
     kind: "stl",
     category: "digital",
@@ -324,6 +423,18 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: "stl-dual-bevel",
+    seo: {
+      title: "Dual Bevel Foot Ring Cutter STL File",
+      heading: "Dual Bevel Foot Ring Cutter STL",
+      description:
+        "A 45° and 60° dual bevel foot ring cutter as an STL. Download it and 3D print your own pottery trimming tool for leather-hard pots.",
+      keywords: [
+        "foot ring cutter STL",
+        "pottery trimming tool",
+        "bevel cutter STL",
+        "clay trimming tool",
+      ],
+    },
     name: "Dual Bevel Cutter — STL",
     kind: "stl",
     category: "digital",
@@ -351,6 +462,18 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: "stl-slab-rails",
+    seo: {
+      title: "Slab Thickness Rails STL File",
+      heading: "Slab Thickness Rails STL",
+      description:
+        "Download the standard interlocking slab rail pair as an STL and 3D print your own pottery slab thickness guides. $5 base plus $1 per hour of print time.",
+      keywords: [
+        "slab rails STL",
+        "pottery slab tool STL",
+        "clay slab guides",
+        "3D print slab rails",
+      ],
+    },
     name: "Slab Thickness Rails — STL",
     kind: "stl",
     category: "digital",
@@ -380,6 +503,22 @@ export const PRODUCTS: Product[] = [
 
 export function getProduct(slug: string) {
   return PRODUCTS.find((p) => p.slug === slug);
+}
+
+/**
+ * Final `<title>` / description for a product route. The suffix keeps every
+ * title unique and branded while the front half carries the search term.
+ */
+export function productSeo(product: Product) {
+  const title = product.seo.title.endsWith("— The Chop Lab")
+    ? product.seo.title
+    : `${product.seo.title} — The Chop Lab`;
+  return {
+    title,
+    heading: product.seo.heading,
+    description: product.seo.description,
+    keywords: product.seo.keywords,
+  };
 }
 
 export function productsIn(category: ProductCategory) {

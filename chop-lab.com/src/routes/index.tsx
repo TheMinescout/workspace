@@ -90,6 +90,7 @@ function Home() {
               alt="A custom Chop Lab stamp and its crisp impression pressed into leather-hard clay"
               width={1227}
               height={924}
+              loading="eager"
               decoding="async"
               className="img-frame h-full w-full object-cover lg:absolute lg:inset-0"
             />
@@ -183,6 +184,29 @@ function Home() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="border-t border-border">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-14 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-muted">
+              Local 3D printing · Sammamish, WA
+            </p>
+            <h2 className="mt-2 font-display text-3xl font-medium tracking-tight">
+              Custom parts and prototypes, printed on the Eastside.
+            </h2>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
+              Pottery tools, replacement parts, and rapid prototypes, modeled and
+              printed in a micro-manufacturing lab — local handoff or shipping.
+            </p>
+          </div>
+          <Button asChild variant="secondary" className="shrink-0">
+            <Link to="/3d-printing">
+              Local 3D printing
+              <ArrowRight className="size-4" />
+            </Link>
+          </Button>
+        </div>
       </section>
 
       <section className="border-y border-border bg-surface py-20">

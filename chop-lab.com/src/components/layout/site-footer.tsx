@@ -27,6 +27,11 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
+              <Link to="/3d-printing" className="text-fg hover:text-primary">
+                Local 3D printing
+              </Link>
+            </li>
+            <li>
               <Link to="/files" className="text-fg hover:text-primary">
                 Digital files
               </Link>

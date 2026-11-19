@@ -40,7 +40,7 @@ A change is done when all of these pass:
    (1280x800) and mobile (390x844): non-blank body text, **no console/page
    errors**, **no horizontal overflow**. Check the screenshots it writes.
 
-`npm test` has 16 pre-existing failures (of 195) unrelated to most work, in two
+`npm test` has 16 pre-existing failures (of 206) unrelated to most work, in two
 groups. Eight read App Builder template scaffolding this repo does not ship —
 `.grok/skills/**` and `.grok/app-env.json` (`brand-check`, `write-atomic`,
 `with-app-env`, `check-auth-invariant`). The other eight (`grok-pwa-plugin`)
@@ -80,8 +80,25 @@ after — `git stash` your edits and re-run if unsure.
 ### Conventions
 
 - SEO: use `pageHead(...)` from `src/lib/seo.ts` in each route's `head()`. It
-  sets title, description, canonical link, and optional JSON-LD. `SITE_URL` is
-  the canonical origin. `public/robots.txt` and `public/sitemap.xml` are static.
+  sets title, description, a self-referencing canonical link, and optional
+  JSON-LD (`ld` accepts one block or an array). `SITE_URL` is the canonical
+  origin and `canonicalUrl("/")` returns the bare origin, so the homepage
+  canonical is exactly `https://chop-lab.com` — hash fragments (`#3dprint`,
+  `#order`, `#qa`, `#studio`) are never indexed. `public/robots.txt` and
+  `public/sitemap.xml` are static; the sitemap lists canonical paths only (no
+  hash fragments, no trailing slashes) and must include `/3d-printing` plus
+  every product route.
+- Product pages: metadata lives on the product record as `seo` in
+  `src/lib/products.ts` (search-intent `title`/`heading`, meta `description`,
+  `keywords`). `productSeo(product)` adds the brand suffix, `productHead(product)`
+  builds the head, and `productLd(product)` emits `Product` JSON-LD with price,
+  currency, availability, and image. The route H1 uses `seo.heading` (the
+  pottery-intent copy) with `product.name` shown just below it. `scripts/seo.test.mjs`
+  guards unique titles/descriptions, the schema fields, and the sitemap.
+- `/3d-printing` is the local Sammamish / Eastside custom-printing landing page
+  (converted from the old `#3dprint` anchor). It carries `LocalBusiness` JSON-LD
+  (`LOCAL_BUSINESS_LD`, with `areaServed` and the shared `BUSINESS` facts) and
+  links into `/configure`. The homepage has a band pointing to it as well.
 - Images: every content `<img>` should carry `loading` (`lazy` below the fold,
   `eager` for the hero), `decoding="async"`, and a fixed aspect wrapper so the
   layout does not shift. `src/components/product-gallery.tsx` does this for
