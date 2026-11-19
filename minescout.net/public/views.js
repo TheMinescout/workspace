@@ -664,7 +664,7 @@ export const views = {
 
         <div class="legal-section" style="--d:0.76s;">
           <div class="legal-section-title">Third-party services &amp; practical limitations</div>
-          <p class="legal-body">A project may rely on services such as Cloudflare, Google, Firebase, domain registrars, AI model providers, or other vendors. Their availability, pricing, features, policies, and technical behavior can change. A provider outage, account restriction, API change, or service discontinuation may affect a project even when its code has not changed.</p>
+          <p class="legal-body">A project may rely on services such as Cloudflare, Google, domain registrars, AI model providers, or other vendors. Their availability, pricing, features, policies, and technical behavior can change. A provider outage, account restriction, API change, or service discontinuation may affect a project even when its code has not changed.</p>
           <p class="legal-body">Clients should keep control of their own domain registrations and important business accounts where practical, use strong unique passwords and multi-factor authentication, and maintain copies of important business content. The exact backup, security, monitoring, and maintenance responsibilities should be clarified for each project.</p>
         </div>
 
