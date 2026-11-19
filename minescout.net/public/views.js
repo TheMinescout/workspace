@@ -16,7 +16,7 @@ function parseBlogDate(dateStr) {
 /**
  * Returns true if the blog post's release date is today or in the past.
  */
-function isReleased(dateStr) {
+export function isReleased(dateStr) {
   const releaseDate = parseBlogDate(dateStr);
   const today = new Date();
   const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -27,10 +27,28 @@ function isReleased(dateStr) {
 // All blog posts metadata (used to build the /blog index dynamically)
 // ---------------------------------------------------------------------------
 
-const BLOG_POSTS = [
+export const BLOG_POSTS = [
+  {
+    date: "Nov 19, 2026", tag: "tag-business", tagLabel: "Business",
+    href: "/blog/slow-websites-cost-customers.html", featured: true,
+    title: "Why Slow Websites Cost Local Businesses Customers (And How Static Edge Sites Fix It)",
+    excerpt: "Every extra second of load time costs local businesses real leads. Where the delay comes from, and how static edge hosting removes it.",
+  },
+  {
+    date: "Nov 12, 2026", tag: "tag-business", tagLabel: "Business",
+    href: "/blog/custom-ecommerce-cost-2026.html",
+    title: "How Much Does a Custom E-Commerce Website Cost in 2026?",
+    excerpt: "A straight breakdown of what a custom storefront costs in 2026, what drives the price up, and what should never be an add-on.",
+  },
+  {
+    date: "Nov 8, 2026", tag: "tag-building", tagLabel: "Building",
+    href: "/blog/chop-lab-storefront.html",
+    title: "How I Built a Fast Online Storefront for a Local Ceramics Brand",
+    excerpt: "A storefront for The Chop Lab: typed product data, millimetre-accurate specs, and a configurator that ends in a real quote instead of a dead cart.",
+  },
   {
     date: "Nov 1, 2026", tag: "tag-building", tagLabel: "Building",
-    href: "/blog/performance-benchmarking.html", featured: true,
+    href: "/blog/performance-benchmarking.html",
     title: "Performance Benchmarking: Achieving Sub-Second Global Edge Latency",
     excerpt: "Global latency testing, asset optimization, and edge caching strategies for high-speed web applications.",
   },
@@ -1863,6 +1881,96 @@ registerPost('/blog/eagle-scout-project.html', "Sep 6, 2026", "Leadership",
   <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 3: Lasting Community Impact</h3>
   <p style="margin-bottom: 1.25rem;">Over 60+ total volunteer hours, the team successfully constructed and anchored the library post in Illahee Park, filling it with donated books for local neighborhood families.</p>
   <p style="margin-bottom: 1.25rem;">Whether leading a construction team or a software project, real leadership is about clear communication, preparation, and keeping everyone focused on the goal.</p>
+  `
+);
+
+registerPost('/blog/slow-websites-cost-customers.html', "Nov 19, 2026", "Business",
+  "Why Slow Websites Cost Local Businesses Customers (And How Static Edge Sites Fix It)",
+  "How does page speed translate into lost revenue for a local business, and what actually fixes it?",
+  "Slow pages lose visitors before they ever see the offer. Most of the delay is not the internet — it is a database round trip, plugin bloat, and render-blocking scripts. Static HTML served from an edge network removes all three.",
+  `
+  <p style="margin-bottom: 1.25rem;">A customer searching for a plumber, a bakery, or a ceramics studio is not comparing design portfolios. They are comparing how fast the page answers their question. If the site stalls, they tap back and pick the next result on the map. The business never sees that person in its analytics as anything other than a bounce.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Where the seconds actually go</h3>
+  <p style="margin-bottom: 1.25rem;">When a local business site feels slow, the network is rarely the culprit. Three things usually are:</p>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Server response time.</strong> A page built on a CMS has to wake a database, assemble templates, and run every active plugin before it can send a single byte of HTML.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Render-blocking assets.</strong> Stylesheets and scripts in the head block the first paint. The visitor stares at white space while fonts, analytics, chat widgets, and a cookie banner each negotiate their turn.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Distance.</strong> A single server in one region means every visitor outside that region pays the speed-of-light penalty on every request.</li>
+  </ul>
+  <p style="margin-bottom: 1.25rem;">Stack those together and a page that should open instantly takes three or four seconds on a phone in a parking lot. That is the moment a customer leaves.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What a static edge site changes</h3>
+  <p style="margin-bottom: 1.25rem;">A static site flips the order of operations. The HTML is generated once, at build time, and then stored on servers around the world. There is no database to wake up and no template to assemble when a customer arrives.</p>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">No origin round trip.</strong> The document is already written. The server answers with bytes it holds in memory.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">No plugin tax.</strong> Nothing is injected at request time, so nothing can slow the response down after the fact.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Local distance.</strong> An edge network keeps a copy near the visitor, so a customer in Sammamish is not waiting on a server in Virginia.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Fewer moving parts to break.</strong> Static files cannot hit a database connection limit or fall over when a plugin update ships.</li>
+  </ul>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The part that matters for the business</h3>
+  <p style="margin-bottom: 1.25rem;">Speed is not a technical vanity metric. It is the difference between a customer reading the hours and address and a customer calling the next listing. A storefront that opens in under a second keeps the visitor in the funnel long enough for the offer to do its job.</p>
+  <p style="margin-bottom: 1.25rem;">The fix is not a plugin that claims to cache pages. It is picking an architecture where speed is the default rather than a maintenance task — static markup, edge hosting, and a small amount of JavaScript that loads after the page is already readable.</p>
+  <p style="margin-bottom: 1.25rem;">If your site takes more than a second to show text on a phone, that is a measurable business problem, and it is one you can design away.</p>
+  `
+);
+
+registerPost('/blog/custom-ecommerce-cost-2026.html', "Nov 12, 2026", "Business",
+  "How Much Does a Custom E-Commerce Website Cost in 2026?",
+  "What should a custom e-commerce website cost in 2026, and what actually drives that number up or down?",
+  "Custom storefronts in 2026 typically land between $2,500 and $15,000 up front, plus $20–$200 a month in hosting and platform fees. Price is driven by catalog complexity, checkout and payment needs, and how much custom configuration the products require — not by page count.",
+  `
+  <p style="margin-bottom: 1.25rem;">Most pricing pages for e-commerce work answer this question with a range so wide it is useless. So here is the honest version: the number depends on four things, and you can estimate your own project once you know what they are.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The 2026 ranges</h3>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Template store, configured.</strong> Roughly $500–$2,500 up front. A hosted platform with a theme, a payment processor, and a product list. Fastest to launch, hardest to make feel like your brand.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Custom storefront, small catalog.</strong> Roughly $2,500–$6,000 up front. Bespoke design and build, a curated product set, and checkout handled by a payment provider rather than reinvented.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Custom storefront, complex catalog.</strong> Roughly $6,000–$15,000 up front. Configurable products, variants with real constraints, quote flows, and integrations with inventory or email.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Ongoing.</strong> Roughly $20–$200 a month for hosting, a payment processor's percentage, and any platform subscription. A static edge storefront sits at the low end because there is no application server to keep running.</li>
+  </ul>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What actually drives the price</h3>
+  <p style="margin-bottom: 1.25rem;"><strong style="color: var(--fg);">1. How configurable the products are.</strong> A store that sells six fixed items is a different project from one that sells a tool built to a customer's exact drawing. The second needs a configurator, validation, and a way to hand a real specification to the maker. That logic, not the page count, is where custom work lives.</p>
+  <p style="margin-bottom: 1.25rem;"><strong style="color: var(--fg);">2. Checkout and payments.</strong> Building checkout from scratch is almost never worth it in 2026. Stripe or an equivalent handles cards, tax, and receipts for a small percentage. Budget for the integration, not for a payments team.</p>
+  <p style="margin-bottom: 1.25rem;"><strong style="color: var(--fg);">3. Content ownership.</strong> Can the owner add a product without a developer? That is a data model decision made early. Getting it right is cheap; retrofitting it is not.</p>
+  <p style="margin-bottom: 1.25rem;"><strong style="color: var(--fg);">4. Photography and copy.</strong> Frequently the largest line item, and frequently skipped in quotes. A storefront is only as good as the images in it.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What should never cost extra</h3>
+  <p style="margin-bottom: 1.25rem;">Speed, mobile layout, and basic search visibility are not premium features in 2026. Neither is a contact path for people who are not ready to buy. If a quote lists those as add-ons, the base price is being held artificially low.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">How to get a real number</h3>
+  <p style="margin-bottom: 1.25rem;">Write down three things before you ask for a quote: how many products you sell, which of them need configuration, and who will add new products after launch. Those three answers move the estimate more than any other detail, and any honest quote will start by asking for them.</p>
+  `
+);
+
+registerPost('/blog/chop-lab-storefront.html', "Nov 8, 2026", "Building",
+  "How I Built a Fast Online Storefront for a Local Ceramics Brand",
+  "What goes into building a fast storefront for a small maker, where every product is built to order?",
+  "The Chop Lab needed typed product data, measurements stored canonically in millimetres, and a configurator that turns a customer's drawing into a quote. Static delivery keeps the pages instant; the product model keeps the catalog honest.",
+  `
+  <p style="margin-bottom: 1.25rem;"><a href="https://chop-lab.com" target="_blank" rel="noopener" style="color: var(--accent);">The Chop Lab</a> is a ceramics tooling studio. The catalog is small but nothing in it is a fixed SKU: custom chops cut from a maker's logo, texture rollers with repeating geometry, slab rails in a customer's exact width. A standard product grid with a quantity box would have been the wrong shape for the business.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Start with the data model, not the design</h3>
+  <p style="margin-bottom: 1.25rem;">The first decision was that every product record carries its own shape: a kind, a category, an engineering drawing reference, a base price, an hourly rate, and an estimated hour count. Prices are quoted, so the storefront needs to reason about work rather than display a sticker.</p>
+  <pre style="background: #1e1e1e; color: #d4d4d4; padding: 1.25rem; border-radius: 6px; overflow-x: auto; margin: 1.5rem 0; font-size: 0.9rem; font-family: monospace;"><code>{
+  "slug": "texture-roller-10",
+  "kind": "roller",
+  "basePrice": 3,
+  "hourlyRate": 12,
+  "estimatedHours": 1.5,
+  "specs": [
+    { "label": "Length", "value": "10 in / 254 mm" }
+  ]
+}</code></pre>
+  <p style="margin-bottom: 1.25rem;">Keeping that in a typed TypeScript file instead of a database meant the catalog is versioned with the site, type-checked at build time, and impossible to ship with a missing field.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Millimetres in the data, inches on the screen</h3>
+  <p style="margin-bottom: 1.25rem;">Ceramics work in both metric and imperial, and a maker will switch depending on the tool. So every length is stored canonically in millimetres and converted at render time by a single hook. There is no hard-coded "10 in" anywhere in the markup — flipping the units toggle re-renders every measurement on the page at once.</p>
+  <p style="margin-bottom: 1.25rem;">This is the kind of detail that looks like polish and is actually correctness. A spec sheet that says 254 mm on one product and 10 in on the next reads as careless to the exact audience the studio is selling to.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">A configurator that ends in a quote</h3>
+  <p style="margin-bottom: 1.25rem;">The configurator lets a customer pick a product, choose a texture from the library, and send a mark or a dimension. No payment is collected there. The submission becomes a specification the maker can price and cut, which is what the business actually needs — a dead shopping cart is worse than a good intake form.</p>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Keeping it fast</h3>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Fixed aspect wrappers</strong> around every product image, with <code>loading="lazy"</code> and <code>decoding="async"</code> below the fold. The layout never shifts as photos arrive.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Eager hero, lazy gallery.</strong> The first product shot loads immediately; the rest wait.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Design tokens</strong> for colour, spacing, and shadow, so the warm clay palette is one file rather than a hundred inline values.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Static output.</strong> Pages are built ahead of time, so a customer on a phone in a studio gets text immediately.</li>
+  </ul>
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What I would tell another maker</h3>
+  <p style="margin-bottom: 1.25rem;">If your products are made to order, do not force them into a cart. Model what the product actually is — dimensions, options, the work behind it — and let the site end in a conversation. The storefront is fast because the architecture is simple, and it is simple because the data model matched the business instead of fighting it.</p>
   `
 );
 
