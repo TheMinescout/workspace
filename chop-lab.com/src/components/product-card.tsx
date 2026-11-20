@@ -71,8 +71,7 @@ export function ProductCard({
           <p className="text-sm tabular-nums text-fg">
             {money(product.basePrice)} base
             <span className="text-muted">
-              {" "}
-              + {money(product.hourlyRate)}/hr
+              {product.estimatedHours > 0 ? ` + ${money(product.hourlyRate)}/hr` : ""}
               {product.printRate ? ` + ${money(product.printRate)}/hr print` : ""}
             </span>
           </p>

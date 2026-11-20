@@ -93,8 +93,9 @@ after — `git stash` your edits and re-run if unsure.
   is stale. It lists only physical products that have a photo: digital STLs are
   skipped (Merchant Center has no downloadable-goods listing), and
   `sponge-basket` / `slab-rails` are skipped until someone adds a real photo to
-  `public/images/` and sets `product.image`. `price` is the numeric `basePrice`,
-  matching the Product JSON-LD, not the quote estimate.
+  `public/images/` and sets `product.image`. `price` is the `quoteFor(product)`
+  quote target the product page renders, and `productLd()` advertises the same
+  number, so the feed, the Product JSON-LD, and the page cannot drift.
 - Accessibility: keep the skip link (`#main`) in `__root.tsx`, label navs
   (`aria-label="Main"` / `"Mobile"`), and give content images meaningful `alt`
   text. `alt=""` is only for genuinely decorative images.

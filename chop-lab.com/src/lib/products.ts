@@ -84,16 +84,17 @@ export const PRODUCTS: Product[] = [
     seoDescription:
       "Custom 3D printing in PLA Matte or PETG — upload an STL or request CAD from a sketch. $3 base, $20/hr CAD design, and $2/hr print time. Local pickup in Sammamish and the Eastside, WA, or shipped anywhere in the US.",
     longDescription:
-      "Send the file you already have or a sketch of what you need. Thomas reviews the model, repairs and slices it for the 256 mm cube build volume, then prints it in PLA Matte for detail or PETG for parts that need toughness and heat resistance. You get a Venmo invoice after the CAD and slice review — nothing is charged up front.",
+      "Send the file you already have or a sketch of what you need. Thomas reviews the model, repairs and slices it for the 256 mm cube build volume, then prints it in PLA Matte for detail or PETG for parts that need toughness and heat resistance. A print-ready STL carries no design time; if you only have a sketch, custom CAD is available at $20/hr. You get a Venmo invoice after the CAD and slice review — nothing is charged up front.",
     basePrice: 3,
     hourlyRate: 20,
-    estimatedHours: 1,
+    estimatedHours: 0,
     printRate: 2,
-    estimatedPrintHours: 4,
+    estimatedPrintHours: 2,
     bestSeller: true,
     image: "/images/printer-action.jpg",
     features: [
-      "Upload an STL, or ask for CAD from a sketch",
+      "Upload a print-ready STL — no design time added",
+      "Custom CAD from a sketch at $20/hr",
       "PLA Matte for detail, PETG for structural parts",
       "Sliced for a 256 mm cube build volume",
       "Venmo invoice after CAD and slice review",
@@ -115,12 +116,14 @@ export const PRODUCTS: Product[] = [
       "High-fidelity detail extraction for complex logos and original artwork. Our most requested piece.",
     headline: "Custom 3D-Printed Clay Stamp & Maker's Mark",
     seoDescription:
-      "A custom 3D-printed clay stamp and maker's mark for potters. We extract high-fidelity detail from your logo or artwork and print it in PLA Matte for crisp impressions. Quotes start at $3 plus CAD time.",
+      "A custom 3D-printed clay stamp and maker's mark for potters. We extract high-fidelity detail from your logo or artwork and print it in PLA Matte for crisp impressions. Quotes start at $19 — $3 base plus CAD and print time.",
     longDescription:
       "The tool that defines your studio. We extract high-fidelity detail from your logos or original artwork and engineer it into a custom, ergonomic stamp — printed in specialized PLA Matte for clean, low-friction clay release every time.",
     basePrice: 3,
     hourlyRate: 20,
-    estimatedHours: 2,
+    estimatedHours: 0.75,
+    printRate: 2,
+    estimatedPrintHours: 0.5,
     image: "/images/chop-complex.jpg",
     gallery: [
       {
@@ -167,12 +170,14 @@ export const PRODUCTS: Product[] = [
       "Initials, text, or clean logo marks engineered for crisp, consistent impressions.",
     headline: "Custom Pottery Stamp for Initials & Logos",
     seoDescription:
-      "A custom pottery stamp for initials, text, or a clean logo mark. Engineered for crisp, consistent impressions in leather-hard clay and printed in PLA Matte. Quotes start at $3 plus CAD time.",
+      "A custom pottery stamp for initials, text, or a clean logo mark. Engineered for crisp, consistent impressions in leather-hard clay and printed in PLA Matte. Quotes start at $11.50 — $3 base plus CAD and print time.",
     longDescription:
       "Standard text, initials, or a clean logo mark, modeled so the impression reads clearly in leather-hard clay. Best when the design is a few letters or a simple mark — more than three letters raises the chance of impression issues.",
     basePrice: 3,
     hourlyRate: 15,
-    estimatedHours: 1,
+    estimatedHours: 0.5,
+    printRate: 2,
+    estimatedPrintHours: 0.5,
     image: "/images/chop-simple.jpg",
     gallery: [
       {
@@ -217,10 +222,12 @@ export const PRODUCTS: Product[] = [
     seoDescription:
       "A 10-inch pottery texture roller with seamless repeating patterns — honeycomb, brick, spiral, or your own design. Printed in PLA Matte for clean release across any clay slab.",
     longDescription:
-      "A ten-inch roller with engineered, repeating geometry so the pattern tiles cleanly as you travel across a slab. Choose from the texture library or send a pattern of your own.",
+      "A ten-inch roller with engineered, repeating geometry so the pattern tiles cleanly as you travel across a slab. Choose from the texture library — those patterns carry no design time — or send a pattern of your own for custom CAD at $12/hr.",
     basePrice: 3,
     hourlyRate: 12,
-    estimatedHours: 1.5,
+    estimatedHours: 0,
+    printRate: 2,
+    estimatedPrintHours: 3,
     image: "/images/roller-hex-10in.jpg",
     gallery: [
       {
@@ -268,10 +275,12 @@ export const PRODUCTS: Product[] = [
     seoDescription:
       "A compact 4-inch pottery texture roller for tiles, rims, and accent work. Same seamless pattern library as the full-length roller, printed in PLA Matte for low-friction release.",
     longDescription:
-      "The same engineered patterns in a four-inch format — easier to control on tiles, rims, and smaller slabs where a full-length roller is more tool than you need.",
+      "The same engineered patterns in a four-inch format — easier to control on tiles, rims, and smaller slabs where a full-length roller is more tool than you need. Library patterns carry no design time; custom pattern CAD is $12/hr.",
     basePrice: 3,
     hourlyRate: 12,
-    estimatedHours: 1,
+    estimatedHours: 0,
+    printRate: 2,
+    estimatedPrintHours: 3,
     image: "/images/roller-mason-4in.jpg",
     gallery: [
       {
@@ -321,9 +330,11 @@ export const PRODUCTS: Product[] = [
       "A pottery wheel sponge holder and tool basket that hangs on a standard water bucket. The breathable hex lattice drains sponges instead of letting them sit sour — sized to your bucket lip.",
     longDescription:
       "Engineered to hang on a standard pottery water bucket. The hex lattice lets sponges drain instead of sitting sour, and the hang geometry is sized from the thickness of your bucket's top lip.",
-    basePrice: 12,
-    hourlyRate: 2,
-    estimatedHours: 0.5,
+    basePrice: 3,
+    hourlyRate: 10,
+    estimatedHours: 0.25,
+    printRate: 2,
+    estimatedPrintHours: 1,
     stlFile: "/files/sponge-basket.stl",
     features: [
       "Hangs on a standard water bucket",
@@ -353,7 +364,9 @@ export const PRODUCTS: Product[] = [
       "A matched pair of interlocking rails, ten inches long as standard. Set the thickness you throw to — or ask for a custom height — and roll slabs that actually match from edge to edge.",
     basePrice: 3,
     hourlyRate: 10,
-    estimatedHours: 1,
+    estimatedHours: 0,
+    printRate: 2,
+    estimatedPrintHours: 1,
     stlFile: "/files/interlocking-slab-rails.stl",
     features: [
       "Interlocking 10-inch pair",
@@ -381,8 +394,10 @@ export const PRODUCTS: Product[] = [
     longDescription:
       "The sponge basket as a digital file. You are purchasing an STL to print yourself. The file link and invoice are emailed after a short review. Pricing is a $5 base fee plus $1 per hour of quoted print time.",
     basePrice: 5,
-    hourlyRate: 1,
-    estimatedHours: 3,
+    hourlyRate: 0,
+    estimatedHours: 0,
+    printRate: 1,
+    estimatedPrintHours: 3,
     digital: true,
     stlFile: "/files/sponge-basket.stl",
     features: [
@@ -411,8 +426,10 @@ export const PRODUCTS: Product[] = [
     longDescription:
       "A dual-bevel foot-ring cutter at 45° and 60°. Digital STL only — print it on your own machine. File link and invoice are emailed after review.",
     basePrice: 5,
-    hourlyRate: 1,
-    estimatedHours: 2,
+    hourlyRate: 0,
+    estimatedHours: 0,
+    printRate: 1,
+    estimatedPrintHours: 2,
     digital: true,
     stlFile: "/files/bevel-cutter.stl",
     features: [
@@ -441,8 +458,10 @@ export const PRODUCTS: Product[] = [
     longDescription:
       "The standard interlocking slab-rail pair as an STL. Print it in your own lab. File link and invoice are emailed after review.",
     basePrice: 5,
-    hourlyRate: 1,
-    estimatedHours: 2.5,
+    hourlyRate: 0,
+    estimatedHours: 0,
+    printRate: 1,
+    estimatedPrintHours: 2.5,
     digital: true,
     stlFile: "/files/interlocking-slab-rails.stl",
     features: [

@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { absoluteUrl, ORGANIZATION_LD, pageHead, productLd, SITE_URL } from "./seo.ts";
-import { PRODUCTS } from "./products.ts";
+import { PRODUCTS, quoteFor } from "./products.ts";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const sitemap = readFileSync(join(ROOT, "public/sitemap.xml"), "utf8");
@@ -76,7 +76,7 @@ describe("product structured data", () => {
       assert.equal(ld["@type"], "Product");
       assert.equal(typeof ld.offers.price, "number");
       assert.ok(Number.isFinite(ld.offers.price));
-      assert.equal(ld.offers.price, product.basePrice);
+      assert.equal(ld.offers.price, quoteFor(product));
       assert.equal(ld.offers.priceCurrency, "USD");
       assert.equal(ld.offers.availability, "https://schema.org/InStock");
       assert.equal(ld.name, product.headline);

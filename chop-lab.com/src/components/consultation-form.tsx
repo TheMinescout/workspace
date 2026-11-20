@@ -132,12 +132,14 @@ function Estimate({ product }: { product: Product }) {
           <dt className="text-muted">Base</dt>
           <dd className="tabular-nums">{money(product.basePrice)}</dd>
         </div>
-        <div className="flex justify-between gap-4">
-          <dt className="text-muted">
-            Design · {product.estimatedHours} hr × {money(product.hourlyRate)}
-          </dt>
-          <dd className="tabular-nums">{money(product.hourlyRate * product.estimatedHours)}</dd>
-        </div>
+        {product.estimatedHours > 0 ? (
+          <div className="flex justify-between gap-4">
+            <dt className="text-muted">
+              Design · {product.estimatedHours} hr × {money(product.hourlyRate)}
+            </dt>
+            <dd className="tabular-nums">{money(product.hourlyRate * product.estimatedHours)}</dd>
+          </div>
+        ) : null}
         {product.printRate ? (
           <div className="flex justify-between gap-4">
             <dt className="text-muted">

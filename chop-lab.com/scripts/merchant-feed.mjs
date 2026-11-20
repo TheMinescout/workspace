@@ -8,13 +8,13 @@
 // Digital STL products are skipped: Merchant Center has no listing type for
 // downloadable goods, and a shopper cannot be handed a file at checkout.
 //
-// `price` is the numeric `basePrice`, matching the Product JSON-LD the product
-// page emits. The quote target (base + CAD hours) is not a fixed price, so
-// advertising it would disagree with the structured data on the same page.
+// `price` is the quote target (`quoteFor`), matching the Product JSON-LD and
+// the "Quote target" the product page renders. The page and the feed must
+// advertise the same number for Merchant Center to accept the listing.
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { PRODUCTS } from "../src/lib/products.ts";
+import { PRODUCTS, quoteFor } from "../src/lib/products.ts";
 import { absoluteUrl, SITE_URL } from "../src/lib/seo.ts";
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -53,7 +53,7 @@ function cell(value) {
 }
 
 function priceCell(product) {
-  return `${product.basePrice.toFixed(2)} USD`;
+  return `${quoteFor(product).toFixed(2)} USD`;
 }
 
 /** Products that cannot be listed yet: no photo, or a digital download. */

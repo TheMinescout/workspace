@@ -27,12 +27,15 @@ describe("custom 3D print product", () => {
     assert.equal(product.basePrice, 3);
     assert.equal(product.hourlyRate, 20);
     assert.equal(product.printRate, 2);
-    assert.ok(product.estimatedPrintHours > 0);
-    const expected =
-      product.basePrice +
-      product.hourlyRate * product.estimatedHours +
-      product.printRate * product.estimatedPrintHours;
-    assert.equal(quoteFor(product), expected);
+    assert.equal(product.estimatedHours, 0);
+    assert.equal(product.estimatedPrintHours, 2);
+    assert.equal(quoteFor(product), 7);
+  });
+
+  it("tells shoppers custom CAD is available at $20/hr", () => {
+    const text = [product.longDescription, ...product.features].join(" ");
+    assert.match(text, /\$20\/hr/);
+    assert.match(text, /CAD/);
   });
 
   it("carries the only Best seller badge", () => {
@@ -89,7 +92,7 @@ describe("custom 3D print discoverability", () => {
     const row = feedRows().find((r) => r[0] === "custom-3d-print");
     assert.ok(row, "custom-3d-print is missing from the merchant feed");
     const record = Object.fromEntries(COLUMNS.map((k, i) => [k, row[i]]));
-    assert.equal(record.price, "3.00 USD");
+    assert.equal(record.price, "7.00 USD");
     assert.equal(record.link, absoluteUrl("/tools/custom-3d-print"));
   });
 });

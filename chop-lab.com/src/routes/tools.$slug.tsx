@@ -90,10 +90,15 @@ function ProductPage() {
               <p className="text-muted">Quote target</p>
               <p className="mt-1 font-display text-2xl tabular-nums">{money(estimate)}</p>
               <p className="mt-1 text-xs text-muted">
-                {money(product.basePrice)} base + {money(product.hourlyRate)}/hr design
-                {product.printRate
-                  ? ` + ${money(product.printRate)}/hr print · ~${product.estimatedHours} hr CAD · ~${product.estimatedPrintHours} hr print`
-                  : ` · ~${product.estimatedHours} hr`}
+                {[
+                  `${money(product.basePrice)} base`,
+                  product.estimatedHours > 0 ? `${money(product.hourlyRate)}/hr design` : null,
+                  product.printRate ? `${money(product.printRate)}/hr print` : null,
+                ]
+                  .filter(Boolean)
+                  .join(" + ")}
+                {product.estimatedHours > 0 ? ` · ~${product.estimatedHours} hr CAD` : ""}
+                {product.estimatedPrintHours ? ` · ~${product.estimatedPrintHours} hr print` : ""}
               </p>
             </div>
             <div>
