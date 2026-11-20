@@ -1533,7 +1533,7 @@
 
   /* Mobile: 480px — tighter padding, smaller type, single-column grids */
   @media (max-width: 480px) {
-    .main { padding: 1.5rem 1rem; }
+    .main { padding: 5rem 1rem 2rem; }
     .page-title { font-size: clamp(1.4rem, 6vw, 1.8rem); }
 
     /* Creation page — restore chat height for small screens */
