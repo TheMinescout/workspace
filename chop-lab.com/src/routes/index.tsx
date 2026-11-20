@@ -29,7 +29,7 @@ function Home() {
   const [markFont, setMarkFont] = useState<ChopFontId>("segoe");
   const [texture, setTexture] = useState<TextureId>("hex");
   const featured = PRODUCTS.find((p) => p.bestSeller)!;
-  const top = PRODUCTS.filter((p) => !p.digital).slice(0, 6);
+  const top = PRODUCTS.filter((p) => !p.digital);
 
   return (
     <main>
@@ -117,8 +117,8 @@ function Home() {
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           <div className="overflow-hidden rounded-xl bg-bg-warm shadow-lift">
             <img
-              src="/images/chop-simple.jpg"
-              alt="A simple custom chop and the clean impression it leaves in clay"
+              src={featured.image ?? "/images/chop-simple.jpg"}
+              alt={featured.name}
               loading="lazy"
               decoding="async"
               className="img-frame aspect-[4/3] w-full object-cover"
@@ -127,7 +127,7 @@ function Home() {
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-muted">Best seller</p>
             <h2 className="mt-2 font-display text-4xl font-medium tracking-tight">
-              The signature custom chop.
+              The lab’s best seller.
             </h2>
             <p className="mt-4 text-muted leading-relaxed">{featured.longDescription}</p>
             <ul className="mt-6 space-y-3">

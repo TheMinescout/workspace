@@ -60,7 +60,7 @@ export function ProductCard({
       <div className={cn("flex flex-1 flex-col gap-3 p-5", featured && "sm:p-8 sm:justify-center")}>
         <div>
           <p className="text-xs font-medium uppercase tracking-wider text-muted">
-            {product.digital ? "Digital file" : "Studio tool"}
+            {product.digital ? "Digital file" : product.kind === "print" ? "Custom print" : "Studio tool"}
           </p>
           <h3 className="mt-1 font-display text-xl font-medium tracking-tight text-fg">
             {product.name}
@@ -73,6 +73,7 @@ export function ProductCard({
             <span className="text-muted">
               {" "}
               + {money(product.hourlyRate)}/hr
+              {product.printRate ? ` + ${money(product.printRate)}/hr print` : ""}
             </span>
           </p>
           <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">

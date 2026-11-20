@@ -1,6 +1,13 @@
-export type ProductKind = "chop" | "roller" | "basket" | "rails" | "stl";
-export type ProductCategory = "chops" | "storage" | "slab" | "digital";
-export type ToolDrawing = "chop" | "roller-10" | "roller-4" | "basket" | "rails" | "cutter";
+export type ProductKind = "chop" | "roller" | "basket" | "rails" | "stl" | "print";
+export type ProductCategory = "custom" | "chops" | "storage" | "slab" | "digital";
+export type ToolDrawing =
+  | "chop"
+  | "roller-10"
+  | "roller-4"
+  | "basket"
+  | "rails"
+  | "cutter"
+  | "print";
 
 export type Product = {
   slug: string;
@@ -16,8 +23,14 @@ export type Product = {
   seoDescription: string;
   longDescription: string;
   basePrice: number;
+  /** CAD design rate, in dollars per hour. */
   hourlyRate: number;
+  /** Quoted CAD design hours. */
   estimatedHours: number;
+  /** Print rate, in dollars per hour, for products priced by machine time. */
+  printRate?: number;
+  /** Quoted print hours; only meaningful alongside `printRate`. */
+  estimatedPrintHours?: number;
   bestSeller?: boolean;
   /** Primary image, also the first entry of `gallery` when one exists. */
   image?: string;
@@ -30,6 +43,11 @@ export type Product = {
 };
 
 export const CATEGORIES: { id: ProductCategory; name: string; blurb: string }[] = [
+  {
+    id: "custom",
+    name: "Custom printing",
+    blurb: "Upload an STL or send a sketch for CAD review, slicing, and print.",
+  },
   {
     id: "chops",
     name: "Chops & textures",
@@ -54,6 +72,39 @@ export const CATEGORIES: { id: ProductCategory; name: string; blurb: string }[] 
 
 export const PRODUCTS: Product[] = [
   {
+    slug: "custom-3d-print",
+    name: "Custom 3D Print — STL & CAD Service",
+    kind: "print",
+    category: "custom",
+    drawing: "print",
+    tagline: "Upload an STL or send a sketch — we CAD, slice, and print it.",
+    description:
+      "Upload an STL or send a sketch. We review the model, slice it for a 256 mm cube, and print it in PLA Matte or PETG.",
+    headline: "Custom 3D Printing Service — Upload Your STL or Request CAD",
+    seoDescription:
+      "Custom 3D printing in PLA Matte or PETG — upload an STL or request CAD from a sketch. $3 base, $20/hr CAD design, and $2/hr print time. Local pickup in Sammamish and the Eastside, WA, or shipped anywhere in the US.",
+    longDescription:
+      "Send the file you already have or a sketch of what you need. Thomas reviews the model, repairs and slices it for the 256 mm cube build volume, then prints it in PLA Matte for detail or PETG for parts that need toughness and heat resistance. You get a Venmo invoice after the CAD and slice review — nothing is charged up front.",
+    basePrice: 3,
+    hourlyRate: 20,
+    estimatedHours: 1,
+    printRate: 2,
+    estimatedPrintHours: 4,
+    bestSeller: true,
+    image: "/images/printer-action.jpg",
+    features: [
+      "Upload an STL, or ask for CAD from a sketch",
+      "PLA Matte for detail, PETG for structural parts",
+      "Sliced for a 256 mm cube build volume",
+      "Venmo invoice after CAD and slice review",
+    ],
+    specs: [
+      { label: "Materials", value: "PLA Matte / PETG" },
+      { label: "Build volume", value: "256 × 256 × 256 mm" },
+      { label: "Pricing", value: "$3 base · $20/hr CAD · $2/hr print" },
+    ],
+  },
+  {
     slug: "custom-chop-complex",
     name: "Custom Chop — Complex",
     kind: "chop",
@@ -70,7 +121,6 @@ export const PRODUCTS: Product[] = [
     basePrice: 3,
     hourlyRate: 20,
     estimatedHours: 2,
-    bestSeller: true,
     image: "/images/chop-complex.jpg",
     gallery: [
       {
@@ -418,7 +468,9 @@ export function productsIn(category: ProductCategory) {
 }
 
 export function quoteFor(product: Product, hours = product.estimatedHours) {
-  return product.basePrice + product.hourlyRate * hours;
+  const design = product.hourlyRate * hours;
+  const printing = (product.printRate ?? 0) * (product.estimatedPrintHours ?? 0);
+  return product.basePrice + design + printing;
 }
 
 export const PROCESS = [

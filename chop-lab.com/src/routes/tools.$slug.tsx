@@ -90,14 +90,20 @@ function ProductPage() {
               <p className="text-muted">Quote target</p>
               <p className="mt-1 font-display text-2xl tabular-nums">{money(estimate)}</p>
               <p className="mt-1 text-xs text-muted">
-                {money(product.basePrice)} base + {money(product.hourlyRate)}/hr · ~
-                {product.estimatedHours} hr
+                {money(product.basePrice)} base + {money(product.hourlyRate)}/hr design
+                {product.printRate
+                  ? ` + ${money(product.printRate)}/hr print · ~${product.estimatedHours} hr CAD · ~${product.estimatedPrintHours} hr print`
+                  : ` · ~${product.estimatedHours} hr`}
               </p>
             </div>
             <div>
               <p className="text-muted">Turnaround</p>
               <p className="mt-1 font-display text-2xl">3–5 days</p>
-              <p className="mt-1 text-xs text-muted">After artwork is approved</p>
+              <p className="mt-1 text-xs text-muted">
+                {product.kind === "print"
+                  ? "After CAD and slice review"
+                  : "After artwork is approved"}
+              </p>
             </div>
           </div>
 
@@ -155,7 +161,11 @@ function ProductPage() {
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
-            {product.digital ? null : (
+            {product.digital ? null : product.kind === "print" ? (
+              <Button asChild size="lg" variant="secondary">
+                <Link to="/files">Browse ready-made STLs</Link>
+              </Button>
+            ) : (
               <Button asChild size="lg" variant="secondary">
                 <Link to="/files">Need the STL instead?</Link>
               </Button>

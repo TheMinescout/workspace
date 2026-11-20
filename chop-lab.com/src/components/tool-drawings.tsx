@@ -99,6 +99,21 @@ export function CutterDrawing({ className }: Props) {
   );
 }
 
+export function PrinterDrawing({ className }: Props) {
+  return (
+    <svg viewBox="0 0 200 200" className={cn("text-fg", className)} fill="none" aria-hidden>
+      <path d="M40 70h120v96H40V70Z" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M40 94h120" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+      <path d="M66 70V54h68v16" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="86" y="30" width="28" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M60 122h80" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M76 122v28h48v-28" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+      <path d="M60 166h80" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M100 40v58" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
+    </svg>
+  );
+}
+
 export function ToolIllustration({
   drawing,
   className,
@@ -119,5 +134,7 @@ export function ToolIllustration({
       return <RailsDrawing className={className} />;
     case "cutter":
       return <CutterDrawing className={className} />;
+    case "print":
+      return <PrinterDrawing className={className} />;
   }
 }

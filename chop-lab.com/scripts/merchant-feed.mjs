@@ -41,6 +41,7 @@ const GOOGLE_CATEGORY =
   "Arts & Entertainment > Hobbies & Creative Arts > Arts & Crafts > Art & Crafting Tools";
 
 const PRODUCT_TYPE = {
+  custom: "3D Printing > Custom 3D Printing Services",
   chops: "Pottery Tools > Custom Chops & Texture Rollers",
   storage: "Pottery Tools > Studio Storage",
   slab: "Pottery Tools > Slab & Handbuilding",

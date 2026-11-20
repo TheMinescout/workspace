@@ -26,6 +26,8 @@ import { buildRequestReceiptEmail, buildStudioNotificationEmail } from "@/lib/re
 
 const STEPS = ["Tool", "Specs", "Studio", "Review"] as const;
 
+const PRINT_MATERIALS = ["PLA Matte", "PETG"] as const;
+
 type FormState = {
   productSlug: string;
   mark: string;
@@ -37,6 +39,9 @@ type FormState = {
   lipMm: number;
   thicknessMm: number;
   widthMm: number;
+  quantity: number;
+  printMaterial: string;
+  cadMods: string;
   name: string;
   email: string;
   studio: string;
@@ -54,6 +59,9 @@ const empty: FormState = {
   lipMm: 4,
   thicknessMm: 10,
   widthMm: 80,
+  quantity: 1,
+  printMaterial: PRINT_MATERIALS[0],
+  cadMods: "",
   name: "",
   email: "",
   studio: "",
@@ -130,6 +138,16 @@ function Estimate({ product }: { product: Product }) {
           </dt>
           <dd className="tabular-nums">{money(product.hourlyRate * product.estimatedHours)}</dd>
         </div>
+        {product.printRate ? (
+          <div className="flex justify-between gap-4">
+            <dt className="text-muted">
+              Print · {product.estimatedPrintHours ?? 0} hr × {money(product.printRate)}
+            </dt>
+            <dd className="tabular-nums">
+              {money(product.printRate * (product.estimatedPrintHours ?? 0))}
+            </dd>
+          </div>
+        ) : null}
         <div className="flex justify-between gap-4 border-t border-border pt-3 font-medium">
           <dt>Quote target</dt>
           <dd className="tabular-nums">{money(total)}</dd>
@@ -184,6 +202,11 @@ export function ConsultationForm({
     if (product.kind === "rails") {
       s.Thickness = fmt(form.thicknessMm);
       s.Width = fmt(form.widthMm);
+    }
+    if (product.kind === "print") {
+      s.Quantity = String(form.quantity);
+      s.Material = form.printMaterial;
+      if (form.cadMods) s["CAD modifications"] = form.cadMods;
     }
     return s;
   }, [product, form, fmt]);
@@ -574,11 +597,73 @@ export function ConsultationForm({
               </p>
             ) : null}
 
+            {product.kind === "print" ? (
+              <div className="space-y-6">
+                <p className="text-sm leading-relaxed text-muted">
+                  Upload your STL below, or describe the part you need modeled.
+                  We review the CAD, slice it for the <Length mm={256} /> cube
+                  build volume, and send a Venmo invoice after review — nothing is
+                  charged here.
+                </p>
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="quantity">Quantity</Label>
+                    <Input
+                      id="quantity"
+                      type="number"
+                      min={1}
+                      max={50}
+                      value={form.quantity}
+                      onChange={(e) => {
+                        const next = Number.parseInt(e.target.value, 10);
+                        patch({ quantity: Number.isFinite(next) && next > 0 ? next : 1 });
+                      }}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Material</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {PRINT_MATERIALS.map((m) => (
+                        <button
+                          key={m}
+                          type="button"
+                          onClick={() => patch({ printMaterial: m })}
+                          aria-pressed={form.printMaterial === m}
+                          className={cn(
+                            "h-11 rounded-full bg-surface px-4 text-sm shadow-lift",
+                            form.printMaterial === m && "ring-2 ring-primary",
+                          )}
+                        >
+                          {m}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-muted">
+                      PLA Matte for detail and studio tools, PETG for structural
+                      or heat-exposed parts.
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cadMods">Optional CAD modifications</Label>
+                  <Textarea
+                    id="cadMods"
+                    value={form.cadMods}
+                    placeholder="Resize a hole, add a mounting tab, split a large part into interlocking pieces…"
+                    onChange={(e) => patch({ cadMods: e.target.value })}
+                  />
+                  <p className="text-xs text-muted">
+                    Leave blank to print your STL as uploaded.
+                  </p>
+                </div>
+              </div>
+            ) : null}
+
             <FileDrop
               files={form.files}
               onFiles={(names) => patch({ files: [...form.files, ...names] })}
               onClear={() => patch({ files: [] })}
-              digital={product.kind === "stl"}
+              stl={product.kind === "stl" || product.kind === "print"}
             />
           </div>
         ) : null}
@@ -731,23 +816,23 @@ function FileDrop({
   files,
   onFiles,
   onClear,
-  digital,
+  stl,
 }: {
   files: string[];
   onFiles: (names: string[]) => void;
   onClear: () => void;
-  digital: boolean;
+  stl: boolean;
 }) {
   return (
     <div className="space-y-2">
-      <Label htmlFor="files">{digital ? "Existing STL (optional)" : "Artwork or sketch"}</Label>
+      <Label htmlFor="files">{stl ? "STL file" : "Artwork or sketch"}</Label>
       <label
         htmlFor="files"
         className="flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-xl bg-surface px-4 py-6 text-center shadow-lift"
       >
         <Upload className="size-5 text-muted" />
         <span className="mt-2 text-sm text-fg">
-          {digital
+          {stl
             ? "Drop an STL, or click to browse"
             : "Drop a sketch, logo, or photo — SVG, PNG, or PDF preferred"}
         </span>
@@ -760,7 +845,7 @@ function FileDrop({
           type="file"
           multiple
           className="sr-only"
-          accept={digital ? ".stl,model/stl" : "image/*,.svg,.pdf"}
+          accept={stl ? ".stl,model/stl" : "image/*,.svg,.pdf"}
           onChange={(e) => {
             const list = Array.from(e.target.files ?? []).map((f) => f.name);
             if (list.length) onFiles(list);
