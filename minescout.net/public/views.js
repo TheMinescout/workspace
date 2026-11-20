@@ -29,8 +29,26 @@ export function isReleased(dateStr) {
 
 export const BLOG_POSTS = [
   {
+    date: "Dec 11, 2026", tag: "tag-business", tagLabel: "Business",
+    href: "/blog/websites-for-clubs-robotics-nonprofits.html", featured: true,
+    title: "How Student Clubs, Robotics Teams, and Local Nonprofits Can Get a Custom Website Under $750",
+    excerpt: "Sponsor showcases, schedules, sign-up forms, and a site that loads in a school parking lot — what student clubs and small nonprofits need, and what it costs.",
+  },
+  {
+    date: "Dec 4, 2026", tag: "tag-business", tagLabel: "Business",
+    href: "/blog/sammamish-small-business-website-guide.html",
+    title: "What Sammamish &amp; Eastside Small Businesses Should Look for in a Website (2026 Guide)",
+    excerpt: "What actually matters when a local shop, contractor, tutor, or service business in Sammamish, Issaquah, Redmond, or Bellevue buys a website in 2026.",
+  },
+  {
+    date: "Nov 27, 2026", tag: "tag-business", tagLabel: "Business",
+    href: "/blog/custom-website-vs-wix-squarespace.html",
+    title: "Custom Website vs. Wix and Squarespace: When Should a Small Business Upgrade?",
+    excerpt: "Wix and Squarespace are cheap to start and expensive to leave. The 2026 numbers over three years, what template bloat really costs, and when a custom site you own is the better buy.",
+  },
+  {
     date: "Nov 19, 2026", tag: "tag-business", tagLabel: "Business",
-    href: "/blog/slow-websites-cost-customers.html", featured: true,
+    href: "/blog/slow-websites-cost-customers.html",
     title: "Why Slow Websites Cost Local Businesses Customers (And How Static Edge Sites Fix It)",
     excerpt: "Every extra second of load time costs local businesses real leads. Where the delay comes from, and how static edge hosting removes it.",
   },
@@ -217,6 +235,18 @@ export const PAGE_META = {
   '/studio/student-nonprofit': {
     title: 'Affordable Custom Websites for Students, Clubs & Nonprofits | Minescout Studio',
     description: 'Discounted custom websites for students, robotics teams, scouts, school clubs, and local nonprofits. Projects from $250 to $750 with fast turnaround.',
+  },
+  '/blog/custom-website-vs-wix-squarespace.html': {
+    title: 'Custom Website vs. Wix & Squarespace (2026) | Minescout Studio',
+    description: 'Compare 2026 Wix and Squarespace subscription and transaction costs against a custom-coded site you own, with the real three-year totals and when to switch.',
+  },
+  '/blog/sammamish-small-business-website-guide.html': {
+    title: 'What Sammamish & Eastside Businesses Need in a Website | Minescout',
+    description: 'A practical 2026 buyer\'s guide for Sammamish, Issaquah, Redmond, and Bellevue businesses: mobile speed, local SEO, clear pricing, and lead capture.',
+  },
+  '/blog/websites-for-clubs-robotics-nonprofits.html': {
+    title: 'Custom Websites for Clubs, Robotics Teams & Nonprofits | Minescout',
+    description: 'What student clubs, FIRST Robotics teams, booster clubs, and local nonprofits need online, and how the discounted Minescout Studio tier keeps it affordable.',
   },
 };
 
@@ -2196,3 +2226,189 @@ registerPost('/blog/chop-lab-storefront.html', "Nov 8, 2026", "Building",
   `
 );
 
+
+registerPost('/blog/custom-website-vs-wix-squarespace.html', "Nov 27, 2026", "Business",
+  "Custom Website vs. Wix and Squarespace: When Should a Small Business Upgrade?",
+  "Is a custom-coded website actually worth it next to Wix or Squarespace, and when should a small business make the switch?",
+  "Sometimes not. But the platforms are cheap to start and expensive to own: 2026 list prices run about $17 to $159 a month for Wix and $25 to $139 a month for Squarespace, before card processing and store fees. Over three years that is $612 to $5,724 — against $750 to $2,500 once for a custom site you own, plus optional hosting at $15 a month.",
+  `
+  <p style="margin-bottom: 1.25rem;">Wix and Squarespace are good products. For the right project I would recommend either one without hesitating. But "cheap to start" and "cheap to own" are different questions, and a small business lives with the second one for years.</p>
+  <p style="margin-bottom: 1.25rem;">So here is the comparison with the numbers the plans pages actually show in late 2026, next to the prices I charge. No industry-survey averages and no "starting at" fine print.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What the platforms cost in 2026</h3>
+  <p style="margin-bottom: 1.25rem;">Both companies quote a yearly subscription, paid up front, and both run aggressive first-term discounts. That distinction matters, because the discounted year is not the price you renew at.</p>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Wix</strong> — the plans page lists Light, Core, Business, and Business Elite, running from about <strong style="color: var(--fg);">$17</strong> to about <strong style="color: var(--fg);">$159</strong> a month on a yearly subscription. Wix states on that same page that prices and currency vary by location, that the displayed price is the yearly plan paid in full, and that taxes are added at checkout.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Squarespace</strong> — Basic <strong style="color: var(--fg);">$25</strong>, Core <strong style="color: var(--fg);">$39</strong>, Plus <strong style="color: var(--fg);">$65</strong>, and Advanced <strong style="color: var(--fg);">$139</strong> a month on annual billing. While I was checking, the pricing page carried a 30% first-term discount, so those same four plans read <strong style="color: var(--fg);">$19</strong>, <strong style="color: var(--fg);">$29</strong>, <strong style="color: var(--fg);">$49</strong>, and <strong style="color: var(--fg);">$99</strong> for the first year.</li>
+  </ul>
+  <p style="margin-bottom: 1.25rem;">The subscription is only part of the bill. Squarespace charges card processing at 2.9% plus 30&cent; on Basic and Core, 2.7% plus 30&cent; on Plus, and 2.5% plus 30&cent; on Advanced, and Basic also carries a 2% fee on online store transactions. Wix runs its own payment processing on top of the plan. A business taking a few thousand dollars a month through the site can pay more in processing than in subscription — and none of that money buys the site itself.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Three years, side by side</h3>
+  <p style="margin-bottom: 1.25rem;">Three years is a fair horizon. It is long enough that a discount year cannot hide, and short enough that you are still running the same business at the end. Multiply the annual plan out and the cheap tiers stop being the story:</p>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;">Wix Light at about $17 a month — <strong style="color: var(--fg);">$612</strong> over three years.</li>
+    <li style="margin-bottom: 0.5rem;">Wix Business Elite at about $159 a month — <strong style="color: var(--fg);">$5,724</strong>.</li>
+    <li style="margin-bottom: 0.5rem;">Squarespace Basic at the $25 list price — <strong style="color: var(--fg);">$900</strong>, or $684 if the first-year discount somehow held for all three years.</li>
+    <li style="margin-bottom: 0.5rem;">Squarespace Advanced at the $139 list price — <strong style="color: var(--fg);">$5,004</strong>, or $3,564 at the promotional rate.</li>
+  </ul>
+  <p style="margin-bottom: 1.25rem;">On the custom side, Portfolio starts at <strong style="color: var(--fg);">$750</strong>, Professional at <strong style="color: var(--fg);">$1,500</strong>, and Business at <strong style="color: var(--fg);">$2,500</strong>, paid once. Hosting is optional at <strong style="color: var(--fg);">$15</strong> a month, and the care plans run <strong style="color: var(--fg);">$10</strong> to <strong style="color: var(--fg);">$75</strong> a month for priority support, updates, backups, and AI maintenance. At the hosting rate, three years of a Portfolio site all-in is <strong style="color: var(--fg);">$1,290</strong>, Professional is <strong style="color: var(--fg);">$2,040</strong>, and Business is <strong style="color: var(--fg);">$3,040</strong> &mdash; with the code in your hands at the end.</p>
+  <p style="margin-bottom: 1.25rem;">Read that again: three years of a custom Business site with hosting costs less than three years of Squarespace Advanced at list price, and a little over half of Wix Business Elite. The cheapest platform tiers are genuinely cheaper than custom work. The tiers a real business grows into are not.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Template bloat is a bill you pay in seconds</h3>
+  <p style="margin-bottom: 1.25rem;">A page builder has to ship styles and scripts for every widget it might render, because the page is assembled in the browser from a shared library. Then every app you add — booking, popups, reviews, chat, analytics — loads its own scripts on top. None of that is wrong. It is simply weight the visitor pays before they can read your hours.</p>
+  <p style="margin-bottom: 1.25rem;">You can measure it yourself. Open the site on a phone with a throttled connection and watch how long the first text takes to appear. If the address and phone number take more than a second, the template is charging rent in the one currency a local business cannot refund.</p>
+  <p style="margin-bottom: 1.25rem;">A custom static site inverts that. The HTML is written once, at build time, and served from an edge network. There is no database to wake up, no template to assemble per request, and no widget library to download. The page is the file. That is how the same content paints in well under a second on a phone in a parking lot.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Lock-in is the real cost</h3>
+  <p style="margin-bottom: 1.25rem;">Subscription fees stop when you cancel. Lock-in is what keeps charging after that. On a hosted builder your content lives in the platform's data model, not in files you can move. Export gives you the text and the images; it does not give you the layout, the templates, or the interactions you built. Change the theme and you re-enter the content. Leave the platform and you rebuild from scratch, after paying for years.</p>
+  <p style="margin-bottom: 1.25rem;">There is a quieter version of the same thing: the design is tied to the subscription. Stop paying and the site goes dark, whatever you have invested in it. For a business whose website is its storefront, that is a permanent lease on a building you furnished.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What a custom site gives you instead</h3>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">The files.</strong> Plain HTML, CSS, and a small amount of JavaScript in a repository you own. Any developer can pick it up, and so can you.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">A choice of host.</strong> Static output runs on Netlify, Cloudflare, GitHub Pages, or a server you rent. Moving is a DNS change, not a migration project.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Nothing to patch on a schedule.</strong> No plugin that needs updating, and no theme that breaks on the platform's next release.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Room for real features.</strong> A configurator, a quote flow, a live preview of the customer's own mark — things a plugin marketplace does not stock.</li>
+  </ul>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">When upgrading is worth it</h3>
+  <p style="margin-bottom: 1.25rem;">The honest answer is that it depends. Upgrade when any of these is true:</p>
+  <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;">You are taking payments, or you plan to within a year.</li>
+    <li style="margin-bottom: 0.5rem;">The site has become the place customers decide, not just a business card.</li>
+    <li style="margin-bottom: 0.5rem;">You need a feature no plugin sells — a configurator, an instant quote, a booking rule that matches how you actually work.</li>
+    <li style="margin-bottom: 0.5rem;">You are already paying for a mid or upper platform tier and still fighting the template.</li>
+    <li style="margin-bottom: 0.5rem;">You want to stop renting the thing your business runs on.</li>
+  </ol>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">When a platform is the right call</h3>
+  <p style="margin-bottom: 1.25rem;">Plenty of businesses should stay on Wix or Squarespace, and I will say so. If you need a one-page brochure you can edit yourself this afternoon, or a store with hundreds of items that has to be live this week, a hosted builder is a reasonable answer and custom work would be overkill. The mistake is not starting on a platform. It is staying on one long after the site has outgrown it, paying every month for a design you cannot take with you.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Where to go next</h3>
+  <p style="margin-bottom: 1.25rem;">If you are in Sammamish, Issaquah, Redmond, or Bellevue, the <a href="/studio/local-web-design" style="color: var(--accent);">local web design page</a> covers what a fast, custom site includes and what it starts at. The <a href="/studio/pricing" style="color: var(--accent);">pricing page</a> lists every tier and every care plan, with the caveat that none of the monthly plans is required. When you are ready to talk scope, <a href="/studio/intake" style="color: var(--accent);">start a project</a> and you will get a straight number instead of a range.</p>
+  `
+);
+
+registerPost('/blog/sammamish-small-business-website-guide.html', "Dec 4, 2026", "Business",
+  "What Sammamish &amp; Eastside Small Businesses Should Look for in a Website (2026 Guide)",
+  "What actually matters when a local business in Sammamish or the Eastside buys a website in 2026?",
+  "Four things decide whether the site earns its keep: it works on a phone, it loads fast enough to keep the visitor, it is set up to be found in local search, and it ends in a lead instead of a dead end. Everything else is decoration. Here is how to check each one before you sign.",
+  `
+  <p style="margin-bottom: 1.25rem;">Most website advice for local businesses is written for companies with a marketing department. A four-person shop in Sammamish, a contractor working out of a truck in Issaquah, a tutor in Redmond, a salon in Bellevue &mdash; they need something much narrower: a site that answers the question a customer is already asking, on the phone in their hand, fast enough that they do not go back to the map.</p>
+  <p style="margin-bottom: 1.25rem;">This is the checklist I would use if I were buying, in the order that actually changes whether you get the call.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. It is designed at phone width, not shrunk to it</h3>
+  <p style="margin-bottom: 1.25rem;">Almost every local search starts on a phone, often in a car. That means the first screen has to answer three questions without scrolling: what do you do, where are you, and how do I reach you. Hours, service area, and a tap-to-call button belong above the fold, not behind a hamburger menu.</p>
+  <p style="margin-bottom: 1.25rem;">The test is mechanical. Open the site on your phone and try to read it one-handed. If you have to pinch, zoom, or scroll sideways, the layout was designed on a desktop and squeezed afterward. Forms matter too: a contact form with tiny fields and no visible labels loses the lead at the last step.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Speed you can measure on a bad connection</h3>
+  <p style="margin-bottom: 1.25rem;">Ask for a number, not a promise. A site that renders its text in well under a second on a throttled phone is doing it because of its architecture, not because someone installed a caching plugin. Three things create the delay on a slow site:</p>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">A server round trip.</strong> A database-backed page has to wake up, assemble templates, and run its plugins before it sends anything.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Render-blocking scripts.</strong> Fonts, analytics, chat widgets, and cookie banners each get a turn before the visitor sees text.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Distance.</strong> One server in one region makes every visitor outside it pay the speed-of-light penalty on every request.</li>
+  </ul>
+  <p style="margin-bottom: 1.25rem;">A static site served from an edge network removes all three. The HTML is already written, and a copy sits near the customer. That is the difference between a page that opens and a page that gets abandoned.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Local SEO that ships with the site</h3>
+  <p style="margin-bottom: 1.25rem;">Search visibility for a local business is not a monthly add-on. The groundwork is either built into the site or it is missing:</p>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">A real title and description per page</strong> that name the service and the city, instead of one site-wide title on every URL.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">A sitemap and structured data</strong> so search engines can read the business name, address, phone, hours, and services without guessing.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Consistent name, address, and phone</strong> across the site and your Google Business Profile. Mismatches split your ranking signal.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Pages for the places you serve</strong> &mdash; Sammamish, Issaquah, Redmond, Bellevue &mdash; that say something specific, not the same paragraph with the city name swapped in.</li>
+  </ul>
+  <p style="margin-bottom: 1.25rem;">And speed is part of it. Google measures how the page behaves for real visitors, so a slow template undercuts every other SEO effort on the site.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">4. Prices published before the first call</h3>
+  <p style="margin-bottom: 1.25rem;">You should be able to see what a website costs before you get on a call. If the pricing page is a contact form, you are not comparing vendors, you are being qualified.</p>
+  <p style="margin-bottom: 1.25rem;">The tiers I publish are <strong style="color: var(--fg);">$750</strong> for a Portfolio site, <strong style="color: var(--fg);">$1,500</strong> for Professional, and <strong style="color: var(--fg);">$2,500</strong> for Business, quoted per project. Care plans run <strong style="color: var(--fg);">$10</strong> to <strong style="color: var(--fg);">$75</strong> a month and hosting is <strong style="color: var(--fg);">$15</strong> a month, and none of them is required to work with me. When you can see the numbers, you can tell whether the quote you get is scope or padding.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">5. A path that ends in a lead, not a dead end</h3>
+  <p style="margin-bottom: 1.25rem;">A brochure site collects phone calls. A site built around how the business actually sells collects specifications. That is where custom work earns its keep: the interactive part of the page is the part that turns a visitor into a conversation.</p>
+  <p style="margin-bottom: 1.25rem;">The clearest example I have is <a href="https://chop-lab.com" target="_blank" rel="noopener" style="color: var(--accent);">chop-lab.com</a>, a ceramics tooling storefront. Nothing in that catalog is a fixed item &mdash; chops are cut from a customer's own logo, rollers from their texture, slab rails to their exact width. So the site puts a live preview of the customer's mark on a stamp face, in the font they choose, at the size they are ordering. Then the configurator collects the dimensions and ends in a real quote by email instead of a shopping cart nobody can fill.</p>
+  <p style="margin-bottom: 1.25rem;">For a local business the shape is the same even when the product is not. A roofer who quotes by roof size, a tutor who books by subject and grade, a bakery that takes custom orders &mdash; each one has a question a form can ask better than a phone call. The build story is written up in <a href="/blog/chop-lab-storefront.html" style="color: var(--accent);">the storefront case study</a> and <a href="/blog/chop-lab-spa.html" style="color: var(--accent);">the rebuild write-up</a>.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">6. Five questions to ask before you sign</h3>
+  <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Who owns the files?</strong> If the answer is not "you do", you are renting.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Can I change my own text and hours?</strong> Ask for a walkthrough, not a promise.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">What happens if I stop paying the monthly plan?</strong> The site should stay up, or the plan was never optional.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">How fast is it on a phone?</strong> Get a number and check it yourself.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">What does a change cost after launch?</strong> Know the hourly rate or the plan before you need it.</li>
+  </ol>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">7. Red flags worth walking away from</h3>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;">Speed and mobile layout listed as paid add-ons. In 2026 they are the baseline, not a feature.</li>
+    <li style="margin-bottom: 0.5rem;">A long contract with no way to export your content.</li>
+    <li style="margin-bottom: 0.5rem;">"Unlimited pages" as the headline. Page count is rarely what makes a site work.</li>
+    <li style="margin-bottom: 0.5rem;">No access to your own analytics or search console.</li>
+    <li style="margin-bottom: 0.5rem;">A quote that never asks who updates the site after launch.</li>
+  </ul>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Next step</h3>
+  <p style="margin-bottom: 1.25rem;">If you want the short version of all of this for the Eastside, the <a href="/studio/local-web-design" style="color: var(--accent);">local web design page</a> lays out what a fast, custom site includes, what it starts at, and how the build runs from first call to launch. When you are ready to talk about your own business, <a href="/studio/intake" style="color: var(--accent);">start a project</a> and tell me what your current site gets wrong.</p>
+  `
+);
+
+registerPost('/blog/websites-for-clubs-robotics-nonprofits.html', "Dec 11, 2026", "Business",
+  "How Student Clubs, Robotics Teams, and Local Nonprofits Can Get a Custom Website Under $750",
+  "What does a student club, robotics team, or small nonprofit actually need from a website, and what should it cost?",
+  "A schedule, a sponsor showcase, a working sign-up form, and a page that loads on a phone in a school parking lot. Nothing else. The discounted studio tier covers exactly that for $250 to $750 depending on scope, against a regular Portfolio floor of $750, and the site is yours to keep.",
+  `
+  <p style="margin-bottom: 1.25rem;">A robotics team, a booster club, and a small nonprofit all have the same problem. They need to look credible, publish a schedule, thank sponsors, and take sign-ups &mdash; and they have no budget and nobody with spare evenings to maintain a website.</p>
+  <p style="margin-bottom: 1.25rem;">None of that requires an agency. Here is what these groups actually need, why the free template usually stops working, and how the discounted tier works.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What a club site actually has to do</h3>
+  <p style="margin-bottom: 1.25rem;">Strip out everything a big company needs and six things remain:</p>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">A schedule</strong> that is current, because parents check it on the way to a meet.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">A sponsor showcase</strong> that makes a business feel good about writing a check.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">A join, volunteer, or donation form</strong> that sends to an inbox someone actually reads.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Photos and results</strong>, because credibility is the whole point of the site.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">A contact path</strong> for a parent, a teacher, or a partner who has a question.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Speed on a phone</strong>, since that is the only device anyone will use at an event.</li>
+  </ul>
+  <p style="margin-bottom: 1.25rem;">That is a small site. It should not cost like a large one.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Why the free template stops working</h3>
+  <p style="margin-bottom: 1.25rem;">Free and cheap builder plans are a reasonable place to start, and plenty of clubs are on one right now. The trouble usually shows up in the second year, and it is rarely about design taste:</p>
+  <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">The ads.</strong> Free tiers put the platform's branding on your site, which is a strange thing to hand a sponsor.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">The weight.</strong> Every plugin added for forms, galleries, or calendars makes the page slower on a phone.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">The handoff.</strong> The student who built the site graduates, the login goes with them, and nobody left knows where the edit screen is.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">The logos.</strong> Sponsor logos arrive as a dozen mismatched images, and on a phone they either disappear or blow the layout apart.</li>
+  </ul>
+  <p style="margin-bottom: 1.25rem;">A small custom site fixes the last two by design: the content is structured, so adding a sponsor is a line in a list, and the files belong to the club rather than to an account someone will lose.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What the discounted tier covers</h3>
+  <p style="margin-bottom: 1.25rem;">Each semester I reserve a limited number of discounted projects for students, robotics teams, scouts, school clubs, and community nonprofits. Typical projects land between <strong style="color: var(--fg);">$250</strong> and <strong style="color: var(--fg);">$750</strong> depending on scope, against a regular Portfolio tier that starts at $750.</p>
+  <p style="margin-bottom: 1.25rem;">For that you get a custom design in the club's own colors and photos, mobile-first pages, working forms for sign-ups and contact, SEO basics, and fast edge hosting &mdash; on the same stack as the commercial work, not a cut-down version of it. Most projects launch in about five days once the content is ready.</p>
+  <p style="margin-bottom: 1.25rem;">Ongoing support is optional. Priority care is <strong style="color: var(--fg);">$10</strong> a month and hosting plans start at <strong style="color: var(--fg);">$15</strong> a month, and neither is required &mdash; the site is yours to host and edit. If the club would rather run it themselves, that is a perfectly good answer.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Sponsor showcases that respect the sponsors</h3>
+  <p style="margin-bottom: 1.25rem;">A sponsor wall is the highest-value page on a club site, and the most commonly botched. Three rules make it work:</p>
+  <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Group by level, not by arrival.</strong> A tiered wall (title, gold, community) tells a prospective sponsor what each check buys.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Link to the business.</strong> A logo that is not clickable is a poster. A link is the part sponsors notice.</li>
+    <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Normalize the images.</strong> Same height, same padding, real alt text. One oversized PNG is what breaks the wall on a phone.</li>
+  </ol>
+  <p style="margin-bottom: 1.25rem;">Add one line of plain text saying what the money paid for &mdash; a competition entry, a set of motors, a bus seat &mdash; and the page starts doing sales work for next season.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Schedules that stay current</h3>
+  <p style="margin-bottom: 1.25rem;">The schedule is the page that gets visited most and updated least. Two things help. First, put the dates in the page as text, not in a PDF or a screenshot of a calendar, because a PDF does not reflow on a phone and cannot be read by a search engine. Second, make the update path something a student can do in a minute &mdash; either a simple edit screen or a small data file with one line per event.</p>
+  <p style="margin-bottom: 1.25rem;">If the team publishes results, keep them on the same page. A visitor who sees this season's standings trusts the rest of the site more than one that still lists last year's captain.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">For FIRST Robotics teams specifically</h3>
+  <p style="margin-bottom: 1.25rem;">Robotics teams have a shape that most templates fight. The site has to carry a competition schedule, a sponsor packet someone can download, outreach and impact numbers for grant applications, build-season updates, and photos that prove the team actually builds things.</p>
+  <p style="margin-bottom: 1.25rem;">It also has to survive an event. A phone on a crowded gym floor is a bad network, and the parent trying to find the pit map or the match time will not wait through a page that loads a plugin library first. A static page served from an edge network answers immediately, which is the entire argument for building it this way.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">For nonprofits, the same discipline applies</h3>
+  <p style="margin-bottom: 1.25rem;">A small nonprofit needs five things in roughly this order: what you do in one sentence, who you serve, what you have accomplished, how to donate or volunteer, and how to reach a human. Board members and grant reviewers read that page. A site that buries the mission under a carousel loses both audiences.</p>
+
+  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">How to apply</h3>
+  <p style="margin-bottom: 1.25rem;">Availability is limited each semester, so the earlier in the term the better. Have four things ready: the club's logo, a handful of photos, the current schedule, and the sponsor list. That is enough to start, and anything missing can be added after launch.</p>
+  <p style="margin-bottom: 1.25rem;">The <a href="/studio/student-nonprofit" style="color: var(--accent);">student and nonprofit program page</a> explains who it is for and what is included. The <a href="/studio/clients" style="color: var(--accent);">client work page</a> shows the same stack running live sites for an artist, an accessibility startup, and a ceramics studio &mdash; the standard does not drop because the budget is smaller. When you are ready, <a href="/studio/intake" style="color: var(--accent);">start a project</a> and tell me what your group does and who it serves.</p>
+  `
+);
