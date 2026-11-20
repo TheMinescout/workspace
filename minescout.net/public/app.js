@@ -1,6 +1,6 @@
 // app.js — Application Logic & Routing
 
-import { views } from './views.js?v=1.413';
+import { views, PAGE_META, SITE_META } from './views.js?v=1.414';
 
 // ── 1. GLOBAL FIREBASE INITIALIZATION (Fixes memory leaks) ─────────
 let globalFirebaseApp = null;
@@ -1572,6 +1572,26 @@ RULES:
 // ── 4. BOOTSTRAP ROUTER ──────────────────────────────────────────────────
 let appElement;
 
+function setMetaContent(key, content, isProperty = false) {
+  const attr = isProperty ? 'property' : 'name';
+  let tag = document.head.querySelector(`meta[${attr}="${key}"]`);
+  if (!tag) {
+    tag = document.createElement('meta');
+    tag.setAttribute(attr, key);
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute('content', content);
+}
+
+function applyPageMeta(path) {
+  const meta = PAGE_META[path] || SITE_META;
+  document.title = meta.title;
+  setMetaContent('description', meta.description);
+  setMetaContent('og:title', meta.title, true);
+  setMetaContent('og:description', meta.description, true);
+  setMetaContent('og:url', `https://minescout.net${path}`, true);
+}
+
 // Google Tag Manager, loaded only for the Minescout Studio section (/studio*).
 // This SPA renders every page through one document, so a tag in index.html
 // would fire on the portfolio too; it is injected here instead, once, on the
@@ -1609,6 +1629,7 @@ function render(path) {
 
   if (isStudioPath(finalPath)) loadGTM();
 
+  applyPageMeta(finalPath);
   appElement.innerHTML = content;
   updateSidebarNav(path); 
   window.scrollTo(0, 0);

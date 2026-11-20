@@ -135,6 +135,16 @@ after — `git stash` your edits and re-run if unsure.
   one of them.
 - Cache-busting is manual: bump `?v=` on the `app.js` script tag in `index.html`
   and on the `views.js` import in `app.js` after editing either file.
+- Per-route document metadata lives in `PAGE_META` (with `SITE_META` as the
+  fallback) in `views.js`. `render()` applies `document.title`,
+  `meta[name=description]`, and the `og:*` equivalents on every navigation, so
+  a new page that needs its own title/description gets a `PAGE_META` entry;
+  without one it falls back to the site-wide title.
+- The three studio service landing pages (`/studio/local-web-design`,
+  `/studio/custom-storefronts`, `/studio/student-nonprofit`) are plain `views`
+  entries linked from `/studio`. `scripts/studio-pages.test.mjs` asserts their
+  unique H1s, `PAGE_META` titles/descriptions, CTA links, sitemap entries, and
+  that every dollar figure on them also appears on `/studio/pricing`.
 - `npm test` here is `node --test minescout.net/scripts/*.test.mjs` from inside
   `minescout.net/`; `scripts/blog-posts.test.mjs` asserts every index entry has a
   view and a sitemap entry, that the new posts are released, and that the

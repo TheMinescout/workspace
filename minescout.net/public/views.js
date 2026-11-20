@@ -188,6 +188,39 @@ function buildBlogIndex() {
 }
 
 // ---------------------------------------------------------------------------
+// Per-route document metadata
+// ---------------------------------------------------------------------------
+
+/**
+ * Site-wide fallback metadata. app.js uses this for any route without a
+ * PAGE_META entry and restores it when navigating back from a service page.
+ */
+export const SITE_META = {
+  title: 'Thomas Carleton',
+  description: 'Builder. Student. Eagle Scout. I build things on the internet — from Minecraft tools to web apps.',
+};
+
+/**
+ * Routes that need a document title and meta description distinct from the
+ * portfolio defaults in index.html. app.js applies these on every render and
+ * restores the defaults for any route that is not listed here.
+ */
+export const PAGE_META = {
+  '/studio/local-web-design': {
+    title: 'Small Business Website Design in Sammamish & Eastside WA | Minescout Studio',
+    description: 'Custom, fast websites for small businesses in Sammamish, Issaquah, Redmond, and Bellevue. Mobile-first layouts, edge performance, and SEO setup from $750.',
+  },
+  '/studio/custom-storefronts': {
+    title: 'Custom E-Commerce Storefronts Without Monthly Platform Fees | Minescout Studio',
+    description: 'Custom e-commerce storefronts with interactive configurators, live unit toggles, and flexible checkout flows. Live proof at chop-lab.com, projects from $2,500.',
+  },
+  '/studio/student-nonprofit': {
+    title: 'Affordable Custom Websites for Students, Clubs & Nonprofits | Minescout Studio',
+    description: 'Discounted custom websites for students, robotics teams, scouts, school clubs, and local nonprofits. Projects from $250 to $750 with fast turnaround.',
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Views object
 // ---------------------------------------------------------------------------
 
@@ -458,6 +491,13 @@ export const views = {
           <a href="/studio/creation" class="ai-feature"><div class="ai-feature-icon">✨</div><div><div class="ai-feature-title">AI Site Builder</div><div class="ai-feature-desc">Chat with an AI to build a preview of your new site from a template. Like the result? Drop your email and I'll finish it.</div></div><span class="ai-feature-badge badge-live">New</span></a>
           <a href="/portal" target="_blank" class="ai-feature"><div class="ai-feature-icon">🎭</div><div><div class="ai-feature-title">The "Backstage" Dashboard</div><div class="ai-feature-desc">Your private dashboard where you can edit AI knowledge, see conversations, and manage your site without touching code.</div></div><span class="ai-feature-badge badge-node">Included</span></a>
         </div>
+
+        <div class="ai-section-label">Specialist Services</div>
+        <div class="ai-features">
+          <a href="/studio/local-web-design" class="ai-feature"><div class="ai-feature-icon">📍</div><div><div class="ai-feature-title">Local Web Design</div><div class="ai-feature-desc">Fast, custom websites for small businesses in Sammamish, Issaquah, Redmond, and Bellevue, with pricing from $750.</div></div><span class="ai-feature-badge badge-live">Service</span></a>
+          <a href="/studio/custom-storefronts" class="ai-feature"><div class="ai-feature-icon">🛒</div><div><div class="ai-feature-title">Custom E-Commerce Storefronts</div><div class="ai-feature-desc">Configurators, live unit toggles, and checkout or invoicing flows without monthly platform fees.</div></div><span class="ai-feature-badge badge-live">Service</span></a>
+          <a href="/studio/student-nonprofit" class="ai-feature"><div class="ai-feature-icon">🎓</div><div><div class="ai-feature-title">Students, Clubs &amp; Nonprofits</div><div class="ai-feature-desc">Discounted custom websites from $250 for student organizations, robotics teams, scouts, and community nonprofits.</div></div><span class="ai-feature-badge badge-live">Service</span></a>
+        </div>
         
         <div class="ai-callout" style="border-left-color: var(--fg); background: var(--bg);">
           <div class="ai-callout-title">🤝 Agency Quality, Direct Access.</div>
@@ -475,6 +515,184 @@ export const views = {
         </div>
         
         <p class="ai-disclaimer">Every project is built directly by the founder from start to finish. Minescout Studio is operated by <a href="/">Thomas Carleton</a>. Whether you're a student building your first portfolio or a business looking to automate customer support, the goal is the same: build something that lasts.</p>
+      </div>
+    </div>
+  `,
+  '/studio/local-web-design': `
+    <div class="main--page">
+      <div class="page-content ai-wrap">
+        <p class="ai-eyebrow">Minescout Studio &middot; Sammamish, WA</p>
+        <h1 class="ai-title">Fast, custom websites for Sammamish and Eastside small businesses.</h1>
+
+        <p class="ai-lead">If your site still runs on a slow template, every extra second is a customer who taps back to the map and calls the next business. I build custom, mobile-first sites for small businesses in <strong>Sammamish, Issaquah, Redmond, and Bellevue</strong> &mdash; static pages served from the edge, so the first screen is readable in well under a second.</p>
+
+        <div class="ai-stats">
+          <div class="ai-stat"><span class="ai-stat-val">&lt;1<em>s</em></span><span class="ai-stat-label">Edge first paint</span></div>
+          <div class="ai-stat"><span class="ai-stat-val">100<em>%</em></span><span class="ai-stat-label">Custom built</span></div>
+          <div class="ai-stat"><span class="ai-stat-val">0<em>%</em></span><span class="ai-stat-label">Plugin bloat</span></div>
+        </div>
+
+        <div class="ai-section-label">What your site gets</div>
+        <div class="ai-features">
+          <div class="ai-feature"><div class="ai-feature-icon">⚡</div><div><div class="ai-feature-title">Sub-second edge performance</div><div class="ai-feature-desc">Pre-built HTML served from a network near Sammamish instead of a database waking up on every visit. No plugin can slow it down after launch.</div></div><span class="ai-feature-badge badge-live">Core</span></div>
+          <div class="ai-feature"><div class="ai-feature-icon">📱</div><div><div class="ai-feature-title">Mobile-first layouts</div><div class="ai-feature-desc">Most local searches happen on a phone. Every page is designed at phone width first, with readable hours, services, and a tap-to-call path above the fold.</div></div><span class="ai-feature-badge badge-live">Core</span></div>
+          <div class="ai-feature"><div class="ai-feature-icon">🔍</div><div><div class="ai-feature-title">SEO setup that ships</div><div class="ai-feature-desc">Clean titles and descriptions, a sitemap, structured data, and fast pages &mdash; the groundwork Google needs before local listings can rank.</div></div><span class="ai-feature-badge badge-live">Core</span></div>
+        </div>
+
+        <div class="ai-section-label">Transparent starting tiers</div>
+        <div class="dash-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;">
+          <div class="dash-stat" style="text-align:left;">
+            <div style="font-size:1rem;font-family:var(--serif);font-weight:700;color:var(--fg);margin-bottom:0.3rem;">Portfolio</div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.5rem;font-size:0.95rem;">From $750</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Custom design, responsive layout, contact form, SEO basics, and fast hosting setup.</div>
+          </div>
+          <div class="dash-stat" style="text-align:left;">
+            <div style="font-size:1rem;font-family:var(--serif);font-weight:700;color:var(--fg);margin-bottom:0.3rem;">Professional</div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.5rem;font-size:0.95rem;">From $1,500</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Multiple pages, booking and contact integrations, analytics, and performance work.</div>
+          </div>
+          <div class="dash-stat" style="text-align:left;">
+            <div style="font-size:1rem;font-family:var(--serif);font-weight:700;color:var(--fg);margin-bottom:0.3rem;">Business</div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.5rem;font-size:0.95rem;">From $2,500</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Discovery meeting, fully custom design, advanced SEO, custom forms, and an AI-ready foundation.</div>
+          </div>
+        </div>
+        <p style="font-size:0.85rem;color:var(--muted);line-height:1.8;margin-bottom:2.5rem;">Those are starting prices, not a range pulled from an industry survey. Optional care plans run <strong style="color:var(--fg);">$10&ndash;$75 / month</strong> for priority support, edge hosting and SSL, updates, backups, and AI maintenance. None of them is required. <a href="/studio/pricing" style="color:var(--accent);">See the full pricing page &rarr;</a></p>
+
+        <div class="ai-callout">
+          <div class="ai-callout-title">🦅 Built locally by an Eagle Scout.</div>
+          <div class="ai-callout-desc">Minescout Studio is run by Thomas Carleton, a Sammamish-based student developer and Eagle Scout. You work directly with the person building the site &mdash; no account manager, no offshore handoff, and no agency overhead baked into the quote. The same follow-through that earned the Eagle rank is what keeps your site fast after launch. <a href="/blog/eagle-scout-project.html" style="color:var(--accent);">Read the Eagle Scout project story &rarr;</a></div>
+        </div>
+
+        <div class="ai-section-label">Ready when you are</div>
+        <p class="ai-lead" style="margin-bottom:1.5rem;">Tell me what your business does and what your current site gets wrong. You will get a straight answer on scope and price, usually within a day.</p>
+        <div class="ai-cta-group" style="margin-bottom:3rem;">
+          <a href="/studio/intake" class="btn-primary">Start a project</a>
+          <a href="/studio/pricing" class="btn-ghost">See pricing &rarr;</a>
+        </div>
+
+        <div class="ai-section-label">Other services</div>
+        <div class="ai-features">
+          <a href="/studio/custom-storefronts" class="ai-feature"><div class="ai-feature-icon">🛒</div><div><div class="ai-feature-title">Custom e-commerce storefronts</div><div class="ai-feature-desc">Configurators, live unit toggles, and checkout flows without monthly platform fees.</div></div><span class="ai-feature-badge badge-node">Service</span></a>
+          <a href="/studio/student-nonprofit" class="ai-feature"><div class="ai-feature-icon">🎓</div><div><div class="ai-feature-title">Students, clubs &amp; nonprofits</div><div class="ai-feature-desc">Discounted custom websites from $250 for student organizations and community groups.</div></div><span class="ai-feature-badge badge-node">Service</span></a>
+        </div>
+
+        <p class="ai-disclaimer">Minescout Studio is operated by <a href="/">Thomas Carleton</a> in Sammamish, Washington. Serving Sammamish, Issaquah, Redmond, Bellevue, and the wider Eastside.</p>
+      </div>
+    </div>
+  `,
+  '/studio/custom-storefronts': `
+    <div class="main--page">
+      <div class="page-content ai-wrap">
+        <p class="ai-eyebrow">Minescout Studio &middot; Storefronts</p>
+        <h1 class="ai-title">Custom e-commerce storefronts built for speed and zero platform bloat.</h1>
+
+        <p class="ai-lead">Platform subscriptions are easy to start and expensive to leave. I build storefronts as custom code instead: fast pages, a product model that matches how you actually sell, and checkout or invoicing that fits the business &mdash; without a monthly platform fee stacked on top of every transaction.</p>
+
+        <div class="ai-stats">
+          <div class="ai-stat"><span class="ai-stat-val">0<em>%</em></span><span class="ai-stat-label">Platform cut</span></div>
+          <div class="ai-stat"><span class="ai-stat-val">1<em> model</em></span><span class="ai-stat-label">Products &amp; quotes</span></div>
+          <div class="ai-stat"><span class="ai-stat-val">&lt;1<em>s</em></span><span class="ai-stat-label">First response</span></div>
+        </div>
+
+        <div class="ai-section-label">Live proof: The Chop Lab</div>
+        <div class="ai-callout" style="border-left-color:var(--fg);background:var(--bg);">
+          <div class="ai-callout-title">🛠️ <a href="https://chop-lab.com" target="_blank" rel="noopener" style="color:var(--accent);">chop-lab.com</a></div>
+          <div class="ai-callout-desc">The Chop Lab sells ceramics tooling where almost nothing is a fixed SKU: custom chops cut from a maker&rsquo;s logo, texture rollers with repeating geometry, slab rails in a customer&rsquo;s exact width. The storefront handles that with <strong style="color:var(--fg);">interactive configurators</strong>, <strong style="color:var(--fg);">live unit toggles</strong> that switch every measurement between millimetres and inches, and a submission flow that turns a drawing or dimension into a real quote instead of a dead cart.</div>
+          <div style="margin-top:1.25rem;"><a href="/blog/chop-lab-storefront.html" class="btn-ghost" style="border-color:var(--border);color:var(--fg);">Read the case study &rarr;</a></div>
+        </div>
+
+        <div class="ai-section-label">What a custom storefront handles</div>
+        <div class="ai-features">
+          <div class="ai-feature"><div class="ai-feature-icon">🎛️</div><div><div class="ai-feature-title">Interactive configurators</div><div class="ai-feature-desc">Customers pick a product, choose a texture or option, and enter their own dimensions. The form validates the specification instead of guessing at a variant.</div></div><span class="ai-feature-badge badge-live">Core</span></div>
+          <div class="ai-feature"><div class="ai-feature-icon">📐</div><div><div class="ai-feature-title">Live unit toggles</div><div class="ai-feature-desc">Lengths are stored canonically in millimetres and converted at render time, so switching between mm and inches re-renders every measurement at once without losing precision.</div></div><span class="ai-feature-badge badge-live">Core</span></div>
+          <div class="ai-feature"><div class="ai-feature-icon">🧾</div><div><div class="ai-feature-title">Checkout and invoicing that fit</div><div class="ai-feature-desc">Card checkout through Stripe, or a quote-and-invoice flow for made-to-order work. You pay processor fees, not a platform tax on every sale.</div></div><span class="ai-feature-badge badge-live">Core</span></div>
+          <div class="ai-feature"><div class="ai-feature-icon">🗂️</div><div><div class="ai-feature-title">A catalog you own</div><div class="ai-feature-desc">Product data lives with the site, versioned and typed. Adding an item is a simple form, not a plugin update that breaks the theme.</div></div><span class="ai-feature-badge badge-live">Core</span></div>
+        </div>
+
+        <div class="ai-section-label">What it costs</div>
+        <div class="dash-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem;">
+          <div class="dash-stat" style="text-align:left;">
+            <div style="font-size:1rem;font-family:var(--serif);font-weight:700;color:var(--fg);margin-bottom:0.3rem;">Business</div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.5rem;font-size:0.95rem;">From $2,500</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Fully custom storefront design, advanced SEO, custom forms, and an AI-ready foundation. Where a real storefront starts.</div>
+          </div>
+          <div class="dash-stat" style="text-align:left;">
+            <div style="font-size:1rem;font-family:var(--serif);font-weight:700;color:var(--fg);margin-bottom:0.3rem;">Business + AI</div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.5rem;font-size:0.95rem;">From $3,500</div>
+            <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Everything in Business plus a custom AI assistant, knowledge base, automation, and a dashboard.</div>
+          </div>
+        </div>
+        <p style="font-size:0.85rem;color:var(--muted);line-height:1.8;margin-bottom:2.5rem;">Optional hosting and support run <strong style="color:var(--fg);">$15&ndash;$75 / month</strong>, and none of it is required &mdash; you can host the store yourself. A configurator or quote flow is what moves the estimate above the tier floor, not the number of pages. <a href="/studio/pricing" style="color:var(--accent);">See the full pricing page &rarr;</a></p>
+
+        <div class="ai-section-label">Ready when you are</div>
+        <p class="ai-lead" style="margin-bottom:1.5rem;">Tell me what you sell, which products need configuration, and who will add new products after launch. Those three answers move the quote more than anything else.</p>
+        <div class="ai-cta-group" style="margin-bottom:3rem;">
+          <a href="/studio/intake" class="btn-primary">Scope a storefront</a>
+          <a href="/blog/chop-lab-storefront.html" class="btn-ghost">Read the case study &rarr;</a>
+        </div>
+
+        <div class="ai-section-label">Other services</div>
+        <div class="ai-features">
+          <a href="/studio/local-web-design" class="ai-feature"><div class="ai-feature-icon">📍</div><div><div class="ai-feature-title">Local web design</div><div class="ai-feature-desc">Fast, custom websites for Sammamish and Eastside small businesses, from $750.</div></div><span class="ai-feature-badge badge-node">Service</span></a>
+          <a href="/studio/student-nonprofit" class="ai-feature"><div class="ai-feature-icon">🎓</div><div><div class="ai-feature-title">Students, clubs &amp; nonprofits</div><div class="ai-feature-desc">Discounted custom websites from $250 for student organizations and community groups.</div></div><span class="ai-feature-badge badge-node">Service</span></a>
+        </div>
+
+        <p class="ai-disclaimer">Minescout Studio is operated by <a href="/">Thomas Carleton</a>. The Chop Lab storefront at <a href="https://chop-lab.com" target="_blank" rel="noopener">chop-lab.com</a> is live, and the build is documented in the <a href="/blog/chop-lab-storefront.html">case study</a>.</p>
+      </div>
+    </div>
+  `,
+  '/studio/student-nonprofit': `
+    <div class="main--page">
+      <div class="page-content ai-wrap">
+        <p class="ai-eyebrow">Minescout Studio &middot; Student &amp; Nonprofit Program</p>
+        <h1 class="ai-title">Custom websites for student organizations, clubs, and local nonprofits.</h1>
+
+        <p class="ai-lead">A student club should not need a $2,500 budget to look credible online. Each semester I reserve a limited number of discounted projects for <strong>students, robotics teams, scouts, school clubs, and community nonprofits</strong>. Typical projects land between <strong>$250 and $750</strong> depending on scope &mdash; and they are built on the same fast, custom stack as my commercial work.</p>
+
+        <div class="ai-stats">
+          <div class="ai-stat"><span class="ai-stat-val">$250<em>+</em></span><span class="ai-stat-label">Discounted start</span></div>
+          <div class="ai-stat"><span class="ai-stat-val">~5<em> days</em></span><span class="ai-stat-label">To launch</span></div>
+          <div class="ai-stat"><span class="ai-stat-val">$10<em>/mo</em></span><span class="ai-stat-label">Optional care</span></div>
+        </div>
+
+        <div class="ai-section-label">What is included</div>
+        <div class="ai-features">
+          <div class="ai-feature"><div class="ai-feature-icon">🎨</div><div><div class="ai-feature-title">A custom design, not a template</div><div class="ai-feature-desc">Your club&rsquo;s colors, logo, and photos in a layout built for its actual content &mdash; not a generic theme with the name swapped in.</div></div><span class="ai-feature-badge badge-live">Included</span></div>
+          <div class="ai-feature"><div class="ai-feature-icon">📱</div><div><div class="ai-feature-title">Mobile-first pages</div><div class="ai-feature-desc">Members and parents will open the site on a phone. Everything is readable and tappable without pinch-zooming.</div></div><span class="ai-feature-badge badge-live">Included</span></div>
+          <div class="ai-feature"><div class="ai-feature-icon">✉️</div><div><div class="ai-feature-title">Join, contact, and sign-up forms</div><div class="ai-feature-desc">A working form for new members, volunteers, or donations that sends to an inbox you actually check.</div></div><span class="ai-feature-badge badge-live">Included</span></div>
+          <div class="ai-feature"><div class="ai-feature-icon">🔍</div><div><div class="ai-feature-title">SEO basics and fast hosting</div><div class="ai-feature-desc">Clean titles, a sitemap, and edge hosting so the site shows up in search and opens instantly on event day.</div></div><span class="ai-feature-badge badge-live">Included</span></div>
+        </div>
+
+        <div class="ai-section-label">Who the program is for</div>
+        <ul style="margin-bottom:2.5rem;padding-left:1.5rem;color:var(--muted);line-height:1.9;">
+          <li><strong style="color:var(--fg);">Students</strong> building a first portfolio, project page, or application site.</li>
+          <li><strong style="color:var(--fg);">Robotics teams, scout troops, and school clubs</strong> that need a home for schedules, sponsors, and sign-ups.</li>
+          <li><strong style="color:var(--fg);">Community nonprofits</strong> that need a credible web presence without an agency budget.</li>
+        </ul>
+
+        <div class="ai-callout">
+          <div class="ai-callout-title">🤝 Real work, already shipped.</div>
+          <div class="ai-callout-desc">The same stack runs live client sites for an artist, an accessibility startup, and a ceramics tooling studio. You can read the details on the <a href="/studio/clients" style="color:var(--accent);">client work page</a> before you apply &mdash; the standard does not drop because the budget is smaller.</div>
+        </div>
+
+        <div class="ai-section-label">Pricing that fits a club budget</div>
+        <p style="font-size:0.9rem;color:var(--muted);line-height:1.9;margin-bottom:1.5rem;">Discounted projects run <strong style="color:var(--fg);">$250&ndash;$750</strong> depending on scope, against a regular Portfolio tier that starts at $750. If you want someone else to keep it running, the optional priority care plan is <strong style="color:var(--fg);">$10 / month</strong>, and hosting plans start at $15 / month. Neither is required &mdash; the site is yours to host and edit. <a href="/studio/pricing" style="color:var(--accent);">See the full pricing page &rarr;</a></p>
+
+        <div class="ai-section-label">Ready when you are</div>
+        <p class="ai-lead" style="margin-bottom:1.5rem;">Tell me what your group does, who it serves, and what you need the site to handle. Availability is limited each semester, so apply early.</p>
+        <div class="ai-cta-group" style="margin-bottom:3rem;">
+          <a href="/studio/intake" class="btn-primary">Apply for the program</a>
+          <a href="/studio/clients" class="btn-ghost">See client work &rarr;</a>
+        </div>
+
+        <div class="ai-section-label">Other services</div>
+        <div class="ai-features">
+          <a href="/studio/local-web-design" class="ai-feature"><div class="ai-feature-icon">📍</div><div><div class="ai-feature-title">Local web design</div><div class="ai-feature-desc">Fast, custom websites for Sammamish and Eastside small businesses, from $750.</div></div><span class="ai-feature-badge badge-node">Service</span></a>
+          <a href="/studio/custom-storefronts" class="ai-feature"><div class="ai-feature-icon">🛒</div><div><div class="ai-feature-title">Custom e-commerce storefronts</div><div class="ai-feature-desc">Configurators, live unit toggles, and checkout flows without monthly platform fees.</div></div><span class="ai-feature-badge badge-node">Service</span></a>
+        </div>
+
+        <p class="ai-disclaimer">Minescout Studio is operated by <a href="/">Thomas Carleton</a>, a student developer in Sammamish, Washington. The student and nonprofit program is limited to a few projects each semester.</p>
       </div>
     </div>
   `,
