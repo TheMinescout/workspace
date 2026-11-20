@@ -130,6 +130,19 @@ after — `git stash` your edits and re-run if unsure.
   `public/sitemap.xml`. The sitemap has a `<!-- Blog Posts -->` block at the end
   listing every post; `scripts/blog-posts.test.mjs` fails if a post in
   `BLOG_POSTS` has no sitemap entry.
+- A **scheduled** post is one whose `registerPost` date is in the future:
+  `registerPost` skips the view, so the post is missing from the index *and*
+  404s on direct navigation until the date arrives. `BLOG_POSTS` is ordered
+  newest first and `featured: true` must sit on the newest entry —
+  `buildBlogIndex` falls back to the newest *released* post, so the Latest badge
+  is right before and after a release. `scripts/blog-posts.test.mjs` covers the
+  scheduled posts (Nov 27, Dec 4, Dec 11 2026) by importing `views.js` in a child
+  process with `Date` pinned (`viewsAt(iso)`), which is the only way to observe a
+  gated post without waiting for the calendar.
+- A post that needs its own document title/description gets a `PAGE_META` entry
+  keyed by its href. Note that this also applies on the 404 render before the
+  post releases, so the title/description are public early even though the body
+  is not.
 - Prices quoted in a post must match `views['/studio/pricing']` — that page is
   the source of truth for what the studio charges. The test suite reads the tier
   and monthly prices out of it and fails if the e-commerce post stops mentioning
