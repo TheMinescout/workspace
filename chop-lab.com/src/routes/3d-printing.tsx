@@ -176,6 +176,28 @@ function PrintingPage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-6 rounded-xl bg-surface p-6 shadow-lift sm:p-8">
+          <div className="max-w-xl">
+            <p className="text-xs font-medium uppercase tracking-wider text-primary">Best seller</p>
+            <h2 className="mt-2 font-display text-3xl font-medium tracking-tight">
+              Custom 3D print — STL &amp; CAD service.
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              Upload an STL or send a sketch. $3 base, $20/hr CAD design, and $2/hr
+              print time — PLA Matte or PETG, sliced for the{" "}
+              <Length mm={256} /> cube, invoiced by Venmo after CAD and slice review.
+            </p>
+          </div>
+          <Button asChild size="lg">
+            <Link to="/tools/$slug" params={{ slug: "custom-3d-print" }}>
+              Upload your STL
+              <ArrowRight className="size-4" />
+            </Link>
+          </Button>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-muted">How it works</p>

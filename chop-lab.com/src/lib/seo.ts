@@ -1,6 +1,6 @@
 import type { MetaDescriptor } from "@tanstack/react-router";
 import type * as React from "react";
-import type { Product } from "@/lib/products";
+import { quoteFor, type Product } from "./products.ts";
 
 /**
  * Canonical origin for the site. Used for absolute canonical links, the
@@ -54,9 +54,9 @@ export function pageHead({ title, description, path, ld }: PageHeadInput): PageH
 }
 
 /**
- * `Product` structured data for a tool page. `price` is the numeric starting
- * price (base fee before hourly CAD time) so Product Snippets and Merchant
- * Center can parse it; the quote breakdown lives in the page copy.
+ * `Product` structured data for a tool page. `price` is the quote target the
+ * page renders (`quoteFor`), so Product Snippets and Merchant Center advertise
+ * the same starting price a shopper sees instead of the bare base fee.
  */
 export function productLd(product: Product) {
   const url = absoluteUrl(`/tools/${product.slug}`);
@@ -72,7 +72,7 @@ export function productLd(product: Product) {
     offers: {
       "@type": "Offer",
       priceCurrency: "USD",
-      price: product.basePrice,
+      price: quoteFor(product),
       availability: "https://schema.org/InStock",
       itemCondition: "https://schema.org/NewCondition",
       url,

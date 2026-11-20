@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { COLUMNS, feedRows, FEED_URL, isStale, renderFeed, skipped } from "./merchant-feed.mjs";
-import { PRODUCTS } from "../src/lib/products.ts";
+import { PRODUCTS, quoteFor } from "../src/lib/products.ts";
 import { absoluteUrl, productLd } from "../src/lib/seo.ts";
 
 const rows = feedRows();
@@ -77,7 +77,7 @@ describe("merchant center feed", () => {
       const r = record(row);
       const product = PRODUCTS.find((p) => p.slug === r.id);
       const ld = productLd(product);
-      assert.equal(r.price, `${product.basePrice.toFixed(2)} USD`);
+      assert.equal(r.price, `${quoteFor(product).toFixed(2)} USD`);
       assert.equal(Number.parseFloat(r.price), ld.offers.price);
     }
   });
