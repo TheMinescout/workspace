@@ -73,6 +73,8 @@ const IGNORABLE = [
   /Failed to load resource.*api/i,
 ];
 
+const CHAT_WORKER = "https://thomas-chat.tmcarleton11.workers.dev/**";
+
 const API_STUBS = {
   "/api/me": { ok: false },
   "/api/admin/session": { ok: true, isAdmin: false },
@@ -99,12 +101,38 @@ async function stubApi(context) {
   });
 }
 
+// The AI Reflection sidebar posts to a Cloudflare Worker that only answers the
+// production origin. From 127.0.0.1 the preflight is rejected, and the browser
+// logs a CORS error that page JS cannot catch. Answer it locally so the smoke
+// test does not depend on a third-party origin allowlist.
+async function stubChatWorker(context) {
+  await context.route(CHAT_WORKER, route => {
+    if (route.request().method() === "OPTIONS") {
+      return route.fulfill({
+        status: 204,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type",
+        },
+      });
+    }
+    return route.fulfill({
+      status: 200,
+      headers: { "Access-Control-Allow-Origin": "*" },
+      contentType: "application/json",
+      body: JSON.stringify({ content: "Smoke-test reflection." }),
+    });
+  });
+}
+
 try {
   if (!(await waitForServer())) throw new Error(`preview server did not start on ${BASE}`);
 
   for (const route of routes()) {
     const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     await stubApi(context);
+    await stubChatWorker(context);
     const page = await context.newPage();
     const errors = [];
 
@@ -158,6 +186,7 @@ try {
   {
     const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     await stubApi(context);
+    await stubChatWorker(context);
     const page = await context.newPage();
     await page.goto(BASE + "/", { waitUntil: "networkidle", timeout: 30000 }).catch(() => {});
     const painted = await page.locator("#root").innerHTML().then(h => h.length > 0).catch(() => false);
