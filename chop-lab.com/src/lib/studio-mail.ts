@@ -7,7 +7,7 @@ const GAS_URL =
   "https://script.google.com/macros/s/AKfycbz7MJE7mNY1A-SvbdHGV3yI6-ftBElB1wOth4MqEABvJXLI5SNzeqiG2r7PJBpWvcAiOg/exec";
 
 // Where new tool requests get forwarded so Thomas sees them land.
-export const STUDIO_EMAIL = "tmcarlston11@gmail.com";
+export const STUDIO_EMAIL = "tmcarleton11@gmail.com";
 
 export type MailAttachment = {
   filename: string;

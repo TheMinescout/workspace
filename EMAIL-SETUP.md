@@ -96,6 +96,28 @@ Rules the loader follows:
 - A `chop-lab.com/.env` or `life.minescout.net/.env` also works and overrides the
   root file, but you do not need one.
 
+### Where the mail lands
+
+Two inboxes, both fixed in code so a browser can never pick a recipient:
+
+| Sender | Destination | Change it in |
+| --- | --- | --- |
+| Minescout sites (contact, studio consult, intake, SmartCut, beta, Life) | `theminescout@minescout.net` | `STUDIO_INBOX` in `.env` |
+| The Chop Lab (configurator, invoice, outbox resend) | `tmcarleton11@gmail.com` | `STUDIO_EMAIL` in `chop-lab.com/src/lib/studio-mail.ts` |
+
+`.env` holds **credentials only** — the account that sends (`SMTP_USER`,
+`SMTP_PASSWORD`) and optional knobs. Addresses live in code because the relay
+must not accept one from the browser. So one `.env` configures sending for
+every site; if you want the Minescout leads in the same Gmail inbox as the Chop
+Lab ones, uncomment one line:
+
+```dotenv
+STUDIO_INBOX=tmcarleton11@gmail.com
+```
+
+Customer receipts (the intake confirmation and the Chop Lab receipt) always go
+to the address the customer typed, never to either inbox above.
+
 ---
 
 ## Step 3 — Restart both servers
