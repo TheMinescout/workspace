@@ -77,6 +77,20 @@ after — `git stash` your edits and re-run if unsure.
 - Keep the `0.0.0.0:8080` dev / `127.0.0.1:8081` preview port contract and
   `PreviewHostBridge` intact.
 
+### Order email and the delivery queue
+
+- `src/lib/studio-mail.ts` sends through SMTP when `SMTP_USER` and
+  `SMTP_PASSWORD` are in the server process environment; otherwise it falls
+  back to the Apps Script, which currently answers
+  `{"status":"error","message":"Unauthorized"}`. A live order that reaches
+  "Request received" but never arrives usually means the server was started
+  without those two variables — the app-builder preview does not pass them to a
+  manually started `npm run dev`.
+- Requests are stored in `localStorage` before sending (`src/lib/requests.ts`,
+  key `chop-lab-requests`) and listed at `/outbox`, where an undelivered
+  request can be resent with its saved files. A successful studio send clears
+  the stored base64 attachments.
+
 ### Conventions
 
 - SEO: use `pageHead(...)` from `src/lib/seo.ts` in each route's `head()`. It
