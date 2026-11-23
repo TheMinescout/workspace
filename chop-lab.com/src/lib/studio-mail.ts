@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import nodemailer from "nodemailer";
 
 // Legacy Google Apps Script Web App (doPost sends the email via GmailApp,
 // doGet checks the studio passcode). Kept as a fallback for deployments with
@@ -47,6 +46,13 @@ async function sendViaSmtp(
   data: MailPayload,
   creds: { user: string; pass: string },
 ): Promise<void> {
+  let nodemailer: typeof import("nodemailer").default;
+  try {
+    ({ default: nodemailer } = await import("nodemailer"));
+  } catch {
+    throw new Error("Mail transport is unavailable on this server (nodemailer is not installed).");
+  }
+
   const port = Number(process.env.SMTP_PORT ?? 587);
   const transport = nodemailer.createTransport({
     host: process.env.SMTP_HOST ?? "smtp.gmail.com",
