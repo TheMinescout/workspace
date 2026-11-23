@@ -103,6 +103,11 @@ after — `git stash` your edits and re-run if unsure.
   falls back to the Apps Script at `GAS_URL`; that script's `doPost` currently
   returns `{"status":"error","message":"Unauthorized"}`, so SMTP is the working
   path. Never hard-code the SMTP password — the platform injects the secrets.
+  `nodemailer` is loaded with a dynamic `import()` so a missing install surfaces
+  as a send error, not a 500. The deploy syncs the **committed** `node_modules/`
+  rather than running `npm install`, so a new runtime dependency has to be
+  committed there (only the new package and the lock/metadata files, not the
+  whole tree).
 - Accessibility: keep the skip link (`#main`) in `__root.tsx`, label navs
   (`aria-label="Main"` / `"Mobile"`), and give content images meaningful `alt`
   text. `alt=""` is only for genuinely decorative images.
