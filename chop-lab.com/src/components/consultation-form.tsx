@@ -28,6 +28,36 @@ const STEPS = ["Tool", "Specs", "Studio", "Review"] as const;
 
 const PRINT_MATERIALS = ["PLA Matte", "PETG"] as const;
 
+// Vercel caps server-function request bodies at 4.5 MB; base64 inflates by
+// roughly a third, so keep the raw total at 3 MB.
+const MAX_ATTACHMENT_BYTES = 3 * 1024 * 1024;
+
+type Attachment = {
+  filename: string;
+  contentType: string;
+  /** Base64 content without a `data:` prefix. */
+  content: string;
+  size: number;
+};
+
+function formatBytes(bytes: number) {
+  return bytes >= 1024 * 1024
+    ? `${Math.round((bytes / (1024 * 1024)) * 10) / 10} MB`
+    : `${Math.max(1, Math.round(bytes / 1024))} KB`;
+}
+
+function readFileBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === "string" ? reader.result : "";
+      resolve(result.slice(result.indexOf(",") + 1));
+    };
+    reader.onerror = () => reject(reader.error ?? new Error("Could not read the file."));
+    reader.readAsDataURL(file);
+  });
+}
+
 type FormState = {
   productSlug: string;
   mark: string;
@@ -179,7 +209,10 @@ export function ConsultationForm({
   const [error, setError] = useState("");
   const [done, setDone] = useState<LabRequest | null>(null);
   const [sending, setSending] = useState(false);
-  const [emailWarning, setEmailWarning] = useState("");
+  const [delivery, setDelivery] = useState<{ studioOk: boolean; receiptOk: boolean } | null>(null);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [readingFiles, setReadingFiles] = useState(false);
+  const [fileError, setFileError] = useState("");
   const [recent] = useState(() => loadRequests());
   const { unit } = useLength();
   const fmt = useCallback((mm: number) => formatLength(mm, unit), [unit]);
@@ -187,6 +220,39 @@ export function ConsultationForm({
   const product = form.productSlug ? getProduct(form.productSlug) : undefined;
 
   const patch = (p: Partial<FormState>) => setForm((f) => ({ ...f, ...p }));
+
+  async function addFiles(picked: File[]) {
+    if (!picked.length) return;
+    setFileError("");
+    setReadingFiles(true);
+    try {
+      const accepted: Attachment[] = [];
+      let total = attachments.reduce((sum, a) => sum + a.size, 0);
+      for (const file of picked) {
+        if (total + file.size > MAX_ATTACHMENT_BYTES) {
+          setFileError(
+            `${file.name} was skipped — attachments are limited to ${formatBytes(MAX_ATTACHMENT_BYTES)} total.`,
+          );
+          continue;
+        }
+        accepted.push({
+          filename: file.name,
+          contentType: file.type || "application/octet-stream",
+          content: await readFileBase64(file),
+          size: file.size,
+        });
+        total += file.size;
+      }
+      if (accepted.length) {
+        setAttachments((prev) => [...prev, ...accepted]);
+        setForm((f) => ({ ...f, files: [...f.files, ...accepted.map((a) => a.filename)] }));
+      }
+    } catch (err) {
+      setFileError(err instanceof Error ? err.message : "Could not read that file.");
+    } finally {
+      setReadingFiles(false);
+    }
+  }
 
   const specs = useMemo(() => {
     if (!product) return {};
@@ -217,6 +283,10 @@ export function ConsultationForm({
     setError("");
     if (step === 0 && !product) {
       setError("Choose a tool to continue.");
+      return;
+    }
+    if (readingFiles) {
+      setError("Hang on — still reading your file.");
       return;
     }
     if (step === 2) {
@@ -251,7 +321,7 @@ export function ConsultationForm({
     setDone(req);
 
     setSending(true);
-    setEmailWarning("");
+    setDelivery(null);
     const niceDate = new Date(req.createdAt).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
@@ -292,17 +362,19 @@ export function ConsultationForm({
             createdAt: niceDate,
           }),
           fromName: "Chop Lab Studio Engine",
+          replyTo: req.email,
+          attachments: attachments.map(({ filename, contentType, content }) => ({
+            filename,
+            contentType,
+            content,
+          })),
         },
       }),
     ]);
 
     const receiptOk = receiptResult.status === "fulfilled" && receiptResult.value.success;
     const studioOk = studioResult.status === "fulfilled" && studioResult.value.success;
-    if (!receiptOk || !studioOk) {
-      setEmailWarning(
-        "Your request was saved, but the confirmation email couldn't be sent. Thomas still received it — no need to resubmit.",
-      );
-    }
+    setDelivery({ studioOk, receiptOk });
     setSending(false);
   }
 
@@ -319,9 +391,17 @@ export function ConsultationForm({
           until you approve the model.
         </p>
         {sending ? (
-          <p className="mt-4 text-sm text-muted">Sending your confirmation email…</p>
-        ) : emailWarning ? (
-          <p className="mt-4 text-sm text-primary">{emailWarning}</p>
+          <p className="mt-4 text-sm text-muted">Sending your request to the studio…</p>
+        ) : delivery && !delivery.studioOk ? (
+          <p className="mt-4 text-sm text-primary">
+            Your request is saved on this device, but it couldn't be delivered to the
+            studio. Please email {STUDIO_EMAIL} directly so it isn't missed.
+          </p>
+        ) : delivery && !delivery.receiptOk ? (
+          <p className="mt-4 text-sm text-primary">
+            Thomas received your request, but the confirmation copy to {done.email}{" "}
+            couldn't be sent.
+          </p>
         ) : (
           <p className="mt-4 text-sm text-muted">
             A confirmation receipt was sent to {done.email}.
@@ -347,7 +427,9 @@ export function ConsultationForm({
               setDone(null);
               setStep(0);
               setForm(empty);
-              setEmailWarning("");
+              setAttachments([]);
+              setFileError("");
+              setDelivery(null);
             }}
           >
             Start another request
@@ -663,8 +745,14 @@ export function ConsultationForm({
 
             <FileDrop
               files={form.files}
-              onFiles={(names) => patch({ files: [...form.files, ...names] })}
-              onClear={() => patch({ files: [] })}
+              reading={readingFiles}
+              error={fileError}
+              onFiles={(picked) => void addFiles(picked)}
+              onClear={() => {
+                setAttachments([]);
+                setFileError("");
+                patch({ files: [] });
+              }}
               stl={product.kind === "stl" || product.kind === "print"}
             />
           </div>
@@ -776,7 +864,7 @@ export function ConsultationForm({
               <ChevronRight className="size-4" />
             </Button>
           ) : (
-            <Button type="button" onClick={submit} disabled={sending}>
+            <Button type="button" onClick={submit} disabled={sending || readingFiles}>
               <Check className="size-4" />
               {sending ? "Submitting…" : "Finalize request"}
             </Button>
@@ -816,12 +904,16 @@ export function ConsultationForm({
 
 function FileDrop({
   files,
+  reading,
+  error,
   onFiles,
   onClear,
   stl,
 }: {
   files: string[];
-  onFiles: (names: string[]) => void;
+  reading: boolean;
+  error: string;
+  onFiles: (files: File[]) => void;
   onClear: () => void;
   stl: boolean;
 }) {
@@ -839,8 +931,14 @@ function FileDrop({
             : "Drop a sketch, logo, or photo — SVG, PNG, or PDF preferred"}
         </span>
         <span className="mt-1 text-xs text-muted">
-          Files stay on this device with your request summary. Max build{" "}
-          <Length mm={256} /> cube.
+          {reading ? (
+            "Reading your file…"
+          ) : (
+            <>
+              Sent with your request — up to {formatBytes(MAX_ATTACHMENT_BYTES)}{" "}
+              total. Max build <Length mm={256} /> cube.
+            </>
+          )}
         </span>
         <input
           id="files"
@@ -849,11 +947,13 @@ function FileDrop({
           className="sr-only"
           accept={stl ? ".stl,model/stl" : "image/*,.svg,.pdf"}
           onChange={(e) => {
-            const list = Array.from(e.target.files ?? []).map((f) => f.name);
-            if (list.length) onFiles(list);
+            const picked = Array.from(e.target.files ?? []);
+            e.target.value = "";
+            if (picked.length) onFiles(picked);
           }}
         />
       </label>
+      {error ? <p className="text-xs text-primary">{error}</p> : null}
       {files.length ? (
         <div className="flex items-center justify-between text-xs text-muted">
           <span>{files.join(", ")}</span>
