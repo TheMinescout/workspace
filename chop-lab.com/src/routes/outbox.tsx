@@ -47,7 +47,7 @@ function OutboxPage() {
   const [busy, setBusy] = useState<string | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [flash, setFlash] = useState("");
-  const [transport, setTransport] = useState<"smtp" | "apps-script" | null>(null);
+  const [transport, setTransport] = useState<"smtp" | "unconfigured" | null>(null);
 
   useEffect(() => {
     setRequests(undeliveredRequests(loadRequests()));
@@ -157,11 +157,11 @@ function OutboxPage() {
         the studio, resend it here — any files saved with it go along too.
       </p>
 
-      {transport === "apps-script" ? (
+      {transport === "unconfigured" ? (
         <p className="mt-6 rounded-xl bg-surface p-4 text-sm text-primary shadow-lift">
-          Order email is not configured on this server, so sends fall back to the Apps Script, which
-          currently rejects them. Add <code>SMTP_USER</code> and <code>SMTP_PASSWORD</code> to{" "}
-          <code>.env</code> and restart the server.
+          Order email is not configured on this server, so nothing can be sent. Add{" "}
+          <code>SMTP_USER</code> and <code>SMTP_PASSWORD</code> to the workspace <code>.env</code>{" "}
+          file and restart the server — <code>EMAIL-SETUP.md</code> walks through it.
         </p>
       ) : transport === "smtp" ? (
         <p className="mt-4 text-xs text-muted">Order email is using SMTP.</p>

@@ -13,13 +13,14 @@
  * workspace root is the local secret store (SMTP credentials today), and every
  * key in it is passed to the child process — server code reads those from
  * `process.env`, and Vite still exposes only the `VITE_`-prefixed ones to the
- * client.
+ * client. The Life dev server reads the same root file (see
+ * `life.minescout.net/server/env.js`), so SMTP is configured once for both.
  *
- * The local `.env` is applied last, so a non-empty value there wins — that is
- * the file the developer edits. Empty values are ignored so an untouched
- * `.env.example` cannot blank an injected secret. `.grok/app-env.json` is the
- * lowest layer. On deploy there is no `.env`, so the provider's environment is
- * used.
+ * Layers, lowest to highest: `.grok/app-env.json`, the process environment, the
+ * shared root `.env`, then a `chop-lab.com/.env` next to this app. A non-empty
+ * file value wins — that is the file the developer edits. Empty values are
+ * ignored so an untouched `.env.example` cannot blank an injected secret. On
+ * deploy there are no `.env` files, so the provider's environment is used.
  *
  * Vite picks the values up because `loadEnv` prefix-matches entries already in
  * `process.env`, which is why the merge has to happen before Vite starts.
@@ -32,6 +33,8 @@ import { fileURLToPath } from "node:url";
 
 export const APP_ENV_REL_PATH = ".grok/app-env.json";
 export const DOTENV_REL_PATH = ".env";
+/** The one file the whole workspace reads: `<repo>/.env`. */
+export const SHARED_DOTENV_REL_PATH = "../.env";
 
 const VITE_PREFIX = "VITE_";
 
@@ -109,18 +112,17 @@ export function readDotEnv(root) {
 
 /**
  * The environment a wrapped command runs with: app-env flags, then the real
- * process environment, then the local `.env`.
+ * process environment, then the shared root `.env`, then the local `.env`.
  *
  * Non-empty `.env` values win, so the file the user edits is authoritative for
  * their dev server. Empty values are ignored, so copying `.env.example` without
  * filling it in never blanks a secret the platform injected. On deploy there is
  * no `.env` (it is git-ignored), so the provider's environment is used.
  */
-export function resolveEnv(root, processEnv) {
-  const dotEnv = Object.fromEntries(
-    Object.entries(readDotEnv(root)).filter(([, value]) => value !== ""),
-  );
-  return { ...readAppEnv(root), ...processEnv, ...dotEnv };
+export function resolveEnv(root, processEnv, sharedRoot = dirname(root)) {
+  const layer = (dir) =>
+    Object.fromEntries(Object.entries(readDotEnv(dir)).filter(([, value]) => value !== ""));
+  return { ...readAppEnv(root), ...processEnv, ...layer(sharedRoot), ...layer(root) };
 }
 
 /** File values under the process environment: an explicit override wins. */

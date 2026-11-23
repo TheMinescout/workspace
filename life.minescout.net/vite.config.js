@@ -13,6 +13,8 @@ import {
 } from "./server/security.js";
 import { savePost as storeSavePost, removePost as storeRemovePost, normalizePost } from "./server/posts-store.js";
 import { mcpMiddleware } from "./server/mcp.js";
+import { createMailHandler } from "./server/mail.js";
+import { resolveMailEnv } from "./server/env.js";
 
 // The scraper module lives in the gitignored data/ folder, so it may be absent.
 async function loadScraper() {
@@ -1235,12 +1237,23 @@ the normal clearance system created it.
         console.warn("[mcp] MCP_TOKEN is not set — the /api/mcp endpoint is disabled.");
       }
       server.middlewares.use("/api/mcp", mcpMiddleware(() => String(env.MCP_TOKEN || "")));
+
+      // ── Mail ──────────────────────────────────────────────────────────
+      // Every Minescout site posts its forms here; the server owns the
+      // templates and the recipients. See server/mail.js.
+      const mailHandler = createMailHandler(env);
+      server.middlewares.use("/api/mail", (req, res, next) => {
+        if (rejectUntrustedOrigin(req, res)) return;
+        mailHandler(req, res, next);
+      });
     }
   };
 }
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
+  // The shared workspace `.env` is the local secret store (SMTP today); a
+  // life-local `.env` overrides it, and the process environment is the base.
+  const env = resolveMailEnv(loadEnv(mode, process.cwd(), ""), process.cwd());
 
   // GitHub Pages serves the repo under /<repo>/, so the build needs a matching
   // base. Life and any other host stay on "/".

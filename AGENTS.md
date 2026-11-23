@@ -79,51 +79,59 @@ after — `git stash` your edits and re-run if unsure.
 
 ### Order email and the delivery queue
 
-- `src/lib/studio-mail.ts` sends through SMTP when `SMTP_USER` and
-  `SMTP_PASSWORD` are in the server process environment. `npm run dev`,
-  `npm run build` and `npm run preview` all run through
-  `scripts/with-app-env.mjs`, which reads a git-ignored `.env` at the workspace
-  root and passes every key to the child process. A non-empty `.env` value wins
-  over the process environment (empty keys are ignored), so the file is the
-  place to set SMTP for a local dev server; on deploy there is no `.env` and the
-  provider's injected secrets are used. `chop-lab.com/.env.example` lists the
-  keys. Without credentials the app falls
-  back to the Apps Script, whose `doPost` rejects requests, so SMTP is the
-  working path. `/outbox` shows which transport the server resolved. A live
-  order that reaches "Request received" but never arrives usually means `.env`
-  is missing, or the server was started before it was created — restart
-  `npm run dev` after editing `.env`.
+- `src/lib/studio-mail.ts` sends **only** through SMTP. There is no send
+  fallback: without `SMTP_USER` / `SMTP_PASSWORD` it returns a "not configured"
+  error, so a missing key is loud instead of silently failing. The Apps Script
+  URL stays in that file for the `/invoice` passcode check only (`doGet` still
+  answers; `doPost` never did).
+- `npm run dev`, `npm run build` and `npm run preview` all run through
+  `scripts/with-app-env.mjs`. It reads a git-ignored `.env` at the **repo root**
+  and passes every key to the child process, so the file is the place to set
+  SMTP for a local dev server; on deploy there is no `.env` and the provider's
+  injected secrets are used. Layer order, lowest first: `.grok/app-env.json`,
+  the process environment, the root `.env`, then a `chop-lab.com/.env`. A
+  non-empty file value wins; empty keys are ignored so an untouched
+  `.env.example` cannot blank an injected secret. `.env.example` at the repo
+  root lists every key, and `EMAIL-SETUP.md` walks through the setup.
+- `/outbox` reports `smtp` or `unconfigured`, so a missing `.env` is visible
+  before the next order fails. A live order that reaches "Request received" but
+  never arrives usually means `.env` is missing, or the server was started
+  before it was created — restart `npm run dev` after editing `.env`.
 - Requests are stored in `localStorage` before sending (`src/lib/requests.ts`,
   key `chop-lab-requests`) and listed at `/outbox`, where an undelivered
   request can be resent with its saved files. A successful studio send clears
-  the stored base64 attachments. The Apps Script fallback cannot carry
-  attachments, so a studio send with files fails with a clear "add SMTP"
-  message rather than silently dropping them.
+  the stored base64 attachments.
 
 ### Where email is sent across the sites
 
-Only the Chop Lab has a working server-side mail transport. Everything else
-posts to a Google Apps Script or EmailJS from the browser:
+There is **one** transport: SMTP, from one account. Nothing uses the Apps Script
+or EmailJS to send any more.
 
-- `chop-lab.com/` — `src/lib/studio-mail.ts` (SMTP, then Apps Script fallback)
-  for the configurator receipt and studio copy
-  (`src/components/consultation-form.tsx`) and the invoice page
-  (`src/routes/invoice.tsx`). Resends go through `src/routes/outbox.tsx`.
-- `minescout.net/public/app.js` — three `fetch` calls to the same Apps Script:
-  the intelligence-file intake, the studio consultation spec, and the contact
-  form. `public/services/lawn-care/index.html` uses a second Apps Script
-  deployment for SmartCut leads.
-- `minescout.net` blog (`public/views.js`) and `life.minescout.net`
-  (`src/pages/CategoryPage.jsx`) — the Life feature-request form POSTs to the
-  same Apps Script; everything else is `mailto:` links.
-- `beta.minescout.net/email.html` and `feature-requests.html` — EmailJS
-  (`service_khgjq1e` / `template_yb9xkyy`) plus a Firebase Realtime Database
-  copy of the message.
-
-The Apps Script `doGet` answers `{"service":"Minescout Studio Email Service",
-"status":"online"}`, but `doPost` redirects to a Google error page, so none of
-the Apps Script senders currently deliver. Fixing the script or moving those
-forms to a server transport is separate work.
+- `life.minescout.net` runs the relay: `POST /api/mail` (`server/mail.js`,
+  mounted in `vite.config.js`). It owns every template, every recipient and the
+  rate limits. The three static sites post form fields to it and never name a
+  recipient — an endpoint that emails a browser-chosen address is an open spam
+  relay, and Gmail would suspend the account.
+- `chop-lab.com/` sends in-process (`src/lib/studio-mail.ts`) because its order
+  form carries the customer's attachments. Callers: the configurator
+  (`src/components/consultation-form.tsx`), the invoice page
+  (`src/routes/invoice.tsx`), and resends (`src/routes/outbox.tsx`).
+- `minescout.net/public/app.js` — `postStudioMail(form, fields)` posts the
+  contact form, the studio consultation spec and the intelligence-file intake.
+  `public/services/lawn-care/index.html` has its own copy of the same call for
+  SmartCut leads.
+- `life.minescout.net/src/pages/CategoryPage.jsx` posts the feature request to
+  its own `/api/mail`.
+- `beta.minescout.net/email.html` and `feature-requests.html` post to the relay;
+  the Firebase Realtime Database copy is a best-effort archive that no longer
+  blocks the send.
+- The forms are `minescout/contact`, `minescout/studio-consult`,
+  `minescout/studio-intake`, `minescout/lawn-care`, `life/feature-request`,
+  `beta/inquiry`, `beta/feature-request`. `FORM_NAMES` in `server/mail.js` is
+  the list; an unknown name is a `400`.
+- The Apps Script `doGet` still answers the `/invoice` passcode when
+  `STUDIO_PASSCODE` is unset, and nothing else. Set `STUDIO_PASSCODE` in `.env`
+  to drop that dependency; the compare is constant-time and server-side.
 
 ### Conventions
 
@@ -145,13 +153,12 @@ forms to a server transport is separate work.
   quote target the product page renders, and `productLd()` advertises the same
   number, so the feed, the Product JSON-LD, and the page cannot drift.
 - Order email: `src/lib/studio-mail.ts` sends the configurator receipt and
-  studio notification over Gmail SMTP when `SMTP_USER` / `SMTP_PASSWORD` are in
-  the server environment (or a git-ignored `.env` at the workspace root — see
-  `chop-lab.com/.env.example`), and supports base64 attachments (the
-  configurator sends uploaded sketches/STLs with the studio copy). Without
-  those vars it falls back to the Apps Script at `GAS_URL`; that script's
-  `doPost` currently fails, and the fallback cannot carry attachments, so it
-  returns an explicit error instead of dropping them. SMTP is the working path.
+  studio notification over SMTP when `SMTP_USER` / `SMTP_PASSWORD` are in the
+  server environment (or the git-ignored `.env` at the repo root — see
+  `.env.example` and `EMAIL-SETUP.md`), and supports base64 attachments (the
+  configurator sends uploaded sketches/STLs with the studio copy). There is no
+  fallback transport: without the vars it returns an explicit "not configured"
+  error.
   Never hard-code the SMTP password — a non-empty `.env` value wins over the
   process environment locally, and the platform injects the secrets on deploy.
   `nodemailer` is loaded with a dynamic `import()` so a missing install surfaces
@@ -238,6 +245,22 @@ npm run check    # lint (oxlint) + render smoke + MCP smoke
 - The API is a **dev-server-only Vite plugin** (`apiPlugin` in `vite.config.js`),
   mounted in `configureServer`. It only exists while `npm run dev` runs; there is
   no `configurePreviewServer`, so `vite preview` has no backend.
+- **`/api/mail` is the mail relay for the whole workspace** (`server/mail.js`).
+  The three static sites post `{form, fields}` and the server builds the email,
+  picks the recipient and sends over SMTP. Recipients are constants — never
+  trust a client-supplied `to`. Limits: 6 sends per IP per 10 minutes, 40 per
+  hour, 64 KB body, honeypot field. `GET /api/mail` reports
+  `{ok, configured}` so a missing `.env` is visible with one request.
+  `scripts/mail.test.mjs` covers the templates, validation, honeypot, size cap
+  and rate limit without opening a socket.
+- `server/env.js` merges the env for the dev server: process environment, then
+  the shared **repo-root** `.env`, then a `life.minescout.net/.env`. The Chop Lab
+  reads the same root file through `scripts/with-app-env.mjs`, so SMTP is
+  configured once. `EMAIL-SETUP.md` is the walkthrough.
+- Vite 8's `server.middlewares.use(path, ...)` takes **one** handler. Passing a
+  guard and a handler as two arguments silently registers only the guard, and
+  every request falls through to the SPA (a `200` HTML shell for `GET`, a `404`
+  for `POST`). Wrap them in a single function instead.
 - Posts are plain files: `public/posts/<id>.json` plus `public/posts/manifest.json`.
   `src/data/posts.js` fetches them. An unknown id gets the 200 HTML app shell
   back from the SPA fallback — not a 404 — so `res.json()` throws.

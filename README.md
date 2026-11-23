@@ -222,8 +222,9 @@ storage path the admin editor uses. It also exposes the title-card recipe as the
 
 Every request needs `Authorization: Bearer <token>`, because these tools publish to the live site.
 The token is read from `MCP_TOKEN`; without it the endpoint is disabled and returns `503`, and a
-wrong or missing token gets `401`. The token is never committed — keep it in the app's `.env`,
-which is gitignored.
+wrong or missing token gets `401`. The token is never committed — keep it in the workspace-root
+`.env`, which is gitignored. That one file also carries the SMTP account every site sends mail
+through; see [`EMAIL-SETUP.md`](EMAIL-SETUP.md).
 
 <details>
 <summary><strong>MCP payloads and client setup</strong></summary>
