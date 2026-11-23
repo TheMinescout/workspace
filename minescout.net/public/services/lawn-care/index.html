@@ -620,9 +620,9 @@
         });
 
 
-        // --- System Script URL Destination ---
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKZ97E9eYb2U1HJha8IoWo08IWHLJR0eejCg6GPL27_svo93ZqsvxM8q8AKaqFBQHohQ/exec";
-        const NOTIFICATION_RECEIVER = "tmcarleton11@gmail.com"; 
+        // Leads go to the studio mail relay, which owns the template and the
+        // recipient. See life.minescout.net/server/mail.js.
+        const MAIL_ENDPOINT = "https://life.minescout.net/api/mail";
         const RATE_PER_SQFT = 0.005;
 
         // --- Live Form Price Preview ---
@@ -662,49 +662,35 @@
                 priceString = `$${calcVal} / cut (Via Venmo)`;
             }
 
-            const htmlEmailContent = `
-                <div style="font-family: sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #e2e8f0; border-radius: 10px;">
-                    <h2 style="color: #1b5e20; margin-bottom: 20px;">🌱 New Lead Generated: SmartCut Neighborhood</h2>
-                    <p><strong>Client Name:</strong> ${name}</p>
-                    <p><strong>Property Address:</strong> ${address}</p>
-                    <p><strong>Email Address:</strong> ${email}</p>
-                    <p><strong>Estimated Lot Size:</strong> ${lotsize} ${lotsize !== "Not provided" ? "sq ft" : ""}</p>
-                    <p style="background-color: #f0fdf4; padding: 10px; border-radius: 6px; color: #16a34a; font-weight: bold; border: 1px solid #bbf7d0;">
-                        💰 Estimated Price: ${priceString}
-                    </p>
-                    <p><strong>Notes / Special Conditions:</strong> ${notes}</p>
-                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                    <small style="color: #888;">Submitted via SmartCut web interface. Hit reply to answer the customer directly.</small>
-                </div>
-            `;
-
-            const payload = {
-                to: NOTIFICATION_RECEIVER,
-                subject: `New SmartCut Assessment Request - ${name}`,
-                html: htmlEmailContent,
-                senderName: "SmartCut Lead Bot",
-                replyTo: email
-            };
-
             try {
-                await fetch(SCRIPT_URL, {
+                const res = await fetch(MAIL_ENDPOINT, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8'
-                    },
-                    body: JSON.stringify(payload)
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        form: 'minescout/lawn-care',
+                        fields: {
+                            name,
+                            address,
+                            email,
+                            lotSize: lotsize === "Not provided" ? "" : lotsize,
+                            quote: priceString,
+                            notes: notes === "None provided" ? "" : notes,
+                        },
+                    }),
                 });
+                const result = await res.json().catch(() => null);
+                if (!res.ok || !result || !result.ok) {
+                    throw new Error((result && result.error) || 'The mail service did not accept the request.');
+                }
 
                 statusBox.className = 'status-message success';
                 statusBox.innerHTML = '🎉 Success! Your assessment request has been submitted. Check your inbox!';
                 form.reset();
                 document.getElementById('form-price-preview').innerText = '';
             } catch (error) {
-                statusBox.className = 'status-message success';
-                statusBox.innerHTML = '🎉 Success! Your assessment request has been submitted. Check your inbox!';
-                form.reset();
-                document.getElementById('form-price-preview').innerText = '';
-                console.warn("Network response note:", error);
+                console.error(error);
+                statusBox.className = 'status-message error';
+                statusBox.innerHTML = 'Could not send that request. Please email <a href="mailto:thomas@minescout.net">thomas@minescout.net</a> directly.';
             } finally {
                 submitBtn.disabled = false;
             }

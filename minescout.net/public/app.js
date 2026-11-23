@@ -2,6 +2,26 @@
 
 import { views, PAGE_META, SITE_META } from './views.js?v=1.415';
 
+// ── 0. STUDIO MAIL ────────────────────────────────────────────────
+// Every form posts here. The relay (life.minescout.net/server/mail.js) owns
+// the email template and the recipient, so this browser never names one: a
+// page that could pick its own `to` would be an open spam relay.
+// Override with `window.MAIL_ENDPOINT` to point a local copy at a local relay.
+const MAIL_ENDPOINT = window.MAIL_ENDPOINT || 'https://life.minescout.net/api/mail';
+
+async function postStudioMail(form, fields) {
+  const res = await fetch(MAIL_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ form, fields })
+  });
+  const result = await res.json().catch(() => null);
+  if (!res.ok || !result || !result.ok) {
+    throw new Error((result && result.error) || 'The mail service did not accept that message.');
+  }
+  return result;
+}
+
 // ── 1. GLOBAL FIREBASE INITIALIZATION (Fixes memory leaks) ─────────
 let globalFirebaseApp = null;
 let fbDb = null;
@@ -689,57 +709,13 @@ function initIntake() {
     const logistics = document.getElementById('f_logistics').value;
     const tone = document.getElementById('f_tone').value;
 
-    // Build the formatted email payload to send to the GAS webhook
-    const htmlBody = `
-      <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e8e4dd; border-radius: 8px; overflow: hidden;">
-        <div style="background-color: #1a1916; padding: 20px; text-align: center;">
-          <h2 style="margin: 0; color: #ffffff; font-family: Georgia, serif; letter-spacing: 0.1em; text-transform: uppercase; font-size: 16px;">Minescout Intelligence File</h2>
-        </div>
-        <div style="padding: 30px 20px; color: #1a1916;">
-          <h1 style="margin-top: 0; font-size: 20px; border-bottom: 2px solid #ff4d1c; padding-bottom: 10px;">Part 01: The Basics</h1>
-          <p><strong>Business Name:</strong> ${business}</p>
-          <p><strong>Primary Contact:</strong> ${contact}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Phone:</strong> ${phone}</p>
-          <p><strong>Website URL:</strong> ${website}</p>
-
-          <h1 style="margin-top: 30px; font-size: 20px; border-bottom: 2px solid #ff4d1c; padding-bottom: 10px;">Part 02: Knowledge Base</h1>
-          <p><strong>The Time-Wasters (FAQs):</strong></p>
-          <div style="background-color: #f9f8f6; padding: 15px; border-left: 3px solid #e8e4dd; white-space: pre-wrap; font-size: 14px;">${faqs}</div>
-          
-          <p><strong>Pricing Structure:</strong></p>
-          <div style="background-color: #f9f8f6; padding: 15px; border-left: 3px solid #e8e4dd; white-space: pre-wrap; font-size: 14px;">${pricing}</div>
-          
-          <p><strong>Logistics, Hours, & Policies:</strong></p>
-          <div style="background-color: #f9f8f6; padding: 15px; border-left: 3px solid #e8e4dd; white-space: pre-wrap; font-size: 14px;">${logistics}</div>
-
-          <h1 style="margin-top: 30px; font-size: 20px; border-bottom: 2px solid #ff4d1c; padding-bottom: 10px;">Part 03: Conversion & Voice</h1>
-          <p><strong>Tone & Objectives:</strong></p>
-          <div style="background-color: #f9f8f6; padding: 15px; border-left: 3px solid #e8e4dd; white-space: pre-wrap; font-size: 14px;">${tone}</div>
-          
-          <p style="margin-top: 40px; font-size: 12px; color: #66625a; text-align: center;">Minescout Engine — Auto-Generated Report</p>
-        </div>
-      </div>
-    `;
-
-    // Uses the EXACT SAME Google Apps Script webhook from your Contact Form
-    const payload = {
-      action: "intake",
-      to: ["tmcarleton11@gmail.com", email], // Emails Thomas AND the client
-      subject: `Minescout Intelligence File: ${business}`,
-      htmlBody: htmlBody,
-      fromName: "Minescout Operations",
-      sheetData: { business, contact, email, phone, website } // Passed in case you want to append to Matrix later
-    };
-
+    // The mail relay owns the template and the recipients; the browser only
+    // sends fields. See life.minescout.net/server/mail.js.
     try {
-      const res = await fetch("https://script.google.com/macros/s/AKfycbz7MJE7mNY1A-SvbdHGV3yI6-ftBElB1wOth4MqEABvJXLI5SNzeqiG2r7PJBpWvcAiOg/exec", {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
+      await postStudioMail('minescout/studio-intake', {
+        business, contact, email, phone, website, faqs, pricing, logistics, tone,
       });
 
-      if (!res.ok) throw new Error("GAS Script rejected.");
 
       document.getElementById('loading-screen').innerHTML = `
         <div style="max-width: 450px; margin: 0 auto; text-align: center;">
@@ -1526,41 +1502,12 @@ RULES:
 
     const chatLog = chatHistory.map(m => `${m.role}: ${m.content}`).join('\n\n---\n\n');
 
-    const htmlBody = `
-      <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e8e4dd; border-radius: 8px; overflow: hidden;">
-        <div style="background-color: #1a1916; padding: 20px; text-align: center;">
-          <h2 style="margin: 0; color: #ffffff; font-family: Georgia, serif; letter-spacing: 0.1em; text-transform: uppercase; font-size: 16px;">Minescout Studio / Project Spec</h2>
-        </div>
-        <div style="padding: 30px 20px;">
-          <p style="font-size: 12px; font-weight: bold; letter-spacing: 0.1em; text-transform: uppercase; color: #ff4d1c; margin-bottom: 5px;">New Project Spec</p>
-          <h1 style="margin-top: 0; font-size: 24px; color: #1a1916;">A client completed the consultation.</h1>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Additional Notes:</strong> ${notes || 'None'}</p>
-          <div style="background-color: #f9f8f6; padding: 15px; border-left: 3px solid #ff4d1c; color: #1a1916; font-size: 13px; white-space: pre-wrap; margin-top: 20px;"><strong>Full Consultation Transcript:</strong>\n\n${chatLog}</div>
-        </div>
-      </div>
-    `;
-
-    const payload = {
-      to: ["tmcarleton11@gmail.com"],
-      subject: `Project Spec: ${name} — Website Consultation`,
-      htmlBody: htmlBody,
-      fromName: "Minescout Studio"
-    };
-
     try {
-      const res = await fetch("https://script.google.com/macros/s/AKfycbz7MJE7mNY1A-SvbdHGV3yI6-ftBElB1wOth4MqEABvJXLI5SNzeqiG2r7PJBpWvcAiOg/exec", {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      });
+      await postStudioMail('minescout/studio-consult', { name, email, notes, transcript: chatLog });
 
-      if (res.ok) {
-        document.getElementById('claim-success').style.display = 'block';
-        btn.style.display = 'none';
-        document.getElementById('creation-claim-btn').style.display = 'none';
-      } else throw new Error("GAS rejected.");
+      document.getElementById('claim-success').style.display = 'block';
+      btn.style.display = 'none';
+      document.getElementById('creation-claim-btn').style.display = 'none';
     } catch (err) {
       alert("Could not send your request. Please email me directly at thomas@minescout.net");
       btn.disabled = false;
@@ -1686,43 +1633,17 @@ function initRouter() {
       const email = form.querySelector('#email').value.trim();
       const message = form.querySelector('#message').value.trim();
 
-      const htmlBody = `
-        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e8e4dd; border-radius: 8px; overflow: hidden;">
-          <div style="background-color: #1a1916; padding: 20px; text-align: center;">
-            <h2 style="margin: 0; color: #ffffff; font-family: Georgia, serif; letter-spacing: 0.1em; text-transform: uppercase; font-size: 16px;">Minescout Studio / Operations</h2>
-          </div>
-          <div style="padding: 30px 20px;">
-            <p style="font-size: 12px; font-weight: bold; letter-spacing: 0.1em; text-transform: uppercase; color: #ff4d1c; margin-bottom: 5px;">New Inquiry</p>
-            <h1 style="margin-top: 0; font-size: 24px; color: #1a1916;">You have a new message.</h1>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <div style="background-color: #f9f8f6; padding: 15px; border-left: 3px solid #ff4d1c; color: #1a1916; font-size: 14px; white-space: pre-wrap;">${message}</div>
-          </div>
-        </div>
-      `;
-
-      const payload = {
-        to: ["tmcarleton11@gmail.com"],
-        subject: `New Inquiry from ${name}`,
-        htmlBody: htmlBody,
-        fromName: "Minescout Contact Form"
-      };
-
       try {
-        const res = await fetch("https://script.google.com/macros/s/AKfycbz7MJE7mNY1A-SvbdHGV3yI6-ftBElB1wOth4MqEABvJXLI5SNzeqiG2r7PJBpWvcAiOg/exec", { 
-          method: 'POST', 
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
-        });
-        
-        if (res.ok) { 
-          form.style.display = 'none'; 
-          success.classList.add('visible'); 
-        } else throw new Error("GAS Script rejected.");
+        await postStudioMail('minescout/contact', { name, email, message });
+
+        form.style.display = 'none';
+        success.classList.add('visible');
       } catch (err) {
-        alert('Could not reach the routing server. Please try emailing directly.');
+        console.error(err);
+        alert('Could not reach the mail server. Please try emailing directly.');
         btn.disabled = false; btn.innerText = 'Send Message';
       }
+        
     }
   });
 

@@ -71,6 +71,11 @@ export function SiteFooter() {
                 Invoice generator
               </Link>
             </li>
+            <li>
+              <Link to="/outbox" className="text-fg hover:text-primary">
+                Delivery queue
+              </Link>
+            </li>
             <li className="text-muted">
               Build volume <Length mm={256} /> cube
             </li>

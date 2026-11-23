@@ -92,6 +92,62 @@ count before and after — `git stash` your edits and re-run if unsure.
 - Keep the `0.0.0.0:8080` dev / `127.0.0.1:8081` preview port contract and
   `PreviewHostBridge` intact.
 
+### Order email and the delivery queue
+
+- `src/lib/studio-mail.ts` sends **only** through SMTP. There is no send
+  fallback: without `SMTP_USER` / `SMTP_PASSWORD` it returns a "not configured"
+  error, so a missing key is loud instead of silently failing. The Apps Script
+  URL stays in that file for the `/invoice` passcode check only (`doGet` still
+  answers; `doPost` never did).
+- `npm run dev`, `npm run build` and `npm run preview` all run through
+  `scripts/with-app-env.mjs`. It reads a git-ignored `.env` at the **repo root**
+  and passes every key to the child process, so the file is the place to set
+  SMTP for a local dev server; on deploy there is no `.env` and the provider's
+  injected secrets are used. Layer order, lowest first: `.grok/app-env.json`,
+  the process environment, the root `.env`, then a `chop-lab.com/.env`. A
+  non-empty file value wins; empty keys are ignored so an untouched
+  `.env.example` cannot blank an injected secret. `.env.example` at the repo
+  root lists every key, and `EMAIL-SETUP.md` walks through the setup.
+- `/outbox` reports `smtp` or `unconfigured`, so a missing `.env` is visible
+  before the next order fails. A live order that reaches "Request received" but
+  never arrives usually means `.env` is missing, or the server was started
+  before it was created — restart `npm run dev` after editing `.env`.
+- Requests are stored in `localStorage` before sending (`src/lib/requests.ts`,
+  key `chop-lab-requests`) and listed at `/outbox`, where an undelivered
+  request can be resent with its saved files. A successful studio send clears
+  the stored base64 attachments.
+
+### Where email is sent across the sites
+
+There is **one** transport: SMTP, from one account. Nothing uses the Apps Script
+or EmailJS to send any more.
+
+- `life.minescout.net` runs the relay: `POST /api/mail` (`server/mail.js`,
+  mounted in `vite.config.js`). It owns every template, every recipient and the
+  rate limits. The three static sites post form fields to it and never name a
+  recipient — an endpoint that emails a browser-chosen address is an open spam
+  relay, and Gmail would suspend the account.
+- `chop-lab.com/` sends in-process (`src/lib/studio-mail.ts`) because its order
+  form carries the customer's attachments. Callers: the configurator
+  (`src/components/consultation-form.tsx`), the invoice page
+  (`src/routes/invoice.tsx`), and resends (`src/routes/outbox.tsx`).
+- `minescout.net/public/app.js` — `postStudioMail(form, fields)` posts the
+  contact form, the studio consultation spec and the intelligence-file intake.
+  `public/services/lawn-care/index.html` has its own copy of the same call for
+  SmartCut leads.
+- `life.minescout.net/src/pages/CategoryPage.jsx` posts the feature request to
+  its own `/api/mail`.
+- `beta.minescout.net/email.html` and `feature-requests.html` post to the relay;
+  the Firebase Realtime Database copy is a best-effort archive that no longer
+  blocks the send.
+- The forms are `minescout/contact`, `minescout/studio-consult`,
+  `minescout/studio-intake`, `minescout/lawn-care`, `life/feature-request`,
+  `beta/inquiry`, `beta/feature-request`. `FORM_NAMES` in `server/mail.js` is
+  the list; an unknown name is a `400`.
+- The Apps Script `doGet` still answers the `/invoice` passcode when
+  `STUDIO_PASSCODE` is unset, and nothing else. Set `STUDIO_PASSCODE` in `.env`
+  to drop that dependency; the compare is constant-time and server-side.
+
 ### Conventions
 
 - SEO: use `pageHead(...)` from `src/lib/seo.ts` in each route's `head()`. It
@@ -113,12 +169,14 @@ count before and after — `git stash` your edits and re-run if unsure.
   quote target the product page renders, and `productLd()` advertises the same
   number, so the feed, the Product JSON-LD, and the page cannot drift.
 - Order email: `src/lib/studio-mail.ts` sends the configurator receipt and
-  studio notification over Gmail SMTP when `SMTP_USER` / `SMTP_PASSWORD` are in
-  the server environment, and supports base64 attachments (the configurator
-  sends uploaded sketches/STLs with the studio copy). Without those vars it
-  falls back to the Apps Script at `GAS_URL`; that script's `doPost` currently
-  returns `{"status":"error","message":"Unauthorized"}`, so SMTP is the working
-  path. Never hard-code the SMTP password — the platform injects the secrets.
+  studio notification over SMTP when `SMTP_USER` / `SMTP_PASSWORD` are in the
+  server environment (or the git-ignored `.env` at the repo root — see
+  `.env.example` and `EMAIL-SETUP.md`), and supports base64 attachments (the
+  configurator sends uploaded sketches/STLs with the studio copy). There is no
+  fallback transport: without the vars it returns an explicit "not configured"
+  error.
+  Never hard-code the SMTP password — a non-empty `.env` value wins over the
+  process environment locally, and the platform injects the secrets on deploy.
   `nodemailer` is loaded with a dynamic `import()` so a missing install surfaces
   as a send error, not a 500. The deploy syncs the **committed** `node_modules/`
   rather than running `npm install`, so a new runtime dependency has to be

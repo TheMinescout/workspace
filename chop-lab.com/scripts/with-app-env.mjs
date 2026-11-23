@@ -1,20 +1,26 @@
 #!/usr/bin/env node
 /**
- * Run a command with `.grok/app-env.json` merged into its environment.
+ * Run a command with `.grok/app-env.json` and a local `.env` merged into its
+ * environment.
  *
  * `dev`, `build` and `preview` all route through this wrapper, so the dev
  * server, the built bundle and the preview server can never disagree about
  * `VITE_AUTH_ENABLED` — a divergence that only shows up as a built-output
  * mismatch long after the fact. Anything that starts Vite directly bypasses it.
  *
- * Only `VITE_`-prefixed keys are honored: the file is a build flag carrier, not
- * a secret store, and only `VITE_` vars reach the browser anyway. A real
- * `process.env` entry always wins, so an explicit override still works.
+ * `.grok/app-env.json` is a build-flag carrier: only `VITE_`-prefixed keys are
+ * honored, because only those reach the browser. A git-ignored `.env` at the
+ * workspace root is the local secret store (SMTP credentials today), and every
+ * key in it is passed to the child process — server code reads those from
+ * `process.env`, and Vite still exposes only the `VITE_`-prefixed ones to the
+ * client. The Life dev server reads the same root file (see
+ * `life.minescout.net/server/env.js`), so SMTP is configured once for both.
  *
- * That precedence also means the file governs this workspace only. A deployed
- * build runs with the provider's project env, where the deployer sets
- * `VITE_AUTH_ENABLED` itself (today unconditionally `"true"`), so the deployed
- * flag is the platform's, not this file's.
+ * Layers, lowest to highest: `.grok/app-env.json`, the process environment, the
+ * shared root `.env`, then a `chop-lab.com/.env` next to this app. A non-empty
+ * file value wins — that is the file the developer edits. Empty values are
+ * ignored so an untouched `.env.example` cannot blank an injected secret. On
+ * deploy there are no `.env` files, so the provider's environment is used.
  *
  * Vite picks the values up because `loadEnv` prefix-matches entries already in
  * `process.env`, which is why the merge has to happen before Vite starts.
@@ -26,6 +32,9 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const APP_ENV_REL_PATH = ".grok/app-env.json";
+export const DOTENV_REL_PATH = ".env";
+/** The one file the whole workspace reads: `<repo>/.env`. */
+export const SHARED_DOTENV_REL_PATH = "../.env";
 
 const VITE_PREFIX = "VITE_";
 
@@ -58,6 +67,62 @@ export function readAppEnv(root) {
   } catch {
     return {};
   }
+}
+
+function dotEnvValue(rawValue) {
+  const value = rawValue.trim();
+  for (const quote of ['"', "'"]) {
+    if (!value.startsWith(quote)) continue;
+    const end = value.lastIndexOf(quote);
+    if (end > 0) return value.slice(1, end);
+  }
+  // Unquoted: a `#` after whitespace starts an inline comment.
+  return value.replace(/\s+#.*$/, "").trim();
+}
+
+/**
+ * Parse a dotenv document into a string map.
+ *
+ * Deliberately small: comments, blank lines, an optional `export` prefix, and
+ * single- or double-quoted values. Values are taken literally (no escape
+ * expansion) so a password is never mangled. A malformed line is skipped
+ * rather than aborting the file, so one typo cannot stop the dev server.
+ */
+export function parseDotEnv(text) {
+  const env = {};
+  for (const rawLine of text.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith("#")) continue;
+    const match = /^(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/.exec(line);
+    if (!match) continue;
+    const [, key, rawValue] = match;
+    env[key] = dotEnvValue(rawValue);
+  }
+  return env;
+}
+
+/** The local `.env` under `root`, or `{}` when the file is absent. */
+export function readDotEnv(root) {
+  try {
+    return parseDotEnv(readFileSync(join(root, DOTENV_REL_PATH), "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * The environment a wrapped command runs with: app-env flags, then the real
+ * process environment, then the shared root `.env`, then the local `.env`.
+ *
+ * Non-empty `.env` values win, so the file the user edits is authoritative for
+ * their dev server. Empty values are ignored, so copying `.env.example` without
+ * filling it in never blanks a secret the platform injected. On deploy there is
+ * no `.env` (it is git-ignored), so the provider's environment is used.
+ */
+export function resolveEnv(root, processEnv, sharedRoot = dirname(root)) {
+  const layer = (dir) =>
+    Object.fromEntries(Object.entries(readDotEnv(dir)).filter(([, value]) => value !== ""));
+  return { ...readAppEnv(root), ...processEnv, ...layer(sharedRoot), ...layer(root) };
 }
 
 /** File values under the process environment: an explicit override wins. */
@@ -110,7 +175,7 @@ function main(argv) {
     console.error("usage: node scripts/with-app-env.mjs <command> [args…]");
     process.exit(2);
   }
-  const env = mergeAppEnv(readAppEnv(projectRoot()), process.env);
+  const env = resolveEnv(projectRoot(), process.env);
   const child = spawn(command, args, { stdio: "inherit", env });
   // The dev server is long-running and is stopped by signalling this wrapper.
   for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {

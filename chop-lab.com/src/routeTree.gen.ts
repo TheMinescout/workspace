@@ -17,6 +17,7 @@ import { Route as EngineeringDrawingsRouteImport } from './routes/engineering-dr
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FilesRouteImport } from './routes/files'
 import { Route as InvoiceRouteImport } from './routes/invoice'
+import { Route as OutboxRouteImport } from './routes/outbox'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as ToolsIndexRouteImport } from './routes/tools.index'
 import { Route as ToolsSlugRouteImport } from './routes/tools.$slug'
@@ -61,6 +62,11 @@ const InvoiceRoute = InvoiceRouteImport.update({
   path: '/invoice',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OutboxRoute = OutboxRouteImport.update({
+  id: '/outbox',
+  path: '/outbox',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsRoute = ToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/files': typeof FilesRoute
   '/invoice': typeof InvoiceRoute
+  '/outbox': typeof OutboxRoute
   '/tools': typeof ToolsRouteWithChildren
   '/tools/$slug': typeof ToolsSlugRoute
   '/tools/': typeof ToolsIndexRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/files': typeof FilesRoute
   '/invoice': typeof InvoiceRoute
+  '/outbox': typeof OutboxRoute
   '/tools/$slug': typeof ToolsSlugRoute
   '/tools': typeof ToolsIndexRoute
 }
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/files': typeof FilesRoute
   '/invoice': typeof InvoiceRoute
+  '/outbox': typeof OutboxRoute
   '/tools': typeof ToolsRouteWithChildren
   '/tools/$slug': typeof ToolsSlugRoute
   '/tools/': typeof ToolsIndexRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/files'
     | '/invoice'
+    | '/outbox'
     | '/tools'
     | '/tools/$slug'
     | '/tools/'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/files'
     | '/invoice'
+    | '/outbox'
     | '/tools/$slug'
     | '/tools'
   id:
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/files'
     | '/invoice'
+    | '/outbox'
     | '/tools'
     | '/tools/$slug'
     | '/tools/'
@@ -166,6 +178,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   FilesRoute: typeof FilesRoute
   InvoiceRoute: typeof InvoiceRoute
+  OutboxRoute: typeof OutboxRoute
   ToolsRoute: typeof ToolsRouteWithChildren
 }
 
@@ -227,6 +240,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InvoiceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/outbox': {
+      id: '/outbox'
+      path: '/outbox'
+      fullPath: '/outbox'
+      preLoaderRoute: typeof OutboxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools': {
       id: '/tools'
       path: '/tools'
@@ -272,6 +292,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   FilesRoute: FilesRoute,
   InvoiceRoute: InvoiceRoute,
+  OutboxRoute: OutboxRoute,
   ToolsRoute: ToolsRouteWithChildren,
 }
 export const routeTree = rootRouteImport

@@ -93,42 +93,23 @@ function FeaturePanel() {
       return;
     }
 
-    const escapeHtml = value => value.replace(/[&<>"']/g, char => ({
-      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
-    }[char]));
-    const safe = value => escapeHtml(value).replace(/\n/g, "<br>");
-    const htmlBody = `
-      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1a1916">
-        <div style="background:#1a1916;padding:20px;color:#fff">
-          <h2 style="margin:0;font-family:Georgia,serif">Minescout Life / Feature Request</h2>
-        </div>
-        <div style="padding:24px;border:1px solid #e8e4dd">
-          <p><strong>Request:</strong> ${safe(title)}</p>
-          <p><strong>Submitted by:</strong> ${safe(name || "Not provided")}</p>
-          <p><strong>Reply email:</strong> ${safe(email || "Not provided")}</p>
-          <p><strong>Priority:</strong> ${safe(priority)}</p>
-          <div style="margin-top:18px;padding:16px;background:#f9f8f6;border-left:3px solid #2d6a4f;white-space:normal">
-            ${safe(description)}
-          </div>
-        </div>
-      </div>
-    `;
-    const payload = {
-      to: ["theminescout@minescout.net"],
-      subject: `Minescout Life Feature Request: ${title}`,
-      htmlBody,
-      fromName: "Minescout Life Feature Requests"
-    };
-
     setSending(true);
     setStatus("Sending request…");
     try {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbz7MJE7mNY1A-SvbdHGV3yI6-ftBElB1wOth4MqEABvJXLI5SNzeqiG2r7PJBpWvcAiOg/exec", {
+      // The dev-server mail route owns the template and the recipient, so the
+      // browser only sends the fields. See server/mail.js.
+      const response = await fetch("/api/mail", {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          form: "life/feature-request",
+          fields: { name, email, title, priority, description }
+        })
       });
-      if (!response.ok) throw new Error("Email service rejected the request.");
+      const result = await response.json().catch(() => null);
+      if (!response.ok || !result?.ok) {
+        throw new Error(result?.error || "Email service rejected the request.");
+      }
       form.reset();
       setStatus("Request sent. Thanks for helping improve Minescout Life!");
     } catch {

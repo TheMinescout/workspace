@@ -16,8 +16,6 @@ export const Route = createFileRoute("/invoice")({
   component: InvoicePage,
 });
 
-const STUDIO_PASSCODE = "Chop-Lab!!!";
-
 type LineItem = { id: string; label: string; note: string; amount: number };
 
 function InvoicePage() {
@@ -35,14 +33,6 @@ function PasscodeGate({ onUnlock }: { onUnlock: () => void }) {
     if (!password) return;
     setChecking(true);
     setError(false);
-
-    // Hardcoded studio passcode, checked locally first so the tool works
-    // even if the Apps Script auth endpoint is unreachable.
-    if (password === STUDIO_PASSCODE) {
-      setChecking(false);
-      onUnlock();
-      return;
-    }
 
     try {
       const result = await checkStudioPasscode({ data: { password } });

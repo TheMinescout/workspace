@@ -17,7 +17,13 @@ import {
   quoteFor,
   type Product,
 } from "@/lib/products";
-import { loadRequests, saveRequest, type LabRequest } from "@/lib/requests";
+import {
+  loadRequests,
+  saveRequest,
+  undeliveredRequests,
+  updateRequest,
+  type LabRequest,
+} from "@/lib/requests";
 import { TEXTURES, type TextureId } from "@/lib/textures";
 import { formatLength, trim, useLength } from "@/lib/units";
 import { cn, money, requestId } from "@/lib/utils";
@@ -213,11 +219,12 @@ export function ConsultationForm({
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [readingFiles, setReadingFiles] = useState(false);
   const [fileError, setFileError] = useState("");
-  const [recent] = useState(() => loadRequests());
+  const [recent, setRecent] = useState(() => loadRequests());
   const { unit } = useLength();
   const fmt = useCallback((mm: number) => formatLength(mm, unit), [unit]);
 
   const product = form.productSlug ? getProduct(form.productSlug) : undefined;
+  const pendingCount = undeliveredRequests(recent).length;
 
   const patch = (p: Partial<FormState>) => setForm((f) => ({ ...f, ...p }));
 
@@ -316,8 +323,13 @@ export function ConsultationForm({
       specs,
       estimate: quoteFor(product),
       files: form.files,
+      attachments: attachments.map(({ filename, contentType, content }) => ({
+        filename,
+        contentType,
+        content,
+      })),
     };
-    saveRequest(req);
+    setRecent(saveRequest(req));
     setDone(req);
 
     setSending(true);
@@ -374,7 +386,20 @@ export function ConsultationForm({
 
     const receiptOk = receiptResult.status === "fulfilled" && receiptResult.value.success;
     const studioOk = studioResult.status === "fulfilled" && studioResult.value.success;
+    const studioError =
+      studioResult.status === "fulfilled" ? studioResult.value.error : undefined;
     setDelivery({ studioOk, receiptOk });
+    setRecent(
+      updateRequest(req.id, {
+        delivery: {
+          studioOk,
+          receiptOk,
+          at: new Date().toISOString(),
+          error: studioOk ? undefined : studioError,
+        },
+        ...(studioOk ? { attachments: undefined } : {}),
+      }),
+    );
     setSending(false);
   }
 
@@ -393,10 +418,17 @@ export function ConsultationForm({
         {sending ? (
           <p className="mt-4 text-sm text-muted">Sending your request to the studio…</p>
         ) : delivery && !delivery.studioOk ? (
-          <p className="mt-4 text-sm text-primary">
-            Your request is saved on this device, but it couldn't be delivered to the
-            studio. Please email {STUDIO_EMAIL} directly so it isn't missed.
-          </p>
+          <div className="mt-4 space-y-2">
+            <p className="text-sm text-primary">
+              Your request is saved on this device, but it couldn't be delivered to the
+              studio. Please email {STUDIO_EMAIL} directly so it isn't missed.
+            </p>
+            <p className="text-sm">
+              <Link to="/outbox" className="underline underline-offset-4">
+                Open the delivery queue to resend it
+              </Link>
+            </p>
+          </div>
         ) : delivery && !delivery.receiptOk ? (
           <p className="mt-4 text-sm text-primary">
             Thomas received your request, but the confirmation copy to {done.email}{" "}
@@ -881,11 +913,22 @@ export function ConsultationForm({
                 <li key={r.id} className="flex justify-between gap-3 text-muted">
                   <span>
                     {r.id} · {r.productName}
+                    {!r.delivery?.studioOk ? (
+                      <span className="ml-2 text-primary">Not delivered</span>
+                    ) : null}
                   </span>
                   <span className="tabular-nums">{money(r.estimate)}</span>
                 </li>
               ))}
             </ul>
+            {pendingCount > 0 ? (
+              <p className="mt-3 text-sm">
+                <Link to="/outbox" className="underline underline-offset-4">
+                  {pendingCount} request{pendingCount === 1 ? "" : "s"} didn't reach the
+                  studio — resend from the delivery queue
+                </Link>
+              </p>
+            ) : null}
           </div>
         ) : null}
       </div>

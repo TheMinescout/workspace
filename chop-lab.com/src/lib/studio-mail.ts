@@ -1,14 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
 
-// Legacy Google Apps Script Web App (doPost sends the email via GmailApp,
-// doGet checks the studio passcode). Kept as a fallback for deployments with
-// no SMTP credentials. Its current doPost rejects every request with
-// "Unauthorized", so SMTP is the primary transport whenever it is configured.
+// Legacy Google Apps Script Web App. Its `doPost` (which used to send mail)
+// rejects every request, so it is no longer a send path — but `doGet` still
+// answers the studio passcode check, so it stays as the fallback for that.
 const GAS_URL =
   "https://script.google.com/macros/s/AKfycbz7MJE7mNY1A-SvbdHGV3yI6-ftBElB1wOth4MqEABvJXLI5SNzeqiG2r7PJBpWvcAiOg/exec";
 
 // Where new tool requests get forwarded so Thomas sees them land.
-export const STUDIO_EMAIL = "tmcarlston11@gmail.com";
+export const STUDIO_EMAIL = "tmcarleton11@gmail.com";
 
 export type MailAttachment = {
   filename: string;
@@ -27,10 +26,10 @@ type MailPayload = {
   attachments?: MailAttachment[];
 };
 
-type SendResult = {
+export type SendResult = {
   success: boolean;
   error?: string;
-  transport?: "smtp" | "apps-script";
+  transport?: "smtp" | "none";
 };
 
 const MAX_RECIPIENTS = 5;
@@ -41,6 +40,9 @@ function smtpCredentials() {
   const pass = process.env.SMTP_PASSWORD;
   return user && pass ? { user, pass } : null;
 }
+
+const MISSING_SMTP =
+  "Order email is not configured on this server. Add SMTP_USER and SMTP_PASSWORD to the workspace .env file and restart the server (see EMAIL-SETUP.md).";
 
 async function sendViaSmtp(
   data: MailPayload,
@@ -86,43 +88,24 @@ async function sendViaSmtp(
   }
 }
 
-async function sendViaAppsScript(data: MailPayload): Promise<SendResult> {
-  try {
-    const res = await fetch(GAS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        to: data.to,
-        subject: data.subject,
-        htmlBody: data.htmlBody,
-        fromName: data.fromName ?? "The Chop Lab",
-        bcc: data.bcc,
-      }),
-    });
-    const json = (await res.json()) as { status?: string; message?: string };
-    if (json.status !== "success") {
-      return {
-        success: false,
-        error: json.message ?? "Send failed",
-        transport: "apps-script",
-      };
-    }
-    return { success: true, transport: "apps-script" };
-  } catch (err) {
-    return {
-      success: false,
-      error: err instanceof Error ? err.message : "Could not reach the send service.",
-      transport: "apps-script",
-    };
-  }
+/** Constant-time compare so the passcode cannot be timed out of the response. */
+function safeEqual(a: string, b: string) {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
 }
 
 export const checkStudioPasscode = createServerFn({ method: "POST" })
   .validator((data: { password: string }) => data)
   .handler(async ({ data }) => {
-    const url = `${GAS_URL}?password=${encodeURIComponent(data.password)}`;
+    const configured = process.env.STUDIO_PASSCODE ?? "";
+    if (configured) return { success: safeEqual(data.password, configured) };
+
+    // No passcode in the environment yet: ask the Apps Script, whose doGet
+    // still answers. Set STUDIO_PASSCODE to drop this dependency.
     try {
-      const res = await fetch(url);
+      const res = await fetch(`${GAS_URL}?password=${encodeURIComponent(data.password)}`);
       const json = (await res.json()) as { success?: boolean };
       return { success: Boolean(json.success) };
     } catch {
@@ -134,18 +117,18 @@ export const sendStudioEmail = createServerFn({ method: "POST" })
   .validator((data: MailPayload) => data)
   .handler(async ({ data }): Promise<SendResult> => {
     if (!data.to.length || data.to.length > MAX_RECIPIENTS) {
-      return { success: false, error: "Invalid recipient list." };
+      return { success: false, error: "Invalid recipient list.", transport: "none" };
     }
     const attachmentBytes = (data.attachments ?? []).reduce(
       (sum, a) => sum + Math.ceil(a.content.length * 0.75),
       0,
     );
     if (attachmentBytes > MAX_ATTACHMENT_BYTES) {
-      return { success: false, error: "Attachments are too large." };
+      return { success: false, error: "Attachments are too large.", transport: "none" };
     }
 
     const creds = smtpCredentials();
-    if (!creds) return sendViaAppsScript(data);
+    if (!creds) return { success: false, error: MISSING_SMTP, transport: "none" };
 
     try {
       await sendViaSmtp(data, creds);
@@ -161,3 +144,14 @@ export const sendStudioEmail = createServerFn({ method: "POST" })
 
 // Back-compat alias — the invoice page was built against this name first.
 export const sendInvoiceEmail = sendStudioEmail;
+
+/**
+ * Which transport the server will use. The delivery queue shows this so a
+ * missing `.env` is visible before the next order fails.
+ */
+export const mailTransportStatus = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{ transport: "smtp" | "unconfigured"; passcodeFromEnv: boolean }> => ({
+    transport: smtpCredentials() ? "smtp" : "unconfigured",
+    passcodeFromEnv: Boolean(process.env.STUDIO_PASSCODE),
+  }),
+);
