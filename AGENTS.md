@@ -96,6 +96,13 @@ after — `git stash` your edits and re-run if unsure.
   `public/images/` and sets `product.image`. `price` is the `quoteFor(product)`
   quote target the product page renders, and `productLd()` advertises the same
   number, so the feed, the Product JSON-LD, and the page cannot drift.
+- Order email: `src/lib/studio-mail.ts` sends the configurator receipt and
+  studio notification over Gmail SMTP when `SMTP_USER` / `SMTP_PASSWORD` are in
+  the server environment, and supports base64 attachments (the configurator
+  sends uploaded sketches/STLs with the studio copy). Without those vars it
+  falls back to the Apps Script at `GAS_URL`; that script's `doPost` currently
+  returns `{"status":"error","message":"Unauthorized"}`, so SMTP is the working
+  path. Never hard-code the SMTP password — the platform injects the secrets.
 - Accessibility: keep the skip link (`#main`) in `__root.tsx`, label navs
   (`aria-label="Main"` / `"Mobile"`), and give content images meaningful `alt`
   text. `alt=""` is only for genuinely decorative images.
