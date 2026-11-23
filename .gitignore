@@ -2,3 +2,7 @@ chop-lab.com/assets/js/firebase-config.js
 life.minescout.net/node_modules/
 life.minescout.net/dist/
 my-sites.conf
+
+# Local-only secrets (SMTP credentials, etc.). Keep .env.example tracked.
+.env
+.env.local

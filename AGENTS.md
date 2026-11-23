@@ -80,16 +80,50 @@ after — `git stash` your edits and re-run if unsure.
 ### Order email and the delivery queue
 
 - `src/lib/studio-mail.ts` sends through SMTP when `SMTP_USER` and
-  `SMTP_PASSWORD` are in the server process environment; otherwise it falls
-  back to the Apps Script, which currently answers
-  `{"status":"error","message":"Unauthorized"}`. A live order that reaches
-  "Request received" but never arrives usually means the server was started
-  without those two variables — the app-builder preview does not pass them to a
-  manually started `npm run dev`.
+  `SMTP_PASSWORD` are in the server process environment. `npm run dev`,
+  `npm run build` and `npm run preview` all run through
+  `scripts/with-app-env.mjs`, which reads a git-ignored `.env` at the workspace
+  root and passes every key to the child process. A non-empty `.env` value wins
+  over the process environment (empty keys are ignored), so the file is the
+  place to set SMTP for a local dev server; on deploy there is no `.env` and the
+  provider's injected secrets are used. `chop-lab.com/.env.example` lists the
+  keys. Without credentials the app falls
+  back to the Apps Script, whose `doPost` rejects requests, so SMTP is the
+  working path. `/outbox` shows which transport the server resolved. A live
+  order that reaches "Request received" but never arrives usually means `.env`
+  is missing, or the server was started before it was created — restart
+  `npm run dev` after editing `.env`.
 - Requests are stored in `localStorage` before sending (`src/lib/requests.ts`,
   key `chop-lab-requests`) and listed at `/outbox`, where an undelivered
   request can be resent with its saved files. A successful studio send clears
-  the stored base64 attachments.
+  the stored base64 attachments. The Apps Script fallback cannot carry
+  attachments, so a studio send with files fails with a clear "add SMTP"
+  message rather than silently dropping them.
+
+### Where email is sent across the sites
+
+Only the Chop Lab has a working server-side mail transport. Everything else
+posts to a Google Apps Script or EmailJS from the browser:
+
+- `chop-lab.com/` — `src/lib/studio-mail.ts` (SMTP, then Apps Script fallback)
+  for the configurator receipt and studio copy
+  (`src/components/consultation-form.tsx`) and the invoice page
+  (`src/routes/invoice.tsx`). Resends go through `src/routes/outbox.tsx`.
+- `minescout.net/public/app.js` — three `fetch` calls to the same Apps Script:
+  the intelligence-file intake, the studio consultation spec, and the contact
+  form. `public/services/lawn-care/index.html` uses a second Apps Script
+  deployment for SmartCut leads.
+- `minescout.net` blog (`public/views.js`) and `life.minescout.net`
+  (`src/pages/CategoryPage.jsx`) — the Life feature-request form POSTs to the
+  same Apps Script; everything else is `mailto:` links.
+- `beta.minescout.net/email.html` and `feature-requests.html` — EmailJS
+  (`service_khgjq1e` / `template_yb9xkyy`) plus a Firebase Realtime Database
+  copy of the message.
+
+The Apps Script `doGet` answers `{"service":"Minescout Studio Email Service",
+"status":"online"}`, but `doPost` redirects to a Google error page, so none of
+the Apps Script senders currently deliver. Fixing the script or moving those
+forms to a server transport is separate work.
 
 ### Conventions
 
@@ -112,11 +146,14 @@ after — `git stash` your edits and re-run if unsure.
   number, so the feed, the Product JSON-LD, and the page cannot drift.
 - Order email: `src/lib/studio-mail.ts` sends the configurator receipt and
   studio notification over Gmail SMTP when `SMTP_USER` / `SMTP_PASSWORD` are in
-  the server environment, and supports base64 attachments (the configurator
-  sends uploaded sketches/STLs with the studio copy). Without those vars it
-  falls back to the Apps Script at `GAS_URL`; that script's `doPost` currently
-  returns `{"status":"error","message":"Unauthorized"}`, so SMTP is the working
-  path. Never hard-code the SMTP password — the platform injects the secrets.
+  the server environment (or a git-ignored `.env` at the workspace root — see
+  `chop-lab.com/.env.example`), and supports base64 attachments (the
+  configurator sends uploaded sketches/STLs with the studio copy). Without
+  those vars it falls back to the Apps Script at `GAS_URL`; that script's
+  `doPost` currently fails, and the fallback cannot carry attachments, so it
+  returns an explicit error instead of dropping them. SMTP is the working path.
+  Never hard-code the SMTP password — a non-empty `.env` value wins over the
+  process environment locally, and the platform injects the secrets on deploy.
   `nodemailer` is loaded with a dynamic `import()` so a missing install surfaces
   as a send error, not a 500. The deploy syncs the **committed** `node_modules/`
   rather than running `npm install`, so a new runtime dependency has to be

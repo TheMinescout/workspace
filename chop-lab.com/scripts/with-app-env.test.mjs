@@ -7,10 +7,14 @@ import { test } from "node:test";
 import { promisify } from "node:util";
 import {
   APP_ENV_REL_PATH,
+  DOTENV_REL_PATH,
   mergeAppEnv,
   parseAppEnv,
+  parseDotEnv,
   projectRoot,
   readAppEnv,
+  readDotEnv,
+  resolveEnv,
 } from "./with-app-env.mjs";
 
 const execFileAsync = promisify(execFile);
@@ -48,6 +52,60 @@ test("a missing app-env.json is a clean no-op", () => {
 test("reads the app env from a workspace", () => {
   const root = makeWorkspace('{"VITE_AUTH_ENABLED":"false"}');
   assert.deepEqual(readAppEnv(root), { VITE_AUTH_ENABLED: "false" });
+});
+
+test("parses a dotenv file with comments, export and quotes", () => {
+  const text = [
+    "# local secrets",
+    "",
+    "SMTP_USER=studio@example.com",
+    "export SMTP_PASSWORD='abcd efgh ijkl mnop'",
+    'SMTP_HOST="smtp.gmail.com" # inline comment',
+    "SMTP_PORT=587 # port",
+    "EMPTY=",
+    "not a valid line",
+  ].join("\n");
+  assert.deepEqual(parseDotEnv(text), {
+    SMTP_USER: "studio@example.com",
+    SMTP_PASSWORD: "abcd efgh ijkl mnop",
+    SMTP_HOST: "smtp.gmail.com",
+    SMTP_PORT: "587",
+    EMPTY: "",
+  });
+});
+
+test("dotenv values are literal, so a password is never mangled", () => {
+  assert.deepEqual(parseDotEnv('SMTP_PASSWORD="a\\nb"'), {
+    SMTP_PASSWORD: "a\\nb",
+  });
+});
+
+test("a missing .env is a clean no-op", () => {
+  assert.deepEqual(readDotEnv(makeWorkspace()), {});
+});
+
+test("a .env is read from a workspace", () => {
+  const root = makeWorkspace();
+  writeFileSync(join(root, DOTENV_REL_PATH), "SMTP_USER=studio@example.com\n");
+  assert.deepEqual(readDotEnv(root), { SMTP_USER: "studio@example.com" });
+});
+
+test("a non-empty .env beats the process env; empty values are ignored", () => {
+  const root = makeWorkspace('{"VITE_AUTH_ENABLED":"false"}');
+  writeFileSync(
+    join(root, DOTENV_REL_PATH),
+    ["VITE_AUTH_ENABLED=true", "SMTP_USER=from-dotenv", "SMTP_PASSWORD="].join("\n"),
+  );
+
+  const merged = resolveEnv(root, {
+    SMTP_USER: "from-process",
+    SMTP_PASSWORD: "from-process",
+    PATH: "/usr/bin",
+  });
+  assert.equal(merged.VITE_AUTH_ENABLED, "true");
+  assert.equal(merged.SMTP_USER, "from-dotenv");
+  assert.equal(merged.SMTP_PASSWORD, "from-process");
+  assert.equal(merged.PATH, "/usr/bin");
 });
 
 test("an explicit process-env override wins over the file", () => {

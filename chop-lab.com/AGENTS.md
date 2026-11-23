@@ -136,7 +136,7 @@ back the dev server and anything else the preview needs. **Rules
 6. **Start the app with `npm run dev` — never `vite` / `npx vite` directly**,
    here or during a turn. Only the npm scripts run Vite through
    `scripts/with-app-env.mjs`, which puts `.grok/app-env.json`
-   (`VITE_AUTH_ENABLED`) into the environment.
+   (`VITE_AUTH_ENABLED`) and any git-ignored `.env` into the environment.
 
 Starting the dev server during a turn: write/update `startup.sh` first, then run
 `sh /workspace/startup.sh`, so revive and live work stay identical (worked
@@ -166,8 +166,11 @@ missing. Postgres and Better Auth are pre-wired in `src/lib`, **opt-in per app**
 - **The app is deployed to Vercel**, where these fail though locally they don't:
   runtime filesystem writes, server-only Node APIs at import time, dev-only deps,
   hard-coded hosts/ports/secrets (`.grok/references/deploy-target.md`).
-- **Never create a `.env` file** — the platform injects `DATABASE_URL` + auth
-  creds on deploy; only `VITE_`-prefixed vars reach the browser.
+- **Deploy secrets come from the platform** — it injects `DATABASE_URL` + auth
+  creds on deploy, and only `VITE_`-prefixed vars reach the browser. For the
+  dev server you start yourself, a git-ignored `.env` at the workspace root is
+  read by `scripts/with-app-env.mjs` (see `.env.example`); non-empty values
+  there win over the process environment. Never commit `.env`.
 - **`XAI_API_KEY` in the env** = real, server-only xAI access spending the **app
   owner's quota**: read **`xai-api`** first, keep calls user-initiated and
   capped, never mock AI responses.

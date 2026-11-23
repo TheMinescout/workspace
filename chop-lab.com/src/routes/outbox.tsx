@@ -10,7 +10,12 @@ import {
 } from "@/lib/requests";
 import { buildRequestReceiptEmail, buildStudioNotificationEmail } from "@/lib/request-email";
 import { pageHead } from "@/lib/seo";
-import { sendStudioEmail, STUDIO_EMAIL, type SendResult } from "@/lib/studio-mail";
+import {
+  mailTransportStatus,
+  sendStudioEmail,
+  STUDIO_EMAIL,
+  type SendResult,
+} from "@/lib/studio-mail";
 import { money } from "@/lib/utils";
 
 export const Route = createFileRoute("/outbox")({
@@ -42,10 +47,14 @@ function OutboxPage() {
   const [busy, setBusy] = useState<string | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [flash, setFlash] = useState("");
+  const [transport, setTransport] = useState<"smtp" | "apps-script" | null>(null);
 
   useEffect(() => {
     setRequests(undeliveredRequests(loadRequests()));
     setLoaded(true);
+    mailTransportStatus()
+      .then((status) => setTransport(status.transport))
+      .catch(() => setTransport(null));
   }, []);
 
   async function resend(req: LabRequest) {
@@ -147,6 +156,16 @@ function OutboxPage() {
         Requests are saved in this browser before they are emailed. If one didn&apos;t reach
         the studio, resend it here — any files saved with it go along too.
       </p>
+
+      {transport === "apps-script" ? (
+        <p className="mt-6 rounded-xl bg-surface p-4 text-sm text-primary shadow-lift">
+          Order email is not configured on this server, so sends fall back to the Apps Script, which
+          currently rejects them. Add <code>SMTP_USER</code> and <code>SMTP_PASSWORD</code> to{" "}
+          <code>.env</code> and restart the server.
+        </p>
+      ) : transport === "smtp" ? (
+        <p className="mt-4 text-xs text-muted">Order email is using SMTP.</p>
+      ) : null}
 
       {flash ? (
         <p className="mt-10 text-sm text-primary" role="status">

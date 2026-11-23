@@ -87,6 +87,14 @@ async function sendViaSmtp(
 }
 
 async function sendViaAppsScript(data: MailPayload): Promise<SendResult> {
+  if (data.attachments?.length) {
+    return {
+      success: false,
+      error:
+        "Attachments need SMTP. Add SMTP_USER and SMTP_PASSWORD to .env (or the server environment) and restart.",
+      transport: "apps-script",
+    };
+  }
   try {
     const res = await fetch(GAS_URL, {
       method: "POST",
@@ -99,7 +107,21 @@ async function sendViaAppsScript(data: MailPayload): Promise<SendResult> {
         bcc: data.bcc,
       }),
     });
-    const json = (await res.json()) as { status?: string; message?: string };
+    // The deployment redirects to an HTML error page when doPost rejects the
+    // request, so a blind res.json() would surface "Unexpected token '<'".
+    let json: { status?: string; message?: string } | null = null;
+    try {
+      json = (await res.json()) as { status?: string; message?: string };
+    } catch {
+      json = null;
+    }
+    if (!json) {
+      return {
+        success: false,
+        error: `The Apps Script send service returned an unexpected response (HTTP ${res.status}). Add SMTP_USER and SMTP_PASSWORD to .env to send over SMTP.`,
+        transport: "apps-script",
+      };
+    }
     if (json.status !== "success") {
       return {
         success: false,
@@ -161,3 +183,13 @@ export const sendStudioEmail = createServerFn({ method: "POST" })
 
 // Back-compat alias — the invoice page was built against this name first.
 export const sendInvoiceEmail = sendStudioEmail;
+
+/**
+ * Which transport the server will use. The delivery queue shows this so a
+ * missing `.env` is visible before the next order fails.
+ */
+export const mailTransportStatus = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{ transport: "smtp" | "apps-script" }> => ({
+    transport: smtpCredentials() ? "smtp" : "apps-script",
+  }),
+);
