@@ -23,11 +23,15 @@ The most active project. Run every command from inside `chop-lab.com/`.
 
 ```bash
 npm run dev          # dev server on 0.0.0.0:8080 (the platform preview proxy)
-npm run build        # production build -> .vercel/output (Nitro)
+npm run build        # production build -> .vercel/output (Nitro), then db:migrate
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
+npm run format       # prettier --write .
 npm test             # node:test suites under scripts/ and src/
 npm run preview      # built-output QA preview on 127.0.0.1:8081
+npm run preview:restart   # restart that preview (preview:stop stops it)
+npm run db:migrate   # apply migrations/ to DATABASE_URL; skips when it is unset
+npm run check:auth   # dev server vs build agree on VITE_AUTH_ENABLED
 ```
 
 ### Quality gate
@@ -40,24 +44,35 @@ A change is done when all of these pass:
    (1280x800) and mobile (390x844): non-blank body text, **no console/page
    errors**, **no horizontal overflow**. Check the screenshots it writes.
 
-`npm test` has 16 pre-existing failures (of 195) unrelated to most work, in two
+`npm test` has 16 pre-existing failures (of 230) unrelated to most work, in two
 groups. Eight read App Builder template scaffolding this repo does not ship —
 `.grok/skills/**` and `.grok/app-env.json` (`brand-check`, `write-atomic`,
 `with-app-env`, `check-auth-invariant`). The other eight (`grok-pwa-plugin`)
 expect the document `<title>` to become `og:title`, but the committed
-`src/lib/og/site.json` pins the app title to "The Chop Lab", which wins. Confirm
-your change did not add failures by comparing the failing-test count before and
-after — `git stash` your edits and re-run if unsure.
+`src/lib/og/site.json` pins the app title to "The Chop Lab", which wins. The
+script chains its two stages with `&&`, so while the first stage fails the three
+`src/lib/*.test.ts` suites never run; run them directly
+(`node --experimental-strip-types --test src/lib/app-data/app-data.test.ts
+src/lib/auth/gate-identity.test.ts src/lib/seo.test.ts`) after touching that
+code. Confirm your change did not add failures by comparing the failing-test
+count before and after — `git stash` your edits and re-run if unsure.
 
 ### Stack and layout
 
-- Routes live in `src/routes/` (file-based): `/`, `/tools`, `/tools/$slug`,
-  `/configure`, `/files`, `/engineering-drawings`, `/about`, `/faq`,
-  `/invoice` (passcode-gated studio tool), plus a 404.
+- Routes live in `src/routes/` (file-based): `/`, `/tools`, `/tools/$slug` (which
+  also serves the `custom-3d-print` service page), `/3d-printing`, `/configure`,
+  `/files`, `/engineering-drawings`, `/about`, `/faq`, `/invoice`
+  (passcode-gated studio tool), plus a 404.
 - Shell: `src/routes/__root.tsx`, `src/components/layout/site-header.tsx`,
   `site-footer.tsx`.
-- Data is static: `src/lib/products.ts` (products, `PROCESS`, `FAQS`,
-  `HANDLE_COLORS`), `src/lib/textures.ts`.
+- Data is static: `src/lib/products.ts` (ten products, `quoteFor()`, `PROCESS`,
+  `FAQS`, `HANDLE_COLORS`), `src/lib/textures.ts`.
+- Auth and a database are pre-wired but **off by default**
+  (`VITE_AUTH_ENABLED=false`; embedded PGlite until `DATABASE_URL` is set):
+  `src/lib/auth/`, `src/lib/app-data/` (viewer connector data), `src/lib/db.ts`,
+  `migrations/`. Turning auth on means `authMiddleware` on every server function
+  and every query scoped by the verified `context.userId` — read §0.5 of
+  `chop-lab.com/AGENTS.md` before wiring either.
 - Product imagery lives in `public/images/`; product records reference it via
   `image` (primary) and `gallery` (detail-page shots, first entry is the hero).
 - Design tokens are in `src/styles.css` (`--color-bg`, `--color-primary`,
@@ -68,12 +83,12 @@ after — `git stash` your edits and re-run if unsure.
 - `chop-lab.com/AGENTS.md` is the **App Builder sandbox contract** — read it
   before large changes. It owns the preview/port/branding rules.
 - Never put `og:*` or `twitter:card` tags in a route `head()`. The platform PWA
-  injector (`scripts/grok-pwa-plugin.mjs`) **strips and rewrites** them on every
-  response. Share-card `og:title` comes from `src/lib/og/site.json` (currently
-  pinned to "The Chop Lab"), falling back to the document `<title>` only when
-  that file has no title; `og:description` comes from `site.description`. So a
-  per-page document `<title>` is safe to set but does not drive the share card
-  while `site.json` pins the title.
+  injector (`scripts/grok-pwa-plugin.mjs`, constants in `grok-pwa-shared.mjs`)
+  **strips and rewrites** them on every response. Share-card `og:title` comes
+  from `src/lib/og/site.json` (currently pinned to "The Chop Lab"), falling back
+  to the document `<title>` only when that file has no title; `og:description`
+  comes from `site.description`. So a per-page document `<title>` is safe to set
+  but does not drive the share card while `site.json` pins the title.
 - Keep the `0.0.0.0:8080` dev / `127.0.0.1:8081` preview port contract and
   `PreviewHostBridge` intact.
 
@@ -88,7 +103,8 @@ after — `git stash` your edits and re-run if unsure.
   product shots; `texture-swatch.tsx` and `product-card.tsx` for cards.
 - Merchant Center: `public/merchant-center-feed.tsv` is the Google Shopping
   feed, generated from `PRODUCTS` by `scripts/merchant-feed.mjs`
-  (`npm run feed:merchant`). Never hand-edit it — regenerate after touching
+  (`npm run feed:merchant`; `npm run feed:merchant -- --check` exits 1 when the
+  committed feed is stale). Never hand-edit it — regenerate after touching
   `products.ts`; `scripts/merchant-feed.test.mjs` fails when the committed file
   is stale. It lists only physical products that have a photo: digital STLs are
   skipped (Merchant Center has no downloadable-goods listing), and
@@ -171,7 +187,7 @@ after — `git stash` your edits and re-run if unsure.
   entries linked from `/studio`. `scripts/studio-pages.test.mjs` asserts their
   unique H1s, `PAGE_META` titles/descriptions, CTA links, sitemap entries, and
   that every dollar figure on them also appears on `/studio/pricing`.
-- `npm test` here is `node --test minescout.net/scripts/*.test.mjs` from inside
+- `npm test` here is `node --test scripts/*.test.mjs` from inside
   `minescout.net/`; `scripts/blog-posts.test.mjs` asserts every index entry has a
   view and a sitemap entry, that the new posts are released, and that the
   e-commerce post's prices trace back to the pricing page.
@@ -181,12 +197,17 @@ after — `git stash` your edits and re-run if unsure.
 ```bash
 npm run dev      # Vite dev server on 127.0.0.1:3000
 npm run build    # vite build -> dist/
-npm run check    # lint (oxlint) + render smoke + MCP smoke
+npm run check    # lint (oxlint) + build + tests + render and MCP smoke
 ```
 
 - The API is a **dev-server-only Vite plugin** (`apiPlugin` in `vite.config.js`),
   mounted in `configureServer`. It only exists while `npm run dev` runs; there is
   no `configurePreviewServer`, so `vite preview` has no backend.
+- The AI Reflection line in the sidebar and the Admin chat post to a third-party
+  Cloudflare Worker that only answers the production origin. From `127.0.0.1`
+  the preflight is rejected and the browser logs a CORS error page JS cannot
+  catch; `scripts/smoke.mjs` stubs that one endpoint, so a CORS failure there is
+  not a regression.
 - Posts are plain files: `public/posts/<id>.json` plus `public/posts/manifest.json`.
   `src/data/posts.js` fetches them. An unknown id gets the 200 HTML app shell
   back from the SPA fallback — not a 404 — so `res.json()` throws.
@@ -287,9 +308,10 @@ stop to ask first.
 
 Shallow clone — run `git fetch --unshallow` before anything needing full history.
 Build output and dependencies are not source: `life.minescout.net/` gitignores
-its `node_modules/` and `dist/`, and `chop-lab.com/.vercel/` (written by
-`npm run build`) is untracked. `chop-lab.com/node_modules/` is committed in git
-anyway, so an install there dirties thousands of files — do not stage them.
+its `node_modules/` and `dist/`, and `chop-lab.com/.vercel/` plus
+`chop-lab.com/node_modules/.nitro/` (written by `npm run build`) are untracked.
+`chop-lab.com/node_modules/` is committed in git anyway, so an install there
+dirties thousands of files — do not stage them.
 
 The `origin` remote's embedded token can go stale; if a push prompts for a
 password, reset the remote to use `$GITHUB_TOKEN`:
