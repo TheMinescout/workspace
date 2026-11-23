@@ -27,7 +27,7 @@ type MailPayload = {
   attachments?: MailAttachment[];
 };
 
-type SendResult = {
+export type SendResult = {
   success: boolean;
   error?: string;
   transport?: "smtp" | "apps-script";

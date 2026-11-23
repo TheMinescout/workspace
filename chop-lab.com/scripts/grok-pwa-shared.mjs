@@ -151,14 +151,28 @@ export function stripInstallParams(url) {
   return rest ? `${path}?${rest}` : path;
 }
 
-export function renderInstallPageHtml(template, { host, url } = {}) {
+export function renderInstallPageHtml(template, { host, url, appName } = {}) {
+  const name = String(appName ?? "").trim() || appNameFromHost(host);
   return String(template)
-    .replaceAll("{{APP_NAME}}", escapeHtml(appNameFromHost(host)))
+    .replaceAll("{{APP_NAME}}", escapeHtml(name))
     .replaceAll("{{APP_URL}}", escapeHtml(stripInstallParams(url)));
 }
 
-export function renderWebManifest(hostHeader) {
-  const name = appNameFromHost(hostHeader);
+/** `site.title` wins over the host-derived slug, so a custom domain keeps its real name. */
+export function appDisplayName(hostHeader, site = {}) {
+  return String(site.title ?? "").trim() || appNameFromHost(hostHeader);
+}
+
+function manifestColor(value, fallback) {
+  const raw = String(value ?? "").trim();
+  const hex = raw.startsWith("#") ? raw.slice(1) : raw;
+  return /^[0-9a-fA-F]{6}$/.test(hex) ? `#${hex}` : fallback;
+}
+
+export function renderWebManifest(hostHeader, site = {}) {
+  const name = appDisplayName(hostHeader, site);
+  const themeColor = manifestColor(site.color, "#000000");
+  const backgroundColor = manifestColor(site.background, themeColor);
   return JSON.stringify(
     {
       name,
@@ -167,13 +181,20 @@ export function renderWebManifest(hostHeader) {
       start_url: "/",
       scope: "/",
       display: "standalone",
-      background_color: "#000000",
-      theme_color: "#000000",
+      background_color: backgroundColor,
+      theme_color: themeColor,
       icons: [
         {
-          src: "/__grok/icon-180.png",
-          sizes: "180x180",
+          src: "/logo-192.png",
+          sizes: "192x192",
           type: "image/png",
+          purpose: "any",
+        },
+        {
+          src: "/logo-512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "any",
         },
       ],
     },
@@ -182,12 +203,12 @@ export function renderWebManifest(hostHeader) {
   );
 }
 
-export function grokPwaHeadTags(appName = DEFAULT_APP_NAME) {
+export function grokPwaHeadTags(appName = DEFAULT_APP_NAME, themeColor = "#000000") {
   return [
     // Standalone display comes from the manifest ("display": "standalone");
     // the legacy *-web-app-capable metas it replaces are deliberately absent.
     ["manifest", '<link rel="manifest" href="/__grok/manifest.webmanifest">'],
-    ["apple-touch-icon", '<link rel="apple-touch-icon" href="/__grok/icon-180.png">'],
+    ["apple-touch-icon", '<link rel="apple-touch-icon" href="/logo-180.png">'],
     [
       "apple-mobile-web-app-title",
       `<meta name="apple-mobile-web-app-title" content="${escapeHtml(appName)}">`,
@@ -196,7 +217,7 @@ export function grokPwaHeadTags(appName = DEFAULT_APP_NAME) {
       "apple-mobile-web-app-status-bar-style",
       '<meta name="apple-mobile-web-app-status-bar-style" content="black">',
     ],
-    ["theme-color", '<meta name="theme-color" content="#000000">'],
+    ["theme-color", `<meta name="theme-color" content="${escapeHtml(themeColor)}">`],
   ];
 }
 
@@ -434,10 +455,10 @@ export function injectGrokPwaHead(html, ctx = {}) {
   );
   let next = stripShareMetaTags(html);
 
-  const missing = grokPwaHeadTags(appName)
+  const missing = grokPwaHeadTags(appName, String(site.background ?? site.color ?? "#000000"))
     .filter(([key]) => {
       if (key === "manifest") return !next.includes('href="/__grok/manifest.webmanifest"');
-      if (key === "apple-touch-icon") return !next.includes('href="/__grok/icon-180.png"');
+      if (key === "apple-touch-icon") return !/rel="apple-touch-icon"/.test(next);
       return !next.includes(`name="${key}"`);
     })
     .map(([, tag]) => tag);
