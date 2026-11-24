@@ -125,6 +125,7 @@ export function buildStudioNotificationEmail({
   specs,
   notes,
   files,
+  skippedFiles,
   createdAt,
 }: {
   requestId: string;
@@ -136,6 +137,8 @@ export function buildStudioNotificationEmail({
   specs: Record<string, string>;
   notes: string;
   files: string[];
+  /** Picked but too large to attach, so the studio knows to ask for it. */
+  skippedFiles?: string[];
   createdAt: string;
 }) {
   const contactSpecs: Record<string, string> = {
@@ -144,6 +147,9 @@ export function buildStudioNotificationEmail({
     ...(studio ? { Studio: studio } : {}),
     ...specs,
     ...(files.length ? { Files: files.join(", ") } : {}),
+    ...(skippedFiles?.length
+      ? { "Not attached": `${skippedFiles.join(", ")} (too large — ask the customer to email it)` }
+      : {}),
   };
 
   return `${CARD_OPEN}
