@@ -172,9 +172,12 @@ or EmailJS to send any more.
   studio notification over SMTP when `SMTP_USER` / `SMTP_PASSWORD` are in the
   server environment (or the git-ignored `.env` at the repo root — see
   `.env.example` and `EMAIL-SETUP.md`), and supports base64 attachments (the
-  configurator sends uploaded sketches/STLs with the studio copy). There is no
-  fallback transport: without the vars it returns an explicit "not configured"
-  error.
+  configurator sends uploaded sketches/STLs with the studio copy). The client
+  caps attachments at 3 MB because Vercel caps a server-function body at 4.5 MB;
+  a raster photo over that is re-encoded to JPEG to fit, and a file that still
+  cannot be attached is named in the studio email instead of being dropped
+  silently. There is no fallback transport: without the vars it returns an
+  explicit "not configured" error.
   Never hard-code the SMTP password — a non-empty `.env` value wins over the
   process environment locally, and the platform injects the secrets on deploy.
   `nodemailer` is loaded with a dynamic `import()` so a missing install surfaces

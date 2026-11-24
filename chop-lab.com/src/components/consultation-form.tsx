@@ -52,7 +52,7 @@ function formatBytes(bytes: number) {
     : `${Math.max(1, Math.round(bytes / 1024))} KB`;
 }
 
-function readFileBase64(file: File): Promise<string> {
+function readFileBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -60,8 +60,66 @@ function readFileBase64(file: File): Promise<string> {
       resolve(result.slice(result.indexOf(",") + 1));
     };
     reader.onerror = () => reject(reader.error ?? new Error("Could not read the file."));
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(blob);
   });
+}
+
+/** Raster types worth re-encoding when they are too big to attach. */
+const SHRINKABLE_IMAGE = /^image\/(png|jpe?g|webp|bmp|avif)$/;
+
+/** Redraw an image at `maxEdge` on its long side, as JPEG. */
+async function reencodeImage(file: File, maxEdge: number, quality: number): Promise<Blob | null> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    const context = canvas.getContext("2d");
+    if (!context) return null;
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    return await new Promise((resolve) =>
+      canvas.toBlob((blob) => resolve(blob), "image/jpeg", quality),
+    );
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * A file that fits `budget` bytes, or null. A photo straight off a phone is
+ * routinely over the cap, so shrink it rather than drop the customer's sketch.
+ */
+async function prepareAttachment(file: File, budget: number): Promise<Attachment | null> {
+  if (budget <= 0) return null;
+  if (file.size <= budget) {
+    return {
+      filename: file.name,
+      contentType: file.type || "application/octet-stream",
+      content: await readFileBase64(file),
+      size: file.size,
+    };
+  }
+  if (!SHRINKABLE_IMAGE.test(file.type)) return null;
+  for (const [maxEdge, quality] of [
+    [2048, 0.85],
+    [1600, 0.75],
+    [1280, 0.65],
+  ] as const) {
+    const blob = await reencodeImage(file, maxEdge, quality);
+    if (blob && blob.size <= budget) {
+      return {
+        filename: `${file.name.replace(/\.[^.]+$/, "")}.jpg`,
+        contentType: "image/jpeg",
+        content: await readFileBase64(blob),
+        size: blob.size,
+      };
+    }
+  }
+  return null;
 }
 
 type FormState = {
@@ -219,6 +277,8 @@ export function ConsultationForm({
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [readingFiles, setReadingFiles] = useState(false);
   const [fileError, setFileError] = useState("");
+  /** Picked files that could not be attached, even after shrinking. */
+  const [skipped, setSkipped] = useState<string[]>([]);
   const [recent, setRecent] = useState(() => loadRequests());
   const { unit } = useLength();
   const fmt = useCallback((mm: number) => formatLength(mm, unit), [unit]);
@@ -234,25 +294,23 @@ export function ConsultationForm({
     setReadingFiles(true);
     try {
       const accepted: Attachment[] = [];
+      const rejected: string[] = [];
       let total = attachments.reduce((sum, a) => sum + a.size, 0);
       for (const file of picked) {
-        if (total + file.size > MAX_ATTACHMENT_BYTES) {
-          setFileError(
-            `${file.name} was skipped — attachments are limited to ${formatBytes(MAX_ATTACHMENT_BYTES)} total.`,
-          );
+        const prepared = await prepareAttachment(file, MAX_ATTACHMENT_BYTES - total);
+        if (!prepared) {
+          rejected.push(file.name);
           continue;
         }
-        accepted.push({
-          filename: file.name,
-          contentType: file.type || "application/octet-stream",
-          content: await readFileBase64(file),
-          size: file.size,
-        });
-        total += file.size;
+        accepted.push(prepared);
+        total += prepared.size;
       }
       if (accepted.length) {
         setAttachments((prev) => [...prev, ...accepted]);
         setForm((f) => ({ ...f, files: [...f.files, ...accepted.map((a) => a.filename)] }));
+      }
+      if (rejected.length) {
+        setSkipped((prev) => [...new Set([...prev, ...rejected])]);
       }
     } catch (err) {
       setFileError(err instanceof Error ? err.message : "Could not read that file.");
@@ -371,6 +429,7 @@ export function ConsultationForm({
             specs: req.specs,
             notes: req.notes,
             files: req.files,
+            skippedFiles: skipped,
             createdAt: niceDate,
           }),
           fromName: "Chop Lab Studio Engine",
@@ -439,6 +498,12 @@ export function ConsultationForm({
             A confirmation receipt was sent to {done.email}.
           </p>
         )}
+        {skipped.length ? (
+          <p className="mt-4 text-sm text-primary">
+            {skipped.join(", ")} could not be attached — too large to send with the
+            request. Email {STUDIO_EMAIL} with the file to complete the brief.
+          </p>
+        ) : null}
         <dl className="mt-8 grid gap-3 text-sm sm:grid-cols-2">
           <div>
             <dt className="text-muted">Quote target</dt>
@@ -461,6 +526,7 @@ export function ConsultationForm({
               setForm(empty);
               setAttachments([]);
               setFileError("");
+              setSkipped([]);
               setDelivery(null);
             }}
           >
@@ -779,10 +845,12 @@ export function ConsultationForm({
               files={form.files}
               reading={readingFiles}
               error={fileError}
+              skipped={skipped}
               onFiles={(picked) => void addFiles(picked)}
               onClear={() => {
                 setAttachments([]);
                 setFileError("");
+                setSkipped([]);
                 patch({ files: [] });
               }}
               stl={product.kind === "stl" || product.kind === "print"}
@@ -858,6 +926,15 @@ export function ConsultationForm({
                   <div className="sm:col-span-2">
                     <dt className="text-muted">Files</dt>
                     <dd className="mt-0.5">{form.files.join(", ")}</dd>
+                  </div>
+                ) : null}
+                {skipped.length ? (
+                  <div className="sm:col-span-2">
+                    <dt className="text-muted">Not attached</dt>
+                    <dd className="mt-0.5 text-primary">
+                      {skipped.join(", ")} — too large to send. Email {STUDIO_EMAIL} with
+                      the file after you submit.
+                    </dd>
                   </div>
                 ) : null}
                 {form.notes ? (
@@ -949,6 +1026,7 @@ function FileDrop({
   files,
   reading,
   error,
+  skipped,
   onFiles,
   onClear,
   stl,
@@ -956,6 +1034,7 @@ function FileDrop({
   files: string[];
   reading: boolean;
   error: string;
+  skipped: string[];
   onFiles: (files: File[]) => void;
   onClear: () => void;
   stl: boolean;
@@ -979,7 +1058,7 @@ function FileDrop({
           ) : (
             <>
               Sent with your request — up to {formatBytes(MAX_ATTACHMENT_BYTES)}{" "}
-              total. Max build <Length mm={256} /> cube.
+              total. Bigger photos are resized to fit. Max build <Length mm={256} /> cube.
             </>
           )}
         </span>
@@ -997,6 +1076,12 @@ function FileDrop({
         />
       </label>
       {error ? <p className="text-xs text-primary">{error}</p> : null}
+      {skipped.length ? (
+        <p className="text-xs text-primary">
+          {skipped.join(", ")} could not be attached — too large even after resizing.
+          Email {STUDIO_EMAIL} with the file so it isn't missed.
+        </p>
+      ) : null}
       {files.length ? (
         <div className="flex items-center justify-between text-xs text-muted">
           <span>{files.join(", ")}</span>
