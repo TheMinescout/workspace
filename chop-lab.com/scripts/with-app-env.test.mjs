@@ -8,6 +8,7 @@ import { promisify } from "node:util";
 import {
   APP_ENV_REL_PATH,
   DOTENV_REL_PATH,
+  buildAuthEnabled,
   mergeAppEnv,
   parseAppEnv,
   parseDotEnv,
@@ -134,15 +135,13 @@ test("vite loadEnv resolves the wrapped value", () => {
   assert.equal(merged.VITE_AUTH_ENABLED, "false");
 });
 
-test("the wrapped command runs with the resolved workspace environment", async () => {
-  const expected = resolveEnv(projectRoot(), process.env).VITE_AUTH_ENABLED ?? "true";
-  const { stdout } = await execFileAsync(process.execPath, [
-    WRAPPER,
+test("the wrapped command receives its explicit process environment", async () => {
+  const { stdout } = await execFileAsync(
     process.execPath,
-    "-e",
-    PRINT_FLAG,
-  ]);
-  assert.equal(stdout, expected);
+    [WRAPPER, process.execPath, "-e", PRINT_FLAG],
+    { env: { ...process.env, VITE_AUTH_ENABLED: "false" } },
+  );
+  assert.equal(stdout, "false");
 });
 
 test("the wrapped command sees an explicit override, not the file value", async () => {
