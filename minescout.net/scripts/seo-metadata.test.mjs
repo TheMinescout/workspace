@@ -318,7 +318,7 @@ test("the sitemap omits posts that have not been released", () => {
   const scheduled = MANIFEST.pages.filter((page) => page.kind === "blog-post" && !page.released);
   assert.ok(scheduled.length > 0, "expected at least one scheduled post to guard the rule");
   for (const page of scheduled) {
-    assert.ok(!SITEMAP.includes(`<loc>${page.url}</loc>`), `${page.path} is in sitemap.xml before release`);
+    assert.ok(!SITEMAP.includes(page.url), `${page.path} is in sitemap.xml before release`);
   }
 });
 
