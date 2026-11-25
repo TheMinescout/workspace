@@ -201,9 +201,10 @@ check at least monthly and after every SMTP, hosting, or mail-code change:
 3. Confirm the studio notification arrives at the configured studio inbox,
    includes the expected filename, and has an attachment that opens correctly.
 4. Check `chop-lab.com/outbox` on the browser used for the test. A successful
-   delivery should leave no pending copy of that request. If a send failed,
-   keep the queued request until the studio copy and receipt have been
-   confirmed; use the queue's retry action rather than submitting a duplicate.
+   delivery should disappear from the pending list (the saved local record may
+   remain in `localStorage`). If a send failed, keep the queued request until
+   the studio copy and receipt have been confirmed; use the queue's retry
+   action rather than submitting a duplicate.
 5. Send one low-risk test through a static-site form (for example,
    `minescout.net/contact`) and confirm the Life relay delivers it to the
    configured inbox.
