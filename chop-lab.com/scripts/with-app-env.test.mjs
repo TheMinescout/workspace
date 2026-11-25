@@ -8,7 +8,6 @@ import { promisify } from "node:util";
 import {
   APP_ENV_REL_PATH,
   DOTENV_REL_PATH,
-  buildAuthEnabled,
   mergeAppEnv,
   parseAppEnv,
   parseDotEnv,
@@ -121,8 +120,8 @@ test("an explicit process-env override wins over the file", () => {
 test("a workspace app-env can ship auth off and accept an explicit override", () => {
   const root = makeWorkspace('{"VITE_AUTH_ENABLED":"false"}');
   assert.deepEqual(readAppEnv(root), { VITE_AUTH_ENABLED: "false" });
-  assert.equal(buildAuthEnabled(root, {}), false);
-  assert.equal(buildAuthEnabled(root, { VITE_AUTH_ENABLED: "true" }), true);
+  assert.equal(resolveEnv(root, {}).VITE_AUTH_ENABLED, "false");
+  assert.equal(resolveEnv(root, { VITE_AUTH_ENABLED: "true" }).VITE_AUTH_ENABLED, "true");
 });
 
 test("vite loadEnv resolves the wrapped value", () => {
