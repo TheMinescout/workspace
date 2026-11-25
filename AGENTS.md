@@ -364,7 +364,14 @@ suites (`src/lib/*.test.ts`, blocking) and the script suites. The script suites
 are held to `SCRIPT_TEST_FAILURE_BASELINE` in the workflow — the 16 documented
 failures above — so the count may shrink but a new failure turns the job red;
 lower the baseline as failures are fixed. The build step pins `DATABASE_URL`
-empty because `npm run build` runs `db:migrate`. `pages.yml` publishes a static
+empty because `npm run build` runs `db:migrate`. `chop-lab.com/package-lock.json`
+must be committed in the shape npm 10.9.9 (what Node 22 ships) writes it. npm 10
+and npm 12 disagree about `node_modules/nitro/node_modules/lru-cache`, an
+optional peer of Nitro's nested `unstorage`: npm 12 omits it, and npm 10 then
+fails `npm ci` with `Missing: lru-cache@11.5.3 from lock file`. Regenerate with
+`npx npm@10.9.9 install --package-lock-only` from `chop-lab.com/` and never
+commit a lockfile rewritten by a newer npm; never swap CI to `npm install`.
+`pages.yml` publishes a static
 Life preview to GitHub Pages — its API routes are dev-server-only, so comments,
 votes and admin sign-in do not work there.
 
