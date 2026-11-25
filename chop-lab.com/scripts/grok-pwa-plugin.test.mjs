@@ -170,7 +170,6 @@ test("public/og.png wins when jpg is absent", () => {
     host: "wild-race.grok.me",
     cwd: root,
     site: { title: "Wild Race" },
-    cwd: EMPTY_WORKSPACE,
   });
   assert.match(out, /property="og:image" content="https:\/\/wild-race\.grok\.me\/og\.png"/);
   assert.doesNotMatch(out, /og\.grok\.me/);
@@ -310,6 +309,7 @@ test("emits og:image for a public host and prefers a custom card", () => {
     appName: "Wild Race",
     host: "wild-race.grok.me",
     site: { title: "Wild Race" },
+    cwd: EMPTY_WORKSPACE,
   });
   assert.match(
     placeholder,
