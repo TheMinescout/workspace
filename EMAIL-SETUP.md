@@ -187,6 +187,43 @@ keys as **environment variables**:
 On the deploy there is no `.env`, so the injected environment is used. Nothing
 needs to be committed.
 
+
+## Ongoing delivery checks
+
+The configuration checks prove that SMTP credentials exist; they do **not**
+prove that a message reached an inbox. SMTP acceptance is not the same as
+inbox delivery. While accepting real Chop Lab orders, run a small end-to-end
+check at least monthly and after every SMTP, hosting, or mail-code change:
+
+1. Submit an internal test request through `chop-lab.com/configure` using an
+   address you control and one small PNG or JPG attachment.
+2. Confirm the customer receipt arrives.
+3. Confirm the studio notification arrives at the configured studio inbox,
+   includes the expected filename, and has an attachment that opens correctly.
+4. Check `chop-lab.com/outbox` on the browser used for the test. A successful
+   delivery should leave no pending copy of that request. If a send failed,
+   keep the queued request until the studio copy and receipt have been
+   confirmed; use the queue's retry action rather than submitting a duplicate.
+5. Send one low-risk test through a static-site form (for example,
+   `minescout.net/contact`) and confirm the Life relay delivers it to the
+   configured inbox.
+
+Record the date, site, request ID, whether both messages arrived, and whether
+the attachment opened. Do not put customer addresses, message bodies, file
+contents, or SMTP credentials in the log.
+
+**Important limits:** the Chop Lab outbox is stored in that browser's
+`localStorage`; it is not a central server-side queue and does not sync across
+devices. Clearing browser data can remove its retry records. The outbox's
+SMTP status indicator only reports whether credentials are configured, while
+a successful send response means the SMTP server accepted the message. Always
+check the destination inbox (including spam) for the operational test.
+
+If an attachment was too large to retain or send, the outbox flags that fact
+and the studio notification should identify the file as not attached. Ask the
+customer for a smaller file or a secure link; do not mark the order complete
+until the required design files are actually available to the studio.
+
 ---
 
 ## Troubleshooting
