@@ -57,9 +57,10 @@ which wins. `npm test` now runs both stages even when the script stage fails:
 `npm run test:scripts` and `npm run test:app`. Confirm your change did not add
 failures by comparing the script-stage failing-test count before and after —
 `git stash` your edits and re-run if unsure. CI runs all app suites as a
-blocking step and ratchets the script stage against the documented failure
-count (see CI below). The app suite includes `src/lib/requests.test.ts` for
-order-delivery queue and attachment persistence.
+blocking step, and the script stage fails on any failure whose name is not in
+`chop-lab.com/scripts/known-test-failures.txt` (see CI below). The app suite
+includes `src/lib/requests.test.ts` for order-delivery queue and attachment
+persistence.
 
 ### Stack and layout
 
@@ -364,15 +365,15 @@ builds, tests, then runs `scripts/smoke.mjs` and `scripts/mcp-smoke.mjs`
 (the blog tests in `minescout.net/scripts/`). The `chop-lab` job runs `npm ci`,
 `typecheck`, the Merchant Center feed check, the production build, then all
 `src/lib/**/*.test.ts` app suites (blocking) and every discovered script test
-file. The script suites are held to `SCRIPT_TEST_FAILURE_BASELINE` in the
-workflow — the 16 documented failures above — so the count may shrink but a new
-failure turns the job red; lower the baseline as failures are fixed. The build
-step pins `DATABASE_URL` empty because `npm run build` runs `db:migrate`.
-`chop-lab.com/package-lock.json` must be committed in the shape npm 10.9.9
-(what Node 22 ships) writes it. npm 10 and npm 12 disagree about
-`node_modules/nitro/node_modules/lru-cache`, an optional peer of Nitro's nested
-`unstorage`: npm 12 omits it, and npm 10 then fails `npm ci` with
-`Missing: lru-cache@11.5.3 from lock file`. Regenerate with
+file. The script suites are held to `chop-lab.com/scripts/known-test-failures.txt`
+— the 16 documented failures above, by name — so the baseline can only shrink:
+delete a line when its test is fixed, and when the list is empty remove the
+allowlist check and the file together. The build step pins `DATABASE_URL`
+empty because `npm run build` runs `db:migrate`. `chop-lab.com/package-lock.json`
+must be committed in the shape npm 10.9.9 (what Node 22 ships) writes it. npm 10
+and npm 12 disagree about `node_modules/nitro/node_modules/lru-cache`, an
+optional peer of Nitro's nested `unstorage`: npm 12 omits it, and npm 10 then
+fails `npm ci` with `Missing: lru-cache@11.5.3 from lock file`. Regenerate with
 `npx npm@10.9.9 install --package-lock-only` from `chop-lab.com/` and never
 commit a lockfile rewritten by a newer npm; never swap CI to `npm install`.
 `pages.yml` publishes a static

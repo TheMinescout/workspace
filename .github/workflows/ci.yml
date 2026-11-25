@@ -19,14 +19,13 @@ on:
 permissions:
   contents: read
 
-defaults:
-  run:
-    working-directory: life.minescout.net
-
 jobs:
   verify:
     name: Build, lint and render smoke
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: life.minescout.net
     steps:
       - uses: actions/checkout@v4
 
@@ -80,11 +79,6 @@ jobs:
     defaults:
       run:
         working-directory: chop-lab.com
-    env:
-      # The script test suites carry known failures (see PR #46). CI tolerates
-      # this many and fails on anything above it, so the baseline can shrink
-      # but never grow. Lower this number as failures are fixed.
-      SCRIPT_TEST_FAILURE_BASELINE: "16"
     steps:
       - uses: actions/checkout@v4
 
@@ -128,6 +122,11 @@ jobs:
       # follow <title> while site.json pins it. Both are documented in PR #46.
       # Run the suites anyway and fail only when the count rises, so a new
       # regression cannot hide behind the known ones.
+      # Eight of the baseline failures read App Builder scaffolding this repo
+      # does not ship (`.grok/**`); eight expect the PWA plugin's og:title to
+      # follow <title> while site.json pins it. Both are documented in PR #46.
+      # `scripts/known-test-failures.txt` names them, so any other failure fails
+      # the job: a count-only baseline cannot tell a fixed test from a new one.
       - name: Unit tests (script suites, known baseline)
         run: |
           tap="$RUNNER_TEMP/chop-script-tests.tap"
@@ -139,39 +138,52 @@ jobs:
           fi
 
           node --test --test-reporter=tap "${test_files[@]}" > "$tap"
+          status=$?
           set -e
 
           total=$(grep -E '^# tests ' "$tap" | tail -1 | awk '{print $3}')
-          failed=$(grep -E '^# fail ' "$tap" | tail -1 | awk '{print $3}')
-          if [ -z "$total" ] || [ -z "$failed" ]; then
-            echo "::error::The script test run produced no TAP summary — the suites did not run."
+          if [ -z "$total" ]; then
+            echo "::error::The script test run produced no TAP summary - the suites did not run."
             tail -n 60 "$tap"
             exit 1
           fi
 
-          echo "script tests: $total run, $failed failed (baseline $SCRIPT_TEST_FAILURE_BASELINE)"
+          if [ "$status" -eq 0 ]; then
+            echo "::notice::The script suites all pass. Delete scripts/known-test-failures.txt and the allowlist check below."
+            exit 0
+          fi
+
+          # Compare the failing test names against the documented baseline, not
+          # just their count: a change that fixes one baseline failure and breaks
+          # another would keep a count-based check green.
+          failing="$RUNNER_TEMP/chop-script-tests-failed.txt"
+          allowlist="scripts/known-test-failures.txt"
+          grep -E '^not ok ' "$tap" | sed -E 's/^not ok [0-9]+ - //' | sort -u > "$failing" || true
+          if [ ! -s "$failing" ]; then
+            echo "::error::The script suites failed without per-test results."
+            tail -n 60 "$tap"
+            exit 1
+          fi
+
+          grep -vE '^[[:space:]]*(#|$)' "$allowlist" | sort -u > "$RUNNER_TEMP/chop-allowlist.txt"
+          new_failures=$(comm -23 "$failing" "$RUNNER_TEMP/chop-allowlist.txt" || true)
+          fixed=$(comm -13 "$failing" "$RUNNER_TEMP/chop-allowlist.txt" || true)
+
           {
             echo "### Chop Lab script tests"
             echo
-            echo "$total run, **$failed failed** — documented baseline $SCRIPT_TEST_FAILURE_BASELINE (see PR #46)."
+            echo "$total run, **$(wc -l < "$failing") failed** - $(wc -l < "$RUNNER_TEMP/chop-allowlist.txt") of them on the documented baseline (see PR #46)."
+            echo
+            sed 's/^/- /' "$failing"
           } >> "$GITHUB_STEP_SUMMARY"
 
-          if [ "$failed" -gt 0 ]; then
-            {
-              echo
-              echo "Failing test cases:"
-              grep 'not ok ' "$tap" || true
-            } >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-          if [ "$failed" -gt "$SCRIPT_TEST_FAILURE_BASELINE" ]; then
-            {
-              echo
-              echo "Failures above the baseline:"
-              echo '```'
-              grep 'not ok' "$tap" || true
-              echo '```'
-            } >> "$GITHUB_STEP_SUMMARY"
-            echo "::error::$failed script tests failed, above the documented baseline of $SCRIPT_TEST_FAILURE_BASELINE. Fix the new failures, or lower SCRIPT_TEST_FAILURE_BASELINE if you fixed old ones."
+          if [ -n "$new_failures" ]; then
+            echo "::error::Script tests failing that are not on $allowlist:"
+            printf '%s\n' "$new_failures"
             exit 1
           fi
+          if [ -n "$fixed" ]; then
+            echo "These allowlisted tests now pass; delete them from $allowlist:"
+            printf '%s\n' "$fixed"
+          fi
+          echo "Every failing script test is on the documented baseline."
