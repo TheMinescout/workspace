@@ -110,21 +110,5 @@ jobs:
           DATABASE_URL: ""
         run: npm run build
 
-      # `npm test` runs both stages through `scripts/run-tests.mjs`, but CI wants
-      # the app suites as their own step so a failure names the stage. `test:app`
-      # owns the glob, so a new `src/lib` suite cannot be skipped here.
-      - name: Unit tests (app suites)
-        run: npm run test:app
-
-      # Both stages block: the suites are hermetic now, so there is no baseline
-      # to allow for. Discover the files here rather than leaning on the glob in
-      # `test:scripts` - a glob that matches nothing still reports `# tests 0`
-      # and would pass as a green run.
-      - name: Unit tests (script suites)
-        run: |
-          mapfile -d '' -t test_files < <(find scripts -type f -name '*.test.mjs' -print0 | sort -z)
-          if [ "${#test_files[@]}" -eq 0 ]; then
-            echo "::error::No script test files were discovered."
-            exit 1
-          fi
-          node --test "${test_files[@]}"
+      - name: Unit tests (all suites)
+        run: npm test
