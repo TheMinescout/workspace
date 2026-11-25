@@ -3,6 +3,9 @@
 Persistent notes for agents working in this repository. See `README.md` for the
 full description of each site.
 
+See [`ARCHITECTURE.md`](ARCHITECTURE.md) for shared-service ownership and
+site-specific boundaries.
+
 ## What this repo is
 
 A workspace of separate web properties, not one app. Each site has its own
@@ -44,18 +47,13 @@ A change is done when all of these pass:
    (1280x800) and mobile (390x844): non-blank body text, **no console/page
    errors**, **no horizontal overflow**. Check the screenshots it writes.
 
-`npm test` has 16 pre-existing failures (of 230) unrelated to most work, in two
-groups. Eight read App Builder template scaffolding this repo does not ship —
-`.grok/skills/**` and `.grok/app-env.json` (`brand-check`, `write-atomic`,
-`with-app-env`, `check-auth-invariant`). The other eight (`grok-pwa-plugin`)
-expect the document `<title>` to become `og:title`, but the committed
-`src/lib/og/site.json` pins the app title to "The Chop Lab", which wins. The
-script chains its two stages with `&&`, so while the first stage fails the three
-`src/lib/*.test.ts` suites never run; run them directly
-(`node --experimental-strip-types --test src/lib/app-data/app-data.test.ts
-src/lib/auth/gate-identity.test.ts src/lib/seo.test.ts`) after touching that
-code. Confirm your change did not add failures by comparing the failing-test
-count before and after — `git stash` your edits and re-run if unsure.
+`npm test` runs both stages — the script suites, then the app suites —
+and both must be green; `scripts/run-tests.mjs` runs the second stage even when
+the first fails, so one red stage cannot hide the other. The suites are
+hermetic: they build their own fixtures under the OS temp directory instead of
+reading `.grok/app-env.json`, `.env` or `src/lib/og/site.json`, so they pass on a
+fresh clone and in CI. The app suites cover product data, the auth gate identity,
+SEO and the order-delivery queue (`src/lib/requests.test.ts`).
 
 ### Stack and layout
 
@@ -353,14 +351,26 @@ npm run check    # lint (oxlint) + build + tests + render and MCP smoke
 
 ## CI
 
-`.github/workflows/ci.yml` runs for `life.minescout.net/**` and
-`minescout.net/**` changes. The Life job installs, lints, builds, tests, then runs
-`scripts/smoke.mjs` and `scripts/mcp-smoke.mjs` (Chromium installed via Playwright).
-The `minescout-net` job just runs `npm test` (the blog tests in
-`minescout.net/scripts/`). `pages.yml` publishes a static Life preview
-to GitHub Pages — its API routes are dev-server-only, so comments, votes and
-admin sign-in do not work there. The Chop Lab has no CI; verify it by hand with
-the commands above.
+`.github/workflows/ci.yml` runs for `life.minescout.net/**`,
+`minescout.net/**` and `chop-lab.com/**` changes. The Life job installs, lints,
+builds, tests, then runs `scripts/smoke.mjs` and `scripts/mcp-smoke.mjs`
+(Chromium installed via Playwright). The `minescout-net` job just runs `npm test`
+(the blog tests in `minescout.net/scripts/`). The `chop-lab` job runs `npm ci`,
+`typecheck`, the Merchant Center feed check, the production build, then
+`npm test` — the script suites and the app suites, both blocking.
+`scripts/run-tests.mjs` discovers every test file itself and fails when a stage
+finds none, so a glob that stops matching cannot pass as a green run. The build
+step pins `DATABASE_URL` empty because `npm run build` runs `db:migrate`.
+`chop-lab.com/package-lock.json` must be committed in the shape npm 10.9.9
+(what Node 22 ships) writes it. npm 10 and npm 12 disagree about
+`node_modules/nitro/node_modules/lru-cache`, an optional peer of Nitro's nested
+`unstorage`: npm 12 omits it, and npm 10 then fails `npm ci` with
+`Missing: lru-cache@11.5.3 from lock file`. Regenerate with
+`npx npm@10.9.9 install --package-lock-only` from `chop-lab.com/` and never
+commit a lockfile rewritten by a newer npm; never swap CI to `npm install`.
+`pages.yml` publishes a static
+Life preview to GitHub Pages — its API routes are dev-server-only, so comments,
+votes and admin sign-in do not work there.
 
 ## Git
 

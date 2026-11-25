@@ -6,22 +6,26 @@ on:
     paths:
       - "life.minescout.net/**"
       - "minescout.net/**"
+      - "chop-lab.com/**"
       - ".github/workflows/ci.yml"
   pull_request:
     paths:
       - "life.minescout.net/**"
       - "minescout.net/**"
+      - "chop-lab.com/**"
       - ".github/workflows/ci.yml"
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: life.minescout.net
+permissions:
+  contents: read
 
 jobs:
   verify:
     name: Build, lint and render smoke
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: life.minescout.net
     steps:
       - uses: actions/checkout@v4
 
@@ -66,4 +70,49 @@ jobs:
           node-version: 22
 
       - name: Unit tests
+        run: npm test
+
+  chop-lab:
+    name: Chop Lab typecheck, build and feed
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: chop-lab.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Vite 8 and nitro require >=22.12.0. `feed:merchant` and the test
+          # suites import .ts files with a bare `node`, which needs the unflagged
+          # type stripping of >=22.18.0.
+          node-version: 22
+          cache: npm
+          cache-dependency-path: chop-lab.com/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # Cheap, and independent of the build: a stale feed should not have to
+      # wait for a full production build to fail.
+      - name: Verify Merchant Center feed is current
+        run: npm run feed:merchant -- --check
+
+      - name: Production build
+        # `build` also runs `db:migrate`, which applies migrations to whatever
+        # DATABASE_URL it is given. Keep it empty so a repository secret can
+        # never let CI write to a live database.
+        env:
+          DATABASE_URL: ""
+        run: npm run build
+
+      # `npm test` runs the script suites and the app suites through
+      # `scripts/run-tests.mjs`: it keeps going after a failing stage, and fails
+      # when a stage discovers no test files, so a glob that stops matching
+      # cannot pass as a green run.
+      - name: Unit tests (all suites)
         run: npm test

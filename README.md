@@ -448,7 +448,7 @@ npm run dev          # Vite dev server on 0.0.0.0:8080
 | `npm run preview:restart`, `npm run preview:stop` | Restart or stop the QA preview |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run lint` | ESLint |
-| `npm test` | `node:test` suites in `scripts/` plus three TypeScript suites in `src/lib` |
+| `npm test` | `node:test` suites in `scripts/` plus the TypeScript suites in `src/lib` |
 | `npm run check:auth` | Auth-invariant check against the dev server |
 | `npm run db:migrate` | Apply SQL migrations |
 | `npm run format` | Prettier |
@@ -462,10 +462,8 @@ A change is done when:
    overflow. Inspect the screenshots it writes.
 
 > [!NOTE]
-> `npm test` carries a set of pre-existing failures unrelated to most work: they read App Builder
-> template scaffolding this repo does not ship, and the PWA plugin expects the document `<title>`
-> to drive `og:title` while `src/lib/og/site.json` pins the card title to "The Chop Lab". Compare
-> the failing count before and after a change rather than expecting a fully green run.
+> `npm test` runs both stages and must be green. `scripts/run-tests.mjs` runs the app suites even
+> when the script suites fail, so a red script stage cannot hide a red app stage.
 
 ### Deployment: Nitro on Vercel
 

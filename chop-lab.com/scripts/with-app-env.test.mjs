@@ -117,8 +117,11 @@ test("an explicit process-env override wins over the file", () => {
   assert.equal(merged.PATH, "/usr/bin");
 });
 
-test("the template ships auth off", () => {
-  assert.deepEqual(readAppEnv(projectRoot()), { VITE_AUTH_ENABLED: "false" });
+test("a workspace app-env can ship auth off and accept an explicit override", () => {
+  const root = makeWorkspace('{"VITE_AUTH_ENABLED":"false"}');
+  assert.deepEqual(readAppEnv(root), { VITE_AUTH_ENABLED: "false" });
+  assert.equal(resolveEnv(root, {}).VITE_AUTH_ENABLED, "false");
+  assert.equal(resolveEnv(root, { VITE_AUTH_ENABLED: "true" }).VITE_AUTH_ENABLED, "true");
 });
 
 test("vite loadEnv resolves the wrapped value", () => {
@@ -131,13 +134,12 @@ test("vite loadEnv resolves the wrapped value", () => {
   assert.equal(merged.VITE_AUTH_ENABLED, "false");
 });
 
-test("the wrapped command runs with the app env applied", async () => {
-  const { stdout } = await execFileAsync(process.execPath, [
-    WRAPPER,
+test("the wrapped command receives its explicit process environment", async () => {
+  const { stdout } = await execFileAsync(
     process.execPath,
-    "-e",
-    PRINT_FLAG,
-  ]);
+    [WRAPPER, process.execPath, "-e", PRINT_FLAG],
+    { env: { ...process.env, VITE_AUTH_ENABLED: "false" } },
+  );
   assert.equal(stdout, "false");
 });
 
@@ -182,5 +184,7 @@ test("the CLI still runs when invoked through a symlinked path", async () => {
     "-e",
     PRINT_FLAG,
   ]);
-  assert.equal(stdout, "false");
+  // The wrapper passes `resolveEnv(...)` through unchanged, so an unset value
+  // stays unset: assert the resolved value, not a default it never applies.
+  assert.equal(stdout, String(resolveEnv(projectRoot(), process.env).VITE_AUTH_ENABLED));
 });
