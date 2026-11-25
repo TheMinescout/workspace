@@ -1,0 +1,22 @@
+{
+  "notes": "Legacy /ai/ URLs from before the Studio rename. Each maps to its genuine replacement (never the Studio home page by default) and is served as a permanent, single-hop 301 by the minescout.net block in my-sites.conf. scripts/redirects.test.mjs checks that the two stay in step and that no target is itself a redirect.",
+  "redirects": {
+    "/ai": "/studio",
+    "/ai/pricing": "/studio/pricing",
+    "/ai/legal": "/studio/legal",
+    "/ai/process": "/studio/process",
+    "/ai/clients": "/studio/clients",
+    "/ai/tools": "/studio/tools",
+    "/ai/roi": "/studio/roi",
+    "/ai/intake": "/studio/intake",
+    "/ai/info": "/studio/intake",
+    "/ai/creation": "/studio/creation",
+    "/ai/review": "/studio/review",
+    "/ai/local-web-design": "/studio/local-web-design",
+    "/ai/custom-storefronts": "/studio/custom-storefronts",
+    "/ai/student-nonprofit": "/studio/student-nonprofit",
+    "/ai/admin": "/studio/admin",
+    "/ai/chat-config": "/studio/chat-config",
+    "/studio/2026": "/studio"
+  }
+}

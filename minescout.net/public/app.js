@@ -1,6 +1,6 @@
 // app.js — Application Logic & Routing
 
-import { views, PAGE_META, SITE_META } from './views.js?v=1.415';
+import { views, SITE_META } from './views.js?v=1.417';
 
 // ── 0. STUDIO MAIL ────────────────────────────────────────────────
 // Every form posts here. The relay (life.minescout.net/server/mail.js) owns
@@ -80,7 +80,6 @@ const AI_MENU = [
 
 const AI_SECONDARY = [
   { label: 'Enquire',      href: '/studio/intake' },
-  { label: '2026 in Review',  href: '/studio/2026' },
   { label: 'Legal',        href: '/studio/legal' },
   { label: 'Portfolio',    href: '/' },
   { label: 'Ask AI',       href: '/ask' },
@@ -129,7 +128,8 @@ function initSidebar() {
   aside.innerHTML = `
     <div class="sidebar-header">
       <div class="sidebar-logo-wrap">
-        <img src="/assets/favicon.png" alt="TC" class="sidebar-logo" />
+        <img src="/assets/favicon-32.png" srcset="/assets/favicon-32.png 32w, /assets/favicon-64.png 64w"
+             sizes="32px" width="32" height="32" alt="TC" class="sidebar-logo" />
         <div>
           <div class="sidebar-name">Thomas Carleton</div>
           <div class="sidebar-tagline">minescout.net</div>
@@ -556,7 +556,7 @@ function initROI() {
     
     const netEl = document.getElementById('netMonthly');
     netEl.innerText = net >= 0 ? '+$' + net.toFixed(0) : '-$' + Math.abs(net).toFixed(0);
-    netEl.style.color = net >= 0 ? '#4caf82' : '#ff4d1c';
+    netEl.style.color = net >= 0 ? '#2f7350' : 'var(--accent)';
 
     if (paybackMo !== null) {
       document.getElementById('payback').innerText = paybackMo < 1 ? '< 1 mo' : paybackMo.toFixed(1) + ' mos';
@@ -1530,13 +1530,53 @@ function setMetaContent(key, content, isProperty = false) {
   tag.setAttribute('content', content);
 }
 
+function setCanonical(href) {
+  let link = document.head.querySelector('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', 'canonical');
+    document.head.appendChild(link);
+  }
+  link.setAttribute('href', href);
+}
+
+// Per-page metadata comes from the generated manifest (scripts/seo.mjs), so the
+// head a crawler reads in the prerendered HTML and the head this router applies
+// on a client-side navigation are the same values from the same source.
+let pageMeta = {};
+
+async function loadPageMeta() {
+  try {
+    const res = await fetch('/seo/manifest.json', { cache: 'no-cache' });
+    if (!res.ok) return;
+    const manifest = await res.json();
+    const map = {};
+    for (const entry of manifest.pages || []) {
+      if (entry && entry.path) map[entry.path] = entry;
+    }
+    pageMeta = map;
+  } catch (err) {
+    // The prerendered head is already correct; a failed fetch only costs the
+    // client-side navigation refresh.
+    console.warn('SEO manifest unavailable', err);
+  }
+}
+
 function applyPageMeta(path) {
-  const meta = PAGE_META[path] || SITE_META;
-  document.title = meta.title;
-  setMetaContent('description', meta.description);
-  setMetaContent('og:title', meta.title, true);
-  setMetaContent('og:description', meta.description, true);
-  setMetaContent('og:url', `https://minescout.net${path}`, true);
+  const meta = pageMeta[path];
+  const title = meta ? meta.title : SITE_META.title;
+  const description = meta ? meta.description : SITE_META.description;
+
+  document.title = title;
+  setMetaContent('description', description);
+  setMetaContent('og:title', title, true);
+  setMetaContent('og:description', description, true);
+  setMetaContent('og:url', meta ? meta.url : `https://minescout.net${path}`, true);
+  setMetaContent('og:type', meta ? meta.ogType : 'website', true);
+  if (meta && meta.ogImage) setMetaContent('og:image', meta.ogImage, true);
+  setCanonical(meta ? meta.canonical : `https://minescout.net${path}`);
+  // A route with no manifest entry is not a page: keep it out of the index.
+  setMetaContent('robots', meta ? meta.robots : 'noindex, follow');
 }
 
 // Google Tag Manager, loaded only for the Minescout Studio section (/studio*).
@@ -1565,9 +1605,10 @@ function loadGTM() {
 }
 
 function render(path) {
-  // Redirect /studio/2026 to standalone presentation
+  // Legacy review URL: the 2026 presentation never shipped, so send it to the
+  // Studio overview instead of a missing file. nginx 301s it in production.
   if (path === '/studio/2026') {
-    window.location.href = '/ads/studio-2026-year-in-review.html';
+    window.location.replace('/studio');
     return;
   }
   const cleanPath = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
@@ -1595,9 +1636,10 @@ function render(path) {
 }
 
 function navigate(path) {
-  // Redirect /studio/2026 to standalone presentation
+  // Legacy review URL: the 2026 presentation never shipped, so send it to the
+  // Studio overview instead of a missing file. nginx 301s it in production.
   if (path === '/studio/2026') {
-    window.location.href = '/ads/studio-2026-year-in-review.html';
+    window.location.replace('/studio');
     return;
   }
   window.history.pushState({}, '', path);
@@ -1650,9 +1692,10 @@ function initRouter() {
   window.addEventListener('popstate', () => render(window.location.pathname));
 }
 
-function boot() {
+async function boot() {
   initSidebar();
   initRouter();
+  await loadPageMeta();
   render(window.location.pathname);
 }
 

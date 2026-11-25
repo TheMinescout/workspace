@@ -557,10 +557,11 @@
   .plan-container { background: var(--bg); padding: 60px; border-radius: 0 0 6px 6px; position: relative; outline: none; box-shadow: 0 20px 50px rgba(0,0,0,0.2); text-align: left;}
   .status-stamp { position: absolute; top: 50px; right: 60px; border: 2px solid var(--accent); color: var(--accent); padding: 6px 15px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; transform: rotate(4deg); }
   .pdf-header { border-bottom: 3px solid var(--fg); padding-bottom: 30px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
-  .pdf-header .brand h1 { font-family: var(--serif); font-size: 2.2rem; line-height: 1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: -0.02em; color: var(--fg); }
+  .pdf-header .brand h1,
+  .pdf-header .brand h2 { font-family: var(--serif); font-size: 2.2rem; line-height: 1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: -0.02em; color: var(--fg); }
   .pdf-header .brand p { font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0; }
-  .plan-container h2 { font-family: var(--serif); font-size: 1.4rem; margin-bottom: 1.5rem; margin-top: 3rem; display: flex; align-items: center; gap: 15px; color: var(--fg); }
-  .plan-container h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .plan-container h2:not(.brand-title) { font-family: var(--serif); font-size: 1.4rem; margin-bottom: 1.5rem; margin-top: 3rem; display: flex; align-items: center; gap: 15px; color: var(--fg); }
+  .plan-container h2:not(.brand-title)::after { content: ''; flex: 1; height: 1px; background: var(--border); }
   .question-list { list-style: none; padding: 0; }
   .question-list li { font-size: 0.95rem; margin-bottom: 20px; padding-left: 20px; position: relative; color: #334155; }
   .question-list li::before { content: '■'; position: absolute; left: 0; top: 4px; color: var(--accent); font-size: 0.7rem; }
@@ -1377,7 +1378,10 @@
    --muted:#6f695f;
    --light:#fffaf6;
    --border:#ece4db;
-   --accent:#ff6b3d;
+   /* Darkened from #ff6b3d, which reached only 2.8:1 on the page background.
+      Every accent use here is text or a fill behind small white text, so it has
+      to clear 4.5:1: this value reaches 4.7:1 on the tinted panels. */
+   --accent:#c2461a;
   }
   body{font-size:17px;line-height:1.75;background:linear-gradient(#fcfbf8,#faf8f4);}
   .main{padding:4rem;}
@@ -1546,3 +1550,42 @@
     body { font-size: 15px; }
   }
   
+
+/* ==========================================================================
+   Accessibility: colour contrast (WCAG 2.1 AA)
+   Status greens and muted greys are darkened to the ink variants so they clear
+   4.5:1 on the tinted panels they sit on. The bright accent survives only in
+   decoration (rules, progress bars, bullets), where contrast does not apply.
+   ========================================================================== */
+  :root {
+    --accent-bright: #ff6b3d;
+    --green-ink: #2f7350;
+    --muted-strong: #5c5850;
+  }
+
+  /* Accent rules and fills: decoration, no text on them. */
+  .sidebar-nav a.active::before,
+  .plan-quiz-progress-fill,
+  .ls-fill,
+  .phase-deliverables li::before { background: var(--accent-bright); }
+
+  /* Green status text on the pale green panel. */
+  .badge-live, .badge-free, .status-live, .tool-badge, .form-success,
+  .btn-green, .tag-active, .tag-applied, .tier-ai,
+  .verdict-box.pro .verdict-label { color: var(--green-ink); }
+  .btn-green:hover { background: var(--green-ink); border-color: var(--green-ink); }
+
+  /* Muted body copy on the pale verdict panels, and the light-on-dark copy
+     inside the dark verdict bar. */
+  .verdict-box .verdict-text { color: var(--muted-strong); }
+  .verdict-bar .verdict-text { color: #b8b3aa; }
+  .result-label { color: rgba(255, 255, 255, 0.78); }
+
+  /* Post sections are h2 (the post title is the h1). Pin the size the h3s had,
+     so promoting them for the document outline does not enlarge the type. */
+  .blog-content h2 { font-size: 1.17em; font-weight: 700; }
+
+  /* Decorative arrows and unfilled rating stars are still text to a browser. */
+  .project-arrow, .star-empty { color: var(--muted); }
+  /* On the dark featured tier the accent needs its bright form to reach 3:1. */
+  .tier--featured .tier-price em { color: var(--accent-bright); }

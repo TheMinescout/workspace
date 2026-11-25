@@ -206,48 +206,20 @@ function buildBlogIndex() {
 }
 
 // ---------------------------------------------------------------------------
-// Per-route document metadata
+// Document metadata
 // ---------------------------------------------------------------------------
 
 /**
- * Site-wide fallback metadata. app.js uses this for any route without a
- * PAGE_META entry and restores it when navigating back from a service page.
+ * Site-wide fallback metadata, used for any route the SEO manifest does not
+ * describe (an unknown URL, which is also marked noindex). Per-page titles,
+ * descriptions, canonicals and robots directives live in the generated
+ * manifest at /seo/manifest.json — see seo/overrides.json and
+ * `npm run seo:build`. Keeping one source means the prerendered HTML and the
+ * client-side router cannot disagree.
  */
 export const SITE_META = {
-  title: 'Thomas Carleton',
+  title: 'Thomas Carleton — Builder, Student, Eagle Scout',
   description: 'Builder. Student. Eagle Scout. I build things on the internet — from Minecraft tools to web apps.',
-};
-
-/**
- * Routes that need a document title and meta description distinct from the
- * portfolio defaults in index.html. app.js applies these on every render and
- * restores the defaults for any route that is not listed here.
- */
-export const PAGE_META = {
-  '/studio/local-web-design': {
-    title: 'Small Business Website Design in Sammamish & Eastside WA | Minescout Studio',
-    description: 'Custom, fast websites for small businesses in Sammamish, Issaquah, Redmond, and Bellevue. Mobile-first layouts, edge performance, and SEO setup from $750.',
-  },
-  '/studio/custom-storefronts': {
-    title: 'Custom E-Commerce Storefronts Without Monthly Platform Fees | Minescout Studio',
-    description: 'Custom e-commerce storefronts with interactive configurators, live unit toggles, and flexible checkout flows. Live proof at chop-lab.com, projects from $2,500.',
-  },
-  '/studio/student-nonprofit': {
-    title: 'Affordable Custom Websites for Students, Clubs & Nonprofits | Minescout Studio',
-    description: 'Discounted custom websites for students, robotics teams, scouts, school clubs, and local nonprofits. Projects from $250 to $750 with fast turnaround.',
-  },
-  '/blog/custom-website-vs-wix-squarespace.html': {
-    title: 'Custom Website vs. Wix & Squarespace (2026) | Minescout Studio',
-    description: 'Compare 2026 Wix and Squarespace subscription and transaction costs against a custom-coded site you own, with the real three-year totals and when to switch.',
-  },
-  '/blog/sammamish-small-business-website-guide.html': {
-    title: 'What Sammamish & Eastside Businesses Need in a Website | Minescout',
-    description: 'A practical 2026 buyer\'s guide for Sammamish, Issaquah, Redmond, and Bellevue businesses: mobile speed, local SEO, clear pricing, and lead capture.',
-  },
-  '/blog/websites-for-clubs-robotics-nonprofits.html': {
-    title: 'Custom Websites for Clubs, Robotics Teams & Nonprofits | Minescout',
-    description: 'What student clubs, FIRST Robotics teams, booster clubs, and local nonprofits need online, and how the discounted Minescout Studio tier keeps it affordable.',
-  },
 };
 
 // ---------------------------------------------------------------------------
@@ -338,7 +310,7 @@ export const views = {
     <div class="main--page">
       <div class="page-content" style="max-width: 740px;">
         <div class="print-header">
-          <h1 class="print-name">Thomas Carleton</h1>
+          <div class="print-name">Thomas Carleton</div>
           <div class="print-contact">Sammamish, WA &nbsp;|&nbsp; 425-520-8683 &nbsp;|&nbsp; tmcarleton11@gmail.com &nbsp;|&nbsp; minescout.net</div>
         </div>
         
@@ -455,6 +427,20 @@ export const views = {
             <div class="project-arrow">→</div>
           </a>
         </div>
+
+        <p class="page-label" style="margin-top: 2.5rem;">Demos</p>
+        <div class="projects">
+          <a class="project-card" href="/services/lawn-care" style="--delay: 500ms;">
+            <div class="project-date">Demo</div>
+            <div><div class="project-title">SmartCut Lawn Care</div><div class="project-url">services/lawn-care</div></div>
+            <div class="project-arrow">→</div>
+          </a>
+          <a class="project-card" href="/services/coin-data" style="--delay: 600ms;">
+            <div class="project-date">Demo</div>
+            <div><div class="project-title">Coin Price Engine</div><div class="project-url">services/coin-data</div></div>
+            <div class="project-arrow">→</div>
+          </a>
+        </div>
       </div>
     </div>
   `,
@@ -472,25 +458,25 @@ export const views = {
           
           <!-- Wildlife Highlights -->
           <div class="photo-card" style="grid-column: 1 / -1;">
-            <img src="/assets/owl-flight.jpg" alt="Great Horned Owl in Flight" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
+            <img loading="lazy" decoding="async" src="/assets/owl-flight.jpg" alt="Great Horned Owl in Flight" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
             <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;"><strong>Great Horned Owl in Flight</strong> — Grouse Mountain, BC | Nikon D7200, ƒ/4.8, 1/8000, 125mm, ISO 1000</p>
           </div>
           <div class="photo-card">
-            <img src="/assets/owl-portrait.jpg" alt="Great Horned Owl Portrait" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
+            <img loading="lazy" decoding="async" src="/assets/owl-portrait.jpg" alt="Great Horned Owl Portrait" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
             <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;"><strong>Owl Portrait</strong> — Grouse Mountain, BC | High-Key Background</p>
           </div>
           <div class="photo-card">
-            <img src="/assets/vulture.jpg" alt="Vulture Portrait" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
+            <img loading="lazy" decoding="async" src="/assets/vulture.jpg" alt="Vulture Portrait" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
             <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;"><strong>Turkey Vulture Close-Up</strong> — Grouse Mountain, BC | Sharp Eye Focus</p>
           </div>
 
           <!-- Architecture Additions -->
           <div class="photo-card">
-            <img src="/assets/sagrada-familia-door.jpg" alt="Sagrada Família Door" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
+            <img loading="lazy" decoding="async" src="/assets/sagrada-familia-door.jpg" alt="Sagrada Família Door" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
             <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;"><strong>Sagrada Família Facade Door</strong> — Barcelona, Spain | Nikon D7200, ƒ/5.6, 1/30s, 18mm, ISO 560</p>
           </div>
           <div class="photo-card">
-            <img src="/assets/pisa.jpg" alt="Leaning Tower of Pisa" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
+            <img loading="lazy" decoding="async" src="/assets/pisa.jpg" alt="Leaning Tower of Pisa" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);" />
             <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;"><strong>Leaning Tower of Pisa</strong> — Pisa, Italy | Nikon D7200, ƒ/11, 1/500s, 28mm, ISO 200</p>
           </div>
 
@@ -745,7 +731,7 @@ export const views = {
             <p class="client-note">Deploying a highly optimized, single-page serverless portfolio at the network edge for Pacific Northwest artist Chris Franz. This node leverages a decoupled cloud architecture to deliver sub-second paint times, localized asset caching, and a secure, low-latency administrative back panel for zero-maintenance content management.</p>
             
             <div style="margin: 1.25rem 0; padding: 1rem 1.25rem; background: var(--light); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0;">
-              <div style="color: #f5b041; font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 0.4rem;">★★★★★</div>
+              <div style="color: #9a5f0d; font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 0.4rem;" aria-label="Rated 5 out of 5">★★★★★</div>
               <p style="font-size: 0.85rem; font-style: italic; color: var(--fg); margin: 0; line-height: 1.6;">
                 "Minescout does a great job replying to questions in a timely manner. They quickly created a plug and play website for me, work fast, and will walk you through how to make updates to your webpage."
               </p>
@@ -787,7 +773,7 @@ export const views = {
             </div>
             <p class="client-note">A complete Clean Slate Rebuild. We threw out the legacy code and rebuilt the site from the ground up as a high-performance visual experience featuring dynamic gallery rendering and fast mobile load times.</p>            
             <div style="margin: 1.25rem 0; padding: 1rem 1.25rem; background: var(--light); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0;">
-              <div style="color: #f5b041; font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 0.4rem;">★★★★★</div>
+              <div style="color: #9a5f0d; font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 0.4rem;" aria-label="Rated 5 out of 5">★★★★★</div>
               <p style="font-size: 0.85rem; font-style: italic; color: var(--fg); margin: 0; line-height: 1.6;">
                 "Excellent communication. My favorite part about the final product is that I can easily edit things myself and add new pages."
               </p>
@@ -1088,17 +1074,17 @@ export const views = {
 
         <div class="calc-container">
           <div class="input-section">
-            <h3 style="margin-bottom: 1.5rem; font-family: var(--serif);">Efficiency Metrics</h3>
+            <h2 style="margin-bottom: 1.5rem; font-family: var(--serif);">Efficiency Metrics</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
               <div class="form-group"><label>Weekly Inquiries (Email/Phone)</label><input type="number" id="volume" value="50" oninput="window.calcROI()"></div>
               <div class="form-group"><label>Avg. Time per Response (Minutes)</label><input type="number" id="time" value="8" oninput="window.calcROI()"></div>
             </div>
-            <h3 style="margin: 2.5rem 0 1.5rem; font-family: var(--serif);">Growth Metrics</h3>
+            <h2 style="margin: 2.5rem 0 1.5rem; font-family: var(--serif);">Growth Metrics</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
               <div class="form-group"><label>Estimated Monthly Website Visitors</label><input type="number" id="traffic" value="800" oninput="window.calcROI()"></div>
               <div class="form-group"><label>Avg. Customer Value ($)</label><input type="number" id="value" value="250" oninput="window.calcROI()"></div>
             </div>
-            <h3 style="margin: 2.5rem 0 1.5rem; font-family: var(--serif);">Minescout Plan</h3>
+            <h2 style="margin: 2.5rem 0 1.5rem; font-family: var(--serif);">Minescout Plan</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
               <div class="form-group">
                 <label>Select Plan Tier</label>
@@ -1119,7 +1105,7 @@ export const views = {
               <p style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">Combined value of time saved + new lead revenue</p>
             </div>
             <div class="stat-grid">
-              <div class="mini-stat"><div class="mini-label">Monthly Net Value</div><div class="mini-val" id="netMonthly" style="color: #4caf82;">$0</div></div>
+              <div class="mini-stat"><div class="mini-label">Monthly Net Value</div><div class="mini-val" id="netMonthly" style="color: #2f7350;">$0</div></div>
               <div class="mini-stat"><div class="mini-label">Payback Period</div><div class="mini-val" id="payback" style="color: var(--accent);">—</div></div>
               <div class="mini-stat"><div class="mini-label">Monthly Hrs Reclaimed</div><div class="mini-val" id="hours-saved">0</div></div>
               <div class="mini-stat"><div class="mini-label">New Leads / Mo</div><div class="mini-val" id="new-leads">0</div></div>
@@ -1164,7 +1150,7 @@ export const views = {
             <div class="plan-container" id="pdfDocument">
               <div class="status-stamp">Client Intake</div>
               <div class="pdf-header">
-                <div class="brand"><h1>Minescout Studio</h1><p>Custom Intelligence File</p></div>
+                <div class="brand"><h2 class="brand-title">Minescout Studio</h2><p>Custom Intelligence File</p></div>
                 <div style="text-align: right; font-size: 0.85rem; line-height: 1.5; color: var(--fg);">
                   <strong>Client:</strong> <span id="p_client"></span><br>
                   <strong>Project:</strong> Managed AI Integration<br>
@@ -1765,7 +1751,6 @@ export const views = {
 // Ensure aliases are set
 views['/studio/info'] = views['/studio/intake'];
 views['/legal'] = views['/studio/legal'];
-views['/studio/clients/portal'] = views['/portal'];
 
 // ---------------------------------------------------------------------------
 // Blog post renderer & individual post routes
@@ -1815,14 +1800,14 @@ registerPost('/blog/edge-routing.html', "Aug 2, 2026", "AI Architecture",
   `
   <p style="margin-bottom: 1.25rem;">When building a multi-tenant platform on edge infrastructure, the first priority is ensuring the edge router validates every incoming request before any AI processing begins. This means confirming where each request comes from, whether it is authorized, and routing it to the correct worker without adding latency.</p>
   <p style="margin-bottom: 1.25rem;">Cloudflare Workers and KV storage run code at edge locations worldwide, making them ideal for multi-tenant routing. Two main problems must be solved: authorizing requests, and ensuring smooth communication between different workers in the pipeline.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Security at the Edge: Blacklists and Whitelists</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Security at the Edge: Blacklists and Whitelists</h2>
   <p style="margin-bottom: 1.25rem;">Before an AI worker parses a user prompt, the edge worker inspects the request origin. To protect client endpoints from unauthorized domain embeds or malicious traffic, a two-tier lookup in Cloudflare KV is effective:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Whitelisting:</strong> Ensuring incoming requests originate only from verified client domains.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Blacklisting:</strong> Instantly dropping bad actors or known spam IPs at the edge layer before triggering downstream KV reads or AI inferences.</li>
   </ul>
   <p style="margin-bottom: 1.25rem;">KV reads complete in a few milliseconds. Any request from an unauthorized domain is blocked at the edge before consuming downstream resources.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. AI Worker Compatibility and Pipeline Orchestration</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. AI Worker Compatibility and Pipeline Orchestration</h2>
   <p style="margin-bottom: 1.25rem;">A clean pipeline separates concerns: a lightweight router worker handles incoming HTTP traffic and domain validation, while a secondary AI worker executes model calls and retrieves client-specific system prompts.</p>
   <p style="margin-bottom: 1.25rem;">Smooth communication between these workers requires structured JSON payloads and Cloudflare's Service Bindings, which avoid unnecessary HTTP roundtrips between internal workers. This keeps the entire lifecycle - from request ingress to response stream - well under sub-second latency targets.</p>
   <p style="margin-bottom: 1.25rem;">Putting security and compatibility checks directly into the routing layer keeps client data safe and separated while maintaining a lightweight serverless footprint.</p>
@@ -1835,9 +1820,9 @@ registerPost('/blog/state-management.html', "Aug 9, 2026", "Building",
   "Native JavaScript features like Proxies and custom event listeners can create reactive data stores. This keeps the bundle size at zero while providing the same reactive UI benefits as a framework.",
   `
   <p style="margin-bottom: 1.25rem;">When building interactive applications, managing data that changes over time (state) is often the hardest part. Many developers reach for React or Vue to solve this, but importing a framework solely for managing UI toggles and form inputs is often unnecessary overhead.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Native Reactivity with JavaScript Proxies</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Native Reactivity with JavaScript Proxies</h2>
   <p style="margin-bottom: 1.25rem;">Instead of a Virtual DOM, JavaScript <code>Proxy</code> objects can intercept operations on an object — such as reading or updating a property. By wrapping application state in a Proxy, UI updates can be triggered automatically whenever a specific variable changes. If a user adds an item to their cart, the Proxy detects the change to the state object and fires an event to update the cart counter in the navigation bar.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Event-Driven Architecture</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Event-Driven Architecture</h2>
   <p style="margin-bottom: 1.25rem;">To keep different parts of the UI decoupled, custom event listeners work well. When the state updates, it dispatches a <code>CustomEvent</code> to the browser's <code>window</code> object. Any component that cares about that data listens for that specific event and updates its own HTML.</p>
   <p style="margin-bottom: 1.25rem;">This approach provides all the reactivity of a modern framework with zero external dependencies to download, parse, or maintain.</p>
   `
@@ -1851,7 +1836,7 @@ registerPost('/blog/zero-dollar-stack.html', "Aug 23, 2026", "Infrastructure",
   `
   <p style="margin-bottom: 1.25rem;">One of the biggest misconceptions in software development is that monthly subscription budgets for servers, databases, and deployment pipelines are required just to launch a project.</p>
   <p style="margin-bottom: 1.25rem;">Modern cloud providers offer generous free usage tiers for developers building micro-services and serverless architectures. By selecting tools that operate on serverless execution models, infrastructure costs only accrue when code actually runs.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">How the $0.00 Stack Works</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">How the $0.00 Stack Works</h2>
   <p style="margin-bottom: 1.25rem;">A zero-cost infrastructure stack can include:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Edge Routing & Compute:</strong> Cloudflare Workers (Free tier handles up to 100,000 requests per day at zero cost).</li>
@@ -1859,7 +1844,7 @@ registerPost('/blog/zero-dollar-stack.html', "Aug 23, 2026", "Infrastructure",
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Database & Authentication:</strong> Google Firebase / Firestore (Free tier covers initial data storage and auth instances).</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Version Control & CI/CD:</strong> GitHub Actions and GitHub Pages for repository tracking and automated deployments.</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Why Pay-As-You-Use (PAYU) is the Right Scalability Model</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Why Pay-As-You-Use (PAYU) is the Right Scalability Model</h2>
   <p style="margin-bottom: 1.25rem;">When a platform grows beyond free tier limits, the transition away from free tiers should be proportional. Under a PAYU model, billing scales proportionally with actual usage rather than requiring jumps to expensive dedicated tiers.</p>
   <p style="margin-bottom: 1.25rem;">This architecture has two advantages:</p>
   <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
@@ -1876,7 +1861,7 @@ registerPost('/blog/sub-second-latency.html', "Aug 30, 2026", "Building",
   `
   <p style="margin-bottom: 1.25rem;">A typical small-business WordPress site often loads dozens of third-party CSS files, JavaScript bundles, tracking scripts, and unoptimized image payloads simultaneously. The result is a sluggish initial page render that frustrates users on mobile connections.</p>
   <p style="margin-bottom: 1.25rem;">Lightweight Single Page Applications (SPAs) consistently outperform heavy legacy platforms for several concrete reasons.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Eliminating Database Bottlenecks on Initial Render</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Eliminating Database Bottlenecks on Initial Render</h2>
   <p style="margin-bottom: 1.25rem;">When a browser requests a page from a legacy CMS, the server must query a database, assemble HTML templates via PHP, process active plugins, and return the combined output. This adds hundreds of milliseconds of Server Response Time.</p>
   <p style="margin-bottom: 1.25rem;">In a custom SPA architecture:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
@@ -1884,9 +1869,9 @@ registerPost('/blog/sub-second-latency.html', "Aug 30, 2026", "Building",
     <li style="margin-bottom: 0.5rem;">The page renders almost instantly.</li>
     <li style="margin-bottom: 0.5rem;">Data fetches happen asynchronously via lightweight API calls only when needed.</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Zero Unnecessary JavaScript Dependencies</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Zero Unnecessary JavaScript Dependencies</h2>
   <p style="margin-bottom: 1.25rem;">Many visual site builders inject megabytes of JavaScript libraries to render basic layout grids or drop-down menus. Modular vanilla JavaScript (ES6+) with targeted CSS keeps bundle sizes minimal.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Measurable Performance Gains</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Measurable Performance Gains</h2>
   <p style="margin-bottom: 1.25rem;">Eliminating CMS bloat achieves measurable improvements:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">Sub-second first contentful paint (FCP).</li>
@@ -1905,16 +1890,16 @@ registerPost('/blog/unstructured-client-data.html', "Sep 13, 2026", "AI Architec
   `
   <p style="margin-bottom: 1.25rem;">Business owners rarely hand over clean API documentation or structured markdown files. Their business knowledge lives in informal email threads, napkin notes, or inconsistent website footers.</p>
   <p style="margin-bottom: 1.25rem;">To make an AI assistant reliable enough to answer real customer questions around the clock, the gap between unstructured human knowledge and structured LLM context must be bridged.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Structured Intake Workflow</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Structured Intake Workflow</h2>
   <p style="margin-bottom: 1.25rem;">A structured intake process collects specific operational modules:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">Primary services and exact pricing minimums.</li>
     <li style="margin-bottom: 0.5rem;">Operating hours, holiday schedules, and physical location logistics.</li>
     <li style="margin-bottom: 0.5rem;">The most common questions the team answers daily over phone and email.</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Cleaning and Structuring Data into JSON Schemas</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Cleaning and Structuring Data into JSON Schemas</h2>
   <p style="margin-bottom: 1.25rem;">Raw text inputs are transformed into deterministic JSON knowledge bases. By structuring data into clean key-value pairs (services, pricing_tiers, return_policy), the language model can reference facts deterministically during inference.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. System Prompt Formatting</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. System Prompt Formatting</h2>
   <p style="margin-bottom: 1.25rem;">Rather than dumping raw text into the model's system prompt, context is formatted using clear boundary delimiters and explicit guardrails:</p>
   <pre style="background: #1e1e1e; color: #d4d4d4; padding: 1.25rem; border-radius: 6px; overflow-x: auto; margin: 1.5rem 0; font-size: 0.9rem; font-family: monospace;"><code>{
   "business_name": "Artisanal Ceramics Studio",
@@ -1937,10 +1922,10 @@ registerPost('/blog/database-schema-design.html', "Sep 20, 2026", "Building",
   "Data isolation and read efficiency. Structuring NoSQL documents so that edge workers can fetch everything they need for a tenant in a single read operation is crucial for performance and security.",
   `
   <p style="margin-bottom: 1.25rem;">A multi-tenant platform stores data for many different clients in the same database. Poor data structuring risks leaking one client's data to another, or forcing edge servers to make dozens of slow queries just to load a single page.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Power of NoSQL Document Modeling</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Power of NoSQL Document Modeling</h2>
   <p style="margin-bottom: 1.25rem;">In Firebase Firestore or Cloudflare KV, data is stored in JSON-like documents rather than relational tables. The key to high performance in NoSQL is organizing data to match how it will be displayed on screen.</p>
   <p style="margin-bottom: 1.25rem;">Instead of querying separate "Users", "Products", and "Orders" collections, data can be structured hierarchically by tenant ID. Each client has a master document containing their specific configuration, branding, and nested sub-collections for their operational data.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Security and Isolation</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Security and Isolation</h2>
   <p style="margin-bottom: 1.25rem;">Security rules are easier to enforce when data is properly scoped. Placing all of Tenant A's data under <code>/tenants/{tenant_a_id}/...</code> enables a single Firestore security rule that ensures users can only read or write data where their authentication token matches the top-level tenant ID.</p>
   <p style="margin-bottom: 1.25rem;">Flat, tenant-isolated schemas keep database reads fast and secure as the platform scales.</p>
   `
@@ -1953,19 +1938,19 @@ registerPost('/blog/vanilla-js-edge.html', "Sep 27, 2026", "Building",
   `
   <p style="margin-bottom: 1.25rem;">Modern frontend development has a strong tendency toward massive framework ecosystems. Developers routinely install hundreds of megabytes of node_modules just to build a four-page website with a contact form.</p>
   <p style="margin-bottom: 1.25rem;">While frameworks like React and Next.js are excellent for complex enterprise dashboards, using them for standard business sites introduces unnecessary build complexity and performance penalties.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Zero Build Chain Friction</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Zero Build Chain Friction</h2>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">Complex bundlers or transpilation steps are not required to preview a style change.</li>
     <li style="margin-bottom: 0.5rem;">Code deploys instantly to edge CDNs without waiting for heavy build pipelines.</li>
     <li style="margin-bottom: 0.5rem;">Security vulnerabilities from outdated npm packages drop to near zero.</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Native Browser Features Are Incredibly Powerful</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Native Browser Features Are Incredibly Powerful</h2>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">DOM Manipulation:</strong> querySelector and native ES6 template literals make building reactive UI components straightforward.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Asynchronous Fetching:</strong> The native fetch() API combined with async/await communicates directly with serverless endpoints.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">State Management:</strong> Simple state objects with native event listeners handle application state without needing global stores.</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Long-Term Maintainability</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Long-Term Maintainability</h2>
   <p style="margin-bottom: 1.25rem;">A site built with clean vanilla code will render perfectly in web browsers years from now with no breaking framework upgrades or deprecated API methods to worry about.</p>
   <p style="margin-bottom: 1.25rem;">The simplest setup that meets requirements and performs well is often the right choice.</p>
   `
@@ -1979,20 +1964,20 @@ registerPost('/blog/ai-guardrails.html', "Oct 11, 2026", "AI Architecture",
   `
   <p style="margin-bottom: 1.25rem;">The nightmare scenario for any business implementing an AI customer support chat is having the model hallucinate — promising a customer a 90% discount or inventing services the company does not offer.</p>
   <p style="margin-bottom: 1.25rem;">When building customer-facing AI agents, preventing hallucinations is the single highest priority. Structured prompt guardrails ensure factual accuracy.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Strict Context Boundaries (The "Open Book Exam" Model)</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Strict Context Boundaries (The "Open Book Exam" Model)</h2>
   <p style="margin-bottom: 1.25rem;">The AI agent operates like an open-book exam:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">The system prompt contains only the exact, verified business facts provided.</li>
     <li style="margin-bottom: 0.5rem;">The model is instructed never to assume facts not explicitly written in that context block.</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Explicit Negative Constraints</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Explicit Negative Constraints</h2>
   <blockquote style="border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--muted); font-style: italic; margin: 1.5rem 0; background: var(--light); padding: 1.25rem; border-radius: 4px;">
     <strong>Forbidden Actions:</strong><br><br>
     &bull; DO NOT invent pricing, discounts, or promotional codes.<br>
     &bull; DO NOT answer questions regarding legal, medical, or financial matters.<br>
     &bull; DO NOT discuss competitors or unrelated general topics.
   </blockquote>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Graceful Fallbacks</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Graceful Fallbacks</h2>
   <p style="margin-bottom: 1.25rem;">If a visitor asks a question outside the provided knowledge base, the worst thing an AI can do is guess.</p>
   <blockquote style="border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--muted); font-style: italic; margin: 1.5rem 0; background: var(--light); padding: 1.25rem; border-radius: 4px;">
     "I want to make sure you get the exact right answer on that! That specific detail isn't in my immediate notes - would you like me to take your email so our owner can follow up with you directly?"
@@ -2007,10 +1992,10 @@ registerPost('/blog/css-architecture.html', "Oct 18, 2026", "Building",
   "Avoiding CSS bloat and specificity wars. CSS custom properties (variables) maintain a single source of truth for colors and spacing, keeping stylesheets lean and predictable.",
   `
   <p style="margin-bottom: 1.25rem;">When writing CSS from scratch without a utility framework like Tailwind, stylesheets can easily spiral out of control. Without strict architecture, duplicated colors and unpredictable layout bugs are common.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Power of CSS Variables</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Power of CSS Variables</h2>
   <p style="margin-bottom: 1.25rem;">The foundation of any scalable design system is CSS custom properties (variables). Defining spacing scales, typography rules, and color palettes in the <code>:root</code> pseudo-class provides a single source of truth.</p>
   <p style="margin-bottom: 1.25rem;">Using variables like <code>var(--primary-color)</code> or <code>var(--spacing-md)</code> ensures every button, card, and section matches the design system. Rebranding from blue to green requires changing exactly one line of code.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Component-Scoped Styling</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Component-Scoped Styling</h2>
   <p style="margin-bottom: 1.25rem;">To avoid specificity wars, CSS should be modular. Global styles are strictly limited to typography and resets. Everything else is scoped to specific component classes like <code>.blog-card</code> or <code>.hero-layout</code>.</p>
   <p style="margin-bottom: 1.25rem;">Treating CSS as an engineered system rather than a visual afterthought keeps the codebase clean, maintainable, and fast to parse.</p>
   `
@@ -2024,7 +2009,7 @@ registerPost('/blog/performance-benchmarking.html', "Nov 1, 2026", "Building",
   `
   <p style="margin-bottom: 1.25rem;">Every hundred milliseconds of page load delay increases the likelihood that users abandon the page. Sub-second latency is the benchmark for top-tier digital experiences.</p>
   <p style="margin-bottom: 1.25rem;">Achieving zero render-blocking delay requires systematically optimizing every layer of the network request stack.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Edge Delivery via CDN Workers</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. Edge Delivery via CDN Workers</h2>
   <p style="margin-bottom: 1.25rem;">Traditional hosting routes all user traffic to a single physical server location. A user requesting a site from Seattle or Tokyo faces high latency due to physical speed-of-light constraints across fiber optic cables.</p>
   <p style="margin-bottom: 1.25rem;">Deploying assets through a CDN edge network ensures:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
@@ -2032,13 +2017,13 @@ registerPost('/blog/performance-benchmarking.html', "Nov 1, 2026", "Building",
     <li style="margin-bottom: 0.5rem;">Seattle visitors connect to a local Seattle edge node; London visitors connect to a London edge node.</li>
     <li style="margin-bottom: 0.5rem;">Initial connection handshakes complete in under 20 milliseconds.</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Eliminating Render-Blocking Resources</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Eliminating Render-Blocking Resources</h2>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Inline Critical CSS:</strong> Essential structural styles are included directly in the document header so the browser renders layout frames without waiting for external stylesheet downloads.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Asynchronous Script Loading:</strong> JavaScript logic executes asynchronously, allowing visual text and structural containers to paint on screen immediately.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Modern Asset Formats:</strong> Images are converted to lightweight WebP formats with explicit width/height dimensions to prevent layout shifts (CLS).</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Measurable Benchmarks</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Measurable Benchmarks</h2>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">First Contentful Paint (FCP) consistently under 400ms.</li>
     <li style="margin-bottom: 0.5rem;">Time to Interactive (TTI) measures under 700ms on standard mobile connections.</li>
@@ -2055,12 +2040,12 @@ registerPost('/blog/minescout-genesis.html', "Mar 9, 2026", "Engineering",
   `
   <p style="margin-bottom: 1.25rem;">Minescout didn't start as a multi-tenant SaaS platform. It started as a handful of static sites that were manually deployed for local projects. But as soon as a feature needed updating across multiple sites, the static approach was immediately unscalable.</p>
   <p style="margin-bottom: 1.25rem;">A central engine was needed. The goal: pivot the entire architecture into a multi-tenant platform in under three weeks. Here is how the 17-day sprint went down.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Problem with Static</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Problem with Static</h2>
   <p style="margin-bottom: 1.25rem;">Managing separate codebases for every client is a nightmare. One codebase was needed — a single "brain" — that could serve different content depending on which domain requested it.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Serverless Solution</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Serverless Solution</h2>
   <p style="margin-bottom: 1.25rem;">Cloudflare Workers and KV storage solved this. By mapping incoming domains to specific client IDs in a KV namespace, a single Edge Worker can dynamically route requests, pull the correct client data, and inject it into the application shell on the fly.</p>
   <p style="margin-bottom: 1.25rem;">This means a bug fix deployed once updates every client site instantly.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">17 Days Later</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">17 Days Later</h2>
   <p style="margin-bottom: 1.25rem;">After two weeks of intense development, the multi-tenant core was live. The first two nodes launched on the new architecture and ran flawlessly. The 17-day sprint demonstrates that sometimes tearing down what you have built is necessary to build something that can actually scale.</p>
   `
 );
@@ -2072,7 +2057,7 @@ registerPost('/blog/launching-this-site.html', "Feb 21, 2026", "Building",
   `
   <p style="margin-bottom: 1.25rem;">For a long time, the portfolio was just a collection of repositories on GitHub. While that works for other developers, it does not explain why projects are built to non-technical clients.</p>
   <p style="margin-bottom: 1.25rem;">A personal corner of the internet was needed. Something clean, fast, and entirely custom.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">No Templates, No Bloat</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">No Templates, No Bloat</h2>
   <p style="margin-bottom: 1.25rem;">This site is built using vanilla JavaScript, HTML, and custom CSS. There is no heavy framework, no WordPress backend, and no bulky templates. It is hosted on the edge, meaning it loads quickly no matter where the visitor is located.</p>
   <p style="margin-bottom: 1.25rem;">This site demonstrates how clean web architecture should be built — lightweight, fast, and maintainable.</p>
   `
@@ -2085,7 +2070,7 @@ registerPost('/blog/chop-lab-spa.html', "Aug 16, 2026", "Building",
   `
   <p style="margin-bottom: 1.25rem;">When small business owners talk about their websites, their biggest complaint is almost never "I want more plugins." It is almost always: <strong>"I just want a simple way to update my text and photos without breaking the site."</strong></p>
   <p style="margin-bottom: 1.25rem;">That exact feedback drove the complete overhaul of The Chop Lab (v2) — a high-performance digital storefront for an artisanal ceramics firm.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Identifying the Friction</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Identifying the Friction</h2>
   <p style="margin-bottom: 1.25rem;">The original site was static and required manual HTML edits whenever new ceramics runs were fired or product specs changed. For a fast-moving studio, waiting for manual code edits every time a product released created unnecessary friction.</p>
   <p style="margin-bottom: 1.25rem;">The objective for v2 was clear:</p>
   <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
@@ -2093,7 +2078,7 @@ registerPost('/blog/chop-lab-spa.html', "Aug 16, 2026", "Building",
     <li style="margin-bottom: 0.5rem;">Structure the backend content model so product entries, images, and descriptions could be updated effortlessly by the client.</li>
     <li style="margin-bottom: 0.5rem;">Ensure the UI reflected the high-craft nature of the artisanal products.</li>
   </ol>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Architectural Solution</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The Architectural Solution</h2>
   <p style="margin-bottom: 1.25rem;">Instead of installing a heavy e-commerce framework with dozens of third-party plugins, a lightweight SPA was engineered using vanilla JavaScript and structured JSON data sources.</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Data Decoupling:</strong> Products and studio descriptions are stored in structured configuration files. Adding a new item or updating inventory requires only editing a simple form interface without touching UI component code.</li>
@@ -2111,14 +2096,14 @@ registerPost('/blog/eagle-scout-project.html', "Sep 6, 2026", "Leadership",
   `
   <p style="margin-bottom: 1.25rem;">Achieving the rank of Eagle Scout in Scouting America Troop 571 is one of the most challenging leadership experiences a youth can undertake. The centerpiece of the process is the Eagle Scout Leadership Project — a requirement where the candidate must plan, develop, and give leadership to others in a service project benefiting the local community.</p>
   <p style="margin-bottom: 1.25rem;">The project focused on improving local literacy access by constructing and installing a durable, custom-built Little Free Library at Illahee Park in Sammamish, WA.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 1: Planning and Logistics Approval</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 1: Planning and Logistics Approval</h2>
   <p style="margin-bottom: 1.25rem;">Long before any wood was cut or post holes were dug, the project required thorough documentation and administrative approvals:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">Drafting structural blueprints for weather-resistant outdoor construction in the Pacific Northwest.</li>
     <li style="margin-bottom: 0.5rem;">Presenting safety plans, material lists, and budget estimates to city park officials and Scouting leadership.</li>
     <li style="margin-bottom: 0.5rem;">Coordinating material procurement and tool safety protocols.</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 2: Delegating and Directing Work</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 2: Delegating and Directing Work</h2>
   <p style="margin-bottom: 1.25rem;">As the project leader, the Eagle guidelines state clearly that the candidate is not there to do all the physical work themselves — they are there to lead.</p>
   <p style="margin-bottom: 1.25rem;">Managing a team of over 15 volunteers required clear delegation:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
@@ -2126,7 +2111,7 @@ registerPost('/blog/eagle-scout-project.html', "Sep 6, 2026", "Leadership",
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Task Division:</strong> Assigning specific teams to woodworking, sanding, weather-proofing coats, and ground excavation for post mounting.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Time Management:</strong> Keeping work shifts organized so progress stayed on schedule across multiple work sessions.</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 3: Lasting Community Impact</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Phase 3: Lasting Community Impact</h2>
   <p style="margin-bottom: 1.25rem;">Over 60+ total volunteer hours, the team successfully constructed and anchored the library post in Illahee Park, filling it with donated books for local neighborhood families.</p>
   <p style="margin-bottom: 1.25rem;">Whether leading a construction team or a software project, real leadership is about clear communication, preparation, and keeping everyone focused on the goal.</p>
   `
@@ -2138,7 +2123,7 @@ registerPost('/blog/slow-websites-cost-customers.html', "Nov 19, 2026", "Busines
   "Slow pages lose visitors before they ever see the offer. Most of the delay is not the internet — it is a database round trip, plugin bloat, and render-blocking scripts. Static HTML served from an edge network removes all three.",
   `
   <p style="margin-bottom: 1.25rem;">A customer searching for a plumber, a bakery, or a ceramics studio is not comparing design portfolios. They are comparing how fast the page answers their question. If the site stalls, they tap back and pick the next result on the map. The business never sees that person in its analytics as anything other than a bounce.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Where the seconds actually go</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Where the seconds actually go</h2>
   <p style="margin-bottom: 1.25rem;">When a local business site feels slow, the network is rarely the culprit. Three things usually are:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Server response time.</strong> A page built on a CMS has to wake a database, assemble templates, and run every active plugin before it can send a single byte of HTML.</li>
@@ -2146,7 +2131,7 @@ registerPost('/blog/slow-websites-cost-customers.html', "Nov 19, 2026", "Busines
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Distance.</strong> A single server in one region means every visitor outside that region pays the speed-of-light penalty on every request.</li>
   </ul>
   <p style="margin-bottom: 1.25rem;">Stack those together and a page that should open instantly takes three or four seconds on a phone in a parking lot. That is the moment a customer leaves.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What a static edge site changes</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What a static edge site changes</h2>
   <p style="margin-bottom: 1.25rem;">A static site flips the order of operations. The HTML is generated once, at build time, and then stored on servers around the world. There is no database to wake up and no template to assemble when a customer arrives.</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">No origin round trip.</strong> The document is already written. The server answers with bytes it holds in memory.</li>
@@ -2154,7 +2139,7 @@ registerPost('/blog/slow-websites-cost-customers.html', "Nov 19, 2026", "Busines
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Local distance.</strong> An edge network keeps a copy near the visitor, so a customer in Sammamish is not waiting on a server in Virginia.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Fewer moving parts to break.</strong> Static files cannot hit a database connection limit or fall over when a plugin update ships.</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The part that matters for the business</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The part that matters for the business</h2>
   <p style="margin-bottom: 1.25rem;">Speed is not a technical vanity metric. It is the difference between a customer reading the hours and address and a customer calling the next listing. A storefront that opens in under a second keeps the visitor in the funnel long enough for the offer to do its job.</p>
   <p style="margin-bottom: 1.25rem;">The fix is not a plugin that claims to cache pages. It is picking an architecture where speed is the default rather than a maintenance task — static markup, edge hosting, and a small amount of JavaScript that loads after the page is already readable.</p>
   <p style="margin-bottom: 1.25rem;">If your site takes more than a second to show text on a phone, that is a measurable business problem, and it is one you can design away.</p>
@@ -2167,7 +2152,7 @@ registerPost('/blog/custom-ecommerce-cost-2026.html', "Nov 12, 2026", "Business"
   "A custom storefront starts at $2,500, or $3,500 with an AI assistant built in. Ongoing hosting and maintenance run $15–$75 a month and are optional. The final quote is driven by how configurable your products are, how checkout is handled, and who owns the catalog after launch — not by page count.",
   `
   <p style="margin-bottom: 1.25rem;">Most pricing pages for e-commerce work answer this question with a range so wide it is useless. So here is the straight version, using the prices I actually charge rather than an industry average.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The 2026 starting prices</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">The 2026 starting prices</h2>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Portfolio Website — from $750.</strong> A custom design, responsive layout, contact form, SEO basics, and fast hosting setup. Right for a maker or freelancer with a handful of products and no real checkout.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Professional Website — from $1,500.</strong> Multiple pages, booking and contact integrations, analytics, and performance work. Right for a small catalog that needs a proper product story.</li>
@@ -2176,16 +2161,16 @@ registerPost('/blog/custom-ecommerce-cost-2026.html', "Nov 12, 2026", "Business"
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Students, nonprofits, first-time founders — $250–$750.</strong> A limited number of discounted projects each semester, depending on scope.</li>
   </ul>
   <p style="margin-bottom: 1.25rem;">Those are <em>starting</em> prices, and they are quoted per project. A store with six fixed items lands near the bottom of a tier. A store with configurable products, quote flows, and inventory integrations sits above it. The pricing page is the source of truth; treat any number here as a floor, not a ceiling.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Ongoing costs, which are optional</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Ongoing costs, which are optional</h2>
   <p style="margin-bottom: 1.25rem;">You are free to host and maintain the site yourself. If you would rather not, the support plans are $10 a month for priority care, $15 for edge hosting and SSL, $40 for hosting plus updates and backups, and $75 for hosting, updates, backups, AI maintenance, and priority support. None of them is required to work with me.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What actually drives the price</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What actually drives the price</h2>
   <p style="margin-bottom: 1.25rem;"><strong style="color: var(--fg);">1. How configurable the products are.</strong> A store that sells six fixed items is a different project from one that sells a tool built to a customer's exact drawing. The second needs a configurator, validation, and a way to hand a real specification to the maker. That logic, not the page count, is where custom work lives.</p>
   <p style="margin-bottom: 1.25rem;"><strong style="color: var(--fg);">2. Checkout and payments.</strong> Building checkout from scratch is almost never worth it in 2026. Stripe or an equivalent handles cards, tax, and receipts for a small percentage. Budget for the integration, not for a payments team.</p>
   <p style="margin-bottom: 1.25rem;"><strong style="color: var(--fg);">3. Content ownership.</strong> Can the owner add a product without a developer? That is a data model decision made early. Getting it right is cheap; retrofitting it is not.</p>
   <p style="margin-bottom: 1.25rem;"><strong style="color: var(--fg);">4. Photography and copy.</strong> Frequently the largest line item, and frequently skipped in quotes. A storefront is only as good as the images in it.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What should never cost extra</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What should never cost extra</h2>
   <p style="margin-bottom: 1.25rem;">Speed, mobile layout, and basic search visibility are not premium features in 2026. Neither is a contact path for people who are not ready to buy. If a quote lists those as add-ons, the base price is being held artificially low.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">How to get a real number</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">How to get a real number</h2>
   <p style="margin-bottom: 1.25rem;">Write down three things before you ask for a quote: how many products you sell, which of them need configuration, and who will add new products after launch. Those three answers move the estimate more than any other detail, and any honest quote will start by asking for them. You can also check the <a href="/studio/pricing" style="color: var(--accent);">current pricing page</a> for the tiers in full.</p>
   `
 );
@@ -2196,7 +2181,7 @@ registerPost('/blog/chop-lab-storefront.html', "Nov 8, 2026", "Building",
   "The Chop Lab needed typed product data, measurements stored canonically in millimetres, and a configurator that turns a customer's drawing into a quote. Server-rendered pages keep the first paint instant; the product model keeps the catalog honest.",
   `
   <p style="margin-bottom: 1.25rem;"><a href="https://chop-lab.com" target="_blank" rel="noopener" style="color: var(--accent);">The Chop Lab</a> is a ceramics tooling studio. The catalog is small but nothing in it is a fixed SKU: custom chops cut from a maker's logo, texture rollers with repeating geometry, slab rails in a customer's exact width. A standard product grid with a quantity box would have been the wrong shape for the business.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Start with the data model, not the design</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Start with the data model, not the design</h2>
   <p style="margin-bottom: 1.25rem;">The first decision was that every product record carries its own shape: a kind, a category, an engineering drawing reference, a base price, an hourly rate, and an estimated hour count. Prices are quoted, so the storefront needs to reason about work rather than display a sticker.</p>
   <pre style="background: #1e1e1e; color: #d4d4d4; padding: 1.25rem; border-radius: 6px; overflow-x: auto; margin: 1.5rem 0; font-size: 0.9rem; font-family: monospace;"><code>{
   "slug": "texture-roller-10",
@@ -2209,19 +2194,19 @@ registerPost('/blog/chop-lab-storefront.html', "Nov 8, 2026", "Building",
   ]
 }</code></pre>
   <p style="margin-bottom: 1.25rem;">Keeping that in a typed TypeScript file instead of a database meant the catalog is versioned with the site, type-checked at build time, and impossible to ship with a missing field.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Millimetres in the data, inches on the screen</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Millimetres in the data, inches on the screen</h2>
   <p style="margin-bottom: 1.25rem;">Ceramics work in both metric and imperial, and a maker will switch depending on the tool. So the configurator keeps every length it collects in millimetres and converts at render time through one hook. Flipping the units toggle re-renders every measurement in the form at once, and a stored 254 mm reads as 10 in the moment you switch.</p>
   <p style="margin-bottom: 1.25rem;">This is the kind of detail that looks like polish and is actually correctness. A configurator that silently keeps one product's input in inches and the next in millimetres hands the maker a specification that cannot be cut.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">A configurator that ends in a quote</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">A configurator that ends in a quote</h2>
   <p style="margin-bottom: 1.25rem;">The configurator lets a customer pick a product, choose a texture from the library, and send a mark or a dimension. No payment is collected there. The submission becomes a specification the maker can price and cut, which is what the business actually needs — a dead shopping cart is worse than a good intake form.</p>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Keeping it fast</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Keeping it fast</h2>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Fixed aspect wrappers</strong> around every product image, with <code>loading="lazy"</code> and <code>decoding="async"</code> below the fold. The layout never shifts as photos arrive.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Eager hero, lazy gallery.</strong> The first product shot loads immediately; the rest wait.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Design tokens</strong> for colour, spacing, and shadow, so the warm clay palette is one file rather than a hundred inline values.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Server rendering.</strong> The first response already contains the product markup, so a customer on a phone in a studio reads the specs before the JavaScript bundle finishes loading.</li>
   </ul>
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What I would tell another maker</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What I would tell another maker</h2>
   <p style="margin-bottom: 1.25rem;">If your products are made to order, do not force them into a cart. Model what the product actually is — dimensions, options, the work behind it — and let the site end in a conversation. The storefront is fast because the architecture is simple, and it is simple because the data model matched the business instead of fighting it.</p>
   `
 );
@@ -2235,7 +2220,7 @@ registerPost('/blog/custom-website-vs-wix-squarespace.html', "Nov 27, 2026", "Bu
   <p style="margin-bottom: 1.25rem;">Wix and Squarespace are good products. For the right project I would recommend either one without hesitating. But "cheap to start" and "cheap to own" are different questions, and a small business lives with the second one for years.</p>
   <p style="margin-bottom: 1.25rem;">So here is the comparison with the numbers the plans pages actually show in late 2026, next to the prices I charge. No industry-survey averages and no "starting at" fine print.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What the platforms cost in 2026</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What the platforms cost in 2026</h2>
   <p style="margin-bottom: 1.25rem;">Both companies quote a yearly subscription, paid up front, and both run aggressive first-term discounts. That distinction matters, because the discounted year is not the price you renew at.</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Wix</strong> — the plans page lists Light, Core, Business, and Business Elite, running from about <strong style="color: var(--fg);">$17</strong> to about <strong style="color: var(--fg);">$159</strong> a month on a yearly subscription. Wix states on that same page that prices and currency vary by location, that the displayed price is the yearly plan paid in full, and that taxes are added at checkout.</li>
@@ -2243,7 +2228,7 @@ registerPost('/blog/custom-website-vs-wix-squarespace.html', "Nov 27, 2026", "Bu
   </ul>
   <p style="margin-bottom: 1.25rem;">The subscription is only part of the bill. Squarespace charges card processing at 2.9% plus 30&cent; on Basic and Core, 2.7% plus 30&cent; on Plus, and 2.5% plus 30&cent; on Advanced, and Basic also carries a 2% fee on online store transactions. Wix runs its own payment processing on top of the plan. A business taking a few thousand dollars a month through the site can pay more in processing than in subscription — and none of that money buys the site itself.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Three years, side by side</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Three years, side by side</h2>
   <p style="margin-bottom: 1.25rem;">Three years is a fair horizon. It is long enough that a discount year cannot hide, and short enough that you are still running the same business at the end. Multiply the annual plan out and the cheap tiers stop being the story:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">Wix Light at about $17 a month — <strong style="color: var(--fg);">$612</strong> over three years.</li>
@@ -2254,16 +2239,16 @@ registerPost('/blog/custom-website-vs-wix-squarespace.html', "Nov 27, 2026", "Bu
   <p style="margin-bottom: 1.25rem;">On the custom side, Portfolio starts at <strong style="color: var(--fg);">$750</strong>, Professional at <strong style="color: var(--fg);">$1,500</strong>, and Business at <strong style="color: var(--fg);">$2,500</strong>, paid once. Hosting is optional at <strong style="color: var(--fg);">$15</strong> a month, and the care plans run <strong style="color: var(--fg);">$10</strong> to <strong style="color: var(--fg);">$75</strong> a month for priority support, updates, backups, and AI maintenance. At the hosting rate, three years of a Portfolio site all-in is <strong style="color: var(--fg);">$1,290</strong>, Professional is <strong style="color: var(--fg);">$2,040</strong>, and Business is <strong style="color: var(--fg);">$3,040</strong> &mdash; with the code in your hands at the end.</p>
   <p style="margin-bottom: 1.25rem;">Read that again: three years of a custom Business site with hosting costs less than three years of Squarespace Advanced at list price, and a little over half of Wix Business Elite. The cheapest platform tiers are genuinely cheaper than custom work. The tiers a real business grows into are not.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Template bloat is a bill you pay in seconds</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Template bloat is a bill you pay in seconds</h2>
   <p style="margin-bottom: 1.25rem;">A page builder has to ship styles and scripts for every widget it might render, because the page is assembled in the browser from a shared library. Then every app you add — booking, popups, reviews, chat, analytics — loads its own scripts on top. None of that is wrong. It is simply weight the visitor pays before they can read your hours.</p>
   <p style="margin-bottom: 1.25rem;">You can measure it yourself. Open the site on a phone with a throttled connection and watch how long the first text takes to appear. If the address and phone number take more than a second, the template is charging rent in the one currency a local business cannot refund.</p>
   <p style="margin-bottom: 1.25rem;">A custom static site inverts that. The HTML is written once, at build time, and served from an edge network. There is no database to wake up, no template to assemble per request, and no widget library to download. The page is the file. That is how the same content paints in well under a second on a phone in a parking lot.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Lock-in is the real cost</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Lock-in is the real cost</h2>
   <p style="margin-bottom: 1.25rem;">Subscription fees stop when you cancel. Lock-in is what keeps charging after that. On a hosted builder your content lives in the platform's data model, not in files you can move. Export gives you the text and the images; it does not give you the layout, the templates, or the interactions you built. Change the theme and you re-enter the content. Leave the platform and you rebuild from scratch, after paying for years.</p>
   <p style="margin-bottom: 1.25rem;">There is a quieter version of the same thing: the design is tied to the subscription. Stop paying and the site goes dark, whatever you have invested in it. For a business whose website is its storefront, that is a permanent lease on a building you furnished.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What a custom site gives you instead</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What a custom site gives you instead</h2>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">The files.</strong> Plain HTML, CSS, and a small amount of JavaScript in a repository you own. Any developer can pick it up, and so can you.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">A choice of host.</strong> Static output runs on Netlify, Cloudflare, GitHub Pages, or a server you rent. Moving is a DNS change, not a migration project.</li>
@@ -2271,7 +2256,7 @@ registerPost('/blog/custom-website-vs-wix-squarespace.html', "Nov 27, 2026", "Bu
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Room for real features.</strong> A configurator, a quote flow, a live preview of the customer's own mark — things a plugin marketplace does not stock.</li>
   </ul>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">When upgrading is worth it</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">When upgrading is worth it</h2>
   <p style="margin-bottom: 1.25rem;">The honest answer is that it depends. Upgrade when any of these is true:</p>
   <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">You are taking payments, or you plan to within a year.</li>
@@ -2281,10 +2266,10 @@ registerPost('/blog/custom-website-vs-wix-squarespace.html', "Nov 27, 2026", "Bu
     <li style="margin-bottom: 0.5rem;">You want to stop renting the thing your business runs on.</li>
   </ol>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">When a platform is the right call</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">When a platform is the right call</h2>
   <p style="margin-bottom: 1.25rem;">Plenty of businesses should stay on Wix or Squarespace, and I will say so. If you need a one-page brochure you can edit yourself this afternoon, or a store with hundreds of items that has to be live this week, a hosted builder is a reasonable answer and custom work would be overkill. The mistake is not starting on a platform. It is staying on one long after the site has outgrown it, paying every month for a design you cannot take with you.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Where to go next</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Where to go next</h2>
   <p style="margin-bottom: 1.25rem;">If you are in Sammamish, Issaquah, Redmond, or Bellevue, the <a href="/studio/local-web-design" style="color: var(--accent);">local web design page</a> covers what a fast, custom site includes and what it starts at. The <a href="/studio/pricing" style="color: var(--accent);">pricing page</a> lists every tier and every care plan, with the caveat that none of the monthly plans is required. When you are ready to talk scope, <a href="/studio/intake" style="color: var(--accent);">start a project</a> and you will get a straight number instead of a range.</p>
   `
 );
@@ -2297,11 +2282,11 @@ registerPost('/blog/sammamish-small-business-website-guide.html', "Dec 4, 2026",
   <p style="margin-bottom: 1.25rem;">Most website advice for local businesses is written for companies with a marketing department. A four-person shop in Sammamish, a contractor working out of a truck in Issaquah, a tutor in Redmond, a salon in Bellevue &mdash; they need something much narrower: a site that answers the question a customer is already asking, on the phone in their hand, fast enough that they do not go back to the map.</p>
   <p style="margin-bottom: 1.25rem;">This is the checklist I would use if I were buying, in the order that actually changes whether you get the call.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. It is designed at phone width, not shrunk to it</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">1. It is designed at phone width, not shrunk to it</h2>
   <p style="margin-bottom: 1.25rem;">Almost every local search starts on a phone, often in a car. That means the first screen has to answer three questions without scrolling: what do you do, where are you, and how do I reach you. Hours, service area, and a tap-to-call button belong above the fold, not behind a hamburger menu.</p>
   <p style="margin-bottom: 1.25rem;">The test is mechanical. Open the site on your phone and try to read it one-handed. If you have to pinch, zoom, or scroll sideways, the layout was designed on a desktop and squeezed afterward. Forms matter too: a contact form with tiny fields and no visible labels loses the lead at the last step.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Speed you can measure on a bad connection</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">2. Speed you can measure on a bad connection</h2>
   <p style="margin-bottom: 1.25rem;">Ask for a number, not a promise. A site that renders its text in well under a second on a throttled phone is doing it because of its architecture, not because someone installed a caching plugin. Three things create the delay on a slow site:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">A server round trip.</strong> A database-backed page has to wake up, assemble templates, and run its plugins before it sends anything.</li>
@@ -2310,7 +2295,7 @@ registerPost('/blog/sammamish-small-business-website-guide.html', "Dec 4, 2026",
   </ul>
   <p style="margin-bottom: 1.25rem;">A static site served from an edge network removes all three. The HTML is already written, and a copy sits near the customer. That is the difference between a page that opens and a page that gets abandoned.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Local SEO that ships with the site</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">3. Local SEO that ships with the site</h2>
   <p style="margin-bottom: 1.25rem;">Search visibility for a local business is not a monthly add-on. The groundwork is either built into the site or it is missing:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">A real title and description per page</strong> that name the service and the city, instead of one site-wide title on every URL.</li>
@@ -2320,16 +2305,16 @@ registerPost('/blog/sammamish-small-business-website-guide.html', "Dec 4, 2026",
   </ul>
   <p style="margin-bottom: 1.25rem;">And speed is part of it. Google measures how the page behaves for real visitors, so a slow template undercuts every other SEO effort on the site.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">4. Prices published before the first call</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">4. Prices published before the first call</h2>
   <p style="margin-bottom: 1.25rem;">You should be able to see what a website costs before you get on a call. If the pricing page is a contact form, you are not comparing vendors, you are being qualified.</p>
   <p style="margin-bottom: 1.25rem;">The tiers I publish are <strong style="color: var(--fg);">$750</strong> for a Portfolio site, <strong style="color: var(--fg);">$1,500</strong> for Professional, and <strong style="color: var(--fg);">$2,500</strong> for Business, quoted per project. Care plans run <strong style="color: var(--fg);">$10</strong> to <strong style="color: var(--fg);">$75</strong> a month and hosting is <strong style="color: var(--fg);">$15</strong> a month, and none of them is required to work with me. When you can see the numbers, you can tell whether the quote you get is scope or padding.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">5. A path that ends in a lead, not a dead end</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">5. A path that ends in a lead, not a dead end</h2>
   <p style="margin-bottom: 1.25rem;">A brochure site collects phone calls. A site built around how the business actually sells collects specifications. That is where custom work earns its keep: the interactive part of the page is the part that turns a visitor into a conversation.</p>
   <p style="margin-bottom: 1.25rem;">The clearest example I have is <a href="https://chop-lab.com" target="_blank" rel="noopener" style="color: var(--accent);">chop-lab.com</a>, a ceramics tooling storefront. Nothing in that catalog is a fixed item &mdash; chops are cut from a customer's own logo, rollers from their texture, slab rails to their exact width. So the site puts a live preview of the customer's mark on a stamp face, in the font they choose, at the size they are ordering. Then the configurator collects the dimensions and ends in a real quote by email instead of a shopping cart nobody can fill.</p>
   <p style="margin-bottom: 1.25rem;">For a local business the shape is the same even when the product is not. A roofer who quotes by roof size, a tutor who books by subject and grade, a bakery that takes custom orders &mdash; each one has a question a form can ask better than a phone call. The build story is written up in <a href="/blog/chop-lab-storefront.html" style="color: var(--accent);">the storefront case study</a> and <a href="/blog/chop-lab-spa.html" style="color: var(--accent);">the rebuild write-up</a>.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">6. Five questions to ask before you sign</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">6. Five questions to ask before you sign</h2>
   <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Who owns the files?</strong> If the answer is not "you do", you are renting.</li>
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Can I change my own text and hours?</strong> Ask for a walkthrough, not a promise.</li>
@@ -2338,7 +2323,7 @@ registerPost('/blog/sammamish-small-business-website-guide.html', "Dec 4, 2026",
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">What does a change cost after launch?</strong> Know the hourly rate or the plan before you need it.</li>
   </ol>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">7. Red flags worth walking away from</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">7. Red flags worth walking away from</h2>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;">Speed and mobile layout listed as paid add-ons. In 2026 they are the baseline, not a feature.</li>
     <li style="margin-bottom: 0.5rem;">A long contract with no way to export your content.</li>
@@ -2347,7 +2332,7 @@ registerPost('/blog/sammamish-small-business-website-guide.html', "Dec 4, 2026",
     <li style="margin-bottom: 0.5rem;">A quote that never asks who updates the site after launch.</li>
   </ul>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Next step</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Next step</h2>
   <p style="margin-bottom: 1.25rem;">If you want the short version of all of this for the Eastside, the <a href="/studio/local-web-design" style="color: var(--accent);">local web design page</a> lays out what a fast, custom site includes, what it starts at, and how the build runs from first call to launch. When you are ready to talk about your own business, <a href="/studio/intake" style="color: var(--accent);">start a project</a> and tell me what your current site gets wrong.</p>
   `
 );
@@ -2360,7 +2345,7 @@ registerPost('/blog/websites-for-clubs-robotics-nonprofits.html', "Dec 11, 2026"
   <p style="margin-bottom: 1.25rem;">A robotics team, a booster club, and a small nonprofit all have the same problem. They need to look credible, publish a schedule, thank sponsors, and take sign-ups &mdash; and they have no budget and nobody with spare evenings to maintain a website.</p>
   <p style="margin-bottom: 1.25rem;">None of that requires an agency. Here is what these groups actually need, why the free template usually stops working, and how the discounted tier works.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What a club site actually has to do</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What a club site actually has to do</h2>
   <p style="margin-bottom: 1.25rem;">Strip out everything a big company needs and six things remain:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">A schedule</strong> that is current, because parents check it on the way to a meet.</li>
@@ -2372,7 +2357,7 @@ registerPost('/blog/websites-for-clubs-robotics-nonprofits.html', "Dec 11, 2026"
   </ul>
   <p style="margin-bottom: 1.25rem;">That is a small site. It should not cost like a large one.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Why the free template stops working</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Why the free template stops working</h2>
   <p style="margin-bottom: 1.25rem;">Free and cheap builder plans are a reasonable place to start, and plenty of clubs are on one right now. The trouble usually shows up in the second year, and it is rarely about design taste:</p>
   <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">The ads.</strong> Free tiers put the platform's branding on your site, which is a strange thing to hand a sponsor.</li>
@@ -2382,12 +2367,12 @@ registerPost('/blog/websites-for-clubs-robotics-nonprofits.html', "Dec 11, 2026"
   </ul>
   <p style="margin-bottom: 1.25rem;">A small custom site fixes the last two by design: the content is structured, so adding a sponsor is a line in a list, and the files belong to the club rather than to an account someone will lose.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What the discounted tier covers</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">What the discounted tier covers</h2>
   <p style="margin-bottom: 1.25rem;">Each semester I reserve a limited number of discounted projects for students, robotics teams, scouts, school clubs, and community nonprofits. Typical projects land between <strong style="color: var(--fg);">$250</strong> and <strong style="color: var(--fg);">$750</strong> depending on scope, against a regular Portfolio tier that starts at $750.</p>
   <p style="margin-bottom: 1.25rem;">For that you get a custom design in the club's own colors and photos, mobile-first pages, working forms for sign-ups and contact, SEO basics, and fast edge hosting &mdash; on the same stack as the commercial work, not a cut-down version of it. Most projects launch in about five days once the content is ready.</p>
   <p style="margin-bottom: 1.25rem;">Ongoing support is optional. Priority care is <strong style="color: var(--fg);">$10</strong> a month and hosting plans start at <strong style="color: var(--fg);">$15</strong> a month, and neither is required &mdash; the site is yours to host and edit. If the club would rather run it themselves, that is a perfectly good answer.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Sponsor showcases that respect the sponsors</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Sponsor showcases that respect the sponsors</h2>
   <p style="margin-bottom: 1.25rem;">A sponsor wall is the highest-value page on a club site, and the most commonly botched. Three rules make it work:</p>
   <ol style="margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--muted);">
     <li style="margin-bottom: 0.5rem;"><strong style="color: var(--fg);">Group by level, not by arrival.</strong> A tiered wall (title, gold, community) tells a prospective sponsor what each check buys.</li>
@@ -2396,18 +2381,18 @@ registerPost('/blog/websites-for-clubs-robotics-nonprofits.html', "Dec 11, 2026"
   </ol>
   <p style="margin-bottom: 1.25rem;">Add one line of plain text saying what the money paid for &mdash; a competition entry, a set of motors, a bus seat &mdash; and the page starts doing sales work for next season.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Schedules that stay current</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">Schedules that stay current</h2>
   <p style="margin-bottom: 1.25rem;">The schedule is the page that gets visited most and updated least. Two things help. First, put the dates in the page as text, not in a PDF or a screenshot of a calendar, because a PDF does not reflow on a phone and cannot be read by a search engine. Second, make the update path something a student can do in a minute &mdash; either a simple edit screen or a small data file with one line per event.</p>
   <p style="margin-bottom: 1.25rem;">If the team publishes results, keep them on the same page. A visitor who sees this season's standings trusts the rest of the site more than one that still lists last year's captain.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">For FIRST Robotics teams specifically</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">For FIRST Robotics teams specifically</h2>
   <p style="margin-bottom: 1.25rem;">Robotics teams have a shape that most templates fight. The site has to carry a competition schedule, a sponsor packet someone can download, outreach and impact numbers for grant applications, build-season updates, and photos that prove the team actually builds things.</p>
   <p style="margin-bottom: 1.25rem;">It also has to survive an event. A phone on a crowded gym floor is a bad network, and the parent trying to find the pit map or the match time will not wait through a page that loads a plugin library first. A static page served from an edge network answers immediately, which is the entire argument for building it this way.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">For nonprofits, the same discipline applies</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">For nonprofits, the same discipline applies</h2>
   <p style="margin-bottom: 1.25rem;">A small nonprofit needs five things in roughly this order: what you do in one sentence, who you serve, what you have accomplished, how to donate or volunteer, and how to reach a human. Board members and grant reviewers read that page. A site that buries the mission under a carousel loses both audiences.</p>
 
-  <h3 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">How to apply</h3>
+  <h2 style="margin: 2.5rem 0 1rem; font-family: var(--serif);">How to apply</h2>
   <p style="margin-bottom: 1.25rem;">Availability is limited each semester, so the earlier in the term the better. Have four things ready: the club's logo, a handful of photos, the current schedule, and the sponsor list. That is enough to start, and anything missing can be added after launch.</p>
   <p style="margin-bottom: 1.25rem;">The <a href="/studio/student-nonprofit" style="color: var(--accent);">student and nonprofit program page</a> explains who it is for and what is included. The <a href="/studio/clients" style="color: var(--accent);">client work page</a> shows the same stack running live sites for an artist, an accessibility startup, and a ceramics studio &mdash; the standard does not drop because the budget is smaller. When you are ready, <a href="/studio/intake" style="color: var(--accent);">start a project</a> and tell me what your group does and who it serves.</p>
   `

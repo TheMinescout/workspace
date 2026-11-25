@@ -1,0 +1,167 @@
+{
+  "site": {
+    "name": "Minescout",
+    "studioName": "Minescout Studio",
+    "author": "Thomas Carleton",
+    "origin": "https://minescout.net",
+    "defaultOgImage": "/assets/og-image.png",
+    "titleMax": 60,
+    "descriptionMin": 50,
+    "descriptionMax": 160
+  },
+  "pages": {
+    "/": {
+      "notes": "The home page head is hand-written in public/index.html; the generator reads it from there so the manifest cannot drift from the document."
+    },
+    "/about": {
+      "title": "About Thomas Carleton — Builder and Student",
+      "description": "Who I am and what I build: a 10th grader in Sammamish, WA running Minescout Studio and building web apps, Minecraft tools, and client sites."
+    },
+    "/now": {
+      "title": "Now — What Thomas Carleton Is Building",
+      "description": "A snapshot of what I'm focused on right now: FRC Team 1294, The Chop Lab, Minescout Studio clients, school, and scouting."
+    },
+    "/resume": {
+      "title": "Resume — Thomas Carleton",
+      "description": "Resume for Thomas Carleton: experience, leadership, and projects, including FRC Team 1294, Eagle Scout service, and Minescout Studio client work."
+    },
+    "/work": {
+      "title": "Work — Sites and Tools I've Built | Minescout",
+      "description": "Selected work: Minescout Studio client sites, The Chop Lab storefront, Minescout Beta, and Minescout Life — built from scratch and running in production."
+    },
+    "/photography": {
+      "title": "Photography Archive — Thomas Carleton",
+      "description": "A photo archive of birds, architecture, and travel from the Pacific Northwest and Europe, taken and edited by Thomas Carleton."
+    },
+    "/blog": {
+      "title": "Blog — Notes on Building for the Web",
+      "description": "Essays on building fast websites, static architecture, AI tooling, and running a small web studio for local businesses."
+    },
+    "/studio": {
+      "title": "Minescout Studio | Custom Websites for Small Businesses",
+      "description": "Fast, custom-coded websites for Sammamish and Eastside small businesses: clean slate rebuilds, storefronts, and AI dashboards from $750."
+    },
+    "/studio/local-web-design": {
+      "title": "Local Web Design in Sammamish & Bellevue | Minescout Studio",
+      "description": "Custom, fast websites for small businesses in Sammamish, Issaquah, Redmond, and Bellevue. Mobile-first layouts, edge performance, and SEO setup from $750."
+    },
+    "/studio/custom-storefronts": {
+      "title": "Custom Online Storefronts | Minescout Studio",
+      "description": "Custom e-commerce storefronts with interactive configurators, live unit toggles, and checkout or invoicing flows. Live proof at chop-lab.com, from $2,500."
+    },
+    "/studio/student-nonprofit": {
+      "title": "Websites for Clubs & Nonprofits | Minescout Studio",
+      "description": "Discounted custom websites for students, robotics teams, scouts, school clubs, and local nonprofits. Projects from $250 to $750 with fast turnaround."
+    },
+    "/studio/clients": {
+      "title": "Client Work — Minescout Studio",
+      "description": "Minescout builds custom websites and AI systems for clients: live deployments, what each project needed, and the performance results behind them."
+    },
+    "/studio/process": {
+      "title": "How a Minescout Studio Project Runs",
+      "description": "The Studio process step by step: intake, clean slate rebuild, review, launch, and handoff, plus what you get and how long it takes."
+    },
+    "/studio/legal": {
+      "title": "How Studio Works — Terms & Ownership",
+      "description": "What clients own, how licensing and payments work, support terms, and the ground rules for a Minescout Studio project."
+    },
+    "/legal": {
+      "indexable": false,
+      "canonical": "https://minescout.net/studio/legal",
+      "notes": "Legacy alias of /studio/legal. Kept for old links; noindex + canonical so it never competes with the real page."
+    },
+    "/studio/tools": {
+      "title": "Tools Behind a Minescout Studio Build",
+      "description": "The stack I build with: static HTML and ES modules, edge hosting, and the AI tooling that powers client dashboards."
+    },
+    "/studio/roi": {
+      "title": "Growth & Efficiency Calculator | Minescout Studio",
+      "description": "Estimate what a faster site and less manual work are worth to your business with the Studio growth and efficiency calculator."
+    },
+    "/studio/intake": {
+      "title": "Project Intake | Minescout Studio",
+      "description": "Start a Studio project: tell me about your business, your current site, and what you need. Intake takes about five minutes."
+    },
+    "/studio/info": {
+      "indexable": false,
+      "canonical": "https://minescout.net/studio/intake",
+      "notes": "Alias of /studio/intake, the same view under an older URL."
+    },
+    "/studio/admin": {
+      "title": "Studio Admin",
+      "indexable": false,
+      "notes": "Private client dashboard; robots.txt also disallows it."
+    },
+    "/studio/creation": {
+      "title": "AI Site Builder | Minescout Studio",
+      "description": "Describe your business and preview a custom site in minutes with the Studio AI site builder. Keep it or leave it, no cost to try."
+    },
+    "/contact": {
+      "title": "Contact Thomas Carleton",
+      "description": "Get in touch about a project, a question, or a collaboration. Email thomas@minescout.net or send a message with the contact form."
+    },
+    "/guestbook": {
+      "title": "Guestbook — Say Hello to Thomas Carleton",
+      "description": "Sign the guestbook and leave a note about what you're building, a question, or a hello."
+    },
+    "/ask": {
+      "title": "Ask Thomas — Q&A About My Work",
+      "description": "Ask questions about my resume, projects, and Minescout Studio. Answers come from my live site content, so they stay current."
+    },
+    "/studio/pricing": {
+      "title": "Website Design Pricing | Minescout Studio",
+      "description": "Real Studio prices: portfolio websites from $750, professional websites from $1,500, business websites from $2,500, and business + AI from $3,500."
+    },
+    "/studio/review": {
+      "title": "Project Review | Minescout Studio",
+      "indexable": false,
+      "notes": "Client feedback form; no search value and it must not compete with /studio/clients."
+    },
+    "/404": {
+      "title": "Page Not Found — Thomas Carleton",
+      "indexable": false,
+      "description": "The page you're looking for does not exist. Head back to the home page or the Minescout Studio overview."
+    },
+    "/services/coin-data": {
+      "description": "A live coin price engine demo built with Material 3 components: real-time prices, offline caching, and a fast first paint."
+    },
+    "/services/lawn-care": {
+      "description": "SmartCut automated lawn care demo: a lead-capture landing page for a local lawn service, built as a single fast static page."
+    },
+    "/services/donations": {
+      "title": "Donations Demo — Minescout",
+      "indexable": false,
+      "description": "This demo page is retired. Visit Minescout Studio for custom website work instead."
+    },
+    "/studio/chat-config": {
+      "title": "Minescout AI Master Config",
+      "kind": "studio-app",
+      "indexable": false,
+      "notes": "Internal prompt configuration page; robots.txt disallows it."
+    },
+    "/blog/custom-website-vs-wix-squarespace.html": {
+      "title": "Custom Website vs. Wix & Squarespace in 2026",
+      "description": "Compare 2026 Wix and Squarespace costs against a custom-coded site you own, with real three-year totals and when to switch."
+    },
+    "/blog/sammamish-small-business-website-guide.html": {
+      "title": "What Sammamish Businesses Need in a Website (2026)",
+      "description": "A practical 2026 buyer's guide for Sammamish, Issaquah, Redmond, and Bellevue businesses: mobile speed, local SEO, clear pricing, and lead capture."
+    },
+    "/blog/websites-for-clubs-robotics-nonprofits.html": {
+      "title": "Custom Websites for Clubs, Teams & Nonprofits",
+      "description": "What student clubs, FIRST Robotics teams, booster clubs, and local nonprofits need online, and how the discounted Studio tier keeps it affordable."
+    },
+    "/blog/slow-websites-cost-customers.html": {
+      "title": "Why Slow Websites Cost Local Businesses Customers",
+      "description": "Every extra second of load time costs local businesses real leads. Where the delay comes from, and how static edge hosting removes it."
+    },
+    "/blog/unstructured-client-data.html": {
+      "title": "Training Local AI on Unstructured Client Data",
+      "description": "How I turn messy client documents into a local AI assistant that answers support questions without inventing answers."
+    },
+    "/blog/edge-routing.html": {
+      "title": "Edge Routing: Blacklists, Whitelists & AI Workers",
+      "description": "How edge routing decides which requests reach which worker, with blacklists, whitelists, and AI worker compatibility."
+    }
+  }
+}

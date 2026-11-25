@@ -3,9 +3,15 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-import { BLOG_POSTS, PAGE_META, isReleased, views } from "../public/views.js";
+import { BLOG_POSTS, isReleased, views } from "../public/views.js";
 
 const SITEMAP = readFileSync(new URL("../public/sitemap.xml", import.meta.url), "utf8");
+const MANIFEST = JSON.parse(readFileSync(new URL("../public/seo/manifest.json", import.meta.url), "utf8"));
+
+/** The generated metadata entry for a route (public/seo/manifest.json). */
+function metaFor(path) {
+  return MANIFEST.pages.find((page) => page.path === path);
+}
 
 const NEW_POSTS = [
   {
@@ -313,13 +319,13 @@ test("every internal link in a scheduled post resolves to a view", () => {
   }
 });
 
-test("each scheduled post has its own PAGE_META entry", () => {
+test("each scheduled post has its own manifest metadata", () => {
   const titles = [];
   const descriptions = [];
 
   for (const post of SCHEDULED_POSTS) {
-    const meta = PAGE_META[post.href];
-    assert.ok(meta, `${post.href} has no PAGE_META entry`);
+    const meta = metaFor(post.href);
+    assert.ok(meta, `${post.href} has no entry in the SEO manifest`);
     assert.ok(meta.title && meta.title.length > 0, `${post.href} needs a document title`);
     assert.ok(meta.title.length <= 70, `${post.href} document title is too long (${meta.title.length})`);
     assert.ok(meta.description && meta.description.length >= 50, `${post.href} needs a real meta description`);

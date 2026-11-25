@@ -2,9 +2,15 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-import { PAGE_META, SITE_META, views } from "../public/views.js";
+import { SITE_META, views } from "../public/views.js";
 
 const SITEMAP = readFileSync(new URL("../public/sitemap.xml", import.meta.url), "utf8");
+const MANIFEST = JSON.parse(readFileSync(new URL("../public/seo/manifest.json", import.meta.url), "utf8"));
+
+/** The generated metadata entry for a route (public/seo/manifest.json). */
+function metaFor(path) {
+  return MANIFEST.pages.find((page) => page.path === path);
+}
 const INDEX_HTML = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
 const APP_JS = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
 
@@ -20,21 +26,21 @@ const PAGES = [
   {
     route: "/studio/local-web-design",
     h1: "Fast, custom websites for Sammamish and Eastside small businesses.",
-    title: "Small Business Website Design in Sammamish & Eastside WA | Minescout Studio",
+    title: "Local Web Design in Sammamish & Bellevue | Minescout Studio",
     ctaLinks: ["/studio/intake", "/studio/pricing"],
     prices: ["750", "1,500", "2,500", "10", "75"],
   },
   {
     route: "/studio/custom-storefronts",
     h1: "Custom e-commerce storefronts built for speed and zero platform bloat.",
-    title: "Custom E-Commerce Storefronts Without Monthly Platform Fees | Minescout Studio",
+    title: "Custom Online Storefronts | Minescout Studio",
     ctaLinks: ["/studio/intake", "/blog/chop-lab-storefront.html"],
     prices: ["2,500", "3,500", "15", "75"],
   },
   {
     route: "/studio/student-nonprofit",
     h1: "Custom websites for student organizations, clubs, and local nonprofits.",
-    title: "Affordable Custom Websites for Students, Clubs & Nonprofits | Minescout Studio",
+    title: "Websites for Clubs & Nonprofits | Minescout Studio",
     ctaLinks: ["/studio/intake", "/studio/clients"],
     prices: ["250", "750", "10", "15"],
   },
@@ -108,11 +114,12 @@ test("each service page sets a unique keyword-focused title and description", ()
   const descriptions = [];
 
   for (const page of PAGES) {
-    const meta = PAGE_META[page.route];
-    assert.ok(meta, `${page.route} has no PAGE_META entry`);
+    const meta = metaFor(page.route);
+    assert.ok(meta, `${page.route} has no entry in the SEO manifest`);
     assert.equal(meta.title, page.title, `${page.route} title does not match the requested keyword title`);
+    assert.ok(meta.title.length <= 60, `${page.route} title is too long for a search result (${meta.title.length})`);
     assert.ok(meta.description && meta.description.length >= 50, `${page.route} needs a real meta description`);
-    assert.ok(meta.description.length <= 200, `${page.route} meta description is too long for a search result`);
+    assert.ok(meta.description.length <= 160, `${page.route} meta description is too long for a search result`);
     titles.push(meta.title);
     descriptions.push(meta.description);
   }
@@ -121,11 +128,14 @@ test("each service page sets a unique keyword-focused title and description", ()
   assert.equal(new Set(descriptions).size, descriptions.length, "service page descriptions must be unique");
 });
 
-test("app.js applies per-route metadata and falls back to SITE_META", () => {
-  assert.match(APP_JS, /import\s*\{[^}]*PAGE_META[^}]*SITE_META[^}]*\}\s*from\s*["']\.\/views\.js/, "app.js must import PAGE_META and SITE_META");
-  assert.match(APP_JS, /applyPageMeta\(finalPath\)/, "app.js never applies PAGE_META while rendering");
-  assert.match(APP_JS, /PAGE_META\[path\]\s*\|\|\s*SITE_META/, "app.js must fall back to SITE_META");
+test("app.js applies the generated manifest and falls back to SITE_META", () => {
+  assert.match(APP_JS, /import\s*\{[^}]*SITE_META[^}]*\}\s*from\s*["']\.\/views\.js/, "app.js must import SITE_META");
+  assert.match(APP_JS, /fetch\('\/seo\/manifest\.json'/, "app.js must read the generated manifest");
+  assert.match(APP_JS, /applyPageMeta\(finalPath\)/, "app.js never applies page metadata while rendering");
+  assert.match(APP_JS, /pageMeta\[path\]/, "app.js must look the route up in the manifest");
+  assert.match(APP_JS, /SITE_META\.title/, "app.js must fall back to SITE_META");
   assert.match(APP_JS, /setMetaContent\('og:title'/, "app.js must keep the share-card title in sync");
+  assert.match(APP_JS, /setCanonical\(/, "app.js must keep the canonical link in sync");
 });
 
 test("SITE_META matches the shell metadata in index.html", () => {
