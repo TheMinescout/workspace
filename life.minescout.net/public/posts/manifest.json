@@ -1,5 +1,17 @@
 [
   {
+    "id": "glm-5-4-a-750b-model-that-runs-its-layers-twice",
+    "title": "GLM-5.4: A 750B Model That Runs Its Layers Twice",
+    "category": "AI Posts",
+    "summary": "Z.ai's GLM-5.4 is the first flagship built on a Loop Transformer — 28 of its 78 layers run twice per token, claiming 2T–3T class intelligence from 750B parameters, while shipping with no public benchmarks, no API, and no weights.",
+    "heroImage": "/assests/images/ai-posts/glm-5-4-thinks-twice-title.png",
+    "timestamp": 1795541607569,
+    "linkUrl": "/post/glm-5-4-a-750b-model-that-runs-its-layers-twice",
+    "linkText": "Read Entry",
+    "date": "November 24, 2026",
+    "publishDate": null
+  },
+  {
     "id": "gpt-6-2-astra-great-benchmarks-bad-reviews",
     "title": "GPT-6.2 Astra: Great Benchmarks, Bad Reviews",
     "category": "AI Posts",
