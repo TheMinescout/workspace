@@ -132,7 +132,13 @@ jobs:
         run: |
           tap="$RUNNER_TEMP/chop-script-tests.tap"
           set +e
-          node --test --test-reporter=tap 'scripts/**/*.test.mjs' > "$tap"
+          mapfile -d '' -t test_files < <(find scripts -type f -name '*.test.mjs' -print0 | sort -z)
+          if [ "${#test_files[@]}" -eq 0 ]; then
+            echo "::error::No script test files were discovered."
+            exit 1
+          fi
+
+          node --test --test-reporter=tap "${test_files[@]}" > "$tap"
           set -e
 
           total=$(grep -E '^# tests ' "$tap" | tail -1 | awk '{print $3}')
@@ -143,21 +149,20 @@ jobs:
             exit 1
           fi
 
-          # A run that matches no files still reports `# tests 0` and would pass
-          # the baseline check, so refuse a run that covers fewer test files
-          # than exist on disk.
-          files=$(find scripts -name '*.test.mjs' | wc -l | tr -d ' ')
-          if [ "$files" -eq 0 ] || [ "$total" -lt "$files" ]; then
-            echo "::error::$total tests ran for $files script test files — the suites did not all run."
-            exit 1
-          fi
-
           echo "script tests: $total run, $failed failed (baseline $SCRIPT_TEST_FAILURE_BASELINE)"
           {
             echo "### Chop Lab script tests"
             echo
             echo "$total run, **$failed failed** — documented baseline $SCRIPT_TEST_FAILURE_BASELINE (see PR #46)."
           } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$failed" -gt 0 ]; then
+            {
+              echo
+              echo "Failing test cases:"
+              grep 'not ok ' "$tap" || true
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
 
           if [ "$failed" -gt "$SCRIPT_TEST_FAILURE_BASELINE" ]; then
             {
