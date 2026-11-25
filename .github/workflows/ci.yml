@@ -115,5 +115,5 @@ jobs:
             echo "### Chop Lab tests need attention"
             echo
             echo "The test command failed. This step is temporarily non-blocking because the current baseline has 16 documented failures (see PR #46)."
-            echo "Do not treat this as a passing test suite. Remove `continue-on-error` after the baseline failures are fixed."
+            echo "Do not treat this as a passing test suite. Remove continue-on-error after the baseline failures are fixed."
           } >> "$GITHUB_STEP_SUMMARY"
