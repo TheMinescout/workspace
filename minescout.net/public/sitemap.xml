@@ -115,25 +115,18 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Service Demos -->
+  <url>
+    <loc>https://minescout.net/services/lawn-care</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://minescout.net/services/coin-data</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
   <!-- Blog Posts -->
-  <url>
-    <loc>https://minescout.net/blog/websites-for-clubs-robotics-nonprofits.html</loc>
-    <lastmod>2026-12-11</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minescout.net/blog/sammamish-small-business-website-guide.html</loc>
-    <lastmod>2026-12-04</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://minescout.net/blog/custom-website-vs-wix-squarespace.html</loc>
-    <lastmod>2026-11-27</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
-  </url>
   <url>
     <loc>https://minescout.net/blog/slow-websites-cost-customers.html</loc>
     <lastmod>2026-11-19</lastmod>

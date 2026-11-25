@@ -1,0 +1,1571 @@
+{
+  "version": 1,
+  "site": {
+    "name": "Minescout",
+    "studioName": "Minescout Studio",
+    "author": "Thomas Carleton",
+    "origin": "https://minescout.net",
+    "defaultOgImage": "/assets/og-image.png",
+    "titleMax": 60,
+    "descriptionMin": 50,
+    "descriptionMax": 160
+  },
+  "generatedBy": "npm run seo:build:write",
+  "pages": [
+    {
+      "path": "/",
+      "kind": "home",
+      "url": "https://minescout.net/",
+      "title": "Thomas Carleton — Builder, Student, Eagle Scout",
+      "description": "Builder. Student. Eagle Scout. I build things on the internet — from Minecraft tools to web apps.",
+      "canonical": "https://minescout.net/",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Thomas Carleton — Builder, Student, Eagle Scout",
+      "ogDescription": "Builder. Student. Eagle Scout. I build things on the internet — from Minecraft tools to web apps.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "shell",
+      "sourceFile": "public/views.js",
+      "h1": "Hi, I'm Thomas.",
+      "words": 39,
+      "jsonLd": null
+    },
+    {
+      "path": "/404",
+      "kind": "page",
+      "url": "https://minescout.net/404",
+      "title": "Page Not Found — Thomas Carleton",
+      "description": "The page you're looking for does not exist. Head back to the home page or the Minescout Studio overview.",
+      "canonical": "https://minescout.net/404",
+      "robots": "noindex, follow",
+      "indexable": false,
+      "released": true,
+      "ogTitle": "Page Not Found — Thomas Carleton",
+      "ogDescription": "The page you're looking for does not exist. Head back to the home page or the Minescout Studio overview.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/404.html",
+      "h1": "Page Not Found",
+      "words": 47,
+      "jsonLd": null
+    },
+    {
+      "path": "/about",
+      "kind": "page",
+      "url": "https://minescout.net/about",
+      "title": "About Thomas Carleton — Builder and Student",
+      "description": "Who I am and what I build: a 10th grader in Sammamish, WA running Minescout Studio and building web apps, Minecraft tools, and client sites.",
+      "canonical": "https://minescout.net/about",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "About Thomas Carleton — Builder and Student",
+      "ogDescription": "Who I am and what I build: a 10th grader in Sammamish, WA running Minescout Studio and building web apps, Minecraft tools, and client sites.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "A little about me",
+      "words": 98,
+      "jsonLd": null
+    },
+    {
+      "path": "/ask",
+      "kind": "page",
+      "url": "https://minescout.net/ask",
+      "title": "Ask Thomas — Q&A About My Work",
+      "description": "Ask questions about my resume, projects, and Minescout Studio. Answers come from my live site content, so they stay current.",
+      "canonical": "https://minescout.net/ask",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Ask Thomas — Q&A About My Work",
+      "ogDescription": "Ask questions about my resume, projects, and Minescout Studio. Answers come from my live site content, so they stay current.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Ask Thomas",
+      "words": 25,
+      "jsonLd": null
+    },
+    {
+      "path": "/blog",
+      "kind": "blog-index",
+      "url": "https://minescout.net/blog",
+      "title": "Blog — Notes on Building for the Web",
+      "description": "Essays on building fast websites, static architecture, AI tooling, and running a small web studio for local businesses.",
+      "canonical": "https://minescout.net/blog",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Blog — Notes on Building for the Web",
+      "ogDescription": "Essays on building fast websites, static architecture, AI tooling, and running a small web studio for local businesses.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Thoughts & Writing",
+      "words": 724,
+      "jsonLd": null
+    },
+    {
+      "path": "/blog/ai-guardrails.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/ai-guardrails.html",
+      "title": "AI Guardrails 101: Preventing Hallucinations in Client Support Widgets",
+      "description": "System guardrails that prevent LLMs from going off-topic or hallucinating false business policies.",
+      "canonical": "https://minescout.net/blog/ai-guardrails.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "AI Guardrails 101: Preventing Hallucinations in Client Support Widgets",
+      "ogDescription": "System guardrails that prevent LLMs from going off-topic or hallucinating false business policies.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "AI Guardrails 101: Preventing Hallucinations in Customer-Facing AI",
+      "words": 273,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "AI Guardrails 101: Preventing Hallucinations in Client Support Widgets",
+        "description": "System guardrails that prevent LLMs from going off-topic or hallucinating false business policies.",
+        "datePublished": "2026-10-11",
+        "url": "https://minescout.net/blog/ai-guardrails.html",
+        "mainEntityOfPage": "https://minescout.net/blog/ai-guardrails.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/chop-lab-spa.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/chop-lab-spa.html",
+      "title": "Building for the Client: Overhauling The Chop Lab into a Custom SPA",
+      "description": "How I overhauled an artisanal ceramics platform into a custom Single Page Application with an intuitive client updating workflow.",
+      "canonical": "https://minescout.net/blog/chop-lab-spa.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Building for the Client: Overhauling The Chop Lab into a Custom SPA",
+      "ogDescription": "How I overhauled an artisanal ceramics platform into a custom Single Page Application with an intuitive client updating workflow.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "Building for the Client: Overhauling The Chop Lab into a Custom SPA",
+      "words": 369,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Building for the Client: Overhauling The Chop Lab into a Custom SPA",
+        "description": "How I overhauled an artisanal ceramics platform into a custom Single Page Application with an intuitive client updating workflow.",
+        "datePublished": "2026-08-16",
+        "url": "https://minescout.net/blog/chop-lab-spa.html",
+        "mainEntityOfPage": "https://minescout.net/blog/chop-lab-spa.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/chop-lab-storefront.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/chop-lab-storefront.html",
+      "title": "How I Built a Fast Online Storefront for a Local Ceramics Brand",
+      "description": "A storefront for The Chop Lab: typed product data, millimetre-accurate specs, and a configurator that ends in a real quote instead of a dead cart.",
+      "canonical": "https://minescout.net/blog/chop-lab-storefront.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "How I Built a Fast Online Storefront for a Local Ceramics Brand",
+      "ogDescription": "A storefront for The Chop Lab: typed product data, millimetre-accurate specs, and a configurator that ends in a real quote instead of a dead cart.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "How I Built a Fast Online Storefront for a Local Ceramics Brand",
+      "words": 565,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "How I Built a Fast Online Storefront for a Local Ceramics Brand",
+        "description": "A storefront for The Chop Lab: typed product data, millimetre-accurate specs, and a configurator that ends in a real quote instead of a dead cart.",
+        "datePublished": "2026-11-08",
+        "url": "https://minescout.net/blog/chop-lab-storefront.html",
+        "mainEntityOfPage": "https://minescout.net/blog/chop-lab-storefront.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/css-architecture.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/css-architecture.html",
+      "title": "CSS Architecture: Building Scalable Design Systems",
+      "description": "Using CSS custom properties and utility classes to build maintainable, scalable design systems.",
+      "canonical": "https://minescout.net/blog/css-architecture.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "CSS Architecture: Building Scalable Design Systems",
+      "ogDescription": "Using CSS custom properties and utility classes to build maintainable, scalable design systems.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "CSS Architecture: Building Scalable Design Systems",
+      "words": 198,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "CSS Architecture: Building Scalable Design Systems",
+        "description": "Using CSS custom properties and utility classes to build maintainable, scalable design systems.",
+        "datePublished": "2026-10-18",
+        "url": "https://minescout.net/blog/css-architecture.html",
+        "mainEntityOfPage": "https://minescout.net/blog/css-architecture.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/custom-ecommerce-cost-2026.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/custom-ecommerce-cost-2026.html",
+      "title": "How Much Does a Custom E-Commerce Website Cost in 2026?",
+      "description": "What a custom storefront actually costs in 2026 — the real starting prices, what drives the number, and what should never be an add-on.",
+      "canonical": "https://minescout.net/blog/custom-ecommerce-cost-2026.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "How Much Does a Custom E-Commerce Website Cost in 2026?",
+      "ogDescription": "What a custom storefront actually costs in 2026 — the real starting prices, what drives the number, and what should never be an add-on.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "How Much Does a Custom E-Commerce Website Cost in 2026?",
+      "words": 636,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "How Much Does a Custom E-Commerce Website Cost in 2026?",
+        "description": "What a custom storefront actually costs in 2026 — the real starting prices, what drives the number, and what should never be an add-on.",
+        "datePublished": "2026-11-12",
+        "url": "https://minescout.net/blog/custom-ecommerce-cost-2026.html",
+        "mainEntityOfPage": "https://minescout.net/blog/custom-ecommerce-cost-2026.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/custom-website-vs-wix-squarespace.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/custom-website-vs-wix-squarespace.html",
+      "title": "Custom Website vs. Wix & Squarespace in 2026",
+      "description": "Compare 2026 Wix and Squarespace costs against a custom-coded site you own, with real three-year totals and when to switch.",
+      "canonical": "https://minescout.net/blog/custom-website-vs-wix-squarespace.html",
+      "robots": "noindex, follow",
+      "indexable": true,
+      "released": false,
+      "ogTitle": "Custom Website vs. Wix & Squarespace in 2026",
+      "ogDescription": "Compare 2026 Wix and Squarespace costs against a custom-coded site you own, with real three-year totals and when to switch.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Custom Website vs. Wix and Squarespace: When Should a Small Business Upgrade?",
+      "words": 1310,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Custom Website vs. Wix & Squarespace in 2026",
+        "description": "Compare 2026 Wix and Squarespace costs against a custom-coded site you own, with real three-year totals and when to switch.",
+        "datePublished": "2026-11-27",
+        "url": "https://minescout.net/blog/custom-website-vs-wix-squarespace.html",
+        "mainEntityOfPage": "https://minescout.net/blog/custom-website-vs-wix-squarespace.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/database-schema-design.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/database-schema-design.html",
+      "title": "Schema Design: Structuring Data for Multi-Tenant SaaS",
+      "description": "How to organize NoSQL databases for multi-tenant isolation and high-speed queries using Firestore and Cloudflare KV.",
+      "canonical": "https://minescout.net/blog/database-schema-design.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Schema Design: Structuring Data for Multi-Tenant SaaS",
+      "ogDescription": "How to organize NoSQL databases for multi-tenant isolation and high-speed queries using Firestore and Cloudflare KV.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "Schema Design: Structuring Data for Multi-Tenant SaaS",
+      "words": 237,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Schema Design: Structuring Data for Multi-Tenant SaaS",
+        "description": "How to organize NoSQL databases for multi-tenant isolation and high-speed queries using Firestore and Cloudflare KV.",
+        "datePublished": "2026-09-20",
+        "url": "https://minescout.net/blog/database-schema-design.html",
+        "mainEntityOfPage": "https://minescout.net/blog/database-schema-design.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/eagle-scout-project.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/eagle-scout-project.html",
+      "title": "Project Leadership at 14: Directing an Eagle Scout Project",
+      "description": "Leadership lessons learned while managing 60+ volunteer hours to plan, construct, and install a Little Free Library in Illahee Park.",
+      "canonical": "https://minescout.net/blog/eagle-scout-project.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Project Leadership at 14: Directing an Eagle Scout Project",
+      "ogDescription": "Leadership lessons learned while managing 60+ volunteer hours to plan, construct, and install a Little Free Library in Illahee Park.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "Project Leadership at 14: Directing an Eagle Scout Project",
+      "words": 356,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Project Leadership at 14: Directing an Eagle Scout Project",
+        "description": "Leadership lessons learned while managing 60+ volunteer hours to plan, construct, and install a Little Free Library in Illahee Park.",
+        "datePublished": "2026-09-06",
+        "url": "https://minescout.net/blog/eagle-scout-project.html",
+        "mainEntityOfPage": "https://minescout.net/blog/eagle-scout-project.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/edge-routing.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/edge-routing.html",
+      "title": "Edge Routing: Blacklists, Whitelists & AI Workers",
+      "description": "How edge routing decides which requests reach which worker, with blacklists, whitelists, and AI worker compatibility.",
+      "canonical": "https://minescout.net/blog/edge-routing.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Edge Routing: Blacklists, Whitelists & AI Workers",
+      "ogDescription": "How edge routing decides which requests reach which worker, with blacklists, whitelists, and AI worker compatibility.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Edge Routing Architecture: Blacklists, Whitelists, and AI Worker Compatibility",
+      "words": 359,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Edge Routing: Blacklists, Whitelists & AI Workers",
+        "description": "How edge routing decides which requests reach which worker, with blacklists, whitelists, and AI worker compatibility.",
+        "datePublished": "2026-08-02",
+        "url": "https://minescout.net/blog/edge-routing.html",
+        "mainEntityOfPage": "https://minescout.net/blog/edge-routing.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/launching-this-site.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/launching-this-site.html",
+      "title": "Launching This Site",
+      "description": "I've been wanting a personal corner of the internet for a while. Not just a GitHub profile — something that actually felt like me.",
+      "canonical": "https://minescout.net/blog/launching-this-site.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Launching This Site",
+      "ogDescription": "I've been wanting a personal corner of the internet for a while. Not just a GitHub profile — something that actually felt like me.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "Launching This Site",
+      "words": 168,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Launching This Site",
+        "description": "I've been wanting a personal corner of the internet for a while. Not just a GitHub profile — something that actually felt like me.",
+        "datePublished": "2026-02-21",
+        "url": "https://minescout.net/blog/launching-this-site.html",
+        "mainEntityOfPage": "https://minescout.net/blog/launching-this-site.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/minescout-genesis.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/minescout-genesis.html",
+      "title": "Minescout Genesis: The 17-Day Multi-Tenant Pivot",
+      "description": "Moving from static sites to a serverless SaaS engine. Here is how I architected the multi-tenant core of Minescout Studio.",
+      "canonical": "https://minescout.net/blog/minescout-genesis.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Minescout Genesis: The 17-Day Multi-Tenant Pivot",
+      "ogDescription": "Moving from static sites to a serverless SaaS engine. Here is how I architected the multi-tenant core of Minescout Studio.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "Minescout Genesis: The 17-Day Multi-Tenant Pivot",
+      "words": 277,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Minescout Genesis: The 17-Day Multi-Tenant Pivot",
+        "description": "Moving from static sites to a serverless SaaS engine. Here is how I architected the multi-tenant core of Minescout Studio.",
+        "datePublished": "2026-03-09",
+        "url": "https://minescout.net/blog/minescout-genesis.html",
+        "mainEntityOfPage": "https://minescout.net/blog/minescout-genesis.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/performance-benchmarking.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/performance-benchmarking.html",
+      "title": "Performance Benchmarking: Achieving Sub-Second Global Edge Latency",
+      "description": "Global latency testing, asset optimization, and edge caching strategies for high-speed web applications.",
+      "canonical": "https://minescout.net/blog/performance-benchmarking.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Performance Benchmarking: Achieving Sub-Second Global Edge Latency",
+      "ogDescription": "Global latency testing, asset optimization, and edge caching strategies for high-speed web applications.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "Performance Benchmarking: Achieving Sub-Second Global Edge Latency",
+      "words": 290,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Performance Benchmarking: Achieving Sub-Second Global Edge Latency",
+        "description": "Global latency testing, asset optimization, and edge caching strategies for high-speed web applications.",
+        "datePublished": "2026-11-01",
+        "url": "https://minescout.net/blog/performance-benchmarking.html",
+        "mainEntityOfPage": "https://minescout.net/blog/performance-benchmarking.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/sammamish-small-business-website-guide.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/sammamish-small-business-website-guide.html",
+      "title": "What Sammamish Businesses Need in a Website (2026)",
+      "description": "A practical 2026 buyer's guide for Sammamish, Issaquah, Redmond, and Bellevue businesses: mobile speed, local SEO, clear pricing, and lead capture.",
+      "canonical": "https://minescout.net/blog/sammamish-small-business-website-guide.html",
+      "robots": "noindex, follow",
+      "indexable": true,
+      "released": false,
+      "ogTitle": "What Sammamish Businesses Need in a Website (2026)",
+      "ogDescription": "A practical 2026 buyer's guide for Sammamish, Issaquah, Redmond, and Bellevue businesses: mobile speed, local SEO, clear pricing, and lead capture.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "What Sammamish & Eastside Small Businesses Should Look for in a Website (2026 Guide)",
+      "words": 1133,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "What Sammamish Businesses Need in a Website (2026)",
+        "description": "A practical 2026 buyer's guide for Sammamish, Issaquah, Redmond, and Bellevue businesses: mobile speed, local SEO, clear pricing, and lead capture.",
+        "datePublished": "2026-12-04",
+        "url": "https://minescout.net/blog/sammamish-small-business-website-guide.html",
+        "mainEntityOfPage": "https://minescout.net/blog/sammamish-small-business-website-guide.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/slow-websites-cost-customers.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/slow-websites-cost-customers.html",
+      "title": "Why Slow Websites Cost Local Businesses Customers",
+      "description": "Every extra second of load time costs local businesses real leads. Where the delay comes from, and how static edge hosting removes it.",
+      "canonical": "https://minescout.net/blog/slow-websites-cost-customers.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Why Slow Websites Cost Local Businesses Customers",
+      "ogDescription": "Every extra second of load time costs local businesses real leads. Where the delay comes from, and how static edge hosting removes it.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Why Slow Websites Cost Local Businesses Customers (And How Static Edge Sites Fix It)",
+      "words": 528,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Why Slow Websites Cost Local Businesses Customers",
+        "description": "Every extra second of load time costs local businesses real leads. Where the delay comes from, and how static edge hosting removes it.",
+        "datePublished": "2026-11-19",
+        "url": "https://minescout.net/blog/slow-websites-cost-customers.html",
+        "mainEntityOfPage": "https://minescout.net/blog/slow-websites-cost-customers.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/state-management.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/state-management.html",
+      "title": "State Management: Keeping Complex Web Apps Fast Without React",
+      "description": "Handling complex state logic using Vanilla JavaScript Proxies and native events instead of heavy frameworks.",
+      "canonical": "https://minescout.net/blog/state-management.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "State Management: Keeping Complex Web Apps Fast Without React",
+      "ogDescription": "Handling complex state logic using Vanilla JavaScript Proxies and native events instead of heavy frameworks.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "State Management: Keeping Complex Web Apps Fast Without React",
+      "words": 246,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "State Management: Keeping Complex Web Apps Fast Without React",
+        "description": "Handling complex state logic using Vanilla JavaScript Proxies and native events instead of heavy frameworks.",
+        "datePublished": "2026-08-09",
+        "url": "https://minescout.net/blog/state-management.html",
+        "mainEntityOfPage": "https://minescout.net/blog/state-management.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/sub-second-latency.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/sub-second-latency.html",
+      "title": "Sub-Second Latency: Why Custom SPAs Beat Heavy CMS Platforms",
+      "description": "Why clean-slate rebuilds achieve sub-second global edge latency compared to traditional CMS platforms.",
+      "canonical": "https://minescout.net/blog/sub-second-latency.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Sub-Second Latency: Why Custom SPAs Beat Heavy CMS Platforms",
+      "ogDescription": "Why clean-slate rebuilds achieve sub-second global edge latency compared to traditional CMS platforms.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "Sub-Second Latency: Why Custom SPAs Beat Heavy CMS Platforms",
+      "words": 270,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Sub-Second Latency: Why Custom SPAs Beat Heavy CMS Platforms",
+        "description": "Why clean-slate rebuilds achieve sub-second global edge latency compared to traditional CMS platforms.",
+        "datePublished": "2026-08-30",
+        "url": "https://minescout.net/blog/sub-second-latency.html",
+        "mainEntityOfPage": "https://minescout.net/blog/sub-second-latency.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/unstructured-client-data.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/unstructured-client-data.html",
+      "title": "Training Local AI on Unstructured Client Data",
+      "description": "How I turn messy client documents into a local AI assistant that answers support questions without inventing answers.",
+      "canonical": "https://minescout.net/blog/unstructured-client-data.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Training Local AI on Unstructured Client Data",
+      "ogDescription": "How I turn messy client documents into a local AI assistant that answers support questions without inventing answers.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "AI Architecture: Training AI Assistants on Unstructured Business Data",
+      "words": 315,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Training Local AI on Unstructured Client Data",
+        "description": "How I turn messy client documents into a local AI assistant that answers support questions without inventing answers.",
+        "datePublished": "2026-09-13",
+        "url": "https://minescout.net/blog/unstructured-client-data.html",
+        "mainEntityOfPage": "https://minescout.net/blog/unstructured-client-data.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/vanilla-js-edge.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/vanilla-js-edge.html",
+      "title": "Vanilla JS & Edge Workers: Why I Avoid Heavy Framework Overkill",
+      "description": "Why native browser APIs and serverless edge handlers outperform heavy frameworks for lightweight web applications.",
+      "canonical": "https://minescout.net/blog/vanilla-js-edge.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Vanilla JS & Edge Workers: Why I Avoid Heavy Framework Overkill",
+      "ogDescription": "Why native browser APIs and serverless edge handlers outperform heavy frameworks for lightweight web applications.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "Vanilla JS & Edge Workers: Avoiding Heavy Framework Overkill",
+      "words": 261,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Vanilla JS & Edge Workers: Why I Avoid Heavy Framework Overkill",
+        "description": "Why native browser APIs and serverless edge handlers outperform heavy frameworks for lightweight web applications.",
+        "datePublished": "2026-09-27",
+        "url": "https://minescout.net/blog/vanilla-js-edge.html",
+        "mainEntityOfPage": "https://minescout.net/blog/vanilla-js-edge.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/websites-for-clubs-robotics-nonprofits.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/websites-for-clubs-robotics-nonprofits.html",
+      "title": "Custom Websites for Clubs, Teams & Nonprofits",
+      "description": "What student clubs, FIRST Robotics teams, booster clubs, and local nonprofits need online, and how the discounted Studio tier keeps it affordable.",
+      "canonical": "https://minescout.net/blog/websites-for-clubs-robotics-nonprofits.html",
+      "robots": "noindex, follow",
+      "indexable": true,
+      "released": false,
+      "ogTitle": "Custom Websites for Clubs, Teams & Nonprofits",
+      "ogDescription": "What student clubs, FIRST Robotics teams, booster clubs, and local nonprofits need online, and how the discounted Studio tier keeps it affordable.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "How Student Clubs, Robotics Teams, and Local Nonprofits Can Get a Custom Website Under $750",
+      "words": 1113,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Custom Websites for Clubs, Teams & Nonprofits",
+        "description": "What student clubs, FIRST Robotics teams, booster clubs, and local nonprofits need online, and how the discounted Studio tier keeps it affordable.",
+        "datePublished": "2026-12-11",
+        "url": "https://minescout.net/blog/websites-for-clubs-robotics-nonprofits.html",
+        "mainEntityOfPage": "https://minescout.net/blog/websites-for-clubs-robotics-nonprofits.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/blog/zero-dollar-stack.html",
+      "kind": "blog-post",
+      "url": "https://minescout.net/blog/zero-dollar-stack.html",
+      "title": "The $0.00 Stack: Bootstrapping SaaS on Serverless Free Tiers & PAYU",
+      "description": "How serverless edge layers and Pay-As-You-Use (PAYU) tiers enable zero-cost infrastructure for early-stage projects.",
+      "canonical": "https://minescout.net/blog/zero-dollar-stack.html",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "The $0.00 Stack: Bootstrapping SaaS on Serverless Free Tiers & PAYU",
+      "ogDescription": "How serverless edge layers and Pay-As-You-Use (PAYU) tiers enable zero-cost infrastructure for early-stage projects.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "article",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "The $0.00 Stack: Launching SaaS on Serverless Free Tiers & PAYU",
+      "words": 279,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "The $0.00 Stack: Bootstrapping SaaS on Serverless Free Tiers & PAYU",
+        "description": "How serverless edge layers and Pay-As-You-Use (PAYU) tiers enable zero-cost infrastructure for early-stage projects.",
+        "datePublished": "2026-08-23",
+        "url": "https://minescout.net/blog/zero-dollar-stack.html",
+        "mainEntityOfPage": "https://minescout.net/blog/zero-dollar-stack.html",
+        "author": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/contact",
+      "kind": "page",
+      "url": "https://minescout.net/contact",
+      "title": "Contact Thomas Carleton",
+      "description": "Get in touch about a project, a question, or a collaboration. Email thomas@minescout.net or send a message with the contact form.",
+      "canonical": "https://minescout.net/contact",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Contact Thomas Carleton",
+      "ogDescription": "Get in touch about a project, a question, or a collaboration. Email thomas@minescout.net or send a message with the contact form.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Get in Touch",
+      "words": 68,
+      "jsonLd": null
+    },
+    {
+      "path": "/guestbook",
+      "kind": "page",
+      "url": "https://minescout.net/guestbook",
+      "title": "Guestbook — Say Hello to Thomas Carleton",
+      "description": "Sign the guestbook and leave a note about what you're building, a question, or a hello.",
+      "canonical": "https://minescout.net/guestbook",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Guestbook — Say Hello to Thomas Carleton",
+      "ogDescription": "Sign the guestbook and leave a note about what you're building, a question, or a hello.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Say Hello",
+      "words": 50,
+      "jsonLd": null
+    },
+    {
+      "path": "/legal",
+      "kind": "legal",
+      "url": "https://minescout.net/legal",
+      "title": "How Studio Works | Minescout Studio",
+      "description": "Transparency & service information · Last reviewed November 18, 2026",
+      "canonical": "https://minescout.net/studio/legal",
+      "robots": "noindex, follow",
+      "indexable": false,
+      "released": true,
+      "ogTitle": "How Studio Works | Minescout Studio",
+      "ogDescription": "Transparency & service information · Last reviewed November 18, 2026",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "How Studio Works",
+      "words": 1350,
+      "jsonLd": null
+    },
+    {
+      "path": "/now",
+      "kind": "page",
+      "url": "https://minescout.net/now",
+      "title": "Now — What Thomas Carleton Is Building",
+      "description": "A snapshot of what I'm focused on right now: FRC Team 1294, The Chop Lab, Minescout Studio clients, school, and scouting.",
+      "canonical": "https://minescout.net/now",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Now — What Thomas Carleton Is Building",
+      "ogDescription": "A snapshot of what I'm focused on right now: FRC Team 1294, The Chop Lab, Minescout Studio clients, school, and scouting.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "What I'm up to",
+      "words": 194,
+      "jsonLd": null
+    },
+    {
+      "path": "/photography",
+      "kind": "page",
+      "url": "https://minescout.net/photography",
+      "title": "Photography Archive — Thomas Carleton",
+      "description": "A photo archive of birds, architecture, and travel from the Pacific Northwest and Europe, taken and edited by Thomas Carleton.",
+      "canonical": "https://minescout.net/photography",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Photography Archive — Thomas Carleton",
+      "ogDescription": "A photo archive of birds, architecture, and travel from the Pacific Northwest and Europe, taken and edited by Thomas Carleton.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Photography Archive",
+      "words": 96,
+      "jsonLd": null
+    },
+    {
+      "path": "/resume",
+      "kind": "page",
+      "url": "https://minescout.net/resume",
+      "title": "Resume — Thomas Carleton",
+      "description": "Resume for Thomas Carleton: experience, leadership, and projects, including FRC Team 1294, Eagle Scout service, and Minescout Studio client work.",
+      "canonical": "https://minescout.net/resume",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Resume — Thomas Carleton",
+      "ogDescription": "Resume for Thomas Carleton: experience, leadership, and projects, including FRC Team 1294, Eagle Scout service, and Minescout Studio client work.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Experience & Leadership",
+      "words": 569,
+      "jsonLd": null
+    },
+    {
+      "path": "/services/coin-data",
+      "kind": "service-demo",
+      "url": "https://minescout.net/services/coin-data",
+      "title": "Material 3 Coin Price Engine",
+      "description": "A live coin price engine demo built with Material 3 components: real-time prices, offline caching, and a fast first paint.",
+      "canonical": "https://minescout.net/services/coin-data",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Material 3 Coin Price Engine",
+      "ogDescription": "A live coin price engine demo built with Material 3 components: real-time prices, offline caching, and a fast first paint.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/services/coin-data/index.html",
+      "h1": "Fair Market Value Estimator",
+      "words": 41,
+      "jsonLd": null
+    },
+    {
+      "path": "/services/donations",
+      "kind": "service-demo",
+      "url": "https://minescout.net/services/donations",
+      "title": "Donations Demo — Minescout",
+      "description": "This demo page is retired. Visit Minescout Studio for custom website work instead.",
+      "canonical": "https://minescout.net/services/donations",
+      "robots": "noindex, follow",
+      "indexable": false,
+      "released": true,
+      "ogTitle": "Donations Demo — Minescout",
+      "ogDescription": "This demo page is retired. Visit Minescout Studio for custom website work instead.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/services/donations/index.html",
+      "h1": "This demo has been retired",
+      "words": 28,
+      "jsonLd": null
+    },
+    {
+      "path": "/services/lawn-care",
+      "kind": "service-demo",
+      "url": "https://minescout.net/services/lawn-care",
+      "title": "SmartCut Automated Lawn Care",
+      "description": "SmartCut automated lawn care demo: a lead-capture landing page for a local lawn service, built as a single fast static page.",
+      "canonical": "https://minescout.net/services/lawn-care",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "SmartCut Automated Lawn Care",
+      "ogDescription": "SmartCut automated lawn care demo: a lead-capture landing page for a local lawn service, built as a single fast static page.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/services/lawn-care/index.html",
+      "h1": "A Perfectly Cut Lawn, 24/7",
+      "words": 278,
+      "jsonLd": null
+    },
+    {
+      "path": "/studio",
+      "kind": "studio-home",
+      "url": "https://minescout.net/studio",
+      "title": "Minescout Studio | Custom Websites for Small Businesses",
+      "description": "Fast, custom-coded websites for Sammamish and Eastside small businesses: clean slate rebuilds, storefronts, and AI dashboards from $750.",
+      "canonical": "https://minescout.net/studio",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Minescout Studio | Custom Websites for Small Businesses",
+      "ogDescription": "Fast, custom-coded websites for Sammamish and Eastside small businesses: clean slate rebuilds, storefronts, and AI dashboards from $750.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Custom Websites. Practical AI. Built for Local Businesses in Sammamish & the Eastside.",
+      "words": 339,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "Minescout Studio",
+        "description": "Fast, custom-coded websites for Sammamish and Eastside small businesses: clean slate rebuilds, storefronts, and AI dashboards from $750.",
+        "url": "https://minescout.net/studio",
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Sammamish"
+          },
+          {
+            "@type": "City",
+            "name": "Bellevue"
+          },
+          {
+            "@type": "City",
+            "name": "Redmond"
+          },
+          {
+            "@type": "City",
+            "name": "Issaquah"
+          }
+        ],
+        "founder": {
+          "@type": "Person",
+          "name": "Thomas Carleton",
+          "url": "https://minescout.net/about"
+        },
+        "parentOrganization": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net/"
+        }
+      }
+    },
+    {
+      "path": "/studio/admin",
+      "kind": "studio-app",
+      "url": "https://minescout.net/studio/admin",
+      "title": "Studio Admin",
+      "description": "All registered client accounts. Click a client to view or edit their data.",
+      "canonical": "https://minescout.net/studio/admin",
+      "robots": "noindex, nofollow",
+      "indexable": false,
+      "released": true,
+      "ogTitle": "Studio Admin",
+      "ogDescription": "All registered client accounts. Click a client to view or edit their data.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": null,
+      "words": 213,
+      "jsonLd": null
+    },
+    {
+      "path": "/studio/chat-config",
+      "kind": "studio-app",
+      "url": "https://minescout.net/studio/chat-config",
+      "title": "Minescout AI Master Config",
+      "description": "Internal Minescout AI prompt configuration. Not a public page.",
+      "canonical": "https://minescout.net/studio/chat-config",
+      "robots": "noindex, nofollow",
+      "indexable": false,
+      "released": true,
+      "ogTitle": "Minescout AI Master Config",
+      "ogDescription": "Internal Minescout AI prompt configuration. Not a public page.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/studio/chat-config/index.html",
+      "h1": null,
+      "words": 4,
+      "jsonLd": null
+    },
+    {
+      "path": "/studio/clients",
+      "kind": "studio-page",
+      "url": "https://minescout.net/studio/clients",
+      "title": "Client Work — Minescout Studio",
+      "description": "Minescout builds custom websites and AI systems for clients: live deployments, what each project needed, and the performance results behind them.",
+      "canonical": "https://minescout.net/studio/clients",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Client Work — Minescout Studio",
+      "ogDescription": "Minescout builds custom websites and AI systems for clients: live deployments, what each project needed, and the performance results behind them.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Client Work",
+      "words": 367,
+      "jsonLd": null
+    },
+    {
+      "path": "/studio/creation",
+      "kind": "studio-page",
+      "url": "https://minescout.net/studio/creation",
+      "title": "AI Site Builder | Minescout Studio",
+      "description": "Describe your business and preview a custom site in minutes with the Studio AI site builder. Keep it or leave it, no cost to try.",
+      "canonical": "https://minescout.net/studio/creation",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "AI Site Builder | Minescout Studio",
+      "ogDescription": "Describe your business and preview a custom site in minutes with the Studio AI site builder. Keep it or leave it, no cost to try.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "AI Site Builder",
+      "words": 123,
+      "jsonLd": null
+    },
+    {
+      "path": "/studio/custom-storefronts",
+      "kind": "studio-service",
+      "url": "https://minescout.net/studio/custom-storefronts",
+      "title": "Custom Online Storefronts | Minescout Studio",
+      "description": "Custom e-commerce storefronts with interactive configurators, live unit toggles, and checkout or invoicing flows. Live proof at chop-lab.com, from $2,500.",
+      "canonical": "https://minescout.net/studio/custom-storefronts",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Custom Online Storefronts | Minescout Studio",
+      "ogDescription": "Custom e-commerce storefronts with interactive configurators, live unit toggles, and checkout or invoicing flows. Live proof at chop-lab.com, from $2,500.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Custom e-commerce storefronts built for speed and zero platform bloat.",
+      "words": 469,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Custom Online Storefronts | Minescout Studio",
+        "description": "Custom e-commerce storefronts with interactive configurators, live unit toggles, and checkout or invoicing flows. Live proof at chop-lab.com, from $2,500.",
+        "url": "https://minescout.net/studio/custom-storefronts",
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Sammamish"
+          },
+          {
+            "@type": "City",
+            "name": "Bellevue"
+          },
+          {
+            "@type": "City",
+            "name": "Redmond"
+          },
+          {
+            "@type": "City",
+            "name": "Issaquah"
+          }
+        ],
+        "provider": {
+          "@type": "ProfessionalService",
+          "name": "Minescout Studio",
+          "url": "https://minescout.net/studio",
+          "areaServed": [
+            {
+              "@type": "City",
+              "name": "Sammamish"
+            },
+            {
+              "@type": "City",
+              "name": "Bellevue"
+            },
+            {
+              "@type": "City",
+              "name": "Redmond"
+            },
+            {
+              "@type": "City",
+              "name": "Issaquah"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/studio/info",
+      "kind": "studio-form",
+      "url": "https://minescout.net/studio/info",
+      "title": "Custom Intelligence Intake | Minescout Studio",
+      "description": "Provide the operational data for your Minescout Studio integration.",
+      "canonical": "https://minescout.net/studio/intake",
+      "robots": "noindex, follow",
+      "indexable": false,
+      "released": true,
+      "ogTitle": "Custom Intelligence Intake | Minescout Studio",
+      "ogDescription": "Provide the operational data for your Minescout Studio integration.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "derived",
+      "sourceFile": "public/views.js",
+      "h1": "Custom Intelligence Intake",
+      "words": 113,
+      "jsonLd": null
+    },
+    {
+      "path": "/studio/intake",
+      "kind": "studio-form",
+      "url": "https://minescout.net/studio/intake",
+      "title": "Project Intake | Minescout Studio",
+      "description": "Start a Studio project: tell me about your business, your current site, and what you need. Intake takes about five minutes.",
+      "canonical": "https://minescout.net/studio/intake",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Project Intake | Minescout Studio",
+      "ogDescription": "Start a Studio project: tell me about your business, your current site, and what you need. Intake takes about five minutes.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Custom Intelligence Intake",
+      "words": 113,
+      "jsonLd": null
+    },
+    {
+      "path": "/studio/legal",
+      "kind": "legal",
+      "url": "https://minescout.net/studio/legal",
+      "title": "How Studio Works — Terms & Ownership",
+      "description": "What clients own, how licensing and payments work, support terms, and the ground rules for a Minescout Studio project.",
+      "canonical": "https://minescout.net/studio/legal",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "How Studio Works — Terms & Ownership",
+      "ogDescription": "What clients own, how licensing and payments work, support terms, and the ground rules for a Minescout Studio project.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "How Studio Works",
+      "words": 1350,
+      "jsonLd": null
+    },
+    {
+      "path": "/studio/local-web-design",
+      "kind": "studio-service",
+      "url": "https://minescout.net/studio/local-web-design",
+      "title": "Local Web Design in Sammamish & Bellevue | Minescout Studio",
+      "description": "Custom, fast websites for small businesses in Sammamish, Issaquah, Redmond, and Bellevue. Mobile-first layouts, edge performance, and SEO setup from $750.",
+      "canonical": "https://minescout.net/studio/local-web-design",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Local Web Design in Sammamish & Bellevue | Minescout Studio",
+      "ogDescription": "Custom, fast websites for small businesses in Sammamish, Issaquah, Redmond, and Bellevue. Mobile-first layouts, edge performance, and SEO setup from $750.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Fast, custom websites for Sammamish and Eastside small businesses.",
+      "words": 424,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Local Web Design in Sammamish & Bellevue | Minescout Studio",
+        "description": "Custom, fast websites for small businesses in Sammamish, Issaquah, Redmond, and Bellevue. Mobile-first layouts, edge performance, and SEO setup from $750.",
+        "url": "https://minescout.net/studio/local-web-design",
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Sammamish"
+          },
+          {
+            "@type": "City",
+            "name": "Bellevue"
+          },
+          {
+            "@type": "City",
+            "name": "Redmond"
+          },
+          {
+            "@type": "City",
+            "name": "Issaquah"
+          }
+        ],
+        "provider": {
+          "@type": "ProfessionalService",
+          "name": "Minescout Studio",
+          "url": "https://minescout.net/studio",
+          "areaServed": [
+            {
+              "@type": "City",
+              "name": "Sammamish"
+            },
+            {
+              "@type": "City",
+              "name": "Bellevue"
+            },
+            {
+              "@type": "City",
+              "name": "Redmond"
+            },
+            {
+              "@type": "City",
+              "name": "Issaquah"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/studio/pricing",
+      "kind": "studio-pricing",
+      "url": "https://minescout.net/studio/pricing",
+      "title": "Website Design Pricing | Minescout Studio",
+      "description": "Real Studio prices: portfolio websites from $750, professional websites from $1,500, business websites from $2,500, and business + AI from $3,500.",
+      "canonical": "https://minescout.net/studio/pricing",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Website Design Pricing | Minescout Studio",
+      "ogDescription": "Real Studio prices: portfolio websites from $750, professional websites from $1,500, business websites from $2,500, and business + AI from $3,500.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Pricing",
+      "words": 513,
+      "jsonLd": null
+    },
+    {
+      "path": "/studio/process",
+      "kind": "studio-page",
+      "url": "https://minescout.net/studio/process",
+      "title": "How a Minescout Studio Project Runs",
+      "description": "The Studio process step by step: intake, clean slate rebuild, review, launch, and handoff, plus what you get and how long it takes.",
+      "canonical": "https://minescout.net/studio/process",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "How a Minescout Studio Project Runs",
+      "ogDescription": "The Studio process step by step: intake, clean slate rebuild, review, launch, and handoff, plus what you get and how long it takes.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "The Process",
+      "words": 267,
+      "jsonLd": null
+    },
+    {
+      "path": "/studio/review",
+      "kind": "studio-page",
+      "url": "https://minescout.net/studio/review",
+      "title": "Project Review | Minescout Studio",
+      "description": "Thank you for trusting Minescout Studio with your digital infrastructure. Your honest feedback helps me improve the platform and shows future clients what to…",
+      "canonical": "https://minescout.net/studio/review",
+      "robots": "noindex, follow",
+      "indexable": false,
+      "released": true,
+      "ogTitle": "Project Review | Minescout Studio",
+      "ogDescription": "Thank you for trusting Minescout Studio with your digital infrastructure. Your honest feedback helps me improve the platform and shows future clients what to…",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Project Review",
+      "words": 33,
+      "jsonLd": null
+    },
+    {
+      "path": "/studio/roi",
+      "kind": "studio-page",
+      "url": "https://minescout.net/studio/roi",
+      "title": "Growth & Efficiency Calculator | Minescout Studio",
+      "description": "Estimate what a faster site and less manual work are worth to your business with the Studio growth and efficiency calculator.",
+      "canonical": "https://minescout.net/studio/roi",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Growth & Efficiency Calculator | Minescout Studio",
+      "ogDescription": "Estimate what a faster site and less manual work are worth to your business with the Studio growth and efficiency calculator.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Growth & Efficiency Calculator",
+      "words": 133,
+      "jsonLd": null
+    },
+    {
+      "path": "/studio/student-nonprofit",
+      "kind": "studio-service",
+      "url": "https://minescout.net/studio/student-nonprofit",
+      "title": "Websites for Clubs & Nonprofits | Minescout Studio",
+      "description": "Discounted custom websites for students, robotics teams, scouts, school clubs, and local nonprofits. Projects from $250 to $750 with fast turnaround.",
+      "canonical": "https://minescout.net/studio/student-nonprofit",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Websites for Clubs & Nonprofits | Minescout Studio",
+      "ogDescription": "Discounted custom websites for students, robotics teams, scouts, school clubs, and local nonprofits. Projects from $250 to $750 with fast turnaround.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Custom websites for student organizations, clubs, and local nonprofits.",
+      "words": 449,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Websites for Clubs & Nonprofits | Minescout Studio",
+        "description": "Discounted custom websites for students, robotics teams, scouts, school clubs, and local nonprofits. Projects from $250 to $750 with fast turnaround.",
+        "url": "https://minescout.net/studio/student-nonprofit",
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Sammamish"
+          },
+          {
+            "@type": "City",
+            "name": "Bellevue"
+          },
+          {
+            "@type": "City",
+            "name": "Redmond"
+          },
+          {
+            "@type": "City",
+            "name": "Issaquah"
+          }
+        ],
+        "provider": {
+          "@type": "ProfessionalService",
+          "name": "Minescout Studio",
+          "url": "https://minescout.net/studio",
+          "areaServed": [
+            {
+              "@type": "City",
+              "name": "Sammamish"
+            },
+            {
+              "@type": "City",
+              "name": "Bellevue"
+            },
+            {
+              "@type": "City",
+              "name": "Redmond"
+            },
+            {
+              "@type": "City",
+              "name": "Issaquah"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/studio/tools",
+      "kind": "studio-page",
+      "url": "https://minescout.net/studio/tools",
+      "title": "Tools Behind a Minescout Studio Build",
+      "description": "The stack I build with: static HTML and ES modules, edge hosting, and the AI tooling that powers client dashboards.",
+      "canonical": "https://minescout.net/studio/tools",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Tools Behind a Minescout Studio Build",
+      "ogDescription": "The stack I build with: static HTML and ES modules, edge hosting, and the AI tooling that powers client dashboards.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Tools I Use",
+      "words": 714,
+      "jsonLd": null
+    },
+    {
+      "path": "/work",
+      "kind": "page",
+      "url": "https://minescout.net/work",
+      "title": "Work — Sites and Tools I've Built | Minescout",
+      "description": "Selected work: Minescout Studio client sites, The Chop Lab storefront, Minescout Beta, and Minescout Life — built from scratch and running in production.",
+      "canonical": "https://minescout.net/work",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Work — Sites and Tools I've Built | Minescout",
+      "ogDescription": "Selected work: Minescout Studio client sites, The Chop Lab storefront, Minescout Beta, and Minescout Life — built from scratch and running in production.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/views.js",
+      "h1": "Things I've Built",
+      "words": 42,
+      "jsonLd": null
+    }
+  ]
+}

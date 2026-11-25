@@ -57,7 +57,7 @@ jobs:
         run: node scripts/mcp-smoke.mjs
 
   minescout-net:
-    name: Minescout blog tests
+    name: Minescout blog tests and SEO metadata
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -68,6 +68,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      # Fails on missing/duplicate metadata, bad canonicals, accidental
+      # noindex, and generated output that no longer matches the pages.
+      - name: SEO metadata check
+        run: npm run seo:check
 
       - name: Unit tests
         run: npm test

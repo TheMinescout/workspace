@@ -3,9 +3,15 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-import { BLOG_POSTS, PAGE_META, isReleased, views } from "../public/views.js";
+import { BLOG_POSTS, isReleased, views } from "../public/views.js";
 
 const SITEMAP = readFileSync(new URL("../public/sitemap.xml", import.meta.url), "utf8");
+const MANIFEST = JSON.parse(readFileSync(new URL("../public/seo/manifest.json", import.meta.url), "utf8"));
+
+/** The generated metadata entry for a route (public/seo/manifest.json). */
+function metaFor(path) {
+  return MANIFEST.pages.find((page) => page.path === path);
+}
 
 const NEW_POSTS = [
   {
@@ -177,11 +183,12 @@ test("every released blog card resolves to a view", () => {
   }
 });
 
-test("sitemap.xml lists every blog post", () => {
+test("sitemap.xml omits blog posts until they are released", () => {
   for (const post of BLOG_POSTS) {
+    if (isReleased(post.date)) continue;
     assert.ok(
-      SITEMAP.includes(`<loc>https://minescout.net${post.href}</loc>`),
-      `${post.href} is missing from sitemap.xml`,
+      !SITEMAP.includes(`<loc>https://minescout.net${post.href}</loc>`),
+      `${post.href} is in sitemap.xml before its ${post.date} release date`,
     );
   }
 });
@@ -313,13 +320,13 @@ test("every internal link in a scheduled post resolves to a view", () => {
   }
 });
 
-test("each scheduled post has its own PAGE_META entry", () => {
+test("each scheduled post has its own manifest metadata", () => {
   const titles = [];
   const descriptions = [];
 
   for (const post of SCHEDULED_POSTS) {
-    const meta = PAGE_META[post.href];
-    assert.ok(meta, `${post.href} has no PAGE_META entry`);
+    const meta = metaFor(post.href);
+    assert.ok(meta, `${post.href} has no entry in the SEO manifest`);
     assert.ok(meta.title && meta.title.length > 0, `${post.href} needs a document title`);
     assert.ok(meta.title.length <= 70, `${post.href} document title is too long (${meta.title.length})`);
     assert.ok(meta.description && meta.description.length >= 50, `${post.href} needs a real meta description`);
@@ -335,15 +342,11 @@ test("each scheduled post has its own PAGE_META entry", () => {
   assert.equal(new Set(descriptions).size, descriptions.length, "scheduled post descriptions must be unique");
 });
 
-test("sitemap.xml lists each scheduled post with its release date", () => {
+test("scheduled posts stay out of sitemap.xml until their release date", () => {
   for (const post of SCHEDULED_POSTS) {
+    if (isReleased(post.date)) continue;
     const loc = `<loc>https://minescout.net${post.href}</loc>`;
-    assert.equal(SITEMAP.split(loc).length - 1, 1, `${post.href} must appear exactly once in sitemap.xml`);
-    const block = SITEMAP.slice(SITEMAP.indexOf(loc));
-    assert.ok(
-      block.includes(`<lastmod>${post.lastmod}</lastmod>`),
-      `${post.href} is missing <lastmod>${post.lastmod}</lastmod>`,
-    );
+    assert.equal(SITEMAP.split(loc).length - 1, 0, `${post.href} must not appear in sitemap.xml before ${post.date}`);
   }
 });
 
