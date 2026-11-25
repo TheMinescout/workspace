@@ -3,6 +3,9 @@
 Persistent notes for agents working in this repository. See `README.md` for the
 full description of each site.
 
+See [`ARCHITECTURE.md`](ARCHITECTURE.md) for shared-service ownership and
+site-specific boundaries.
+
 ## What this repo is
 
 A workspace of separate web properties, not one app. Each site has its own
