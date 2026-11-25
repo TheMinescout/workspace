@@ -50,14 +50,13 @@ groups. Eight read App Builder template scaffolding this repo does not ship —
 `with-app-env`, `check-auth-invariant`). The other eight (`grok-pwa-plugin`)
 expect the document `<title>` to become `og:title`, but the committed
 `src/lib/og/site.json` pins the app title to "The Chop Lab", which wins. The
-script chains its two stages with `&&`, so while the first stage fails the three
-`src/lib/*.test.ts` suites never run; run them directly
-(`node --experimental-strip-types --test src/lib/app-data/app-data.test.ts
-src/lib/auth/gate-identity.test.ts src/lib/seo.test.ts`) after touching that
-code. Confirm your change did not add failures by comparing the failing-test
+script chains its two stages with `&&`, so while the first stage fails the
+`src/lib` suites never run; run them on their own
+(`node --experimental-strip-types --test 'src/lib/**/*.test.ts'`) after touching
+that code. Confirm your change did not add failures by comparing the failing-test
 count before and after — `git stash` your edits and re-run if unsure. CI runs
-those three suites as a blocking step and tolerates only this failure count in
-the script stage (see CI below).
+those suites as a blocking step and tolerates only this failure count in the
+script stage (see CI below).
 
 ### Stack and layout
 
