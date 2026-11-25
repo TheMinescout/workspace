@@ -120,11 +120,6 @@ jobs:
       # Eight of the baseline failures read App Builder scaffolding this repo
       # does not ship (`.grok/**`); eight expect the PWA plugin's og:title to
       # follow <title> while site.json pins it. Both are documented in PR #46.
-      # Run the suites anyway and fail only when the count rises, so a new
-      # regression cannot hide behind the known ones.
-      # Eight of the baseline failures read App Builder scaffolding this repo
-      # does not ship (`.grok/**`); eight expect the PWA plugin's og:title to
-      # follow <title> while site.json pins it. Both are documented in PR #46.
       # `scripts/known-test-failures.txt` names them, so any other failure fails
       # the job: a count-only baseline cannot tell a fixed test from a new one.
       - name: Unit tests (script suites, known baseline)
