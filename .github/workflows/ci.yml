@@ -76,14 +76,23 @@ jobs:
   chop-lab:
     name: Chop Lab typecheck, build and feed
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: chop-lab.com
+    env:
+      # The script test suites carry known failures (see PR #46). CI tolerates
+      # this many and fails on anything above it, so the baseline can shrink
+      # but never grow. Lower this number as failures are fixed.
+      SCRIPT_TEST_FAILURE_BASELINE: "16"
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
+          # Vite 8 and nitro require >=22.12.0. `feed:merchant` and the test
+          # suites import .ts files with a bare `node`, which needs the unflagged
+          # type stripping of >=22.18.0.
           node-version: 22
           cache: npm
           cache-dependency-path: chop-lab.com/package-lock.json
@@ -94,26 +103,73 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Production build
-        run: npm run build
-
-      - name: Verify Merchant Center feed
+      # Cheap, and independent of the build: a stale feed should not have to
+      # wait for a full production build to fail.
+      - name: Verify Merchant Center feed is current
         run: npm run feed:merchant -- --check
 
-      # The current test baseline has 16 documented failures (see PR #46).
-      # Keep collecting test output without making every PR red until those
-      # failures are resolved; then remove continue-on-error.
-      - name: Unit tests (known baseline failures; temporarily non-blocking)
-        id: chop-tests
-        run: npm test
-        continue-on-error: true
+      - name: Production build
+        # `build` also runs `db:migrate`, which applies migrations to whatever
+        # DATABASE_URL it is given. Keep it empty so a repository secret can
+        # never let CI write to a live database.
+        env:
+          DATABASE_URL: ""
+        run: npm run build
 
-      - name: Report non-blocking test failures
-        if: steps.chop-tests.outcome == 'failure'
+      # `npm test` chains its two stages with `&&`, so the script-suite baseline
+      # failures stop the app suites from ever running. Run them on their own:
+      # they are green and they cover product data, auth identity and SEO.
+      - name: Unit tests (app suites)
+        run: >-
+          node --experimental-strip-types --test
+          src/lib/app-data/app-data.test.ts
+          src/lib/auth/gate-identity.test.ts
+          src/lib/seo.test.ts
+
+      # Eight of the baseline failures read App Builder scaffolding this repo
+      # does not ship (`.grok/**`); eight expect the PWA plugin's og:title to
+      # follow <title> while site.json pins it. Both are documented in PR #46.
+      # Run the suites anyway and fail only when the count rises, so a new
+      # regression cannot hide behind the known ones.
+      - name: Unit tests (script suites, known baseline)
         run: |
+          tap="$RUNNER_TEMP/chop-script-tests.tap"
+          set +e
+          node --test --test-reporter=tap 'scripts/**/*.test.mjs' > "$tap"
+          set -e
+
+          total=$(grep -E '^# tests ' "$tap" | tail -1 | awk '{print $3}')
+          failed=$(grep -E '^# fail ' "$tap" | tail -1 | awk '{print $3}')
+          if [ -z "$total" ] || [ -z "$failed" ]; then
+            echo "::error::The script test run produced no TAP summary — the suites did not run."
+            tail -n 60 "$tap"
+            exit 1
+          fi
+
+          # A run that matches no files still reports `# tests 0` and would pass
+          # the baseline check, so refuse a run that covers fewer test files
+          # than exist on disk.
+          files=$(find scripts -name '*.test.mjs' | wc -l | tr -d ' ')
+          if [ "$files" -eq 0 ] || [ "$total" -lt "$files" ]; then
+            echo "::error::$total tests ran for $files script test files — the suites did not all run."
+            exit 1
+          fi
+
+          echo "script tests: $total run, $failed failed (baseline $SCRIPT_TEST_FAILURE_BASELINE)"
           {
-            echo "### Chop Lab tests need attention"
+            echo "### Chop Lab script tests"
             echo
-            echo "The test command failed. This step is temporarily non-blocking because the current baseline has 16 documented failures (see PR #46)."
-            echo "Do not treat this as a passing test suite. Remove continue-on-error after the baseline failures are fixed."
+            echo "$total run, **$failed failed** — documented baseline $SCRIPT_TEST_FAILURE_BASELINE (see PR #46)."
           } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$failed" -gt "$SCRIPT_TEST_FAILURE_BASELINE" ]; then
+            {
+              echo
+              echo "Failures above the baseline:"
+              echo '```'
+              grep 'not ok' "$tap" || true
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::$failed script tests failed, above the documented baseline of $SCRIPT_TEST_FAILURE_BASELINE. Fix the new failures, or lower SCRIPT_TEST_FAILURE_BASELINE if you fixed old ones."
+            exit 1
+          fi

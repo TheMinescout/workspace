@@ -44,7 +44,7 @@ A change is done when all of these pass:
    (1280x800) and mobile (390x844): non-blank body text, **no console/page
    errors**, **no horizontal overflow**. Check the screenshots it writes.
 
-`npm test` has 16 pre-existing failures (of 230) unrelated to most work, in two
+`npm test` has 16 pre-existing failures (of 235) unrelated to most work, in two
 groups. Eight read App Builder template scaffolding this repo does not ship —
 `.grok/skills/**` and `.grok/app-env.json` (`brand-check`, `write-atomic`,
 `with-app-env`, `check-auth-invariant`). The other eight (`grok-pwa-plugin`)
@@ -55,7 +55,9 @@ script chains its two stages with `&&`, so while the first stage fails the three
 (`node --experimental-strip-types --test src/lib/app-data/app-data.test.ts
 src/lib/auth/gate-identity.test.ts src/lib/seo.test.ts`) after touching that
 code. Confirm your change did not add failures by comparing the failing-test
-count before and after — `git stash` your edits and re-run if unsure.
+count before and after — `git stash` your edits and re-run if unsure. CI runs
+those three suites as a blocking step and tolerates only this failure count in
+the script stage (see CI below).
 
 ### Stack and layout
 
@@ -353,14 +355,19 @@ npm run check    # lint (oxlint) + build + tests + render and MCP smoke
 
 ## CI
 
-`.github/workflows/ci.yml` runs for `life.minescout.net/**` and
-`minescout.net/**` changes. The Life job installs, lints, builds, tests, then runs
-`scripts/smoke.mjs` and `scripts/mcp-smoke.mjs` (Chromium installed via Playwright).
-The `minescout-net` job just runs `npm test` (the blog tests in
-`minescout.net/scripts/`). `pages.yml` publishes a static Life preview
-to GitHub Pages — its API routes are dev-server-only, so comments, votes and
-admin sign-in do not work there. The Chop Lab has no CI; verify it by hand with
-the commands above.
+`.github/workflows/ci.yml` runs for `life.minescout.net/**`,
+`minescout.net/**` and `chop-lab.com/**` changes. The Life job installs, lints,
+builds, tests, then runs `scripts/smoke.mjs` and `scripts/mcp-smoke.mjs`
+(Chromium installed via Playwright). The `minescout-net` job just runs `npm test`
+(the blog tests in `minescout.net/scripts/`). The `chop-lab` job runs `npm ci`,
+`typecheck`, the Merchant Center feed check, the production build, then the app
+suites (`src/lib/*.test.ts`, blocking) and the script suites. The script suites
+are held to `SCRIPT_TEST_FAILURE_BASELINE` in the workflow — the 16 documented
+failures above — so the count may shrink but a new failure turns the job red;
+lower the baseline as failures are fixed. The build step pins `DATABASE_URL`
+empty because `npm run build` runs `db:migrate`. `pages.yml` publishes a static
+Life preview to GitHub Pages — its API routes are dev-server-only, so comments,
+votes and admin sign-in do not work there.
 
 ## Git
 
