@@ -27,7 +27,7 @@ const stages = [
   {
     name: "script tests",
     files: discoverTests(join(ROOT, "scripts"), ".test.mjs"),
-    args: ["--test", "--test-reporter=tap"],
+    args: ["--test"],
   },
   {
     name: "app tests",
@@ -40,7 +40,7 @@ let failed = false;
 for (const stage of stages) {
   console.log(`\n=== Chop Lab ${stage.name} ===\n`);
   if (stage.files.length === 0) {
-    console.error(`No ${stage.name} files were discovered.`);
+    console.error(`No test files were discovered for the ${stage.name} stage.`);
     failed = true;
     continue;
   }

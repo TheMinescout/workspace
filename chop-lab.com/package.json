@@ -20,7 +20,7 @@
     "test": "node scripts/run-tests.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "test:scripts": "node --test --test-reporter=tap 'scripts/**/*.test.mjs'",
+    "test:scripts": "node --test 'scripts/**/*.test.mjs'",
     "test:app": "node --experimental-strip-types --test 'src/lib/**/*.test.ts'"
   },
   "dependencies": {

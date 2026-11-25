@@ -110,5 +110,9 @@ jobs:
           DATABASE_URL: ""
         run: npm run build
 
+      # `npm test` runs the script suites and the app suites through
+      # `scripts/run-tests.mjs`: it keeps going after a failing stage, and fails
+      # when a stage discovers no test files, so a glob that stops matching
+      # cannot pass as a green run.
       - name: Unit tests (all suites)
         run: npm test
