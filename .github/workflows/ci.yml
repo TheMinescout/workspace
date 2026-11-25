@@ -6,11 +6,13 @@ on:
     paths:
       - "life.minescout.net/**"
       - "minescout.net/**"
+      - "chop-lab.com/**"
       - ".github/workflows/ci.yml"
   pull_request:
     paths:
       - "life.minescout.net/**"
       - "minescout.net/**"
+      - "chop-lab.com/**"
       - ".github/workflows/ci.yml"
   workflow_dispatch:
 
@@ -67,3 +69,48 @@ jobs:
 
       - name: Unit tests
         run: npm test
+
+  chop-lab:
+    name: Chop Lab typecheck, build and feed
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: chop-lab.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: chop-lab.com/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Production build
+        run: npm run build
+
+      - name: Verify Merchant Center feed
+        run: npm run feed:merchant -- --check
+
+      # The current test baseline has 16 documented failures (see PR #46).
+      # Keep collecting test output without making every PR red until those
+      # failures are resolved; then remove continue-on-error.
+      - name: Unit tests (known baseline failures; temporarily non-blocking)
+        id: chop-tests
+        run: npm test
+        continue-on-error: true
+
+      - name: Report non-blocking test failures
+        if: steps.chop-tests.outcome == 'failure'
+        run: |
+          {
+            echo "### Chop Lab tests need attention"
+            echo
+            echo "The test command failed. This step is temporarily non-blocking because the current baseline has 16 documented failures (see PR #46)."
+            echo "Do not treat this as a passing test suite. Remove `continue-on-error` after the baseline failures are fixed."
+          } >> "$GITHUB_STEP_SUMMARY"
