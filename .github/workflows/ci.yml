@@ -118,13 +118,10 @@ jobs:
 
       # `npm test` chains its two stages with `&&`, so the script-suite baseline
       # failures stop the app suites from ever running. Run them on their own:
-      # they are green and they cover product data, auth identity and SEO.
+      # they are green and they cover product data, auth identity and SEO. Match
+      # them by glob so a new src/lib test file cannot be skipped here.
       - name: Unit tests (app suites)
-        run: >-
-          node --experimental-strip-types --test
-          src/lib/app-data/app-data.test.ts
-          src/lib/auth/gate-identity.test.ts
-          src/lib/seo.test.ts
+        run: node --experimental-strip-types --test 'src/lib/**/*.test.ts'
 
       # Eight of the baseline failures read App Builder scaffolding this repo
       # does not ship (`.grok/**`); eight expect the PWA plugin's og:title to
