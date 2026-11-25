@@ -1544,26 +1544,44 @@ function setCanonical(href) {
 // head a crawler reads in the prerendered HTML and the head this router applies
 // on a client-side navigation are the same values from the same source.
 let pageMeta = {};
+// 'loading' until the manifest arrives, then 'ready' or 'failed'. While it is
+// loading, the prerendered head already carries the initial route's metadata,
+// so applyPageMeta leaves it alone rather than overwriting it with the fallback.
+let pageMetaState = 'loading';
+let currentPath = '/';
 
 async function loadPageMeta() {
+  // A stalled request must not leave pageMetaState 'loading' forever, or later
+  // client-side navigations would keep the previous route's head.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
   try {
-    const res = await fetch('/seo/manifest.json', { cache: 'no-cache' });
-    if (!res.ok) return;
+    const res = await fetch('/seo/manifest.json', { cache: 'no-cache', signal: controller.signal });
+    if (!res.ok) throw new Error(`manifest request failed: ${res.status}`);
     const manifest = await res.json();
     const map = {};
     for (const entry of manifest.pages || []) {
       if (entry && entry.path) map[entry.path] = entry;
     }
     pageMeta = map;
+    pageMetaState = 'ready';
+    // The route may already be on screen with the prerendered head, and a
+    // navigation may have happened while the fetch was in flight, so refresh
+    // the current route now that the manifest values are available.
+    applyPageMeta(currentPath);
   } catch (err) {
-    // The prerendered head is already correct; a failed fetch only costs the
-    // client-side navigation refresh.
+    pageMetaState = 'failed';
+    // The prerendered head is already correct for the initial route; a later
+    // client-side navigation falls back to the site defaults.
     console.warn('SEO manifest unavailable', err);
+  } finally {
+    clearTimeout(timer);
   }
 }
 
 function applyPageMeta(path) {
   const meta = pageMeta[path];
+  if (!meta && pageMetaState === 'loading') return;
   const title = meta ? meta.title : SITE_META.title;
   const description = meta ? meta.description : SITE_META.description;
 
@@ -1615,6 +1633,7 @@ function render(path) {
   const finalPath = cleanPath;
   const content = views[finalPath] || views['404'];
 
+  currentPath = finalPath;
   if (isStudioPath(finalPath)) loadGTM();
 
   applyPageMeta(finalPath);
@@ -1692,11 +1711,15 @@ function initRouter() {
   window.addEventListener('popstate', () => render(window.location.pathname));
 }
 
-async function boot() {
+function boot() {
   initSidebar();
   initRouter();
-  await loadPageMeta();
+  // Render immediately: the prerendered document already carries this route's
+  // metadata, so the manifest is only needed to refresh the head after a
+  // client-side navigation. It loads in the background and must never delay
+  // the first paint.
   render(window.location.pathname);
+  void loadPageMeta();
 }
 
 if (document.readyState === 'loading') {

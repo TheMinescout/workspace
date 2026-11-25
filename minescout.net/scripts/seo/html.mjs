@@ -40,8 +40,10 @@ export function decodeEntities(text) {
 export function stripTags(html) {
   return decodeEntities(
     String(html)
-      .replace(/<script[\s\S]*?<\/script>/gi, " ")
-      .replace(/<style[\s\S]*?<\/style>/gi, " ")
+      // `\s*` after the tag name also matches `</script >`, which a bare
+      // `<\/script>` misses (and which CodeQL flags as bad tag filtering).
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, " ")
+      .replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi, " ")
       .replace(/<!--[\s\S]*?-->/g, " ")
       .replace(/<[^>]+>/g, " "),
   )

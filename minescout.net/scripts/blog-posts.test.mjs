@@ -183,11 +183,12 @@ test("every released blog card resolves to a view", () => {
   }
 });
 
-test("sitemap.xml lists every blog post", () => {
+test("sitemap.xml omits blog posts until they are released", () => {
   for (const post of BLOG_POSTS) {
+    if (isReleased(post.date)) continue;
     assert.ok(
-      SITEMAP.includes(`<loc>https://minescout.net${post.href}</loc>`),
-      `${post.href} is missing from sitemap.xml`,
+      !SITEMAP.includes(`<loc>https://minescout.net${post.href}</loc>`),
+      `${post.href} is in sitemap.xml before its ${post.date} release date`,
     );
   }
 });
@@ -341,15 +342,11 @@ test("each scheduled post has its own manifest metadata", () => {
   assert.equal(new Set(descriptions).size, descriptions.length, "scheduled post descriptions must be unique");
 });
 
-test("sitemap.xml lists each scheduled post with its release date", () => {
+test("scheduled posts stay out of sitemap.xml until their release date", () => {
   for (const post of SCHEDULED_POSTS) {
+    if (isReleased(post.date)) continue;
     const loc = `<loc>https://minescout.net${post.href}</loc>`;
-    assert.equal(SITEMAP.split(loc).length - 1, 1, `${post.href} must appear exactly once in sitemap.xml`);
-    const block = SITEMAP.slice(SITEMAP.indexOf(loc));
-    assert.ok(
-      block.includes(`<lastmod>${post.lastmod}</lastmod>`),
-      `${post.href} is missing <lastmod>${post.lastmod}</lastmod>`,
-    );
+    assert.equal(SITEMAP.split(loc).length - 1, 0, `${post.href} must not appear in sitemap.xml before ${post.date}`);
   }
 });
 

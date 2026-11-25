@@ -237,11 +237,12 @@ or EmailJS to send any more.
 - Cache-busting is manual: bump `?v=` on the `app.js` script tag in `index.html`
   and on the `views.js` import in `app.js` after editing either file.
 - Per-route document metadata lives in the generated manifest
-  (`public/seo/manifest.json`), not in `views.js`. `app.js` fetches it once and
-  applies `document.title`, `meta[name=description]`, the canonical link and the
-  `og:*` equivalents on every navigation. To change a title, edit
-  `minescout.net/seo/overrides.json` and run `npm run seo:build -- --write`; see
-  the next section.
+  (`public/seo/manifest.json`), not in `views.js`. `app.js` renders the route
+  immediately (the prerendered head is already correct) and fetches the manifest
+  in the background, then applies `document.title`, `meta[name=description]`,
+  the canonical link and the `og:*` equivalents on every navigation. To change a
+  title, edit `minescout.net/seo/overrides.json` and run
+  `npm run seo:build:write`; see the next section.
 - The three studio service landing pages (`/studio/local-web-design`,
   `/studio/custom-storefronts`, `/studio/student-nonprofit`) are plain `views`
   entries linked from `/studio`. `scripts/studio-pages.test.mjs` asserts their
@@ -249,8 +250,9 @@ or EmailJS to send any more.
   and that every dollar figure on them also appears on `/studio/pricing`.
 - `npm test` here is `node --test scripts/*.test.mjs` from inside
   `minescout.net/`; `scripts/blog-posts.test.mjs` asserts every index entry has a
-  view and a sitemap entry, that the new posts are released, and that the
-  e-commerce post's prices trace back to the pricing page.
+  view, that scheduled posts stay out of the sitemap until release, that the new
+  posts are released, and that the e-commerce post's prices trace back to the
+  pricing page.
 
 ## SEO metadata for minescout.net (`minescout.net/seo/`)
 
@@ -265,14 +267,18 @@ audit baseline and what is still open.
 cd minescout.net
 npm run seo:inventory          # every page, metadata source, lengths
 npm run seo:build              # dry run: which generated files are stale
-npm run seo:build -- --write   # regenerate manifest + prerendered pages
-npm run seo:report --write     # regenerate seo/INVENTORY.md
+npm run seo:build:write        # regenerate manifest + prerendered pages + sitemap
+npm run seo:report             # print seo/INVENTORY.md
+npm run seo:report:write       # regenerate seo/INVENTORY.md
 npm run seo:check              # validation + "generated output is current" (CI)
 npm run icons                  # regenerate icons + share card
 ```
 
+`seo:build` and `seo:report` are dry runs. Only the explicitly named
+`:write` aliases modify files on disk.
+
 - **Adding a page**: add the route to `views.js`; the next `seo:check` fails
-  until `npm run seo:build -- --write` is run and the output committed. The page
+  until `npm run seo:build:write` is run and the output committed. The page
   gets a derived title/description from its own `<h1>` and copy.
 - **Better metadata than the derivation**: add an entry to
   `seo/overrides.json` (`title`, `description`, `canonical`, `indexable`,
@@ -287,12 +293,15 @@ npm run icons                  # regenerate icons + share card
 - `seo:check` fails on missing/duplicate/blank metadata, over-long titles or
   descriptions, malformed canonicals, a canonical that disagrees with the route,
   accidental `noindex`, invalid robots directives, more than one `<h1>`,
-  metadata sharing no distinctive word with the page, sitemap/`robots.txt`
-  disagreement, and stale output. Warnings (thin content, long titles, scheduled
-  posts listed early) do not fail the build.
-- Scheduled blog posts are `noindex` and unlinked until their release date, so
-  `seo:check` warns about their sitemap entries until then — that is expected,
-  not a bug to "fix" by editing the sitemap.
+  metadata sharing no distinctive word with the page, a sitemap URL that is
+  unreleased or noindex, sitemap/`robots.txt` disagreement, and stale output.
+  Warnings (thin content, long titles, a released page missing from the
+  sitemap) do not fail the build.
+- Scheduled blog posts are `noindex` and unlinked until their release date, and
+  `seo:build:write` derives the blog block of `public/sitemap.xml` from that
+  release state: released posts are added automatically and scheduled posts are
+  never advertised (a crawler would get a 404). Listing an unreleased post is a
+  CI error, not a warning.
 - The favicon/logo payload is guarded: `scripts/icons.mjs` derives every icon
   from a 512 px master, and `scripts/icons.test.mjs` fails if a large master is
   wired into an icon or logo slot again (it used to be a 5.56 MB PNG on every

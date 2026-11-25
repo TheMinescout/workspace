@@ -3,17 +3,21 @@
 //
 //   node scripts/seo.mjs inventory            page inventory and metadata, to stdout
 //   node scripts/seo.mjs build                dry run: what would change
-//   node scripts/seo.mjs build --write        write public/seo/manifest.json + prerendered pages
+//   node scripts/seo.mjs build --write        write the manifest, prerendered pages and sitemap
 //   node scripts/seo.mjs report [--write]     refresh seo/INVENTORY.md
 //   node scripts/seo.mjs check                validation + "is the committed output current?" (CI)
 //
-// Writes are opt-in: without --write nothing on disk changes.
+// Writes are opt-in: without --write nothing on disk changes. The npm aliases
+// make that explicit: `seo:build` and `seo:report` are dry runs, while
+// `seo:build:write` and `seo:report:write` are the only commands that write.
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 
 import {
+  PUBLIC_DIR,
   SITE_ROOT,
   discoverPages,
+  parseSitemap,
   readIndexHtml,
   readRobots,
   readSitemap,
@@ -22,9 +26,11 @@ import { parseHead } from "./seo/html.mjs";
 import { buildManifest } from "./seo/metadata.mjs";
 import { REPORT_FILE, headDrift, planFiles } from "./seo/plan.mjs";
 import { renderReport } from "./seo/report.mjs";
+import { renderSitemap } from "./seo/sitemap.mjs";
 import { summarize, validate } from "./seo/validate.mjs";
 
 const OVERRIDES_FILE = join(SITE_ROOT, "seo/overrides.json");
+const SITEMAP_FILE = join(PUBLIC_DIR, "sitemap.xml");
 
 const args = process.argv.slice(2);
 const command = args[0] ?? "check";
@@ -42,8 +48,9 @@ async function load() {
   const { manifest, errors } = buildManifest({ pages, overrides, shellHead, site: overrides.site });
   const sitemap = readSitemap();
   const robots = readRobots();
+  const sitemapText = renderSitemap({ sitemapXml: readFileSync(SITEMAP_FILE, "utf8"), manifest });
   const issues = validate({ manifest, pages, sitemap, robots, buildErrors: errors });
-  return { overrides, pages, manifest, shellHtml, shellHead, sitemap, robots, issues };
+  return { overrides, pages, manifest, shellHtml, shellHead, sitemap, sitemapText, robots, issues, buildErrors: errors };
 }
 
 function printIssues(issues) {
@@ -82,18 +89,34 @@ async function main() {
   if (command === "build") {
     const files = planFiles(state);
     const changed = files.filter((entry) => entry.status !== "unchanged");
+    const sitemapChanged = readFileSync(SITEMAP_FILE, "utf8") !== state.sitemapText;
     console.log(`${state.manifest.pages.length} pages discovered, ${files.length} generated files`);
     for (const entry of changed) console.log(`  ${entry.status.padEnd(7)} ${entry.label.padEnd(8)} ${rel(entry.file)}`);
-    if (!changed.length) console.log("  nothing to write");
-    printIssues(state.issues);
+    if (sitemapChanged) console.log(`  update  sitemap  ${rel(SITEMAP_FILE)}`);
+    if (!changed.length && !sitemapChanged) console.log("  nothing to write");
+    // When writing, report the state the build is about to leave behind, not
+    // the stale on-disk sitemap it is replacing.
+    const issues =
+      write && sitemapChanged
+        ? validate({
+            manifest: state.manifest,
+            pages: state.pages,
+            sitemap: parseSitemap(state.sitemapText),
+            robots: state.robots,
+            buildErrors: state.buildErrors,
+          })
+        : state.issues;
+    printIssues(issues);
     if (write) {
       for (const entry of changed) {
         mkdirSync(dirname(entry.file), { recursive: true });
         writeFileSync(entry.file, entry.content);
       }
-      console.log(`\nwrote ${changed.length} file(s)`);
+      if (sitemapChanged) writeFileSync(SITEMAP_FILE, state.sitemapText);
+      const written = changed.length + (sitemapChanged ? 1 : 0);
+      console.log(`\nwrote ${written} file(s)`);
     } else {
-      console.log("\ndry run: re-run with --write to apply");
+      console.log("\ndry run: run npm run seo:build:write to apply");
     }
     return;
   }
@@ -106,7 +129,7 @@ async function main() {
 
     for (const entry of stale) {
       const verb = entry.status === "create" ? "missing" : "stale";
-      console.log(`error  generated  ${rel(entry.file)} is ${verb}; run npm run seo:build`);
+      console.log(`error  generated  ${rel(entry.file)} is ${verb}; run npm run seo:build:write`);
     }
     for (const problem of drift) console.log(`error  document  ${problem}`);
     if (stale.length || drift.length) {

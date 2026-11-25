@@ -10,7 +10,7 @@
     "descriptionMin": 50,
     "descriptionMax": 160
   },
-  "generatedBy": "scripts/seo.mjs build --write",
+  "generatedBy": "npm run seo:build:write",
   "pages": [
     {
       "path": "/",

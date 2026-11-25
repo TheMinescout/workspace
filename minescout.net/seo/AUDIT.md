@@ -12,7 +12,7 @@ Last reconciled: 2026-11-25.
 ```bash
 cd minescout.net
 npm run seo:inventory      # page inventory, metadata sources, lengths
-npm run seo:report --write # refresh seo/INVENTORY.md
+npm run seo:report:write   # refresh seo/INVENTORY.md
 npm run seo:check          # validation + generated output is current
 npm test                   # includes the metadata and redirect suites
 ```
@@ -71,10 +71,13 @@ from the SPA 404 body, not from the articles.
 Diagnosis: **no content defect**. Nothing to fix. Request indexing after each
 release date; the metadata for each is already written and waiting.
 
-The sitemap lists them before release (they are written as part of the post), so
-`seo:check` reports a warning for each until the date arrives. That is
-deliberate: the entries are correct from the release date onward, and removing
-them would mean editing the sitemap on release day.
+The sitemap no longer lists them before release. `npm run seo:build:write`
+rebuilds the blog block of `public/sitemap.xml` from the manifest's release
+state, so a scheduled post is omitted until its date and added automatically
+afterwards. `seo:check` treats a scheduled URL in the sitemap as an error, since
+a crawler following it before the release date gets a 404. The blog entries are
+generated; the core, Studio and service entries stay hand-written and are
+preserved byte for byte.
 
 ### Legacy `/ai/` URLs
 
@@ -180,14 +183,22 @@ pulled it. `scripts/icons.mjs` now generates the sizes browsers ask for from a
 512 px master, plus `favicon.ico` and a 1200×630 share card, and
 `scripts/icons.test.mjs` fails if a large master creeps back into an icon slot.
 
-Colour contrast was systemic rather than six isolated findings: the accent
-`#ff6b3d` reaches 2.8:1 on the page background, so every accent-coloured price,
-link, eyebrow and badge failed, as did white text on an accent fill. The accent
-is now `#c2461a` (4.7:1 worst case, 5.0:1 on white) and the bright `#ff6b3d`
-survives only as `--accent-bright` for decoration (rules, progress bars,
-bullets). Status greens moved to `#2f7350` (5.3:1+ on the pale green panel), the
+Colour contrast was systemic rather than six isolated findings. The established
+brand orange (`--brand: #FF6B35`) reaches only 2.8:1 on the page background, so
+it cannot carry text or a fill behind text. The brand token is unchanged and
+still used for brand accents and decoration (active-nav dot, progress bars,
+bullets, and the accent on the dark featured tier, where it reaches 5.1:1).
+Text and text-bearing fills use a dedicated accessible shade,
+`--accent: #c2461a` (4.85:1 on the tinted page, 5.02:1 under white); the
+featured-tier CTA hover moved from `#e03d10` (4.33:1 under white) to `#a83a12`
+(5.96:1). Status greens moved to `#2f7350` (5.3:1+ on the pale green panel), the
 muted grey on tinted panels to `#5c5850`, the ROI positive figure to `#2f7350`,
 and the rating stars to `#9a5f0d`.
+
+The visible change is the darker orange used for accent-coloured text (prices,
+links, eyebrows, badges) and for accent fills that carry white text. Brand-only
+decoration keeps the original orange. That trade-off is what buys AA contrast;
+there is no pairing that keeps `#FF6B35` as text on this background and passes.
 
 ### Still open
 

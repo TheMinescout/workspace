@@ -18,6 +18,7 @@ import { parseHead } from "./seo/html.mjs";
 import { buildManifest } from "./seo/metadata.mjs";
 import { headDrift, planFiles } from "./seo/plan.mjs";
 import { renderHead, renderShell, shellPath } from "./seo/prerender.mjs";
+import { renderSitemap } from "./seo/sitemap.mjs";
 import { summarize, validate } from "./seo/validate.mjs";
 
 const OVERRIDES = JSON.parse(readFileSync(new URL("../seo/overrides.json", import.meta.url), "utf8"));
@@ -264,7 +265,7 @@ test("the committed manifest and prerendered pages are current", () => {
   assert.deepEqual(
     stale.map((entry) => `${entry.status}: ${entry.file}`),
     [],
-    "run npm run seo:build and commit the result",
+    "run npm run seo:build:write and commit the result",
   );
   assert.equal(JSON.stringify(built.manifest, null, 2) + "\n", readFileSync(new URL("../public/seo/manifest.json", import.meta.url), "utf8"));
 });
@@ -309,18 +310,70 @@ test("every sitemap URL is an indexable page this repository serves", () => {
     const page = byUrl.get(loc);
     assert.ok(page, `${loc} is in sitemap.xml but is not a page`);
     assert.ok(page.indexable, `${loc} is in sitemap.xml but is noindex`);
+    assert.ok(page.released, `${loc} is in sitemap.xml before its release date`);
   }
+});
+
+test("the sitemap omits posts that have not been released", () => {
+  const scheduled = MANIFEST.pages.filter((page) => page.kind === "blog-post" && !page.released);
+  assert.ok(scheduled.length > 0, "expected at least one scheduled post to guard the rule");
+  for (const page of scheduled) {
+    assert.ok(!SITEMAP.includes(`<loc>${page.url}</loc>`), `${page.path} is in sitemap.xml before release`);
+  }
+});
+
+test("the sitemap generator adds released posts and preserves every other URL", async () => {
+  const future = await discoverPages({ now: new Date("2026-12-12T12:00:00Z") });
+  const { manifest } = buildManifest({
+    pages: future,
+    overrides: OVERRIDES,
+    shellHead: parseHead(SHELL),
+    site: OVERRIDES.site,
+  });
+  const xml = renderSitemap({ sitemapXml: readFileSync(new URL("../public/sitemap.xml", import.meta.url), "utf8"), manifest });
+  const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+
+  for (const post of [
+    "/blog/custom-website-vs-wix-squarespace.html",
+    "/blog/sammamish-small-business-website-guide.html",
+    "/blog/websites-for-clubs-robotics-nonprofits.html",
+  ]) {
+    assert.ok(locs.includes(`https://minescout.net${post}`), `${post} was not added once released`);
+  }
+  for (const loc of SITEMAP) {
+    assert.ok(locs.includes(loc), `${loc} was dropped from the sitemap`);
+  }
+  assert.ok(xml.includes("<!-- Blog Posts -->"), "the blog block marker was lost");
+  assert.ok(xml.trimEnd().endsWith("</urlset>"), "the sitemap is not closed");
+});
+
+test("validation fails when the sitemap lists an unreleased post", () => {
+  const scheduled = built.manifest.pages.find((page) => page.kind === "blog-post" && !page.released);
+  assert.ok(scheduled, "expected a scheduled post to test with");
+  const { errors } = summarize(
+    validate({ manifest: built.manifest, pages, sitemap: [...SITEMAP, scheduled.url], robots: ROBOTS }),
+  );
+  assert.ok(errors.some((entry) => entry.rule === "sitemap-scheduled"), errors.map((entry) => entry.rule).join(","));
+});
+
+test("seo:build is a dry run and seo:build:write is the explicit writer", () => {
+  const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  assert.equal(pkg.scripts["seo:build"], "node scripts/seo.mjs build");
+  assert.equal(pkg.scripts["seo:build:write"], "node scripts/seo.mjs build --write");
 });
 
 test("the CLI dry run changes nothing and exits cleanly", () => {
   const before = planFiles({ manifest: built.manifest, shellHtml: SHELL }).map((entry) => entry.status);
+  const sitemapFile = new URL("../public/sitemap.xml", import.meta.url);
+  const sitemapBefore = readFileSync(sitemapFile, "utf8");
   const output = execFileSync(process.execPath, ["scripts/seo.mjs", "build"], {
     cwd: SITE_ROOT,
     encoding: "utf8",
   });
-  assert.match(output, /dry run: re-run with --write to apply/);
+  assert.match(output, /dry run: run npm run seo:build:write to apply/);
   const after = planFiles({ manifest: built.manifest, shellHtml: SHELL }).map((entry) => entry.status);
   assert.deepEqual(after, before, "a dry run must not touch the working tree");
+  assert.equal(readFileSync(sitemapFile, "utf8"), sitemapBefore, "a dry run must not rewrite the sitemap");
 });
 
 test("the CI check fails when a page is left without metadata", () => {

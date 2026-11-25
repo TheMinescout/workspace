@@ -49,27 +49,32 @@ index.html shell ┘                 ↑                                      pu
 ```bash
 npm run seo:inventory    # list every page with its metadata source and lengths
 npm run seo:build        # dry run: which generated files are out of date
-npm run seo:build -- --write   # write the manifest and prerendered pages
-npm run seo:report --write     # regenerate seo/INVENTORY.md
+npm run seo:build:write  # write the manifest, prerendered pages and sitemap
+npm run seo:report       # print the inventory report to stdout
+npm run seo:report:write # regenerate seo/INVENTORY.md
 npm run seo:check        # validation + "is the committed output current?" (CI)
 npm run icons            # regenerate favicon/icon/share-card PNGs
 ```
 
-`build` and `report` are dry runs unless `--write` is passed. `check` exits 1 on
-any error, and on stale generated output.
+`build` and `report` are dry runs. Only the explicitly named `:write` aliases
+change files on disk, so a write is always intentional. `check` exits 1 on any
+error, and on stale generated output.
 
 ## Adding or changing a page
 
 - **A new route in `views.js`**: nothing to do. The next `seo:check` (CI) will
-  fail until `npm run seo:build -- --write` is run and the result committed; the
-  new page gets a derived title and description in the meantime.
+  fail until `npm run seo:build:write` is run and the result committed; the new
+  page gets a derived title and description in the meantime.
 - **A page that needs a better title/description than the derived one**: add an
   entry to `seo/overrides.json`, then rebuild.
 - **A new standalone HTML file**: write its `<title>`, description, canonical
   and robots tags in the file itself. The manifest records them, and
   `seo:check` fails if the file and the manifest disagree.
-- **A new blog post**: add it to `BLOG_POSTS` and `registerPost` as before, plus
-  a sitemap entry. Title and description come from the post itself.
+- **A new blog post**: add it to `BLOG_POSTS` and `registerPost` as before. Title
+  and description come from the post itself. The blog block of `sitemap.xml` is
+  generated from the release state by `npm run seo:build:write`: a scheduled post
+  is omitted until its date, then added automatically. Never hand-add a post to
+  the sitemap before it is live.
 
 ## overrides.json
 
@@ -110,8 +115,8 @@ Errors (fail CI):
 - `indexable: true` on a page that emits `noindex`, or `indexable: false` on a
   page that emits `index`;
 - an invalid robots directive;
-- a sitemap URL that is not an indexable page, or a page that is both
-  `noindex` and in the sitemap;
+- a sitemap URL that is not an indexable page, a page that is both `noindex`
+  and in the sitemap, or a scheduled post listed before it exists;
 - an indexable page blocked by `robots.txt`;
 - more than one `<h1>`;
 - metadata that shares no distinctive word with the page's own content;
@@ -119,7 +124,8 @@ Errors (fail CI):
   with the manifest.
 
 Warnings (reported, not fatal): thin content, heading-level skips, long titles,
-pages missing from the sitemap, and scheduled posts listed before release.
+and a released page missing from the sitemap. A scheduled post listed before
+release is an error, because that URL 404s for a crawler.
 
 ## Intentional exceptions
 
@@ -130,5 +136,5 @@ pages missing from the sitemap, and scheduled posts listed before release.
 - `/services/donations` is a retired demo kept as a `noindex` placeholder so the
   URL does not 404.
 - Blog posts are gated by date. A scheduled post is `noindex` and unlinked until
-  its release date, which is why the sitemap entries for the next three posts
-  are a warning rather than an error.
+  its release date, and it is left out of `sitemap.xml` until then. The generator
+  adds it on the first `seo:build:write` after the date.

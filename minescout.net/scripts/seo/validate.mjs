@@ -185,7 +185,10 @@ export function validate({ manifest, pages, sitemap, robots, buildErrors = [] })
     if (!page.indexable) {
       issues.push(issue("error", page, "sitemap-noindex", `sitemap.xml lists ${loc}, but the page is noindex`));
     } else if (!page.released) {
-      issues.push(issue("warn", page, "sitemap-scheduled", `sitemap.xml lists ${loc} before its release date, so a crawler gets a 404`));
+      const release = page.jsonLd?.datePublished ? ` (releases ${page.jsonLd.datePublished})` : "";
+      issues.push(
+        issue("error", page, "sitemap-scheduled", `sitemap.xml lists ${loc}${release}, before the page exists, so a crawler gets a 404`),
+      );
     }
   }
 

@@ -5,9 +5,11 @@
   "scripts": {
     "test": "node --test scripts/*.test.mjs",
     "seo:inventory": "node scripts/seo.mjs inventory",
-    "seo:build": "node scripts/seo.mjs build --write",
+    "seo:build": "node scripts/seo.mjs build",
+    "seo:build:write": "node scripts/seo.mjs build --write",
     "seo:check": "node scripts/seo.mjs check",
-    "seo:report": "node scripts/seo.mjs report --write",
+    "seo:report": "node scripts/seo.mjs report",
+    "seo:report:write": "node scripts/seo.mjs report --write",
     "icons": "node scripts/icons.mjs"
   }
 }

@@ -161,10 +161,14 @@ export async function discoverPages({ now = new Date() } = {}) {
   return pages.sort((a, b) => a.path.localeCompare(b.path));
 }
 
+/** URLs in a sitemap document, in document order. */
+export function parseSitemap(xml) {
+  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1].trim());
+}
+
 /** URLs listed in public/sitemap.xml, in document order. */
 export function readSitemap() {
-  const xml = readFileSync(join(PUBLIC_DIR, "sitemap.xml"), "utf8");
-  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1].trim());
+  return parseSitemap(readFileSync(join(PUBLIC_DIR, "sitemap.xml"), "utf8"));
 }
 
 export function readRobots() {

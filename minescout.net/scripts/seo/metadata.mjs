@@ -190,7 +190,7 @@ export function buildManifest({ pages, overrides, shellHead, site = {} }) {
     manifest: {
       version: 1,
       site: config,
-      generatedBy: "scripts/seo.mjs build --write",
+      generatedBy: "npm run seo:build:write",
       pages: manifestPages.sort((a, b) => a.path.localeCompare(b.path)),
     },
     errors,

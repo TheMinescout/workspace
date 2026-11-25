@@ -138,6 +138,16 @@ test("app.js applies the generated manifest and falls back to SITE_META", () => 
   assert.match(APP_JS, /setCanonical\(/, "app.js must keep the canonical link in sync");
 });
 
+test("app.js renders before the metadata manifest finishes loading", () => {
+  const boot = APP_JS.match(/function boot\(\) \{[\s\S]*?\n\}/)?.[0] ?? "";
+  assert.ok(boot, "could not find boot() in app.js");
+  assert.ok(!/await\s+loadPageMeta\(\)/.test(boot), "boot() must not await the manifest before rendering");
+  const renderAt = boot.indexOf("render(window.location.pathname)");
+  const metaAt = boot.indexOf("loadPageMeta()");
+  assert.ok(renderAt !== -1 && metaAt !== -1 && renderAt < metaAt, "boot() must render before it starts loading the manifest");
+  assert.match(APP_JS, /pageMetaState === 'loading'/, "applyPageMeta must keep the prerendered head while the manifest loads");
+});
+
 test("SITE_META matches the shell metadata in index.html", () => {
   const title = INDEX_HTML.match(/<title>([^<]*)<\/title>/)?.[1];
   const description = INDEX_HTML.match(/<meta name="description" content="([^"]*)"/)?.[1];
