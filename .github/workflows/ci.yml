@@ -110,12 +110,12 @@ jobs:
           DATABASE_URL: ""
         run: npm run build
 
-      # `npm test` chains its two stages with `&&`, so the script-suite baseline
-      # failures stop the app suites from ever running. Run them on their own:
-      # they are green and they cover product data, auth identity and SEO. Match
-      # them by glob so a new src/lib test file cannot be skipped here.
+      # `npm test` runs both stages through `scripts/run-tests.mjs`, but CI wants
+      # the app suites as their own blocking step, separate from the ratcheted
+      # script suites. `test:app` owns the glob, so a new `src/lib` suite cannot
+      # be skipped here.
       - name: Unit tests (app suites)
-        run: node --experimental-strip-types --test 'src/lib/**/*.test.ts'
+        run: npm run test:app
 
       # Eight of the baseline failures read App Builder scaffolding this repo
       # does not ship (`.grok/**`); eight expect the PWA plugin's og:title to
