@@ -14,7 +14,7 @@ import {
   readRobots,
   readSitemap,
 } from "./seo/discover.mjs";
-import { parseHead } from "./seo/html.mjs";
+import { parseHead, stripTags } from "./seo/html.mjs";
 import { buildManifest } from "./seo/metadata.mjs";
 import { headDrift, planFiles } from "./seo/plan.mjs";
 import { renderHead, renderShell, shellPath } from "./seo/prerender.mjs";
@@ -374,6 +374,17 @@ test("the CLI dry run changes nothing and exits cleanly", () => {
   const after = planFiles({ manifest: built.manifest, shellHtml: SHELL }).map((entry) => entry.status);
   assert.deepEqual(after, before, "a dry run must not touch the working tree");
   assert.equal(readFileSync(sitemapFile, "utf8"), sitemapBefore, "a dry run must not rewrite the sitemap");
+});
+
+test("stripTags removes script and style end tags with whitespace", () => {
+  const html = [
+    "<p>Keep this</p>",
+    "<script>drop()</script >",
+    "<script type=\"text/javascript\">drop()</script\t\n bar>",
+    "<style>.drop { color: red }</style\t>",
+  ].join("");
+  const text = stripTags(html);
+  assert.equal(text, "Keep this");
 });
 
 test("the CI check fails when a page is left without metadata", () => {

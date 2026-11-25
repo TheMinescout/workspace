@@ -40,10 +40,10 @@ export function decodeEntities(text) {
 export function stripTags(html) {
   return decodeEntities(
     String(html)
-      // `\s*` after the tag name also matches `</script >`, which a bare
-      // `<\/script>` misses (and which CodeQL flags as bad tag filtering).
-      .replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, " ")
-      .replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi, " ")
+      // An end tag may carry whitespace before `>` (`</script >`, `</script\t\n bar>`);
+      // a bare `<\/script>` misses those and leaves script text in the output.
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, " ")
+      .replace(/<style\b[^>]*>[\s\S]*?<\/style\b[^>]*>/gi, " ")
       .replace(/<!--[\s\S]*?-->/g, " ")
       .replace(/<[^>]+>/g, " "),
   )
