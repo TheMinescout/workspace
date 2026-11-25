@@ -184,5 +184,7 @@ test("the CLI still runs when invoked through a symlinked path", async () => {
     "-e",
     PRINT_FLAG,
   ]);
-  assert.equal(stdout, resolveEnv(projectRoot(), process.env).VITE_AUTH_ENABLED ?? "true");
+  // The wrapper passes `resolveEnv(...)` through unchanged, so an unset value
+  // stays unset: assert the resolved value, not a default it never applies.
+  assert.equal(stdout, String(resolveEnv(projectRoot(), process.env).VITE_AUTH_ENABLED));
 });

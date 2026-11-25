@@ -47,20 +47,13 @@ A change is done when all of these pass:
    (1280x800) and mobile (390x844): non-blank body text, **no console/page
    errors**, **no horizontal overflow**. Check the screenshots it writes.
 
-`npm run test:scripts` has 16 pre-existing failures (of 235) unrelated to most
-work, in two groups. Eight read App Builder template scaffolding this repo does
-not ship — `.grok/skills/**` and `.grok/app-env.json` (`brand-check`,
-`write-atomic`, `with-app-env`, `check-auth-invariant`). The other eight
-(`grok-pwa-plugin`) expect the document `<title>` to become `og:title`, but
-the committed `src/lib/og/site.json` pins the app title to "The Chop Lab",
-which wins. `npm test` now runs both stages even when the script stage fails:
-`npm run test:scripts` and `npm run test:app`. Confirm your change did not add
-failures by comparing the script-stage failing-test count before and after —
-`git stash` your edits and re-run if unsure. CI runs all app suites as a
-blocking step, and the script stage fails on any failure whose name is not in
-`chop-lab.com/scripts/known-test-failures.txt` (see CI below). The app suite
-includes `src/lib/requests.test.ts` for order-delivery queue and attachment
-persistence.
+`npm test` runs both stages — `npm run test:app` then `npm run test:scripts` —
+and both must be green; `scripts/run-tests.mjs` runs the second stage even when
+the first fails, so one red stage cannot hide the other. The suites are
+hermetic: they build their own fixtures under the OS temp directory instead of
+reading `.grok/app-env.json`, `.env` or `src/lib/og/site.json`, so they pass on a
+fresh clone and in CI. The app suites cover product data, the auth gate identity,
+SEO and the order-delivery queue (`src/lib/requests.test.ts`).
 
 ### Stack and layout
 
@@ -364,11 +357,10 @@ builds, tests, then runs `scripts/smoke.mjs` and `scripts/mcp-smoke.mjs`
 (Chromium installed via Playwright). The `minescout-net` job just runs `npm test`
 (the blog tests in `minescout.net/scripts/`). The `chop-lab` job runs `npm ci`,
 `typecheck`, the Merchant Center feed check, the production build, then all
-`src/lib/**/*.test.ts` app suites (blocking) and every discovered script test
-file. The script suites are held to `chop-lab.com/scripts/known-test-failures.txt`
-— the 16 documented failures above, by name — so the baseline can only shrink:
-delete a line when its test is fixed, and when the list is empty remove the
-allowlist check and the file together. The build step pins `DATABASE_URL`
+`src/lib/**/*.test.ts` app suites and every discovered script test file, both
+blocking. The script step discovers the files itself and fails when it finds
+none, so a glob that stops matching cannot pass as a green run. The build step
+pins `DATABASE_URL`
 empty because `npm run build` runs `db:migrate`. `chop-lab.com/package-lock.json`
 must be committed in the shape npm 10.9.9 (what Node 22 ships) writes it. npm 10
 and npm 12 disagree about `node_modules/nitro/node_modules/lru-cache`, an

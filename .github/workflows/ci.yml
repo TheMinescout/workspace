@@ -111,74 +111,20 @@ jobs:
         run: npm run build
 
       # `npm test` runs both stages through `scripts/run-tests.mjs`, but CI wants
-      # the app suites as their own blocking step, separate from the ratcheted
-      # script suites. `test:app` owns the glob, so a new `src/lib` suite cannot
-      # be skipped here.
+      # the app suites as their own step so a failure names the stage. `test:app`
+      # owns the glob, so a new `src/lib` suite cannot be skipped here.
       - name: Unit tests (app suites)
         run: npm run test:app
 
-      # Eight of the baseline failures read App Builder scaffolding this repo
-      # does not ship (`.grok/**`); eight expect the PWA plugin's og:title to
-      # follow <title> while site.json pins it. Both are documented in PR #46.
-      # `scripts/known-test-failures.txt` names them, so any other failure fails
-      # the job: a count-only baseline cannot tell a fixed test from a new one.
-      - name: Unit tests (script suites, known baseline)
+      # Both stages block: the suites are hermetic now, so there is no baseline
+      # to allow for. Discover the files here rather than leaning on the glob in
+      # `test:scripts` - a glob that matches nothing still reports `# tests 0`
+      # and would pass as a green run.
+      - name: Unit tests (script suites)
         run: |
-          tap="$RUNNER_TEMP/chop-script-tests.tap"
-          set +e
           mapfile -d '' -t test_files < <(find scripts -type f -name '*.test.mjs' -print0 | sort -z)
           if [ "${#test_files[@]}" -eq 0 ]; then
             echo "::error::No script test files were discovered."
             exit 1
           fi
-
-          node --test --test-reporter=tap "${test_files[@]}" > "$tap"
-          status=$?
-          set -e
-
-          total=$(grep -E '^# tests ' "$tap" | tail -1 | awk '{print $3}')
-          if [ -z "$total" ]; then
-            echo "::error::The script test run produced no TAP summary - the suites did not run."
-            tail -n 60 "$tap"
-            exit 1
-          fi
-
-          if [ "$status" -eq 0 ]; then
-            echo "::notice::The script suites all pass. Delete scripts/known-test-failures.txt and the allowlist check below."
-            exit 0
-          fi
-
-          # Compare the failing test names against the documented baseline, not
-          # just their count: a change that fixes one baseline failure and breaks
-          # another would keep a count-based check green.
-          failing="$RUNNER_TEMP/chop-script-tests-failed.txt"
-          allowlist="scripts/known-test-failures.txt"
-          grep -E '^not ok ' "$tap" | sed -E 's/^not ok [0-9]+ - //' | sort -u > "$failing" || true
-          if [ ! -s "$failing" ]; then
-            echo "::error::The script suites failed without per-test results."
-            tail -n 60 "$tap"
-            exit 1
-          fi
-
-          grep -vE '^[[:space:]]*(#|$)' "$allowlist" | sort -u > "$RUNNER_TEMP/chop-allowlist.txt"
-          new_failures=$(comm -23 "$failing" "$RUNNER_TEMP/chop-allowlist.txt" || true)
-          fixed=$(comm -13 "$failing" "$RUNNER_TEMP/chop-allowlist.txt" || true)
-
-          {
-            echo "### Chop Lab script tests"
-            echo
-            echo "$total run, **$(wc -l < "$failing") failed** - $(wc -l < "$RUNNER_TEMP/chop-allowlist.txt") of them on the documented baseline (see PR #46)."
-            echo
-            sed 's/^/- /' "$failing"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-          if [ -n "$new_failures" ]; then
-            echo "::error::Script tests failing that are not on $allowlist:"
-            printf '%s\n' "$new_failures"
-            exit 1
-          fi
-          if [ -n "$fixed" ]; then
-            echo "These allowlisted tests now pass; delete them from $allowlist:"
-            printf '%s\n' "$fixed"
-          fi
-          echo "Every failing script test is on the documented baseline."
+          node --test "${test_files[@]}"
