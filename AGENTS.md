@@ -44,19 +44,19 @@ A change is done when all of these pass:
    (1280x800) and mobile (390x844): non-blank body text, **no console/page
    errors**, **no horizontal overflow**. Check the screenshots it writes.
 
-`npm test` has 16 pre-existing failures (of 235) unrelated to most work, in two
-groups. Eight read App Builder template scaffolding this repo does not ship —
-`.grok/skills/**` and `.grok/app-env.json` (`brand-check`, `write-atomic`,
-`with-app-env`, `check-auth-invariant`). The other eight (`grok-pwa-plugin`)
-expect the document `<title>` to become `og:title`, but the committed
-`src/lib/og/site.json` pins the app title to "The Chop Lab", which wins. The
-script chains its two stages with `&&`, so while the first stage fails the
-`src/lib` suites never run; run them on their own
-(`node --experimental-strip-types --test 'src/lib/**/*.test.ts'`) after touching
-that code. Confirm your change did not add failures by comparing the failing-test
-count before and after — `git stash` your edits and re-run if unsure. CI runs
-those suites as a blocking step and tolerates only this failure count in the
-script stage (see CI below).
+`npm run test:scripts` has 16 pre-existing failures (of 235) unrelated to most
+work, in two groups. Eight read App Builder template scaffolding this repo does
+not ship — `.grok/skills/**` and `.grok/app-env.json` (`brand-check`,
+`write-atomic`, `with-app-env`, `check-auth-invariant`). The other eight
+(`grok-pwa-plugin`) expect the document `<title>` to become `og:title`, but
+the committed `src/lib/og/site.json` pins the app title to "The Chop Lab",
+which wins. `npm test` now runs both stages even when the script stage fails:
+`npm run test:scripts` and `npm run test:app`. Confirm your change did not add
+failures by comparing the script-stage failing-test count before and after —
+`git stash` your edits and re-run if unsure. CI runs all app suites as a
+blocking step and ratchets the script stage against the documented failure
+count (see CI below). The app suite includes `src/lib/requests.test.ts` for
+order-delivery queue and attachment persistence.
 
 ### Stack and layout
 
@@ -359,16 +359,17 @@ npm run check    # lint (oxlint) + build + tests + render and MCP smoke
 builds, tests, then runs `scripts/smoke.mjs` and `scripts/mcp-smoke.mjs`
 (Chromium installed via Playwright). The `minescout-net` job just runs `npm test`
 (the blog tests in `minescout.net/scripts/`). The `chop-lab` job runs `npm ci`,
-`typecheck`, the Merchant Center feed check, the production build, then the app
-suites (`src/lib/*.test.ts`, blocking) and the script suites. The script suites
-are held to `SCRIPT_TEST_FAILURE_BASELINE` in the workflow — the 16 documented
-failures above — so the count may shrink but a new failure turns the job red;
-lower the baseline as failures are fixed. The build step pins `DATABASE_URL`
-empty because `npm run build` runs `db:migrate`. `chop-lab.com/package-lock.json`
-must be committed in the shape npm 10.9.9 (what Node 22 ships) writes it. npm 10
-and npm 12 disagree about `node_modules/nitro/node_modules/lru-cache`, an
-optional peer of Nitro's nested `unstorage`: npm 12 omits it, and npm 10 then
-fails `npm ci` with `Missing: lru-cache@11.5.3 from lock file`. Regenerate with
+`typecheck`, the Merchant Center feed check, the production build, then all
+`src/lib/**/*.test.ts` app suites (blocking) and every discovered script test
+file. The script suites are held to `SCRIPT_TEST_FAILURE_BASELINE` in the
+workflow — the 16 documented failures above — so the count may shrink but a new
+failure turns the job red; lower the baseline as failures are fixed. The build
+step pins `DATABASE_URL` empty because `npm run build` runs `db:migrate`.
+`chop-lab.com/package-lock.json` must be committed in the shape npm 10.9.9
+(what Node 22 ships) writes it. npm 10 and npm 12 disagree about
+`node_modules/nitro/node_modules/lru-cache`, an optional peer of Nitro's nested
+`unstorage`: npm 12 omits it, and npm 10 then fails `npm ci` with
+`Missing: lru-cache@11.5.3 from lock file`. Regenerate with
 `npx npm@10.9.9 install --package-lock-only` from `chop-lab.com/` and never
 commit a lockfile rewritten by a newer npm; never swap CI to `npm install`.
 `pages.yml` publishes a static
