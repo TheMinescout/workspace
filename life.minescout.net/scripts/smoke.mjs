@@ -126,6 +126,20 @@ async function stubChatWorker(context) {
   });
 }
 
+// Post records are allowed to reference the production host by absolute URL.
+// From the preview server that is a third-party origin, and one that hangs
+// leaves `networkidle` waiting until the navigation times out.
+const TINY_PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8AAAwAB/AH2h0mRAAAAAElFTkSuQmCC",
+  "base64"
+);
+
+async function stubSelfOrigin(context) {
+  await context.route(/^https:\/\/(www\.)?life\.minescout\.net\//, route =>
+    route.fulfill({ status: 200, contentType: "image/png", body: TINY_PNG })
+  );
+}
+
 try {
   if (!(await waitForServer())) throw new Error(`preview server did not start on ${BASE}`);
 
@@ -133,6 +147,7 @@ try {
     const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     await stubApi(context);
     await stubChatWorker(context);
+    await stubSelfOrigin(context);
     const page = await context.newPage();
     const errors = [];
 
@@ -187,6 +202,7 @@ try {
     const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     await stubApi(context);
     await stubChatWorker(context);
+    await stubSelfOrigin(context);
     const page = await context.newPage();
     await page.goto(BASE + "/", { waitUntil: "networkidle", timeout: 30000 }).catch(() => {});
     const painted = await page.locator("#root").innerHTML().then(h => h.length > 0).catch(() => false);
