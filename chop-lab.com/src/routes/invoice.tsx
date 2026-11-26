@@ -18,6 +18,22 @@ export const Route = createFileRoute("/invoice")({
 
 type LineItem = { id: string; label: string; note: string; amount: number };
 
+const SHEET_RATES: Record<
+  string,
+  { designRate: number; printRate: number; estDesignMins?: number; estPrintHrs?: number }
+> = {
+  "custom-3d-print": { designRate: 20, printRate: 2, estDesignMins: 0, estPrintHrs: 2 },
+  "custom-chop-complex": { designRate: 20, printRate: 2, estDesignMins: 45, estPrintHrs: 0.5 },
+  "custom-chop-simple": { designRate: 15, printRate: 2, estDesignMins: 30, estPrintHrs: 0.5 },
+  "texture-roller-10": { designRate: 12, printRate: 2, estDesignMins: 0, estPrintHrs: 3 },
+  "texture-roller-4": { designRate: 12, printRate: 2, estDesignMins: 0, estPrintHrs: 3 },
+  "sponge-basket": { designRate: 10, printRate: 2, estDesignMins: 15, estPrintHrs: 1 },
+  "slab-rails": { designRate: 10, printRate: 2, estDesignMins: 0, estPrintHrs: 1 },
+  "stl-sponge-basket": { designRate: 0, printRate: 1, estDesignMins: 0, estPrintHrs: 0 },
+  "stl-dual-bevel": { designRate: 0, printRate: 1, estDesignMins: 0, estPrintHrs: 0 },
+  "stl-slab-rails": { designRate: 0, printRate: 1, estDesignMins: 0, estPrintHrs: 0 },
+};
+
 function InvoicePage() {
   const [unlocked, setUnlocked] = useState(false);
 
@@ -87,10 +103,11 @@ function InvoiceGenerator() {
   const [title, setTitle] = useState("Chop Lab Order");
   const [catalogSlug, setCatalogSlug] = useState("");
   const [qty, setQty] = useState(1);
-  const [printHrs, setPrintHrs] = useState(0);
-  const [designMins, setDesignMins] = useState(60);
+  const [printHrs, setPrintHrs] = useState(0.5);
+  const [printRate, setPrintRate] = useState(2);
+  const [designMins, setDesignMins] = useState(30);
+  const [designRate, setDesignRate] = useState(15);
   const [extraCost, setExtraCost] = useState(0);
-  const [surchargePerHr, setSurchargePerHr] = useState(0);
   const [discountVal, setDiscountVal] = useState(0);
   const [discountType, setDiscountType] = useState<"flat" | "percent">("flat");
   const [venmo, setVenmo] = useState("tmcarleton");
@@ -106,49 +123,69 @@ function InvoiceGenerator() {
     [],
   );
 
+  const handleProductChange = (slug: string) => {
+    setCatalogSlug(slug);
+    const product = PRODUCTS.find((p) => p.slug === slug) as
+      | (typeof PRODUCTS[number] & {
+          designRate?: number;
+          printRate?: number;
+          estDesignMins?: number;
+          estPrintHrs?: number;
+        })
+      | undefined;
+    const sheetMeta = SHEET_RATES[slug];
+
+    if (product || sheetMeta) {
+      setDesignRate(product?.designRate ?? sheetMeta?.designRate ?? 15);
+      setPrintRate(product?.printRate ?? sheetMeta?.printRate ?? 2);
+      const nextDesignMins = product?.estDesignMins ?? sheetMeta?.estDesignMins;
+      const nextPrintHrs = product?.estPrintHrs ?? sheetMeta?.estPrintHrs;
+      if (nextDesignMins !== undefined) setDesignMins(nextDesignMins);
+      if (nextPrintHrs !== undefined) setPrintHrs(nextPrintHrs);
+    } else {
+      setDesignRate(15);
+      setPrintRate(2);
+    }
+  };
+
   const { lineItems, discountAmount, total } = useMemo(() => {
     const items: LineItem[] = [];
-    let sub = 0;
+    let unitSubtotal = 0;
 
     if (catalogItem) {
-      const lineTotal = catalogItem.basePrice * qty;
-      sub += lineTotal;
+      unitSubtotal += catalogItem.basePrice;
       items.push({
         id: "catalog",
         label: catalogItem.name,
-        note: `Base product (Qty: ${qty})`,
-        amount: lineTotal,
+        note: `Base price (${money(catalogItem.basePrice)} × ${qty})`,
+        amount: catalogItem.basePrice * qty,
       });
-    }
-
-    if (printHrs > 0) {
-      items.push({
-        id: "print",
-        label: "3D Printing",
-        note: `Logged machine time: ${printHrs} hrs`,
-        amount: 0,
-      });
-      if (surchargePerHr > 0) {
-        const surcharge = surchargePerHr * printHrs;
-        sub += surcharge;
-        items.push({
-          id: "surcharge",
-          label: "Material surcharge",
-          note: `Auto-applied @ ${money(surchargePerHr)}/hr`,
-          amount: surcharge,
-        });
-      }
     }
 
     const designHrs = designMins / 60;
     if (designMins > 0) {
+      const unitDesignCost = designHrs * designRate;
+      unitSubtotal += unitDesignCost;
       items.push({
         id: "design",
         label: "Design & CAD",
-        note: `Time spent: ${designHrs.toFixed(2)} hrs`,
-        amount: 0,
+        note: `${designHrs.toFixed(2)} hrs @ ${money(designRate)}/hr${qty > 1 ? ` (× ${qty})` : ""}`,
+        amount: unitDesignCost * qty,
       });
     }
+
+    if (printHrs > 0) {
+      const unitPrintCost = printHrs * printRate;
+      unitSubtotal += unitPrintCost;
+      items.push({
+        id: "print",
+        label: "3D Printing",
+        note: `${printHrs} hrs @ ${money(printRate)}/hr${qty > 1 ? ` (× ${qty})` : ""}`,
+        amount: unitPrintCost * qty,
+      });
+    }
+
+    let sub = unitSubtotal * qty;
 
     if (extraCost > 0) {
       sub += extraCost;
@@ -163,7 +200,7 @@ function InvoiceGenerator() {
     }
 
     return { lineItems: items, discountAmount: discount, total: sub - discount };
-  }, [catalogItem, qty, printHrs, surchargePerHr, designMins, extraCost, discountVal, discountType]);
+  }, [catalogItem, qty, printHrs, printRate, designMins, designRate, extraCost, discountVal, discountType]);
 
   const venmoHandle = venmo.replace("@", "").trim() || "tmcarleton";
   const venmoUrl = `https://venmo.com/?txn=pay&audience=private&recipients=${venmoHandle}&amount=${total.toFixed(
@@ -253,13 +290,13 @@ function InvoiceGenerator() {
             <Field label="Base product">
               <select
                 value={catalogSlug}
-                onChange={(e) => setCatalogSlug(e.target.value)}
+                onChange={(e) => handleProductChange(e.target.value)}
                 className="input"
               >
                 <option value="">— No base item (custom only) —</option>
                 {PRODUCTS.map((p) => (
                   <option key={p.slug} value={p.slug}>
-                    {p.name} — {money(p.basePrice)}
+                    {p.name} — {money(p.basePrice)} base
                   </option>
                 ))}
               </select>
@@ -277,20 +314,10 @@ function InvoiceGenerator() {
 
           <div>
             <h2 className="border-b border-border pb-2 text-sm font-semibold uppercase tracking-wider text-fg">
-              Logged hours
+              Design &amp; print rates
             </h2>
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Print hours">
-                <input
-                  type="number"
-                  min={0}
-                  step={0.5}
-                  value={printHrs}
-                  onChange={(e) => setPrintHrs(Number(e.target.value) || 0)}
-                  className="input"
-                />
-              </Field>
-              <Field label={`Design mins (${(designMins / 60).toFixed(1)} hrs)`}>
+              <Field label={`Design mins (${(designMins / 60).toFixed(2)} hrs)`}>
                 <input
                   type="number"
                   min={0}
@@ -300,17 +327,39 @@ function InvoiceGenerator() {
                   className="input"
                 />
               </Field>
+              <Field label="Design rate ($/hr)">
+                <input
+                  type="number"
+                  min={0}
+                  step={1}
+                  value={designRate}
+                  onChange={(e) => setDesignRate(Number(e.target.value) || 0)}
+                  className="input"
+                />
+              </Field>
             </div>
-            <Field label="Surcharge per print hour ($)">
-              <input
-                type="number"
-                min={0}
-                step={0.5}
-                value={surchargePerHr}
-                onChange={(e) => setSurchargePerHr(Number(e.target.value) || 0)}
-                className="input"
-              />
-            </Field>
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <Field label="Print hours">
+                <input
+                  type="number"
+                  min={0}
+                  step={0.25}
+                  value={printHrs}
+                  onChange={(e) => setPrintHrs(Number(e.target.value) || 0)}
+                  className="input"
+                />
+              </Field>
+              <Field label="Print rate ($/hr)">
+                <input
+                  type="number"
+                  min={0}
+                  step={0.5}
+                  value={printRate}
+                  onChange={(e) => setPrintRate(Number(e.target.value) || 0)}
+                  className="input"
+                />
+              </Field>
+            </div>
             <Field label="Extra costs / hardware ($)">
               <input
                 type="number"

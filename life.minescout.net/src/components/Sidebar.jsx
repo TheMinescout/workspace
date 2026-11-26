@@ -22,18 +22,49 @@ function AIInsight({ posts }) {
     [posts]
   );
 
-  useEffect(() => {
-    if (!recent) return;
-    fetch("https://thomas-chat.tmcarleton11.workers.dev/",{
-      method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({client_id:"minescout_life",system_override:"You are an AI in a student dashboard. Analyze recent posts and write 1-2 short encouraging sentences about momentum and focus. No quotes.",messages:[{role:"user",content:`Analyze:\n${recent}`}],temperature:0.3})
-    }).then(r=>r.json()).then(d=>setText(d.content||null))
-      .catch(()=>setText("Solid momentum lately — the mix of tech reviews and builds shows real range."));
-  }, [recent]);
+useEffect(() => {
+  if (!recent) return;
+
+  const cacheKey = `ai_insight_${recent}`;
+  const cached = sessionStorage.getItem(cacheKey);
+  if (cached) {
+    setText(cached);
+    return;
+  }
+
+  const controller = new AbortController();
+
+  fetch("https://thomas-chat.tmcarleton11.workers.dev/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    signal: controller.signal,
+    body: JSON.stringify({
+      task: "life-insight",
+      messages: [{ role: "user", content: `Analyze:\n${recent}` }],
+      temperature: 0.3
+    })
+  })
+    .then(async (r) => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    })
+    .then((d) => {
+      if (!d.content) throw new Error("Empty response");
+      sessionStorage.setItem(cacheKey, d.content);
+      setText(d.content);
+    })
+    .catch((err) => {
+      if (err.name === "AbortError") return;
+      setText("Solid momentum lately — the mix of tech reviews and builds shows real range.");
+    });
+
+  return () => controller.abort();
+}, [recent]);
+
   return (
-    <p className="ai-insight">
-      {text===null ? <><span className="ai-pulse"/>Reflecting...</> : `"${text}"`}
-    </p>
+    <div className="ai-insight">
+      {text ? text : <span style={{color:"var(--ink-4)"}}>Analyzing recent posts...</span>}
+    </div>
   );
 }
 
