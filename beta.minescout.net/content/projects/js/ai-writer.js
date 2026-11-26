@@ -301,6 +301,7 @@ async function generateAI() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ messages: [{ role: "user", content: msg }], temperature: 0.3 })
         });
+        if (!res.ok) throw new Error("Worker HTTP " + res.status);
         const data = await res.json();
         document.getElementById("inp-content").value = (data.content || data.answer || "").replace(/```html/g, "").replace(/```/g, "");
         log("AI Content Generated.", "log-new");

@@ -26,16 +26,20 @@ const EMPTY = { title:"", category:"Tech", summary:"", heroImage:"", linkText:"R
 
 async function generateAISummary(title, content, category) {
   try {
+    // The worker rejects client-supplied system prompts, so the instruction is
+    // sent as the leading user turn.
     const res = await fetch("https://thomas-chat.tmcarleton11.workers.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        client_id: "minescout_life",
-        system_override: "You are a blog summarizer. Write a single engaging sentence (under 20 words) summarizing the post for a card teaser. No quotes, no prefix.",
-        messages: [{ role: "user", content: `Title: ${title}\nCategory: ${category}\nContent snippet: ${content.replace(/<[^>]+>/g,"").slice(0,400)}` }],
+        messages: [{
+          role: "user",
+          content: `Write ONE engaging sentence (under 20 words) summarizing this post for a card teaser. Return the sentence only — no quotes, no prefix.\n\nTitle: ${title}\nCategory: ${category}\nContent: ${content.replace(/<[^>]+>/g,"").slice(0,400)}`,
+        }],
         temperature: 0.3,
       }),
     });
+    if (!res.ok) throw new Error(`Worker HTTP ${res.status}`);
     const d = await res.json();
     return d.content || null;
   } catch { return null; }
@@ -105,6 +109,7 @@ export default function Admin() {
     setGenSummary(true);
     const s = await generateAISummary(form.title, form.content, form.category);
     if (s) setForm(f => ({ ...f, summary: s }));
+    else alert("The AI summarizer is unavailable right now. Write the summary manually.");
     setGenSummary(false);
   };
 
