@@ -25,6 +25,9 @@ function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(
 const EMPTY = { title:"", category:"Tech", summary:"", heroImage:"", linkText:"Read Entry", content:"", date:"", publishDate:"" };
 
 async function generateAISummary(title, content, category) {
+  // Parsed text, not a regex strip: CodeQL flags `<[^>]+>` as an incomplete
+  // sanitizer, and the post body is HTML authored in this same page.
+  const plain = new DOMParser().parseFromString(content, "text/html").body.textContent || "";
   try {
     // The worker rejects client-supplied system prompts, so the instruction is
     // sent as the leading user turn.
@@ -34,7 +37,7 @@ async function generateAISummary(title, content, category) {
       body: JSON.stringify({
         messages: [{
           role: "user",
-          content: `Write ONE engaging sentence (under 20 words) summarizing this post for a card teaser. Return the sentence only — no quotes, no prefix.\n\nTitle: ${title}\nCategory: ${category}\nContent: ${content.replace(/<[^>]+>/g,"").slice(0,400)}`,
+          content: `Write ONE engaging sentence (under 20 words) summarizing this post for a card teaser. Return the sentence only — no quotes, no prefix.\n\nTitle: ${title}\nCategory: ${category}\nContent: ${plain.slice(0, 400)}`,
         }],
         temperature: 0.3,
       }),
