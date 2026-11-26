@@ -359,6 +359,12 @@ npm run check    # lint (oxlint) + build + tests + render and MCP smoke
 - Posts are plain files: `public/posts/<id>.json` plus `public/posts/manifest.json`.
   `src/data/posts.js` fetches them. An unknown id gets the 200 HTML app shell
   back from the SPA fallback — not a 404 — so `res.json()` throws.
+- A post's `heroImage` (and any body image) must be a same-origin `/assests/...`
+  path, never an absolute `https://life.minescout.net/...` URL. An absolute URL
+  makes the preview server fetch the production host, and a request that hangs
+  leaves `scripts/smoke.mjs` waiting on `networkidle` until the route times out.
+  The smoke also stubs the production origin for the same reason it stubs the
+  chat worker.
 - **`return res.json()` inside a `try` in an `async` function does not catch
   parse failures.** The rejection escapes the `catch`, because the promise is
   returned without being awaited. Always `return await res.json()`. This was a
