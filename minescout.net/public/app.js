@@ -241,13 +241,16 @@ function setupChatListeners(input, sendBtn, chatWin) {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          messages: askHistory.slice(-8), 
-          client_id: '5mAIDPwf9kNmNTk3pAQPDfIP9Z93', 
-          system_override: finalSystemPrompt, 
+          messages: [
+            { role: 'user', content: finalSystemPrompt + "\n\nAnswer the user's messages using the context above. Mention a site page only when it appears in LOCAL CONTEXT." },
+            ...askHistory.slice(-7)
+          ],
           temperature: 0.2 
         })
       });
       
+      if (!res.ok) throw new Error('Worker HTTP ' + res.status);
+
       const data = await res.json();
       typing.remove();
       
@@ -620,14 +623,19 @@ function initROI() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        messages: [{ role: "user", content: "Please analyze my projected ROI honestly." }],
-        system_override: prompt,
+        task: 'roi-analysis',
+        messages: [{ role: "user", content: prompt + "\n\nAnalyze my projected ROI honestly using these figures." }],
         temperature: 0.5 
       })
     })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error('Worker HTTP ' + res.status);
+      return res.json();
+    })
     .then(async data => {
-      const text = data.content || "Based on your metrics, the selected plan offers a strong return on investment.";
+      const text = data.content || (isNegative
+        ? 'Based on your inputs, upgrading right now projects a net loss of ' + netMonthly + '. Your current traffic and inquiry volume do not justify the cost of this infrastructure yet — we would recommend waiting until the operation scales further.'
+        : 'Based on your inputs, the ' + planName.split('—')[0].trim() + ' is a strong fit: you recover the setup cost while reclaiming ' + hoursSaved + ' hours a month and generating ' + netMonthly + ' in net monthly value.');
       vt.innerHTML = '<strong>Minescout Studio Analysis:</strong> <span id="roi-typing"></span>';
       const typeSpan = document.getElementById('roi-typing');
       
@@ -898,11 +906,16 @@ If they have answered enough questions, give a final recommendation using this e
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: conversationHistory,
-          system_override: systemPrompt,
+          task: 'pricing-quiz',
+          messages: [
+            { role: 'user', content: systemPrompt + "\n\nUse this brief for every question you ask." },
+            ...conversationHistory.slice(-10)
+          ],
           temperature: 0.2 // Very low for strict JSON compliance
         })
       });
+
+      if (!res.ok) throw new Error('Worker HTTP ' + res.status);
 
       const data = await res.json();
       rawContent = data.content || "";
@@ -1456,11 +1469,16 @@ RULES:
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: chatHistory.slice(-8),
-          system_override: systemPrompt,
+          task: 'studio-builder',
+          messages: [
+            { role: 'user', content: systemPrompt + "\n\nFollow this interview brief for the whole conversation." },
+            ...chatHistory.slice(-7)
+          ],
           temperature: 0.5
         })
       });
+
+      if (!res.ok) throw new Error('Worker HTTP ' + res.status);
 
       const data = await res.json();
       const reply = data.content || "Got it! Based on what you've described, I think I have a good picture forming. Let me ask a few more questions to make sure I capture everything.";

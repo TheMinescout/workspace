@@ -199,6 +199,37 @@ or EmailJS to send any more.
   Fraunces `SOFT`/`WONK` variation axes. The font link in `__root.tsx` must keep
   those axis names or the display type loses its warmth.
 
+## The thomas-chat AI worker (`https://thomas-chat.tmcarleton11.workers.dev`)
+
+One Cloudflare Worker (v7.3) backs every AI chat on the sites: Sentry AI and the
+pricing quiz / ROI verdict / AI Site Builder on `minescout.net`, the sidebar
+reflection and the Admin summarizer on `life.minescout.net`, and the AI Writer on
+`beta.minescout.net`. The worker is not in this repo and is treated as fixed, so
+the clients have to match its contract:
+
+- **Routes**: `POST /` (chat), `POST /ask` (Life assistant), `POST /code`,
+  `POST /holo` (image), `POST /mail`. It answers `405` to anything that is not a
+  POST, and `/holo` takes `{prompt}` as JSON — a `?prompt=` GET fails.
+- **Never send `system_override`.** The worker answers
+  `400 {"error":"Client-supplied system prompts are not accepted."}`. Fold the
+  persona, context and instructions into the **first user message** instead.
+- **Never send `client_id`** unless the id is in the worker's
+  `ALLOWED_CLIENT_IDS` *and* seeded in its `STUDIO_KV`; otherwise it is a `403`.
+- **Prefer `task`**: `cms-chat` (default), `studio-builder`, `pricing-quiz`,
+  `roi-analysis`, `site-coder`, `life-insight`. An unknown task is a `400`.
+  `pricing-quiz` comes back as an already-parsed JSON object in `content`.
+- **The reply is `{content}`** — not `answer`, `response` or `text`.
+- **Origins**: only the production domains plus `http://localhost:3000` are
+  allowed. `http://127.0.0.1:3000` and the platform preview hosts get `403` on
+  preflight, which is why `life.minescout.net/scripts/smoke.mjs` stubs the worker.
+- **Always check `res.ok`.** An error body has no `.content`, so an unchecked
+  call renders whatever canned string the fallback path holds — the pricing quiz
+  looped one question forever and the ROI page printed "strong return on
+  investment" even for a net loss.
+- `minescout.net/scripts/chat-worker.test.mjs` scans every caller in the repo
+  (all three sites) for these rules, so CI fails on a regression even though the
+  browser smoke stubs the worker.
+
 ## The Minescout blog (`minescout.net/public/views.js`)
 
 `/blog` is not a separate app or a file-per-post directory. Everything lives in
@@ -328,6 +359,12 @@ npm run check    # lint (oxlint) + build + tests + render and MCP smoke
 - Posts are plain files: `public/posts/<id>.json` plus `public/posts/manifest.json`.
   `src/data/posts.js` fetches them. An unknown id gets the 200 HTML app shell
   back from the SPA fallback — not a 404 — so `res.json()` throws.
+- A post's `heroImage` (and any body image) must be a same-origin `/assests/...`
+  path, never an absolute `https://life.minescout.net/...` URL. An absolute URL
+  makes the preview server fetch the production host, and a request that hangs
+  leaves `scripts/smoke.mjs` waiting on `networkidle` until the route times out.
+  The smoke also stubs the production origin for the same reason it stubs the
+  chat worker.
 - **`return res.json()` inside a `try` in an `async` function does not catch
   parse failures.** The rejection escapes the `catch`, because the promise is
   returned without being awaited. Always `return await res.json()`. This was a

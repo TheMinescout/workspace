@@ -90,7 +90,7 @@
             const ct = response.headers.get("content-type");
             if (ct && ct.includes("application/json")) {
                 const d = await response.json();
-                answerText = d.answer || d.response || d.text || JSON.stringify(d);
+                answerText = d.content || d.answer || d.response || d.text || JSON.stringify(d);
             } else {
                 answerText = await response.text();
             }
@@ -768,9 +768,14 @@ Keyboard
                 const imgId = "holo_" + Date.now();
                 print(`<div id="${imgId}" class="holo-container holo-loading">> Rendering image… ▋</div>`);
                 const workerUrl = "https://thomas-chat.tmcarleton11.workers.dev/holo";
-                fetch(`${workerUrl}?prompt=${encodeURIComponent(imgPrompt)}`)
+                // /holo only answers POST with the prompt in a JSON body.
+                fetch(workerUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: imgPrompt })
+                })
                     .then(res => {
-                        if (!res.ok) throw new Error("Network error");
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
                         return res.blob();
                     })
                     .then(blob => {
