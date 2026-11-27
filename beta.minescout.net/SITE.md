@@ -372,7 +372,7 @@ UI v14 is the current editorial pass:
 - `.top-note` label on the right side of the public topbar: **INDEPENDENT SOFTWARE LAB**.
 - Mobile rules hide `.top-note`, keep the nav scrollable, and collapse the three-part lab statement and metadata grids.
 
-The stylesheet cache key is now `v=18`; the catalogue script is loaded as `catalog.js?v=2`.
+The stylesheet cache key is now `v=18`; the catalogue script is loaded as `catalog.js?v=3`.
 
 ---
 
