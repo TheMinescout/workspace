@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { EventEmitter } from "node:events";
 import { test } from "node:test";
-import { buildMessages, createMailHandler, mailConfig, FORM_NAMES } from "../server/mail.js";
+import { buildMessages, createMailHandler, loadNodemailer, mailConfig, FORM_NAMES } from "../server/mail.js";
 
 const SMTP = { SMTP_USER: "studio@example.com", SMTP_PASSWORD: "app-password" };
 
@@ -229,4 +229,18 @@ test("the burst limit stops a scripted run from the same address", async () => {
 
   const other = await call(handler, { body, ip: "198.51.100.9" });
   assert.equal(other.statusCode, 503);
+});
+
+test("the SMTP transport library is installed and loadable", () => {
+  // A literal import("nodemailer") made Vite's config bundler warn whenever the
+  // Life folder had no install. The runtime loader must still find the package.
+  const nodemailer = loadNodemailer();
+  assert.equal(typeof nodemailer.createTransport, "function");
+});
+
+test("a missing transport install reports an actionable error", () => {
+  assert.throws(
+    () => loadNodemailer("/nonexistent/minescout-life"),
+    /nodemailer.*not installed.*npm install/i,
+  );
 });

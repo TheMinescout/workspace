@@ -239,7 +239,9 @@ until the required design files are actually available to the studio.
 | `Invalid login` only on the deploy | The platform variables are missing or stale. | Re-check the env vars in the provider's dashboard, then redeploy. |
 | `Too many messages from this connection` | Six sends from one IP in ten minutes. | Wait ten minutes. This is the spam guard. |
 | `Attachments are too large` | Chop Lab caps attachments at 4 MB. | Ask the customer to send a smaller file, or send a link. |
-| A form says it could not send, but the server log looks fine | The browser blocked the cross-origin request. | Check the site is on `https` and in the relay's origin allowlist (`life.minescout.net/vite.config.js`). |
+| A form says it could not send, but the server log looks fine | The browser blocked the cross-origin request. | Check the site is on `https` and in the relay's origin allowlist (`life.minescout.net/vite.config.js`). Under nginx, make sure `/api/` has no fixed `Access-Control-Allow-Origin`: the relay owns that header. |
+| `Could not resolve 'nodemailer'` at startup, or `Email cannot send because 'nodemailer' is not installed` | The Life folder has no install, so the SMTP client is missing. | `cd life.minescout.net && npm install`, then restart the relay. |
+| `Access to fetch ... blocked by CORS policy: ... Access-Control-Allow-Origin ... is not equal to ...` | nginx is adding `https://beta.minescout.net` to every `/api/` response. | Deploy the current `my-sites.conf` (the `/api/` block has no CORS headers) and run `nginx -s reload`. |
 | Nothing arrives and there is no error | Check spam, and check the sending account's quota. | Gmail's daily limit is about 500 messages. |
 
 Server logs are the fastest signal. The relay logs one line per send:

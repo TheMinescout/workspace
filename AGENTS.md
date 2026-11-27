@@ -352,6 +352,17 @@ npm run check    # lint (oxlint) + build + tests + render and MCP smoke
 - The API is a **dev-server-only Vite plugin** (`apiPlugin` in `vite.config.js`),
   mounted in `configureServer`. It only exists while `npm run dev` runs; there is
   no `configurePreviewServer`, so `vite preview` has no backend.
+- CORS for `/api/` is owned by the relay's `applyCors`: it echoes the caller's
+  origin from `ALLOWED_ORIGINS` and sets `Vary: Origin`. Vite's built-in CORS is
+  off (`server.cors: false`) because it only allows localhost and answers the
+  preflight before the middleware. `my-sites.conf` must not add a fixed
+  `Access-Control-Allow-Origin` to `location /api/` — one hardcoded origin makes
+  every other site fail the preflight. `scripts/cors-config.test.mjs` guards it.
+- The SMTP client is loaded with `loadNodemailer(appDir)` from
+  `life.minescout.net/node_modules`, not a bundled `import("nodemailer")`, so
+  the config bundler does not warn and a missing install is reported at startup
+  (`mail transport ready` or an install hint). Run `npm install` in
+  `life.minescout.net` after a dependency change.
 - The AI Reflection line in the sidebar and the Admin chat post to a third-party
   Cloudflare Worker that only answers the production origin. From `127.0.0.1`
   the preflight is rejected and the browser logs a CORS error page JS cannot
