@@ -108,6 +108,54 @@ test("a non-empty .env beats the process env; empty values are ignored", () => {
   assert.equal(merged.PATH, "/usr/bin");
 });
 
+test("a sibling site's .env supplies SMTP when the shared root does not", () => {
+  // Chop Lab and the Life relay are deployed as separate folders. Reading the
+  // sibling files keeps sending working when the SMTP account lives elsewhere.
+  const shared = mkdtempSync(join(tmpdir(), "app-env-sites-"));
+  const root = join(shared, "chop-lab.com");
+  mkdirSync(root, { recursive: true });
+  mkdirSync(join(shared, "life.minescout.net"), { recursive: true });
+  writeFileSync(
+    join(shared, "life.minescout.net", DOTENV_REL_PATH),
+    "SMTP_USER=life@example.com\nSMTP_PASSWORD=life-pass\n",
+  );
+
+  const env = resolveEnv(root, { PATH: "/usr/bin" }, shared);
+  assert.equal(env.SMTP_USER, "life@example.com");
+  assert.equal(env.SMTP_PASSWORD, "life-pass");
+});
+
+test("the app's own .env wins over a sibling site's mail keys", () => {
+  const shared = mkdtempSync(join(tmpdir(), "app-env-sites-"));
+  const root = join(shared, "chop-lab.com");
+  mkdirSync(root, { recursive: true });
+  mkdirSync(join(shared, "life.minescout.net"), { recursive: true });
+  writeFileSync(
+    join(shared, "life.minescout.net", DOTENV_REL_PATH),
+    "SMTP_USER=sibling@example.com\nSMTP_PASSWORD=sibling\n",
+  );
+  writeFileSync(join(root, DOTENV_REL_PATH), "SMTP_USER=own@example.com\n");
+
+  const env = resolveEnv(root, {}, shared);
+  assert.equal(env.SMTP_USER, "own@example.com");
+  assert.equal(env.SMTP_PASSWORD, "sibling");
+});
+
+test("a sibling site's .env cannot contribute non-mail keys", () => {
+  const shared = mkdtempSync(join(tmpdir(), "app-env-sites-"));
+  const root = join(shared, "chop-lab.com");
+  mkdirSync(root, { recursive: true });
+  mkdirSync(join(shared, "beta.minescout.net"), { recursive: true });
+  writeFileSync(
+    join(shared, "beta.minescout.net", DOTENV_REL_PATH),
+    "SMTP_USER=beta@example.com\nVITE_AUTH_ENABLED=false\n",
+  );
+
+  const env = resolveEnv(root, { VITE_AUTH_ENABLED: "true" }, shared);
+  assert.equal(env.SMTP_USER, "beta@example.com");
+  assert.equal(env.VITE_AUTH_ENABLED, "true");
+});
+
 test("an explicit process-env override wins over the file", () => {
   const merged = mergeAppEnv(
     { VITE_AUTH_ENABLED: "false" },

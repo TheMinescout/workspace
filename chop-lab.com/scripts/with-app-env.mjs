@@ -36,6 +36,26 @@ export const DOTENV_REL_PATH = ".env";
 /** The one file the whole workspace reads: `<repo>/.env`. */
 export const SHARED_DOTENV_REL_PATH = "../.env";
 
+/** The site folders that may each carry a `.env`. */
+export const SITE_DIRS = [
+  "minescout.net",
+  "beta.minescout.net",
+  "life.minescout.net",
+  "chop-lab.com",
+];
+
+/** The only keys a sibling site's `.env` may contribute to this app. */
+export const MAIL_ENV_KEYS = [
+  "SMTP_USER",
+  "SMTP_PASSWORD",
+  "SMTP_HOST",
+  "SMTP_PORT",
+  "SMTP_FROM_NAME",
+  "STUDIO_INBOX",
+  "STUDIO_EMAIL",
+  "STUDIO_PASSCODE",
+];
+
 const VITE_PREFIX = "VITE_";
 
 /**
@@ -112,17 +132,31 @@ export function readDotEnv(root) {
 
 /**
  * The environment a wrapped command runs with: app-env flags, then the real
- * process environment, then the shared root `.env`, then the local `.env`.
+ * process environment, then the shared root `.env`, then the mail keys from
+ * every sibling site's `.env`, then this app's own `.env`.
  *
  * Non-empty `.env` values win, so the file the user edits is authoritative for
  * their dev server. Empty values are ignored, so copying `.env.example` without
- * filling it in never blanks a secret the platform injected. On deploy there is
- * no `.env` (it is git-ignored), so the provider's environment is used.
+ * filling it in never blanks a secret the platform injected. Sibling sites only
+ * contribute the mail keys, so a `VITE_` value from another site cannot reach
+ * this app. On deploy there is no `.env` (it is git-ignored), so the provider's
+ * environment is used.
  */
 export function resolveEnv(root, processEnv, sharedRoot = dirname(root)) {
   const layer = (dir) =>
     Object.fromEntries(Object.entries(readDotEnv(dir)).filter(([, value]) => value !== ""));
-  return { ...readAppEnv(root), ...processEnv, ...layer(sharedRoot), ...layer(root) };
+  const mailLayer = (dir) =>
+    Object.fromEntries(
+      Object.entries(layer(dir)).filter(([key]) => MAIL_ENV_KEYS.includes(key)),
+    );
+
+  const env = { ...readAppEnv(root), ...processEnv, ...layer(sharedRoot) };
+  for (const name of SITE_DIRS) {
+    const dir = join(sharedRoot, name);
+    if (dir === root) continue;
+    Object.assign(env, mailLayer(dir));
+  }
+  return { ...env, ...layer(root) };
 }
 
 /** File values under the process environment: an explicit override wins. */

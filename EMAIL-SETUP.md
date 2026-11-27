@@ -93,8 +93,10 @@ Rules the loader follows:
 - An **empty** value is ignored, so a copied template never blanks a secret that
   is already set.
 - `.env` is git-ignored. Never commit it. `.env.example` is the tracked template.
-- A `chop-lab.com/.env` or `life.minescout.net/.env` also works and overrides the
-  root file, but you do not need one.
+- The loader also reads a `.env` in each site folder (`minescout.net/`,
+  `beta.minescout.net/`, `life.minescout.net/`, `chop-lab.com/`). The app's own
+  file wins; a sibling site's file contributes only the mail keys, so the relay
+  and the Chop Lab find the SMTP account whichever folder holds it.
 
 ### Where the mail lands
 

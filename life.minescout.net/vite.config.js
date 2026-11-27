@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { pathToFileURL } from "url";
+import { pathToFileURL, fileURLToPath } from "url";
 import {
   USER_COOKIE, ADMIN_COOKIE, SESSION_TTL_MS,
   hashPassword, verifyPassword, safeEqual,
@@ -141,6 +141,13 @@ function apiPlugin(env) {
       }
       if (!ADMIN_PASSWORD) {
         console.warn("[minescout-api] ADMIN_PASSWORD is not set — admin login is disabled.");
+      }
+      if (env.SMTP_USER && env.SMTP_PASSWORD) {
+        console.log(`[minescout-api] mail relay ready (SMTP account ${env.SMTP_USER})`);
+      } else {
+        console.warn(
+          "[minescout-api] SMTP is not configured — set SMTP_USER and SMTP_PASSWORD in a .env file",
+        );
       }
 
       // Applied to every response, including static assets.
@@ -1251,9 +1258,13 @@ the normal clearance system created it.
 }
 
 export default defineConfig(({ mode }) => {
+  // Resolve secrets relative to this file, not the process working directory:
+  // the service can be started from the repo root, and a cwd lookup then reads
+  // the root `.env` twice and silently ignores `life.minescout.net/.env`.
+  const appDir = path.dirname(fileURLToPath(import.meta.url));
   // The shared workspace `.env` is the local secret store (SMTP today); a
   // life-local `.env` overrides it, and the process environment is the base.
-  const env = resolveMailEnv(loadEnv(mode, process.cwd(), ""), process.cwd());
+  const env = resolveMailEnv(loadEnv(mode, appDir, ""), appDir);
 
   // GitHub Pages serves the repo under /<repo>/, so the build needs a matching
   // base. Life and any other host stay on "/".
