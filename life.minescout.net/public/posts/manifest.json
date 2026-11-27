@@ -1,5 +1,17 @@
 [
   {
+    "id": "best-ai-agents-fail-4-in-10-everyday-tasks",
+    "title": "The Best AI Agents Still Fail 4 in 10 Everyday Tasks",
+    "category": "AI Posts",
+    "summary": "ShellBench ran 53,100 attempts at ordinary office work, and the strongest model, GPT-6 Astra, finished just 62.5% of tasks — with only 1.1 points separating the top three and a 6x spread in cost.",
+    "heroImage": "/assests/images/ai-posts/shellbench-60-percent-ceiling.png",
+    "timestamp": 1795714349035,
+    "linkUrl": "/post/best-ai-agents-fail-4-in-10-everyday-tasks",
+    "linkText": "Read Entry",
+    "date": "November 26, 2026",
+    "publishDate": null
+  },
+  {
     "id": "glm-5-4-a-750b-model-that-runs-its-layers-twice",
     "title": "GLM-5.4: A 750B Model That Runs Its Layers Twice",
     "category": "AI Posts",
