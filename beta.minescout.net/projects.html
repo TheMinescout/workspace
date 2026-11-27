@@ -1,3 +1,122 @@
-<!doctype html><html lang="en"><head><meta name="referrer" content="strict-origin-when-cross-origin"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PRDS // Minescout</title><link rel="icon" href="assets/images/BETAFAVICON.png?v=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/style.css?v=12"></head><body class="ms-site"><header class="ms-topbar"><a class="ms-logo" href="index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="index">HOME</a><a href="pages">ATLS</a><a class="active" href="projects">PRDS</a><a href="feature-requests">REQUESTS</a><a href="email">CONTACT</a></nav><a class="top-login" href="login">ACCOUNT ↗</a></header><main class="directory-wrap"><section class="directory-head"><div><div class="eyebrow">PRDS / WORKSPACE</div><h1>Projects</h1><p>Runnable tools, prototypes, downloads, and experiments.</p></div><div class="directory-code">PRDS<br><small>PROJECT INDEX</small></div></section><div class="section-title">ACTIVE PROJECTS</div><div id="project-list" class="directory-list"></div><div class="section-title">ARCHIVE</div><div id="project-archive" class="directory-list"></div></main><footer class="ms-footer"><span>PRDS / PROJECTS</span><a href="index">← MINESCOUT</a></footer><script src="assets/js/filesystem.js?v=11"></script><script>function add(list,id,archived=false){const el=document.getElementById(id);list.forEach((x,i)=>{const a=document.createElement('a');a.className='directory-row '+(archived?'archive':'');a.href=x.path;if(/\.(zip|exe|7z|rar)$/i.test(x.path))a.download='';const action=/\.zip$/i.test(x.path)?'DOWNLOAD':'OPEN';a.innerHTML=`<span class="row-num">${String(i+1).padStart(2,'0')}</span><span class="row-main"><b>${x.title}</b><small>${x.desc}</small></span><span class="row-cmd">${x.cmd}</span><span class="row-action">${action}</span><span class="row-arrow">↗</span>`;el.appendChild(a)})}add(FILE_SYSTEM.projects,'project-list');add(FILE_SYSTEM.archived_projects||[],'project-archive',true)</script><script src="assets/js/background.js?v=12"></script>
-<script src="assets/js/security.js?v=12"></script>
+<!doctype html>
+<html lang="en">
+<head><meta name="referrer" content="strict-origin-when-cross-origin"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="The Minescout Beta project catalogue: stable software, experimental builds, and archived work, each with status, version, and development history."><title>PRDS // Project Catalogue</title><link rel="icon" href="assets/images/BETAFAVICON.png?v=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/style.css?v=18"></head>
+<body class="ms-site">
+<header class="ms-topbar"><a class="ms-logo" href="index"><img src="assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="index">HOME</a><a href="pages">ATLS</a><a class="active" href="projects">PRDS</a><a href="updates">UPDATES</a><a href="feature-requests">REQUESTS</a><a href="email">CONTACT</a></nav><span class="top-note">INDEPENDENT SOFTWARE LAB</span></header>
+<main class="directory-wrap">
+<section class="directory-head"><div><div class="eyebrow">PRDS / CATALOGUE</div><h1>Project catalogue</h1><p>Stable software, experimental builds, and the archive. Every project carries a status, a version, and a development history.</p></div><div class="directory-code">PRDS<br><small>PROJECT INDEX</small></div></section>
+
+<div class="catalogue-toolbar">
+<div class="filter-chips" id="project-filters" role="group" aria-label="Filter projects">
+<button class="chip active" data-filter="all">ALL <em id="count-all">0</em></button>
+<button class="chip" data-filter="stable">STABLE <em id="count-stable">0</em></button>
+<button class="chip" data-filter="experimental">EXPERIMENTAL <em id="count-experimental">0</em></button>
+<button class="chip" data-filter="archived">ARCHIVED <em id="count-archived">0</em></button>
+<button class="chip" data-filter="following">FOLLOWING <em id="count-following">0</em></button>
+</div>
+<div class="catalogue-legend"><span><i class="status-dot green"></i>STABLE — working, published</span><span><i class="status-dot yellow"></i>EXPERIMENTAL — in development</span><span><i class="status-dot dim"></i>ARCHIVED — not maintained</span></div>
+</div>
+
+<div class="section-title">ACTIVE PROJECTS</div>
+<div id="project-grid" class="project-grid"></div>
+<div id="archive-block"><div class="section-title">ARCHIVE</div><div id="archive-grid" class="project-grid"></div></div>
+<div class="notice"><b>How to read this catalogue.</b> Status says whether a project is maintained. Version is the release currently described. Updated is the last catalogue change. Open a project for its launch link, release notes, and development history.</div>
+</main>
+<footer class="ms-footer"><span>PRDS / PROJECTS</span><a href="index">← MINESCOUT</a></footer>
+
+<script src="assets/js/catalog.js?v=2"></script>
+<script>
+(() => {
+  const C = window.MS_CATALOG;
+  if (!C) return;
+  const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const pad = (n) => String(n).padStart(2, '0');
+  const dateValue = (iso) => new Date(`${iso}T00:00:00`).getTime();
+  const sorted = C.projects.slice().sort((a, b) => dateValue(b.updated) - dateValue(a.updated));
+  const grid = document.getElementById('project-grid');
+  const archiveBlock = document.getElementById('archive-block');
+  const archiveGrid = document.getElementById('archive-grid');
+  let filter = 'all';
+
+  function card(project, index) {
+    const followed = C.isFollowed(project.id);
+    const launch = project.launch
+      ? `<a class="pc-link" href="${esc(project.launch.href)}"${project.launch.kind === 'download' ? ' download' : ''}>${esc(project.launch.label)} ↗</a>`
+      : '<span class="pc-link muted">NO BUILD YET</span>';
+    const preview = project.image
+      ? `<div class="pc-preview"><img src="${esc(project.image)}" alt="${esc(project.title)} interface preview" loading="lazy" decoding="async"></div>`
+      : `<div class="pc-preview empty"><span>${project.status === 'experimental' ? 'IN DEVELOPMENT' : project.status === 'archived' ? 'ARCHIVED' : 'SOURCE ARCHIVE'}</span></div>`;
+    return `<article class="project-card status-${project.status}">
+      <div class="pc-top"><span class="pc-index">${pad(index + 1)}</span>${C.statusBadge(project.status)}<span class="pc-cat">${esc(project.category)}</span></div>
+      ${preview}
+      <h2><a href="project?id=${encodeURIComponent(project.id)}">${esc(project.title)}</a></h2>
+      <p>${esc(project.tagline)}</p>
+      <div class="pc-meta"><span><b>VERSION</b>${esc(project.version)}</span><span><b>UPDATED</b>${C.formatDate(project.updated)}</span><span><b>STACK</b>${esc(project.stack)}</span></div>
+      <div class="pc-foot"><a class="pc-open" href="project?id=${encodeURIComponent(project.id)}">VIEW PROJECT &amp; HISTORY →</a><span class="pc-actions">${launch}<button class="follow-btn${followed ? ' on' : ''}" data-follow="${project.id}" type="button">${followed ? 'FOLLOWING ✓' : 'FOLLOW'}</button></span></div>
+    </article>`;
+  }
+
+  function empty(message, link) {
+    return `<div class="empty-state"><b>${message}</b><span>${link}</span></div>`;
+  }
+
+  function updateCounts() {
+    const counts = { all: C.projects.length, stable: 0, experimental: 0, archived: 0, following: C.followedIds().length };
+    C.projects.forEach((project) => { counts[project.status] += 1; });
+    Object.keys(counts).forEach((key) => {
+      const el = document.getElementById(`count-${key}`);
+      if (el) el.textContent = counts[key];
+    });
+  }
+
+  function render() {
+    let list;
+    if (filter === 'all') list = sorted.filter((project) => project.status !== 'archived');
+    else if (filter === 'following') list = sorted.filter((project) => C.isFollowed(project.id));
+    else list = sorted.filter((project) => project.status === filter);
+
+    grid.innerHTML = list.length
+      ? list.map(card).join('')
+      : empty(
+          filter === 'following' ? 'No followed projects yet.' : `No ${filter} projects.`,
+          filter === 'following' ? 'Use the FOLLOW button on a project to track its releases.' : 'Try another filter.'
+        );
+
+    const archived = sorted.filter((project) => project.status === 'archived');
+    if (filter === 'all') {
+      archiveBlock.style.display = '';
+      archiveGrid.innerHTML = archived.map((project, index) => card(project, index)).join('');
+    } else {
+      archiveBlock.style.display = 'none';
+      archiveGrid.innerHTML = '';
+    }
+
+    document.querySelectorAll('#project-filters .chip').forEach((chip) => {
+      chip.classList.toggle('active', chip.dataset.filter === filter);
+    });
+    updateCounts();
+  }
+
+  document.getElementById('project-filters').addEventListener('click', (event) => {
+    const chip = event.target.closest('.chip');
+    if (!chip) return;
+    filter = chip.dataset.filter;
+    render();
+  });
+
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-follow]');
+    if (!button) return;
+    const followed = C.toggleFollow(button.dataset.follow);
+    button.classList.toggle('on', followed);
+    button.textContent = followed ? 'FOLLOWING ✓' : 'FOLLOW';
+    updateCounts();
+    if (filter === 'following') render();
+  });
+
+  render();
+})();
+</script>
+<script src="assets/js/background.js?v=13"></script>
+<script src="assets/js/security.js?v=13"></script>
 </body></html>

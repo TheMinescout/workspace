@@ -1,3 +1,93 @@
-<!doctype html><html lang="en"><head><meta name="referrer" content="strict-origin-when-cross-origin"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ATLS // Minescout</title><link rel="icon" href="assets/images/BETAFAVICON.png?v=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/style.css?v=12"></head><body class="ms-site"><header class="ms-topbar"><a class="ms-logo" href="index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="index">HOME</a><a class="active" href="pages">ATLS</a><a href="projects">PRDS</a><a href="feature-requests">REQUESTS</a><a href="email">CONTACT</a></nav><a class="top-login" href="login">ACCOUNT ↗</a></header><main class="directory-wrap"><section class="directory-head"><div><div class="eyebrow">ATLS / ARCHIVE</div><h1>Articles</h1><p>Release notes, experiments, tools, and research logs.</p></div><div class="directory-code">ATLS<br><small>ARTICLE INDEX</small></div></section><div class="section-title">PUBLISHED</div><div id="article-list" class="directory-list"></div><div class="section-title">ARCHIVE</div><div id="archive-list" class="directory-list"></div></main><footer class="ms-footer"><span>ATLS / ARTICLES</span><a href="index">← MINESCOUT</a></footer><script src="assets/js/filesystem.js?v=11"></script><script>function add(list,id,archived=false){const el=document.getElementById(id);list.forEach((x,i)=>{const a=document.createElement('a');a.className='directory-row '+(archived?'archive':'');a.href=x.path;a.innerHTML=`<span class="row-num">${String(i+1).padStart(2,'0')}</span><span class="row-main"><b>${x.title}</b><small>${x.desc}${x.date?' · '+x.date:''}</small></span><span class="row-cmd">${x.cmd}</span><span class="row-arrow">↗</span>`;el.appendChild(a)})}add(FILE_SYSTEM.articles,'article-list');add(FILE_SYSTEM.archived_articles||[],'archive-list',true)</script><script src="assets/js/background.js?v=12"></script>
-<script src="assets/js/security.js?v=12"></script>
+<!doctype html>
+<html lang="en">
+<head><meta name="referrer" content="strict-origin-when-cross-origin"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="ATLS is the Minescout Beta technical publication: release notes, technical explanations, design decisions, research, and retrospectives."><title>ATLS // Technical Publications</title><link rel="icon" href="assets/images/BETAFAVICON.png?v=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/style.css?v=18"></head>
+<body class="ms-site">
+<header class="ms-topbar"><a class="ms-logo" href="index"><img src="assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="index">HOME</a><a class="active" href="pages">ATLS</a><a href="projects">PRDS</a><a href="updates">UPDATES</a><a href="feature-requests">REQUESTS</a><a href="email">CONTACT</a></nav><span class="top-note">INDEPENDENT SOFTWARE LAB</span></header>
+<main class="directory-wrap">
+<section class="directory-head"><div><div class="eyebrow">ATLS / PUBLICATIONS</div><h1>Technical publications</h1><p>Release notes, technical explanations, design decisions, research, and retrospectives from the lab.</p></div><div class="directory-code">ATLS<br><small>ARTICLE INDEX</small></div></section>
+
+<section class="pub-scope" aria-label="Publication types">
+<div><span>RELEASE NOTES</span>What shipped, and why it matters.</div>
+<div><span>TECHNICAL</span>How the implementation works.</div>
+<div><span>DESIGN</span>Direction, decisions, and trade-offs.</div>
+<div><span>RESEARCH</span>Experiments and investigations.</div>
+<div><span>RETROSPECTIVE</span>What a project taught us.</div>
+</section>
+
+<div class="catalogue-toolbar"><div class="filter-chips" id="article-filters" role="group" aria-label="Filter publications"></div><div class="catalogue-legend"><span>Filter by publication type. The archive is kept separate.</span></div></div>
+
+<div class="section-title">PUBLISHED</div>
+<div id="article-list" class="pub-list"></div>
+<div id="archive-block"><div class="section-title">ARCHIVE</div><div id="archive-list" class="pub-list"></div></div>
+<div class="notice"><b>ATLS is the written side of the lab.</b> Every publication links back to the project it describes. Follow a project from <a href="projects">PRDS</a> to see its releases in the <a href="updates">release log</a>.</div>
+</main>
+<footer class="ms-footer"><span>ATLS / PUBLICATIONS</span><a href="index">← MINESCOUT</a></footer>
+
+<script src="assets/js/catalog.js?v=2"></script>
+<script>
+(() => {
+  const C = window.MS_CATALOG;
+  if (!C) return;
+  const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const list = document.getElementById('article-list');
+  const archiveBlock = document.getElementById('archive-block');
+  const archiveList = document.getElementById('archive-list');
+  const filters = document.getElementById('article-filters');
+  let filter = 'all';
+
+  const usedTypes = [];
+  C.articles.forEach((article) => article.types.forEach((type) => { if (!usedTypes.includes(type)) usedTypes.push(type); }));
+  const orderedTypes = ['release', 'technical', 'design', 'research', 'retrospective', 'tutorial', 'archive'].filter((type) => usedTypes.includes(type));
+  filters.innerHTML = `<button class="chip active" data-filter="all">ALL <em>${C.articles.length}</em></button>` + orderedTypes.map((type) => {
+    const count = C.articles.filter((article) => article.types.includes(type)).length;
+    return `<button class="chip" data-filter="${type}">${C.TYPES[type].label} <em>${count}</em></button>`;
+  }).join('');
+
+  function row(article) {
+    const project = article.project ? C.getProject(article.project) : null;
+    const extraTypes = article.types.slice(1).map((type) => C.typeBadge(type)).join('');
+    return `<a class="pub-row" href="${esc(article.href)}">
+      <span class="pub-date">${C.formatDate(article.date)}</span>
+      <span class="pub-main"><span class="pub-types">${C.typeBadge(article.types[0])}${extraTypes}<em>${esc(article.read)}</em>${project ? `<span class="pub-project">${esc(project.title)}</span>` : ''}</span><b>${esc(article.title)}</b><small>${esc(article.summary)}</small></span>
+      <span class="pub-arrow">↗</span>
+    </a>`;
+  }
+
+  function empty(message) {
+    return `<div class="empty-state"><b>${message}</b><span>Try another publication type, or read everything under ALL.</span></div>`;
+  }
+
+  function render() {
+    let visible;
+    if (filter === 'all') visible = C.articles.filter((article) => !article.types.includes('archive'));
+    else visible = C.articles.filter((article) => article.types.includes(filter));
+
+    list.innerHTML = visible.length ? visible.map(row).join('') : empty('No publications in this category yet.');
+
+    const archived = C.articles.filter((article) => article.types.includes('archive'));
+    if (filter === 'all') {
+      archiveBlock.style.display = archived.length ? '' : 'none';
+      archiveList.innerHTML = archived.map(row).join('');
+    } else {
+      archiveBlock.style.display = 'none';
+      archiveList.innerHTML = '';
+    }
+
+    document.querySelectorAll('#article-filters .chip').forEach((chip) => {
+      chip.classList.toggle('active', chip.dataset.filter === filter);
+    });
+  }
+
+  filters.addEventListener('click', (event) => {
+    const chip = event.target.closest('.chip');
+    if (!chip) return;
+    filter = chip.dataset.filter;
+    render();
+  });
+
+  render();
+})();
+</script>
+<script src="assets/js/background.js?v=13"></script>
+<script src="assets/js/security.js?v=13"></script>
 </body></html>

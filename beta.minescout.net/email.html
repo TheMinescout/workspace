@@ -3,26 +3,37 @@
 <head><meta name="referrer" content="strict-origin-when-cross-origin">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>COMMS // COMPOSE</title>
-    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png?v=1?v=1.01">
-    
+    <meta name="description" content="Send a direct message to the Minescout Beta software lab.">
+    <title>CONTACT // COMPOSE</title>
+    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png?v=1">
+
     <!-- FIREBASE SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    
-    <link rel="stylesheet" href="assets/css/style.css?v=8">
+
+    <link rel="stylesheet" href="assets/css/style.css?v=18">
 </head>
-<body class="ms-site"><header class="ms-topbar"><a class="ms-logo" href="index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="index">HOME</a><a href="pages">ATLS</a><a href="projects">PRDS</a><a href="feature-requests">REQUESTS</a><a class="active" href="email">CONTACT</a></nav><a class="top-login" href="login">ACCOUNT ↗</a></header><main class="directory-wrap"><section class="directory-head"><div><div class="eyebrow">CONTACT / COMMS</div><h1>Send a message</h1><p>Direct contact with the Minescout team.</p></div><div class="directory-code">MAIL<br><small>DIRECT</small></div></section><div class="email-client" style="margin-top:18px"><div class="client-header"><span>MINESCOUT / CONTACT</span><span>DIRECT CHANNEL</span></div><div class="field-row"><div class="field-label">TO</div><div class="field-input"><input value="theminescout@minescout.net" readonly></div></div><div class="field-row"><div class="field-label">FROM</div><div class="field-input"><input id="sender" placeholder="Your name or email"></div></div><div class="field-row"><div class="field-label">SUBJ</div><div class="field-input"><input id="subject" maxlength="180" placeholder="Subject"></div></div><div class="field-row ms-honeypot" aria-hidden="true"><div class="field-label">SITE</div><div class="field-input"><input id="website" tabindex="-1" autocomplete="off"></div></div><div class="body-input"><textarea id="body" placeholder="Write your message..."></textarea></div><div class="client-footer"><span style="font-size:10px;color:var(--dim)">Messages are reviewed through Minescout Life.</span><button class="send-btn" onclick="sendEmail()">SEND →</button></div><div id="status-overlay"><div id="status-text" style="font-size:14px;font-weight:700">SENDING…</div><div class="loading-bar"><div class="fill" id="fill-bar"></div></div></div></div></main><footer class="ms-footer"><span>CONTACT</span><a href="index">← MINESCOUT</a></footer><script src="assets/js/firebase-config.js"></script><script>
+<body class="ms-site"><header class="ms-topbar"><a class="ms-logo" href="index"><img src="assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="index">HOME</a><a href="pages">ATLS</a><a href="projects">PRDS</a><a href="updates">UPDATES</a><a href="feature-requests">REQUESTS</a><a class="active" href="email">CONTACT</a></nav><span class="top-note">INDEPENDENT SOFTWARE LAB</span></header><main class="directory-wrap"><section class="directory-head"><div><div class="eyebrow">CONTACT / COMMS</div><h1>Send a message</h1><p>Direct contact with the Minescout lab.</p></div><div class="directory-code">MAIL<br><small>DIRECT</small></div></section><div class="email-client" style="margin-top:18px"><div class="client-header"><span>MINESCOUT / CONTACT</span><span>DIRECT CHANNEL</span></div><div class="field-row"><div class="field-label">TO</div><div class="field-input"><input value="theminescout@minescout.net" readonly></div></div><div class="field-row"><div class="field-label">FROM</div><div class="field-input"><input id="sender" placeholder="Your name or email"></div></div><div class="field-row"><div class="field-label">SUBJ</div><div class="field-input"><input id="subject" maxlength="180" placeholder="Subject"><div id="project-note" class="field-note"></div></div></div><div class="field-row ms-honeypot" aria-hidden="true"><div class="field-label">SITE</div><div class="field-input"><input id="website" tabindex="-1" autocomplete="off"></div></div><div class="body-input"><textarea id="body" placeholder="Write your message..."></textarea></div><div class="client-footer"><span style="font-size:10px;color:var(--dim)">Messages are reviewed through Minescout Life.</span><button class="send-btn" onclick="sendEmail()">SEND →</button></div><div id="status-overlay"><div id="status-text" style="font-size:14px;font-weight:700">SENDING…</div><div class="loading-bar"><div class="fill" id="fill-bar"></div></div></div></div></main><footer class="ms-footer"><span>CONTACT</span><a href="index">← MINESCOUT</a></footer>
+<script src="assets/js/catalog.js?v=2"></script>
+<script src="assets/js/firebase-config.js"></script><script>
 const MAIL_ENDPOINT="https://life.minescout.net/api/mail";
+const catalog=window.MS_CATALOG;
+const requestedProject=new URLSearchParams(location.search).get('project');
+const contactProject=catalog&&requestedProject?catalog.getProject(requestedProject):null;
+if(contactProject){
+  document.getElementById('subject').value=`Regarding ${contactProject.title}`;
+  document.getElementById('project-note').innerHTML=`Attached to <b>${contactProject.title}</b> · ${catalog.STATUS[contactProject.status].label}`;
+}
 async function sendEmail(){
- const sender=MS_SECURITY.cleanText(document.getElementById('sender').value,160), subject=MS_SECURITY.cleanText(document.getElementById('subject').value,180), body=MS_SECURITY.cleanText(document.getElementById('body').value,5000), status=document.getElementById('status-text'), overlay=document.getElementById('status-overlay'), fill=document.getElementById('fill-bar');
+ const sender=MS_SECURITY.cleanText(document.getElementById('sender').value,160), subject=MS_SECURITY.cleanText(document.getElementById('subject').value,180), rawBody=MS_SECURITY.cleanText(document.getElementById('body').value,5000), status=document.getElementById('status-text'), overlay=document.getElementById('status-overlay'), fill=document.getElementById('fill-bar');
+ const body=contactProject?`Project: ${contactProject.title} (${contactProject.id})\n\n${rawBody}`:rawBody;
  if(document.getElementById('website').value)return;
- if(!sender||!subject||!body){status.textContent='ALL FIELDS REQUIRED.';overlay.style.display='flex';setTimeout(()=>overlay.style.display='none',1200);return;}
+ if(!sender||!subject||!rawBody){status.textContent='ALL FIELDS REQUIRED.';overlay.style.display='flex';setTimeout(()=>overlay.style.display='none',1200);return;}
  if(!MS_SECURITY.canSubmit()){status.textContent='PLEASE WAIT BEFORE SENDING AGAIN.';overlay.style.display='flex';setTimeout(()=>overlay.style.display='none',1200);return;}
  overlay.style.display='flex'; fill.style.width='25%'; status.textContent='VALIDATING…';
- try{ try{ const db=firebase.database(); await db.ref('messages').push({sender,subject,desc:body,priority:'EMAIL',timestamp:Date.now(),read:false,source:'beta-contact'}); }catch(archiveErr){ console.warn('archive copy skipped:',archiveErr); } fill.style.width='70%'; status.textContent='TRANSMITTING…'; const res=await fetch(MAIL_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({form:'beta/inquiry',fields:{sender,subject,body}})}); const result=await res.json().catch(()=>null); if(!res.ok||!result||!result.ok) throw new Error((result&&result.error)||'The mail service did not accept the message.'); fill.style.width='100%'; status.textContent='SENT SUCCESSFULLY.'; setTimeout(()=>location.href='index',900); }
+ try{ try{ const db=firebase.database(); await db.ref('messages').push({sender,subject,desc:body,priority:'EMAIL',timestamp:Date.now(),read:false,source:'beta-contact',project:contactProject?contactProject.id:'general'}); }catch(archiveErr){ console.warn('archive copy skipped:',archiveErr); } fill.style.width='70%'; status.textContent='TRANSMITTING…'; const res=await fetch(MAIL_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({form:'beta/inquiry',fields:{sender,subject,body}})}); const result=await res.json().catch(()=>null); if(!res.ok||!result||!result.ok) throw new Error((result&&result.error)||'The mail service did not accept the message.'); fill.style.width='100%'; status.textContent='SENT SUCCESSFULLY.'; setTimeout(()=>location.href='index',900); }
  catch(err){ console.error(err); status.textContent='SEND FAILED. PLEASE TRY AGAIN.'; setTimeout(()=>overlay.style.display='none',1600); }
 }
-</script><script src="assets/js/background.js?v=12"></script><script src="assets/js/security.js?v=12"></script><script src="assets/js/article-nav.js?v=12"></script>
+</script><script src="assets/js/background.js?v=13"></script><script src="assets/js/security.js?v=13"></script>
 </body></html>
