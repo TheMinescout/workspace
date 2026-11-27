@@ -1053,6 +1053,44 @@
       "jsonLd": null
     },
     {
+      "path": "/services/typing",
+      "kind": "utility",
+      "url": "https://minescout.net/services/typing",
+      "title": "Adaptive Typing Coach | FlowType by Minescout",
+      "description": "Free adaptive typing practice that spots slow keys, tricky letter pairs and hesitation, then builds focused drills. Your analysis stays in this browser.",
+      "canonical": "https://minescout.net/services/typing",
+      "robots": "index, follow",
+      "indexable": true,
+      "released": true,
+      "ogTitle": "Adaptive Typing Coach | FlowType by Minescout",
+      "ogDescription": "Free adaptive typing practice that spots slow keys, tricky letter pairs and hesitation, then builds focused drills. Your analysis stays in this browser.",
+      "ogImage": "https://minescout.net/assets/og-image.png",
+      "ogType": "website",
+      "source": "override",
+      "sourceFile": "public/services/typing/index.html",
+      "h1": "Find your rhythm. Fix the slow spots.",
+      "words": 403,
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "FlowType",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any device with a modern web browser",
+        "url": "https://minescout.net/services/typing",
+        "description": "A free adaptive typing coach that analyses typing rhythm locally, identifies slow keys and hesitation patterns, and creates focused practice exercises.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "creator": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net"
+        }
+      }
+    },
+    {
       "path": "/studio",
       "kind": "studio-home",
       "url": "https://minescout.net/studio",
@@ -1546,44 +1584,6 @@
       "h1": "Tools I Use",
       "words": 714,
       "jsonLd": null
-    },
-    {
-      "path": "/services/typing",
-      "kind": "utility",
-      "url": "https://minescout.net/services/typing",
-      "title": "Adaptive Typing Coach | FlowType by Minescout",
-      "description": "Free adaptive typing practice that spots slow keys, tricky letter pairs and hesitation, then builds focused drills. Your analysis stays in this browser.",
-      "canonical": "https://minescout.net/services/typing",
-      "robots": "index, follow",
-      "indexable": true,
-      "released": true,
-      "ogTitle": "Adaptive Typing Coach | FlowType by Minescout",
-      "ogDescription": "Free adaptive typing practice that spots slow keys, tricky letter pairs and hesitation, then builds focused drills. Your analysis stays in this browser.",
-      "ogImage": "https://minescout.net/assets/og-image.png",
-      "ogType": "website",
-      "source": "override",
-      "sourceFile": "public/services/typing/index.html",
-      "h1": "Find your rhythm. Fix the slow spots.",
-      "words": 403,
-      "jsonLd": {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "FlowType",
-        "applicationCategory": "EducationalApplication",
-        "operatingSystem": "Any device with a modern web browser",
-        "url": "https://minescout.net/services/typing",
-        "description": "A free adaptive typing coach that analyses typing rhythm locally, identifies slow keys and hesitation patterns, and creates focused practice exercises.",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "creator": {
-          "@type": "Organization",
-          "name": "Minescout",
-          "url": "https://minescout.net"
-        }
-      }
     },
     {
       "path": "/work",
