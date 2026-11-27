@@ -165,7 +165,7 @@
     },
     "/typing": {
       "title": "Adaptive Typing Coach | FlowType by Minescout",
-      "description": "Free adaptive typing practice that spots slow keys, difficult letter pairs and hesitation patterns, then builds focused drills. Your analysis stays in this browser.",
+      "description": "Free adaptive typing practice that spots slow keys, tricky letter pairs and hesitation, then builds focused drills. Your analysis stays in this browser.",
       "kind": "utility",
       "notes": "Standalone FlowType adaptive typing application. Timing analysis and saved practice history remain in the visitor's browser."
     }
