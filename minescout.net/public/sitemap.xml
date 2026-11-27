@@ -53,6 +53,13 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- FlowType adaptive typing coach -->
+  <url>
+    <loc>https://minescout.net/typing</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Minescout Studio Pages -->
   <url>
     <loc>https://minescout.net/studio</loc>
