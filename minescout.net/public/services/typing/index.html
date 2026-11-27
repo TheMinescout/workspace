@@ -139,7 +139,44 @@ const PASSAGES={
  "Coordinates: 47.61, -122.20. Sample IDs: 1048, 2056, 3192. Compare each result before choosing option 2."
  ]
 };
+PASSAGES.balanced.push(
+ "A clear workspace makes it easier to notice details, compare ideas, and decide what deserves attention. Good systems reduce friction without removing useful choices.",
+ "A camera captures one moment, but a sequence of images can reveal how a scene changes. Light, timing, and perspective all shape the final result.",
+ "A useful experiment begins with a small question and a result that can be observed. Change one variable at a time, then write down what happened.",
+ "Maps turn a long list of places into a picture of distance and direction. A sensible route saves time while leaving room for unexpected discoveries.",
+ "Learning a difficult skill takes repetition, but repetition works best when each attempt has a clear purpose. Feedback helps turn effort into progress.",
+ "A quiet morning can be a good time to plan the day. Choose the important task first, leave space for breaks, and adjust when new information arrives.",
+ "Reliable software is built through careful choices, readable code, and tests that catch problems early. Small improvements make future changes safer.",
+ "A well designed tool should feel predictable. Labels explain what actions do, useful defaults reduce effort, and helpful feedback makes mistakes easier to fix.",
+ "A trail may look simple on a map, yet weather and terrain can change the experience. Preparation makes an outdoor plan more flexible and enjoyable.",
+ "Music connects separate notes through timing and expression. Practising slowly can reveal details that disappear when a passage is played too quickly.",
+ "Good research compares more than one source. Look for evidence, check dates, and separate what is known from what is only suggested.",
+ "An organized project has clear goals, visible progress, and a place to record decisions. That structure makes collaboration easier when plans change."
+);
+PASSAGES.punctuation.push(
+ "Before you publish, check the title, review the links, and test the page. Is every detail clear? Does each button do what it promises?",
+ "The first idea may be useful, but it is not always the best one. Compare two options; test the simplest version; then improve it.",
+ "A good note answers three questions: what changed, why did it change, and what should happen next? Keep the explanation short and specific.",
+ "Some problems are obvious; others appear only under certain conditions. Try a different input, repeat the test, and record the result.",
+ "Plan, build, review — then repeat. The goal is not perfection on the first attempt; it is steady progress with fewer avoidable mistakes.",
+ "If a value looks unusual, pause and check the source. Is the unit correct? Was a decimal missed? Does the result make sense?",
+ "There are several ways to solve this: simplify the task, split it into steps, or change the order. Which option is easiest to verify?",
+ "A quick question can save a long detour: what does success look like, and how will we know when the work is finished?",
+ "Use commas to separate related ideas, parentheses for a side note (when it helps), and a colon before a useful list."
+);
+PASSAGES.numbers.push(
+ "Build 4 small modules, run 18 checks, and review the 3 warnings before releasing version 2.8.",
+ "A sensor recorded 21.6 degrees at 08:30, then 23.1 degrees at 11:45. Compare the 1.5 degree change.",
+ "The sample contains 240 entries: 156 passed, 72 need review, and 12 were skipped. That is 65% passing.",
+ "A project has 5 stages, 14 tasks, and 3 milestones. The next review is scheduled for 2027-02-18 at 16:30.",
+ "Use a 16:9 image at 1920 by 1080 pixels, keep the file below 2 MB, and check the result on a 390 pixel screen.",
+ "The route is 8.4 km long, with 260 m of elevation gain. Allow 35 to 50 minutes for the final section.",
+ "A keyboard test found 7 slow keys across 4 sessions. The median delay fell from 184 ms to 139 ms after practice.",
+ "The order includes 3 items at $18.50 each, a $4.25 delivery fee, and a 9.1% tax rate. Verify the total before checkout.",
+ "The dataset has 1,024 rows and 12 columns. Remove 16 duplicates, then compare the 2 summary reports."
+);
 const COMMON_WORDS=["the","that","there","their","these","those","with","which","where","while","would","could","should","through","thought","people","little","better","because","between","practice","rhythm","steady","system","simple","specific","different","important","comfortable","carefully","quickly","problem","progress","project","question","quality","really","usually","always","another","around","before","after","almost","enough","something","typing","letter","pattern","attention","accuracy"];
+const PASSAGE_HISTORY_KEY="minescout.flowtype.passages.v1";
 let state={active:false,started:false,deadline:0,startAt:0,lastAt:0,lastCharAt:0,text:"",events:[],pauses:[],words:[],duration:60,mode:"adaptive",focusWord:null,coachAt:0,baseline:0,sessionNumber:0};
 let history=loadHistory(),analysis=null;
 function loadHistory(){try{const v=JSON.parse(localStorage.getItem(STORE)||"[]");return Array.isArray(v)?v.slice(-30):[]}catch(e){return[]}}
@@ -151,7 +188,10 @@ function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",
 function currentProfile(){const recent=history.slice(-5);return {wpm:mean(recent.map(x=>x.wpm)),accuracy:mean(recent.map(x=>x.accuracy)),keys:aggregateKeys(),pairs:aggregatePairs(),sessions:recent.length}}
 function aggregateKeys(){const map={};history.forEach(s=>(s.keyStats||[]).forEach(k=>{if(!map[k.key])map[k.key]={lat:[],errors:0,total:0};map[k.key].lat.push(k.median);map[k.key].errors+=k.errors;map[k.key].total+=k.total}));return Object.entries(map).map(([key,v])=>({key,median:median(v.lat),errors:v.errors,total:v.total,rate:v.total?v.errors/v.total:0})).sort((a,b)=>b.median-a.median)}
 function aggregatePairs(){const map={};history.forEach(s=>(s.pairStats||[]).forEach(p=>{if(!map[p.pair])map[p.pair]=[];map[p.pair].push(p.median)}));return Object.entries(map).map(([pair,arr])=>({pair,median:median(arr)})).sort((a,b)=>b.median-a.median)}
-function buildText(mode,profile){if(state.focusWord)return Array(36).fill(state.focusWord).join(" ")+" "+Array(24).fill(state.focusWord).join(" ");let src=mode==="punctuation"?PASSAGES.punctuation:mode==="numbers"?PASSAGES.numbers:PASSAGES.balanced;let challenge="steady";if(mode==="adaptive"){if(profile.accuracy>0&&profile.accuracy<92){src=PASSAGES.balanced;challenge="accuracy reset"}else if(profile.wpm>=72&&profile.accuracy>=97){src=PASSAGES.numbers;challenge="advanced"}else if(profile.wpm>=42&&profile.accuracy>=94){src=PASSAGES.punctuation;challenge="precision"}else{src=PASSAGES.balanced;challenge=profile.wpm?"building fluency":"baseline"}}state.challenge=challenge;let base=src[Math.floor(Math.random()*src.length)];if(mode==="adaptive"&&profile.keys.length){const weak=profile.keys.filter(x=>x.total>=5).slice(0,4).map(x=>x.key.toLowerCase()).filter(x=>/[a-z]/.test(x));if(weak.length){const candidates=COMMON_WORDS.filter(w=>weak.some(k=>w.includes(k)));if(candidates.length){const add=candidates.slice(0,10).join(" ");base+=" "+add+" "+add;}}}while(base.length<650)base+=" "+src[Math.floor(Math.random()*src.length)];return base}
+function shuffle(items){const out=items.slice();for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]]}return out}
+function loadPassageHistory(){try{const value=JSON.parse(localStorage.getItem(PASSAGE_HISTORY_KEY)||"[]");return Array.isArray(value)?value.slice(-18):[]}catch(e){return[]}}
+function rememberPassages(ids){try{localStorage.setItem(PASSAGE_HISTORY_KEY,JSON.stringify(ids.slice(-18)))}catch(e){}}
+function buildText(mode,profile){if(state.focusWord)return Array(36).fill(state.focusWord).join(" ")+" "+Array(24).fill(state.focusWord).join(" ");let src=mode==="punctuation"?PASSAGES.punctuation:mode==="numbers"?PASSAGES.numbers:PASSAGES.balanced;let challenge="steady";if(mode==="adaptive"){if(profile.accuracy>0&&profile.accuracy<92){src=PASSAGES.balanced;challenge="accuracy reset"}else if(profile.wpm>=72&&profile.accuracy>=97){src=PASSAGES.numbers;challenge="advanced"}else if(profile.wpm>=42&&profile.accuracy>=94){src=PASSAGES.punctuation;challenge="precision"}else{src=PASSAGES.balanced;challenge=profile.wpm?"building fluency":"baseline"}}state.challenge=challenge;const recent=loadPassageHistory(),available=src.filter((_,i)=>!recent.includes(mode+":"+i));const candidates=shuffle(available.length?available:src.map((_,i)=>src[i]));const used=[];let base="";while(base.length<850){let next=candidates.find(sentence=>!used.includes(sentence));if(!next){const refill=shuffle(src.filter(sentence=>!used.includes(sentence)));if(!refill.length){used.length=0;continue}candidates.push(...refill);next=refill[0]}const index=src.indexOf(next);used.push(next);if(base)base+=" ";base+=next;rememberPassages([...recent,mode+":"+index])}if(mode==="adaptive"&&profile.keys.length){const weak=profile.keys.filter(x=>x.total>=5).slice(0,4).map(x=>x.key.toLowerCase()).filter(x=>/[a-z]/.test(x));if(weak.length){const candidates=COMMON_WORDS.filter(w=>weak.some(k=>w.includes(k)));if(candidates.length){const add=shuffle(candidates).slice(0,8).join(" ");base+=" "+add;}}}return base}
 function switchTab(name){document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll(".pane").forEach(p=>p.classList.toggle("active",p.id==="pane-"+name));if(name==="insights")renderDiagnostics();if(name==="drills")renderDrills();if(name==="history")renderHistory()}
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
 document.querySelectorAll("[data-open-tab]").forEach(b=>b.addEventListener("click",()=>{switchTab(b.dataset.openTab);}));
