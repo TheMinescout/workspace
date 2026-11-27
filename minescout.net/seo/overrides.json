@@ -162,6 +162,12 @@
     "/blog/edge-routing.html": {
       "title": "Edge Routing: Blacklists, Whitelists & AI Workers",
       "description": "How edge routing decides which requests reach which worker, with blacklists, whitelists, and AI worker compatibility."
+    },
+    "/typing": {
+      "title": "Adaptive Typing Coach | FlowType by Minescout",
+      "description": "Free adaptive typing practice that spots slow keys, difficult letter pairs and hesitation patterns, then builds focused drills. Your analysis stays in this browser.",
+      "kind": "utility",
+      "notes": "Standalone FlowType adaptive typing application. Timing analysis and saved practice history remain in the visitor's browser."
     }
   }
 }
