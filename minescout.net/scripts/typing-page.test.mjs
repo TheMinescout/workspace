@@ -41,3 +41,5 @@ test("practice history is local-only and no typing text is sent to a service", (
   assert.doesNotMatch(APP_SCRIPT, /\bfetch\s*\(|XMLHttpRequest|sendBeacon/);
   assert.match(HTML, /id="clear-history"/);
 });
+
+test("the practice viewport stays fixed while the passage advances locally", () => {\n  assert.match(HTML, /height:7\\.6em;min-height:7\\.6em;max-height:7\\.6em/);\n  assert.match(HTML, /height:72px;min-height:72px;max-height:72px;resize:none/);\n  assert.match(APP_SCRIPT, /focus\\(\\{preventScroll:true\\}\\)/);\n  assert.match(APP_SCRIPT, /const start=Math\\.max\\(0/);\n  assert.match(APP_SCRIPT, /state\\.text\\+=/);\n  assert.match(APP_SCRIPT, /challenge="accuracy reset"/);\n});\n
