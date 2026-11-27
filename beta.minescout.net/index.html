@@ -1,20 +1,86 @@
 <!doctype html>
 <html lang="en">
-<head><meta name="referrer" content="strict-origin-when-cross-origin"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0e0d"><title>Minescout Beta</title><link rel="icon" href="assets/images/BETAFAVICON.png?v=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/style.css?v=12"></head>
+<head><meta name="referrer" content="strict-origin-when-cross-origin"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0e0d"><meta name="description" content="Minescout Beta is an independent software lab exploring technology, building useful tools, and publishing experimental projects."><title>Minescout Beta — Independent Software Lab</title><link rel="icon" href="assets/images/BETAFAVICON.png?v=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/style.css?v=18"></head>
 <body class="ms-site">
-<header class="ms-topbar"><a class="ms-logo" href="index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a class="active" href="index">HOME</a><a href="pages">ATLS</a><a href="projects">PRDS</a><a href="feature-requests">REQUESTS</a><a href="email">CONTACT</a></nav><a class="top-login" href="login">ACCOUNT ↗</a></header>
+<header class="ms-topbar"><a class="ms-logo" href="index"><img src="assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a class="active" href="index">HOME</a><a href="pages">ATLS</a><a href="projects">PRDS</a><a href="updates">UPDATES</a><a href="feature-requests">REQUESTS</a><a href="email">CONTACT</a></nav><span class="top-note">INDEPENDENT SOFTWARE LAB</span></header>
 <main class="home-wrap">
-<section class="hero"><div class="hero-kicker">MINESCOUT / RESEARCH PREVIEW</div><h1>Tools, experiments,<br><span>and things worth building.</span></h1><p>A small experimental workspace for projects, release notes, utilities, and ideas from Minescout.</p><div class="hero-actions"><a class="button primary" href="pages">READ ARTICLES</a><a class="button" href="projects">EXPLORE PROJECTS</a></div></section>
-<section class="home-grid">
-<a class="directory-card featured" href="pages"><div class="card-top"><span>01</span><span>ATLS</span></div><div><h2>Articles</h2><p>Release notes, experiments, technical writeups, and archived research.</p></div><div class="card-bottom">OPEN ATLS <span>→</span></div></a>
-<a class="directory-card" href="projects"><div class="card-top"><span>02</span><span>PRDS</span></div><div><h2>Projects</h2><p>Runnable tools, prototypes, downloads, and things currently being built.</p></div><div class="card-bottom">OPEN PRDS <span>→</span></div></a>
+<section class="hero"><div class="hero-kicker">MINESCOUT / INDEPENDENT SOFTWARE LAB</div><h1>Ideas become<br><span>software.</span></h1><p>An independent software lab exploring technology, building useful tools, and publishing experimental projects. Some projects are polished; others are experiments. That is the point.</p><div class="hero-actions"><a class="button primary" href="projects">EXPLORE PROJECTS</a><a class="button" href="pages">READ ATLS</a></div></section>
+
+<section class="home-pillars" aria-label="How the lab works">
+<div class="pillar"><div class="pillar-num">01</div><div class="eyebrow">EXPLORE</div><h3>Experiment with ideas.</h3><p>Start with a question, a constraint, or a tool that should exist. The experiment comes before the product.</p></div>
+<div class="pillar"><div class="pillar-num">02</div><div class="eyebrow">BUILD</div><h3>Develop original software.</h3><p>Ship small, self-contained tools that run in the browser and keep the dependency surface honest.</p></div>
+<div class="pillar"><div class="pillar-num">03</div><div class="eyebrow">PUBLISH</div><h3>Document and share it.</h3><p>Release notes, design decisions, development histories, and the reasoning behind each build.</p></div>
 </section>
-<section class="home-lower"><div><div class="eyebrow">STATUS</div><h3>Research preview online.</h3><p>Minescout Beta is intentionally unfinished. Some projects are polished; others are experiments. That's the point.</p></div><div class="quick-links"><a href="feature-requests"><span>REQUEST</span> Suggest a feature →</a><a href="email"><span>CONTACT</span> Send a message →</a><a href="https://life.minescout.net" target="_blank" rel="noopener"><span>ACCOUNT</span> Minescout Life →</a></div></section>
+
+<section class="home-section">
+<div class="section-head"><div><div class="eyebrow">FEATURED BUILD</div><h2>Latest stable release</h2></div><a href="projects">ALL PROJECTS →</a></div>
+<div id="featured-project" class="featured-project"><div class="loading-note">Loading catalogue…</div></div>
+</section>
+
+
+<section class="home-section home-split">
+<div>
+<div class="section-head"><div><div class="eyebrow">LATEST FROM ATLS</div><h2>Recent publications</h2></div><a href="pages">ALL →</a></div>
+<div id="latest-articles" class="latest-list"></div>
+</div>
+<div>
+<div class="section-head"><div><div class="eyebrow">RELEASE LOG</div><h2 id="since-heading">Since your last visit</h2></div><a href="updates">FULL LOG →</a></div>
+<div id="since-visit" class="activity-list compact"></div>
+</div>
+</section>
+
+<section class="home-lower"><div><div class="eyebrow">STATUS</div><h3>Research preview online.</h3><p>Beta is intentionally unfinished. The catalogue now says what is stable, what is experimental, and what is archived — so the state of a project is visible before you open it.</p><div id="status-summary" class="status-summary"></div></div><div class="quick-links"><a href="feature-requests"><span>REQUEST</span> Suggest a feature →</a><a href="email"><span>CONTACT</span> Send a message →</a><a href="https://life.minescout.net" target="_blank" rel="noopener"><span>ECOSYSTEM</span> Minescout Life →</a></div></section>
 </main>
-<footer class="ms-footer"><span>MINESCOUT BETA</span><span>RESEARCH PREVIEW / 2026</span></footer>
-<script src="assets/js/auth.js?v=10"></script><script src="assets/js/filesystem.js?v=11"></script>
+<footer class="ms-footer"><span>MINESCOUT BETA</span><span>INDEPENDENT SOFTWARE LAB / 2026</span></footer>
+
+<script src="assets/js/catalog.js?v=2"></script>
 <script>
-window.addEventListener('load',()=>{const last=localStorage.getItem('minescout_last_visit');const articles=window.FILE_SYSTEM?.articles||[];window.missedUpdates=last?articles.filter(a=>a.date&&new Date(a.date)>new Date(last)):[];localStorage.setItem('minescout_last_visit',new Date().toISOString())});
-</script><script src="assets/js/background.js?v=12"></script>
-<script src="assets/js/security.js?v=12"></script>
+(() => {
+  const C = window.MS_CATALOG;
+  if (!C) return;
+  const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+
+  const featured = C.projects.filter((project) => project.status === 'stable' && project.released).sort((a, b) => new Date(b.released) - new Date(a.released))[0] || C.getProject('crypto-toolkit');
+  const featuredEl = document.getElementById('featured-project');
+  if (featured) {
+    featuredEl.innerHTML = `
+      <div class="fp-head"><div class="fp-index">01 / FEATURED</div><div class="fp-badges">${C.statusBadge(featured.status)}<span class="meta-pill">${esc(featured.category)}</span></div></div>
+      <h2><a href="project?id=${encodeURIComponent(featured.id)}">${esc(featured.title)}</a></h2>
+      <p>${esc(featured.tagline)}</p>
+      <div class="fp-meta"><span><b>VERSION</b> ${esc(featured.version)}</span><span><b>UPDATED</b> ${C.formatDate(featured.updated)}</span><span><b>STACK</b> ${esc(featured.stack)}</span></div>
+      <div class="fp-actions">${featured.launch ? `<a class="button primary" href="${esc(featured.launch.href)}">${esc(featured.launch.label)} ↗</a>` : ''}<a class="button" href="project?id=${encodeURIComponent(featured.id)}">PROJECT &amp; HISTORY →</a>${featured.docs ? `<a class="button" href="${esc(featured.docs.href)}">${esc(featured.docs.label)}</a>` : ''}</div>`;
+  }
+
+  const latest = C.articles.filter((article) => !article.types.includes('archive')).slice(0, 3);
+  document.getElementById('latest-articles').innerHTML = latest.map((article) => `
+    <a class="latest-row" href="${esc(article.href)}">
+      <span class="latest-date">${C.formatDate(article.date)}</span>
+      <span class="latest-main"><span class="latest-type">${C.typeBadge(article.types[0])}<em>${esc(article.read)}</em></span><b>${esc(article.title)}</b><small>${esc(article.summary)}</small></span>
+      <span class="latest-arrow">↗</span>
+    </a>`).join('');
+
+  const lastVisit = localStorage.getItem('minescout_last_visit');
+  const recent = C.recentActivity(lastVisit, 4);
+  const sinceEl = document.getElementById('since-visit');
+  document.getElementById('since-heading').textContent = lastVisit ? 'Since your last visit' : 'Latest activity';
+  if (recent.length) {
+    sinceEl.innerHTML = recent.map((item) => `
+      <a class="activity-item" href="${esc(item.href)}">
+        <span class="activity-date">${C.formatDate(item.date)}</span>
+        <span class="activity-body"><span class="activity-kind">${item.kind === 'project' ? 'PROJECT UPDATE' : 'ATLS PUBLICATION'}</span><b>${esc(item.title)}</b><small>${esc(item.note)}</small></span>
+      </a>`).join('');
+  } else {
+    sinceEl.innerHTML = `<div class="empty-state compact"><b>No new releases.</b><span>You are up to date. Follow a project to keep its updates in view.</span><a href="projects">BROWSE PROJECTS →</a></div>`;
+  }
+  localStorage.setItem('minescout_last_visit', new Date().toISOString());
+
+  const counts = ['stable', 'experimental', 'archived'].map((status) => {
+    const count = C.projectsByStatus(status).length;
+    return `<span class="status-count tone-${C.STATUS[status].tone}"><i></i>${count} ${C.STATUS[status].label}</span>`;
+  }).join('');
+  document.getElementById('status-summary').innerHTML = counts;
+})();
+</script>
+<script src="assets/js/background.js?v=13"></script>
+<script src="assets/js/security.js?v=13"></script>
 </body></html>

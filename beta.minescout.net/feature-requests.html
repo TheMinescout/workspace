@@ -3,38 +3,81 @@
 <head><meta name="referrer" content="strict-origin-when-cross-origin">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>UPLINK // Feature Request</title>
-    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png?v=1?v=1.01">
-    
+    <meta name="description" content="Send a project-specific feature request to the Minescout Beta software lab.">
+    <title>REQUESTS // Feature Request</title>
+    <link rel="icon" type="image/png" href="assets/images/BETAFAVICON.png?v=1">
+
     <!-- FIREBASE SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    
-    <link rel="stylesheet" href="assets/css/style.css?v=8">
+
+    <link rel="stylesheet" href="assets/css/style.css?v=18">
 </head>
-<body class="ms-site"><header class="ms-topbar"><a class="ms-logo" href="index"><img src="../../assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="index">HOME</a><a href="pages">ATLS</a><a href="projects">PRDS</a><a class="active" href="feature-requests">REQUESTS</a><a href="email">CONTACT</a></nav><a class="top-login" href="login">ACCOUNT ↗</a></header><main class="directory-wrap"><section class="directory-head"><div><div class="eyebrow">REQUESTS / UPLINK</div><h1>Feature request</h1><p>Tell Minescout what should exist next.</p></div><div class="directory-code">REQ<br><small>UPLINK</small></div></section><div class="form-block" style="margin-top:18px"><div class="input-group"><label>NAME / HANDLE</label><input type="text" id="sender" placeholder="Optional"></div><div class="input-group"><label>FEATURE TITLE</label><input type="text" id="subject" placeholder="What should we build?"></div><div class="input-group"><label>PRIORITY</label><select id="priority"><option value="LOW">LOW</option><option value="MED">MEDIUM</option><option value="HIGH">HIGH</option></select></div><div class="input-group"><label>DESCRIPTION</label><textarea id="desc" rows="7" maxlength="5000" placeholder="Describe the idea, problem, or workflow..."></textarea></div><div class="input-group ms-honeypot" aria-hidden="true"><label>WEBSITE</label><input id="website" tabindex="-1" autocomplete="off"></div><button class="transmit-btn" onclick="transmitData()">SEND REQUEST →</button><div id="prog-cont" style="display:none;margin-top:12px"><div class="loading-bar"><div class="fill" id="prog-bar"></div></div></div><div id="status-msg" style="margin-top:10px;color:var(--muted);font-size:11px"></div></div></main><footer class="ms-footer"><span>FEATURE REQUESTS</span><a href="index">← MINESCOUT</a></footer><script src="assets/js/firebase-config.js"></script><script>
+<body class="ms-site"><header class="ms-topbar"><a class="ms-logo" href="index"><img src="assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="index">HOME</a><a href="pages">ATLS</a><a href="projects">PRDS</a><a href="updates">UPDATES</a><a class="active" href="feature-requests">REQUESTS</a><a href="email">CONTACT</a></nav><span class="top-note">INDEPENDENT SOFTWARE LAB</span></header><main class="directory-wrap"><section class="directory-head"><div><div class="eyebrow">REQUESTS / UPLINK</div><h1>Feature request</h1><p>Tell Minescout what should exist next. Requests opened from a project stay attached to it.</p></div><div class="directory-code">REQ<br><small>UPLINK</small></div></section><div class="form-block" style="margin-top:18px">
+<div class="input-group"><label>PROJECT</label><select id="project"><option value="">General / not project-specific</option></select><div id="project-note" class="field-note"></div></div>
+<div class="input-group"><label>NAME / HANDLE</label><input type="text" id="sender" placeholder="Optional"></div><div class="input-group"><label>FEATURE TITLE</label><input type="text" id="subject" placeholder="What should we build?"></div><div class="input-group"><label>PRIORITY</label><select id="priority"><option value="LOW">LOW</option><option value="MED">MEDIUM</option><option value="HIGH">HIGH</option></select></div><div class="input-group"><label>DESCRIPTION</label><textarea id="desc" rows="7" maxlength="5000" placeholder="Describe the idea, problem, or workflow..."></textarea></div><div class="input-group ms-honeypot" aria-hidden="true"><label>WEBSITE</label><input id="website" tabindex="-1" autocomplete="off"></div><button class="transmit-btn" onclick="transmitData()">SEND REQUEST →</button><div id="prog-cont" style="display:none;margin-top:12px"><div class="loading-bar"><div class="fill" id="prog-bar"></div></div></div><div id="status-msg" style="margin-top:10px;color:var(--muted);font-size:11px"></div></div></main><footer class="ms-footer"><span>FEATURE REQUESTS</span><a href="index">← MINESCOUT</a></footer>
+<script src="assets/js/catalog.js?v=2"></script>
+<script src="assets/js/firebase-config.js"></script><script>
 const MAIL_ENDPOINT = "https://life.minescout.net/api/mail";
+const catalog = window.MS_CATALOG;
+const projectSelect = document.getElementById('project');
+const projectNote = document.getElementById('project-note');
+const subjectInput = document.getElementById('subject');
+
+if (catalog) {
+  catalog.projects.forEach((project) => {
+    const option = document.createElement('option');
+    option.value = project.id;
+    option.textContent = `${project.title} — ${catalog.STATUS[project.status].label} ${project.version}`;
+    projectSelect.appendChild(option);
+  });
+  const requested = new URLSearchParams(location.search).get('project');
+  if (requested && catalog.getProject(requested)) projectSelect.value = requested;
+}
+
+function currentProject() {
+  return catalog && projectSelect.value ? catalog.getProject(projectSelect.value) : null;
+}
+
+function syncProjectContext() {
+  const project = currentProject();
+  if (project) {
+    projectNote.innerHTML = `Attached to <b>${project.title}</b> · ${catalog.STATUS[project.status].label} ${project.version}`;
+    subjectInput.placeholder = `What should change in ${project.title}?`;
+  } else {
+    projectNote.textContent = 'No project selected — this will be treated as a general request.';
+    subjectInput.placeholder = 'What should we build?';
+  }
+}
+
+projectSelect.addEventListener('change', syncProjectContext);
+syncProjectContext();
+
 async function transmitData(){
   const status=document.getElementById('status-msg'), btn=document.querySelector('.transmit-btn');
+  const project=currentProject();
   const sender=MS_SECURITY.cleanText(document.getElementById('sender').value,120)||'Guest';
   const subject=MS_SECURITY.cleanText(document.getElementById('subject').value,180);
-  const desc=MS_SECURITY.cleanText(document.getElementById('desc').value,5000);
+  const description=MS_SECURITY.cleanText(document.getElementById('desc').value,5000);
   const priority=document.getElementById('priority').value;
   if(document.getElementById('website').value){status.textContent='REQUEST REJECTED.';return;}
-  if(!subject||!desc){status.textContent='Please provide a title and description.';return;}
+  if(!subject||!description){status.textContent='Please provide a title and description.';return;}
   if(!MS_SECURITY.canSubmit()){status.textContent='Please wait before sending another request.';return;}
+  const body = project
+    ? `Project: ${project.title} (${project.id})\nStatus: ${catalog.STATUS[project.status].label} ${project.version}\n\n${description}`
+    : description;
   btn.disabled=true; status.textContent='TRANSMITTING…';
   document.getElementById('prog-cont').style.display='block'; document.getElementById('prog-bar').style.width='30%';
   try{
-    try{ const db=firebase.database(); await db.ref('messages').push({sender,subject,desc,priority,timestamp:Date.now(),read:false,source:'beta-request'}); }catch(archiveErr){ console.warn('archive copy skipped:',archiveErr); }
+    try{ const db=firebase.database(); await db.ref('messages').push({sender,subject,desc:body,priority,timestamp:Date.now(),read:false,source:'beta-request',project:project?project.id:'general'}); }catch(archiveErr){ console.warn('archive copy skipped:',archiveErr); }
     document.getElementById('prog-bar').style.width='70%';
-    const res=await fetch(MAIL_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({form:'beta/feature-request',fields:{sender,title:subject,priority,description:desc}})});
+    const res=await fetch(MAIL_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({form:'beta/feature-request',fields:{sender,title:subject,priority,description:body}})});
     const result=await res.json().catch(()=>null);
     if(!res.ok||!result||!result.ok) throw new Error((result&&result.error)||'The mail service did not accept the request.');
     document.getElementById('prog-bar').style.width='100%'; status.textContent='REQUEST SENT.';
     setTimeout(()=>location.href='index',900);
   }catch(err){console.error(err);btn.disabled=false;status.textContent='Transmission failed. Please try again.';document.getElementById('prog-cont').style.display='none';}
 }
-</script><script src="assets/js/background.js?v=12"></script><script src="assets/js/security.js?v=12"></script><script src="assets/js/article-nav.js?v=12"></script>
+</script><script src="assets/js/background.js?v=13"></script><script src="assets/js/security.js?v=13"></script>
 </body></html>

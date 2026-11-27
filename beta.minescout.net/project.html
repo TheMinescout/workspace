@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="referrer" content="strict-origin-when-cross-origin"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Project detail, release links, and development history from the Minescout Beta catalogue."><title>Project // PRDS</title><link rel="icon" href="assets/images/BETAFAVICON.png?v=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/style.css?v=18"></head>
+<body class="ms-site">
+<header class="ms-topbar"><a class="ms-logo" href="index"><img src="assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="index">HOME</a><a href="pages">ATLS</a><a class="active" href="projects">PRDS</a><a href="updates">UPDATES</a><a href="feature-requests">REQUESTS</a><a href="email">CONTACT</a></nav><span class="top-note">INDEPENDENT SOFTWARE LAB</span></header>
+<main class="directory-wrap project-wrap">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="projects">← PRDS / PROJECTS</a><span id="crumb">PROJECT</span></nav>
+<div id="project-detail"><div class="loading-note">Loading project…</div></div>
+</main>
+<footer class="ms-footer"><span>PRDS / PROJECT</span><a href="projects">← CATALOGUE</a></footer>
+
+<script src="assets/js/catalog.js?v=2"></script>
+<script>
+(() => {
+  const C = window.MS_CATALOG;
+  const root = document.getElementById('project-detail');
+  if (!C) return;
+  const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const id = new URLSearchParams(location.search).get('id');
+  const project = C.getProject(id);
+
+  if (!project) {
+    document.title = 'Project not found // PRDS';
+    root.innerHTML = `<div class="error-page"><div class="error-card"><div class="error-code">404</div><div class="eyebrow">PROJECT NOT FOUND</div><h1>That project isn't in the catalogue.</h1><p>The id <code>${esc(id || '—')}</code> does not match a project entry. The catalogue is the authoritative list.</p><div class="error-actions"><a href="projects">PRDS / PROJECTS</a><a href="index">HOME</a></div></div></div>`;
+    return;
+  }
+
+  document.title = `${project.title} // PRDS`;
+  const description = document.querySelector('meta[name="description"]');
+  if (description) description.setAttribute('content', project.summary);
+  const crumb = document.getElementById('crumb');
+  if (crumb) crumb.textContent = project.title.toUpperCase();
+
+  const status = C.STATUS[project.status];
+  const related = C.articles.filter((article) => article.project === project.id || (project.docs && article.href === project.docs.href));
+  const others = C.projects
+    .filter((item) => item.id !== project.id && item.status !== 'archived')
+    .sort((a, b) => (a.category === project.category ? -1 : 0) - (b.category === project.category ? -1 : 0))
+    .slice(0, 3);
+
+  const launch = project.launch
+    ? `<a class="button primary" href="${esc(project.launch.href)}"${project.launch.kind === 'download' ? ' download' : ''}>${esc(project.launch.label)} ↗</a>`
+    : `<a class="button primary" href="${esc(project.docs.href)}">${esc(project.docs.label)} →</a>`;
+  const docsButton = project.launch
+    ? `<a class="button" href="${esc(project.docs.href)}">${esc(project.docs.label)}</a>`
+    : '';
+
+  const facts = [
+    ['STATUS', `<span class="tone-${status.tone}">${status.label}</span>`],
+    ['VERSION', esc(project.version)],
+    ['RELEASED', C.formatDate(project.released)],
+    ['UPDATED', C.formatDate(project.updated)],
+    ['STACK', esc(project.stack)],
+    ['CATEGORY', esc(project.category)],
+  ].map(([label, value]) => `<div><span>${label}</span><b>${value}</b></div>`).join('');
+
+  const history = project.history.map((item, index) => `
+    <li class="history-item"><span class="history-num">${String(index + 1).padStart(2, '0')}</span>
+      <div class="history-copy"><div class="history-label">${esc(item.label)}${item.date ? ` · ${C.formatDate(item.date)}` : ''}</div><h3>${esc(item.title)}</h3><p>${esc(item.body)}</p></div>
+    </li>`).join('');
+
+  const features = project.features.map((feature) => `<li>${esc(feature)}</li>`).join('');
+
+  const relatedHtml = related.length
+    ? related.map((article) => `<a class="side-link" href="${esc(article.href)}"><b>${esc(article.title)}</b><small>${C.formatDate(article.date)} · ${esc(article.read)}</small></a>`).join('')
+    : '<p class="side-muted">No publication for this project yet.</p>';
+
+  const othersHtml = others.map((item) => `<a class="side-link" href="project?id=${encodeURIComponent(item.id)}"><b>${esc(item.title)}</b><small>${C.statusBadge(item.status)} ${esc(item.version)}</small></a>`).join('');
+
+  root.innerHTML = `
+    <section class="project-hero">
+      <div class="project-hero-top">
+        <div class="project-hero-main">
+          <div class="badge-row">${C.statusBadge(project.status)}<span class="meta-pill">${esc(project.category)}</span><span class="meta-pill">${esc(project.version)}</span></div>
+          <h1>${esc(project.title)}</h1>
+          <p class="project-tagline">${esc(project.tagline)}</p>
+          <div class="project-hero-actions">${launch}${docsButton}<button id="follow-btn" class="button follow-btn" type="button">FOLLOW FOR UPDATES</button></div>
+        </div>
+        <div class="project-code">PRDS<br><small>${esc(project.status.toUpperCase())}</small></div>
+      </div>
+      <div class="project-facts">${facts}</div>
+    </section>
+    <div class="project-body">
+      <article class="project-main">
+        <section class="project-section"><div class="eyebrow">OVERVIEW</div><h2>What it is</h2><p>${esc(project.summary)}</p>${project.note ? `<p class="project-note">${esc(project.note)}</p>` : ''}${project.image ? `<figure class="project-preview"><img src="${esc(project.image)}" alt="${esc(project.title)} interface preview" loading="eager" decoding="async"><figcaption>Interface preview · ${esc(project.title)}</figcaption></figure>` : ''}</section>
+        <section class="project-section"><div class="eyebrow">WHAT'S INSIDE</div><h2>Capabilities</h2><ul class="feature-list">${features}</ul></section>
+        <section class="project-section"><div class="eyebrow">DEVELOPMENT HISTORY</div><h2>How it got here</h2><ol class="history">${history}</ol></section>
+        <section class="project-section feedback-block"><div class="eyebrow">FEEDBACK</div><h2>Shape the next release</h2><p>Requests opened from this page stay attached to ${esc(project.title)}. Say what should change, what is missing, or what broke.</p><div class="feedback-actions"><a class="button primary" href="feature-requests?project=${encodeURIComponent(project.id)}">REQUEST A FEATURE →</a><a class="button" href="email?project=${encodeURIComponent(project.id)}">SEND A MESSAGE</a></div></section>
+      </article>
+      <aside class="project-side">
+        <div class="side-card"><div class="eyebrow">RELATED ATLS</div>${relatedHtml}</div>
+        <div class="side-card"><div class="eyebrow">PROJECT META</div><dl class="side-meta"><dt>STATUS</dt><dd>${status.label} — ${esc(status.meaning)}</dd><dt>VERSION</dt><dd>${esc(project.version)}</dd><dt>RELEASED</dt><dd>${C.formatDate(project.released)}</dd><dt>UPDATED</dt><dd>${C.formatDate(project.updated)}</dd><dt>SOURCE</dt><dd>${project.source ? esc(project.source) : 'Not published'}</dd></dl></div>
+        <div class="side-card"><div class="eyebrow">MORE PROJECTS</div>${othersHtml}</div>
+      </aside>
+    </div>`;
+
+  const followBtn = document.getElementById('follow-btn');
+  function paintFollow() {
+    const followed = C.isFollowed(project.id);
+    followBtn.classList.toggle('on', followed);
+    followBtn.textContent = followed ? 'FOLLOWING ✓' : 'FOLLOW FOR UPDATES';
+  }
+  followBtn.addEventListener('click', () => {
+    C.toggleFollow(project.id);
+    paintFollow();
+  });
+  paintFollow();
+})();
+</script>
+<script src="assets/js/background.js?v=13"></script>
+<script src="assets/js/security.js?v=13"></script>
+</body></html>

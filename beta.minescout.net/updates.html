@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="referrer" content="strict-origin-when-cross-origin"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="The Minescout Beta release log: project updates and ATLS publications in one chronological feed."><title>UPDATES // Release Log</title><link rel="icon" href="assets/images/BETAFAVICON.png?v=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/style.css?v=18"></head>
+<body class="ms-site">
+<header class="ms-topbar"><a class="ms-logo" href="index"><img src="assets/images/BETAFAVICON.png?v=1" alt="Minescout Beta" style="width:32px;height:32px;object-fit:contain;display:block;"><b>MINESCOUT</b><em>BETA</em></a><nav><a href="index">HOME</a><a href="pages">ATLS</a><a href="projects">PRDS</a><a class="active" href="updates">UPDATES</a><a href="feature-requests">REQUESTS</a><a href="email">CONTACT</a></nav><span class="top-note">INDEPENDENT SOFTWARE LAB</span></header>
+<main class="directory-wrap">
+<section class="directory-head"><div><div class="eyebrow">UPDATES / RELEASE LOG</div><h1>Release log</h1><p>Every project update and ATLS publication in one chronological feed. Follow a project to keep its changes in view.</p></div><div class="directory-code">LOG<br><small>ALL CHANGES</small></div></section>
+
+<div class="catalogue-toolbar"><div class="filter-chips" id="log-filters" role="group" aria-label="Filter release log"><button class="chip active" data-filter="all">ALL <em id="log-count-all">0</em></button><button class="chip" data-filter="project">PROJECT UPDATES <em id="log-count-project">0</em></button><button class="chip" data-filter="article">ATLS <em id="log-count-article">0</em></button><button class="chip" data-filter="following">FOLLOWING <em id="log-count-following">0</em></button></div><div class="catalogue-legend"><span id="follow-summary">Follow projects from the catalogue to filter this log.</span></div></div>
+
+<div id="activity-list" class="log-list"></div>
+<div class="notice"><b>Release log, not a newsletter.</b> Following is stored in this browser. The homepage uses the same data for “since your last visit”, so there is no account requirement and no server-side subscription.</div>
+</main>
+<footer class="ms-footer"><span>UPDATES / RELEASE LOG</span><a href="index">← MINESCOUT</a></footer>
+
+<script src="assets/js/catalog.js?v=2"></script>
+<script>
+(() => {
+  const C = window.MS_CATALOG;
+  if (!C) return;
+  const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const all = C.activity();
+  const list = document.getElementById('activity-list');
+  const filters = document.getElementById('log-filters');
+  let filter = 'all';
+
+  function followedActivity() {
+    const ids = C.followedIds();
+    return all.filter((item) => ids.includes(item.kind === 'project' ? item.id : item.project));
+  }
+
+  function item(entry) {
+    const kind = entry.kind === 'project'
+      ? `${C.statusBadge(entry.status)}<span class="log-kind">PROJECT UPDATE</span>`
+      : `${entry.types.map((type) => C.typeBadge(type)).join('')}<span class="log-kind">ATLS PUBLICATION</span>`;
+    return `<a class="log-item" href="${esc(entry.href)}">
+      <span class="log-date">${C.formatDate(entry.date)}</span>
+      <span class="log-rail"><i class="status-dot ${entry.kind === 'project' ? C.STATUS[entry.status].tone : 'accent'}"></i></span>
+      <span class="log-body"><span class="log-tags">${kind}</span><b>${esc(entry.title)}</b><small>${esc(entry.note)}</small></span>
+      <span class="log-arrow">↗</span>
+    </a>`;
+  }
+
+  function counts() {
+    const followed = followedActivity().length;
+    document.getElementById('log-count-all').textContent = all.length;
+    document.getElementById('log-count-project').textContent = all.filter((entry) => entry.kind === 'project').length;
+    document.getElementById('log-count-article').textContent = all.filter((entry) => entry.kind === 'article').length;
+    document.getElementById('log-count-following').textContent = followed;
+    const ids = C.followedIds();
+    document.getElementById('follow-summary').textContent = ids.length
+      ? `${ids.length} project${ids.length === 1 ? '' : 's'} followed in this browser.`
+      : 'Follow projects from the catalogue to filter this log.';
+  }
+
+  function render() {
+    let visible;
+    if (filter === 'all') visible = all;
+    else if (filter === 'following') visible = followedActivity();
+    else visible = all.filter((entry) => entry.kind === filter);
+
+    list.innerHTML = visible.length
+      ? visible.map(item).join('')
+      : `<div class="empty-state"><b>${filter === 'following' ? 'No followed projects yet.' : 'Nothing in this stream yet.'}</b><span>${filter === 'following' ? 'Open a project and use FOLLOW FOR UPDATES, then return here.' : 'Try another filter.'}</span><a href="projects">BROWSE PROJECTS →</a></div>`;
+
+    document.querySelectorAll('#log-filters .chip').forEach((chip) => {
+      chip.classList.toggle('active', chip.dataset.filter === filter);
+    });
+    counts();
+  }
+
+  filters.addEventListener('click', (event) => {
+    const chip = event.target.closest('.chip');
+    if (!chip) return;
+    filter = chip.dataset.filter;
+    render();
+  });
+
+  render();
+})();
+</script>
+<script src="assets/js/background.js?v=13"></script>
+<script src="assets/js/security.js?v=13"></script>
+</body></html>

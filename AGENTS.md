@@ -15,7 +15,7 @@ runtime and build:
 | --- | --- | --- |
 | `minescout.net/` | Main portfolio | Static HTML/CSS/JS, served from `public/` |
 | `life.minescout.net/` | Minescout Life | React 19 + Vite + React Router (file-based posts, no Firebase) |
-| `beta.minescout.net/` | Staging | Static HTML with clean-URL routing |
+| `beta.minescout.net/` | Software lab | Static HTML with clean-URL routing |
 | `chop-lab.com/` | The Chop Lab storefront | React 19 + Vite + TanStack Start/Router, Tailwind v4 |
 
 Nginx serves the static sites and proxies the app routes (`my-sites.conf`).

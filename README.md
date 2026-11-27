@@ -3,7 +3,7 @@
 [![CI](https://github.com/TheMinescout/workspace/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square)](https://github.com/TheMinescout/workspace/actions/workflows/ci.yml)
 [![minescout.net](https://img.shields.io/badge/minescout.net-live-9a4a2c?style=flat-square)](https://minescout.net)
 [![Minescout Life](https://img.shields.io/badge/life.minescout.net-live-4a7c59?style=flat-square)](https://life.minescout.net)
-[![Minescout Beta](https://img.shields.io/badge/beta.minescout.net-staging-c08a3e?style=flat-square)](https://beta.minescout.net)
+[![Minescout Beta](https://img.shields.io/badge/beta.minescout.net-software--lab-c08a3e?style=flat-square)](https://beta.minescout.net)
 [![The Chop Lab](https://img.shields.io/badge/chop--lab.com-live-9a4a2c?style=flat-square)](https://chop-lab.com)
 [![React 19](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![TanStack Start](https://img.shields.io/badge/TanStack-Start-ff4154?style=flat-square&logo=reactquery&logoColor=white)](https://tanstack.com/start)
@@ -20,7 +20,7 @@ This repository is the home of **The Minescout**: four separate web properties t
 design language and a deployment box, but not a runtime. Each site is independently runnable,
 independently tested, and independently deployed. The portfolio site and The Chop Lab are the two
 front doors; Minescout Life is the long-form blog and the AI column; Minescout Beta is the
-experimental archive.
+independent software lab and project archive.
 
 ## The ecosystem
 
@@ -28,14 +28,14 @@ experimental archive.
 | --- | --- | --- | --- |
 | **Minescout** | [minescout.net](https://minescout.net) | Personal portfolio, blog, and **Minescout Studio** (client web design and storefronts). | Static HTML/CSS/ES modules — no framework, no build step |
 | **Minescout Life** | [life.minescout.net](https://life.minescout.net) | Personal publishing site: posts, categories, comments, ratings, admin editor, and the weekly AI column. | React 19, React Router 7, Vite 8, file-based JSON posts |
-| **Minescout Beta** | [beta.minescout.net](https://beta.minescout.net) | Terminal-style staging archive for experiments, release notes, and legacy snapshots. | Static HTML/JS with clean-URL routing |
+| **Minescout Beta** | [beta.minescout.net](https://beta.minescout.net) | Independent software lab: project catalogue, technical publications, release log, and legacy snapshots. | Static HTML/JS with clean-URL routing |
 | **The Chop Lab** | [chop-lab.com](https://chop-lab.com) | Storefront and configurator for custom 3D-printed pottery tools, STL files, and CAD/print services. | React 19, TanStack Start/Router, TypeScript, Tailwind v4, Three.js, Nitro |
 
 ```mermaid
 flowchart TB
   visitor([Visitor]) --> portfolio[minescout.net<br/>Portfolio + Minescout Studio]
   visitor --> life[life.minescout.net<br/>Posts + weekly AI column]
-  visitor --> beta[beta.minescout.net<br/>Staging archive]
+  visitor --> beta[beta.minescout.net<br/>Software lab + project archive]
   visitor --> lab[chop-lab.com<br/>The Chop Lab storefront]
 
   portfolio -. "live storefront proof" .-> lab
@@ -56,7 +56,7 @@ workspace/
 │   ├── server/              # MCP server, post store, title-card renderer, bundled fonts
 │   ├── scripts/             # unit, render, and MCP smoke tests
 │   └── src/                 # React app: components, data, hooks, lib, pages
-├── beta.minescout.net/      # static terminal site, article/project archive
+├── beta.minescout.net/      # static software-lab site, project/article archive
 ├── chop-lab.com/
 │   ├── migrations/          # SQL migrations (Better Auth)
 │   ├── public/              # product photos, STL files, sitemap, merchant feed
@@ -198,8 +198,8 @@ npm run check     # lint, build, unit tests, render smoke, MCP smoke
 | `/api/vault`, `/api/vault/hack/*`, `/api/vault/files` | The terminal vault mini-game |
 | `/api/mcp` | The MCP server (see below) |
 
-`/data/` is served cross-origin to `beta.minescout.net` so the beta site can authenticate against
-the same user list.
+`/data/` is served cross-origin to `beta.minescout.net` so the beta admin sign-in can authenticate
+against the same user list.
 
 </details>
 
@@ -353,18 +353,23 @@ for the schedule and prompt. The site only requires `category: "AI Posts"`.
 
 ## Minescout Beta (`beta.minescout.net`)
 
-Beta is a static, terminal-styled archive — "ATLS // Minescout" — used for release notes,
-experiments, and historical snapshots. There is no framework and no build step; `assets/js/`
-contains the terminal shell, filesystem registry, auth, and form hardening.
+Beta is a static, terminal-styled software lab — **ATLS** publishes what the lab writes, **PRDS**
+catalogues what it builds, and **UPDATES** records what changed. There is no framework and no build
+step; `assets/js/catalog.js` is the shared catalogue model, and `assets/js/` also contains the shell,
+auth, and form hardening. The public account feature is gone; sign-in is admin-only and unlinked.
+The full new-vs-old audit, catalogue model, UI notes, and QA record are in
+[`beta.minescout.net/SITE.md`](beta.minescout.net/SITE.md), also served at `/SITE.md`.
 
 | Route | Page |
 | --- | --- |
-| [`/`](https://beta.minescout.net/) | Terminal home |
-| [`/pages`](https://beta.minescout.net/pages) | Article index (`content/articles/*`) |
-| [`/projects`](https://beta.minescout.net/projects) | Project index (`content/projects/*`) |
-| [`/feature-requests`](https://beta.minescout.net/feature-requests) | Feature request board |
-| [`/email`](https://beta.minescout.net/email) | Contact form |
-| [`/login`](https://beta.minescout.net/login) | Account sign-in |
+| [`/`](https://beta.minescout.net/) | Lab statement, featured release, latest publications and activity |
+| [`/pages`](https://beta.minescout.net/pages) | ATLS technical publications (`content/articles/*`) |
+| [`/projects`](https://beta.minescout.net/projects) | PRDS project catalogue with status, version, dates, and follow |
+| [`/project?id=<id>`](https://beta.minescout.net/project?id=crypto-toolkit) | Project detail, history, metadata, and related ATLS |
+| [`/updates`](https://beta.minescout.net/updates) | Combined project and publication release log |
+| [`/feature-requests`](https://beta.minescout.net/feature-requests) | Feature request board with project prefill |
+| [`/email`](https://beta.minescout.net/email) | Contact form with project prefill |
+| [`/login`](https://beta.minescout.net/login) | Admin sign-in (unlinked) |
 | [`/admin-messages`](https://beta.minescout.net/admin-messages) | Admin message view |
 | `/content/articles/<slug>`, `/content/projects/<slug>` | Individual entries |
 
