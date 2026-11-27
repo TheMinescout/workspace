@@ -14,9 +14,10 @@ does not make their application behavior interchangeable.
 
 - The root `.env.example` documents shared local configuration. The real root
   `.env` is ignored and must never be committed.
-- Life and Chop Lab read SMTP credentials from environment variables. Local
-  loading is shared by convention, but production deployments inject secrets
-  separately into each service.
+- Life and Chop Lab read SMTP credentials from environment variables. Locally
+  each loader also reads a `.env` in every site folder, so the SMTP account is
+  found whichever folder holds it; the app's own file wins. Production
+  deployments inject secrets separately into each service.
 - The root GitHub Actions workflow coordinates checks; each site keeps its
   own install, build, tests, and runtime-specific checks.
 - Shared infrastructure must not become an implicit shared application

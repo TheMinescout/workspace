@@ -102,10 +102,11 @@ SEO and the order-delivery queue (`src/lib/requests.test.ts`).
   and passes every key to the child process, so the file is the place to set
   SMTP for a local dev server; on deploy there is no `.env` and the provider's
   injected secrets are used. Layer order, lowest first: `.grok/app-env.json`,
-  the process environment, the root `.env`, then a `chop-lab.com/.env`. A
-  non-empty file value wins; empty keys are ignored so an untouched
-  `.env.example` cannot blank an injected secret. `.env.example` at the repo
-  root lists every key, and `EMAIL-SETUP.md` walks through the setup.
+  the process environment, the root `.env`, the mail keys from every sibling
+  site's `.env`, then a `chop-lab.com/.env`. A non-empty file value wins; empty
+  keys are ignored so an untouched `.env.example` cannot blank an injected
+  secret. `.env.example` at the repo root lists every key, and `EMAIL-SETUP.md`
+  walks through the setup.
 - `/outbox` reports `smtp` or `unconfigured`, so a missing `.env` is visible
   before the next order fails. A live order that reaches "Request received" but
   never arrives usually means `.env` is missing, or the server was started
