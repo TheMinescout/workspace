@@ -162,6 +162,31 @@
     "/blog/edge-routing.html": {
       "title": "Edge Routing: Blacklists, Whitelists & AI Workers",
       "description": "How edge routing decides which requests reach which worker, with blacklists, whitelists, and AI worker compatibility."
+    },
+    "/typing": {
+      "title": "Adaptive Typing Coach | FlowType by Minescout",
+      "description": "Free adaptive typing practice that spots slow keys, tricky letter pairs and hesitation, then builds focused drills. Your analysis stays in this browser.",
+      "kind": "utility",
+      "notes": "Standalone FlowType adaptive typing application. Timing analysis and saved practice history remain in the visitor's browser.",
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "FlowType",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any device with a modern web browser",
+        "url": "https://minescout.net/typing",
+        "description": "A free adaptive typing coach that analyses typing rhythm locally, identifies slow keys and hesitation patterns, and creates focused practice exercises.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "creator": {
+          "@type": "Organization",
+          "name": "Minescout",
+          "url": "https://minescout.net"
+        }
+      }
     }
   }
 }

@@ -53,6 +53,13 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- FlowType adaptive typing coach -->
+  <url>
+    <loc>https://minescout.net/typing</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Minescout Studio Pages -->
   <url>
     <loc>https://minescout.net/studio</loc>
@@ -127,6 +134,12 @@
     <priority>0.4</priority>
   </url>
   <!-- Blog Posts -->
+  <url>
+    <loc>https://minescout.net/blog/custom-website-vs-wix-squarespace.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
   <url>
     <loc>https://minescout.net/blog/slow-websites-cost-customers.html</loc>
     <lastmod>2026-11-19</lastmod>

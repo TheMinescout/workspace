@@ -91,6 +91,7 @@ loads `public/app.js`, which renders route templates from `public/views.js`. Sty
 | [`/studio/intake`](https://minescout.net/studio/intake) | Project intake form |
 | [`/portal`](https://minescout.net/portal), [`/studio/clients/portal`](https://minescout.net/studio/clients/portal) | Client portals |
 | [`/contact`](https://minescout.net/contact), [`/guestbook`](https://minescout.net/guestbook), [`/ask`](https://minescout.net/ask) | Contact, guestbook, and Q&A |
+| [`/typing`](https://minescout.net/typing) | FlowType adaptive typing coach with local diagnostics, targeted drills, and progress history |
 | [`/services/lawn-care`](https://minescout.net/services/lawn-care), [`/services/coin-data`](https://minescout.net/services/coin-data), [`/services/donations`](https://minescout.net/services/donations) | Static service demos served as real files |
 | [`/legal`](https://minescout.net/legal), `/404.html` | Legal and not-found pages |
 
