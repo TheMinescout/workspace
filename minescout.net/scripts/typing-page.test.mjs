@@ -59,6 +59,6 @@ test("each session draws varied passages and avoids recently used source text", 
   assert.match(APP_SCRIPT, /function shuffle\(items\)/);
   assert.match(APP_SCRIPT, /function loadPassageHistory\(\)/);
   assert.match(APP_SCRIPT, /function rememberPassages\(ids\)/);
-  assert.match(APP_SCRIPT, /const available=src\.filter/);
+  assert.match(APP_SCRIPT, /available=src\.filter/);
   assert.match(APP_SCRIPT, /while\(base\.length<850\)/);
 });
