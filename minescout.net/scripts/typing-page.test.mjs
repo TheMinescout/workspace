@@ -3,11 +3,11 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import { test } from "node:test";
 
-const HTML = readFileSync(new URL("../public/services/services/typing/index.html", import.meta.url), "utf8");
+const HTML = readFileSync(new URL("../public/services/typing/index.html", import.meta.url), "utf8");
 const SITEMAP = readFileSync(new URL("../public/sitemap.xml", import.meta.url), "utf8");
 const MANIFEST = JSON.parse(readFileSync(new URL("../public/seo/manifest.json", import.meta.url), "utf8"));
 const OVERRIDES = JSON.parse(readFileSync(new URL("../seo/overrides.json", import.meta.url), "utf8"));
-const META = MANIFEST.pages.find((page) => page.path === "/services/services/typing");
+const META = MANIFEST.pages.find((page) => page.path === "/services/typing");
 const APP_SCRIPT = [...HTML.matchAll(/<script>([\s\S]*?)<\/script>/g)].at(-1)?.[1] ?? "";
 
 test("FlowType is a standalone, indexable page with complete metadata", () => {
