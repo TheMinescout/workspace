@@ -353,11 +353,11 @@ npm run check    # lint (oxlint) + build + tests + render and MCP smoke
   mounted in `configureServer`. It only exists while `npm run dev` runs; there is
   no `configurePreviewServer`, so `vite preview` has no backend.
 - CORS for `/api/` is owned by the relay's `applyCors`: it echoes the caller's
-  origin from `ALLOWED_ORIGINS` and sets `Vary: Origin`. Vite's built-in CORS is
-  off (`server.cors: false`) because it only allows localhost and answers the
-  preflight before the middleware. `my-sites.conf` must not add a fixed
-  `Access-Control-Allow-Origin` to `location /api/` — one hardcoded origin makes
-  every other site fail the preflight. `scripts/cors-config.test.mjs` guards it.
+  origin from `ALLOWED_ORIGINS` and sets `Vary: Origin`. nginx answers the
+  `OPTIONS` preflight with `$cors_origin` (a `map` allowlist) and must not add an
+  origin to the proxied response, or the browser sees two values and rejects
+  it. Vite's built-in CORS is off (`server.cors: false`) so it cannot answer the
+  preflight first. `scripts/cors-config.test.mjs` guards the nginx block.
 - The SMTP client is loaded with `loadNodemailer(appDir)` from
   `life.minescout.net/node_modules`, not a bundled `import("nodemailer")`, so
   the config bundler does not warn and a missing install is reported at startup
