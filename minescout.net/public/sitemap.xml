@@ -55,7 +55,7 @@
 
   <!-- FlowType adaptive typing coach -->
   <url>
-    <loc>https://minescout.net/typing</loc>
+    <loc>https://minescout.net/services/typing</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
