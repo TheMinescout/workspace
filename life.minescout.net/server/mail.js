@@ -16,10 +16,36 @@
  *   SMTP_HOST (smtp.gmail.com), SMTP_PORT (587), SMTP_FROM_NAME
  *   STUDIO_INBOX              — where new leads land
  */
+import { createRequire } from "node:module";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { clientIp, createRateLimiter } from "./security.js";
 
 const MAX_BODY_BYTES = 64 * 1024;
 const DEFAULT_INBOX = "theminescout@minescout.net";
+const APP_DIR = dirname(dirname(fileURLToPath(import.meta.url)));
+
+/**
+ * Load the SMTP client from the Life app's `node_modules`.
+ *
+ * This module is imported by `vite.config.js`, so a literal
+ * `import("nodemailer")` makes Vite's config bundler try to resolve it and warn
+ * when the Life folder has no install. A runtime `require` anchored at the app
+ * directory keeps the dependency out of the bundle and turns a missing install
+ * into an actionable message instead of a bare MODULE_NOT_FOUND.
+ */
+export function loadNodemailer(appDir = APP_DIR) {
+  const require = createRequire(join(appDir, "server", "mail.js"));
+  const moduleName = "nodemailer";
+  try {
+    return require(moduleName);
+  } catch (err) {
+    throw new Error(
+      "Email cannot send because 'nodemailer' is not installed. Run `npm install` in life.minescout.net and restart the relay.",
+      { cause: err },
+    );
+  }
+}
 
 export const FORM_NAMES = [
   "minescout/contact",
@@ -348,8 +374,8 @@ export function buildMessages(env, { form, fields }) {
   return builder(fields ?? {}, inbox);
 }
 
-async function sendOne(config, message) {
-  const nodemailer = await import("nodemailer").then((mod) => mod.default);
+async function sendOne(config, message, appDir) {
+  const nodemailer = loadNodemailer(appDir);
   const transport = nodemailer.createTransport({
     host: config.host,
     port: config.port,
@@ -411,7 +437,7 @@ function reply(res, status, payload) {
  * single visitor hammering the form, and an hourly cap that bounds the damage
  * from a scripted run.
  */
-export function createMailHandler(env) {
+export function createMailHandler(env, { appDir = APP_DIR } = {}) {
   const burst = createRateLimiter({ windowMs: 10 * 60_000, max: 6, name: "mail-10m" });
   const hourly = createRateLimiter({ windowMs: 60 * 60_000, max: 40, name: "mail-1h" });
 
@@ -468,7 +494,7 @@ export function createMailHandler(env) {
     }
 
     try {
-      for (const message of messages) await sendOne(config, message);
+      for (const message of messages) await sendOne(config, message, appDir);
     } catch (err) {
       console.error(`[mail] ${form} send failed:`, err?.message || err);
       return reply(res, 502, {

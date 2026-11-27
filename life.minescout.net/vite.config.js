@@ -13,7 +13,7 @@ import {
 } from "./server/security.js";
 import { savePost as storeSavePost, removePost as storeRemovePost, normalizePost } from "./server/posts-store.js";
 import { mcpMiddleware } from "./server/mcp.js";
-import { createMailHandler } from "./server/mail.js";
+import { createMailHandler, loadNodemailer } from "./server/mail.js";
 import { resolveMailEnv } from "./server/env.js";
 
 // The scraper module lives in the gitignored data/ folder, so it may be absent.
@@ -129,7 +129,7 @@ function rejectUntrustedOrigin(req, res) {
   return true;
 }
 
-function apiPlugin(env) {
+function apiPlugin(env, appDir) {
   return {
     name: "minescout-api",
     async configureServer(server) {
@@ -144,6 +144,12 @@ function apiPlugin(env) {
       }
       if (env.SMTP_USER && env.SMTP_PASSWORD) {
         console.log(`[minescout-api] mail relay ready (SMTP account ${env.SMTP_USER})`);
+        try {
+          loadNodemailer(appDir);
+          console.log("[minescout-api] mail transport ready (nodemailer loaded)");
+        } catch (err) {
+          console.error(`[minescout-api] ${err.message}`);
+        }
       } else {
         console.warn(
           "[minescout-api] SMTP is not configured — set SMTP_USER and SMTP_PASSWORD in a .env file",
@@ -170,6 +176,7 @@ function apiPlugin(env) {
         if ((req.url || "").startsWith("/api/")) {
           applyCors(req, res);
           if (req.method === "OPTIONS") {
+            res.setHeader("Access-Control-Max-Age", "86400");
             res.statusCode = 204;
             return res.end();
           }
@@ -1248,7 +1255,7 @@ the normal clearance system created it.
       // ── Mail ──────────────────────────────────────────────────────────
       // Every Minescout site posts its forms here; the server owns the
       // templates and the recipients. See server/mail.js.
-      const mailHandler = createMailHandler(env);
+      const mailHandler = createMailHandler(env, { appDir });
       server.middlewares.use("/api/mail", (req, res, next) => {
         if (rejectUntrustedOrigin(req, res)) return;
         mailHandler(req, res, next);
@@ -1272,12 +1279,17 @@ export default defineConfig(({ mode }) => {
 
   return {
     base,
-    plugins: [react(), apiPlugin(env)],
+    plugins: [react(), apiPlugin(env, appDir)],
     server: {
       port: 3000,
       // Behind nginx the dev server only needs to listen locally; override with DEV_HOST if needed.
       host: env.DEV_HOST || "127.0.0.1",
       allowedHosts: ["life.minescout.net"],
+      // Vite's built-in CORS only allows localhost and answers the preflight
+      // before the API middleware. The relay owns CORS for /api/ (applyCors
+      // echoes the caller's origin and sets Vary), so turn the built-in one
+      // off. /data/ stays beta-only through nginx.
+      cors: false,
       headers: {
         "X-Content-Type-Options": "nosniff",
         "X-Frame-Options": "DENY",
