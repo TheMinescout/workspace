@@ -41,3 +41,24 @@ test("practice history is local-only and no typing text is sent to a service", (
   assert.doesNotMatch(APP_SCRIPT, /\bfetch\s*\(|XMLHttpRequest|sendBeacon/);
   assert.match(HTML, /id="clear-history"/);
 });
+
+test("the practice viewport stays fixed while the passage advances locally", () => {
+  assert.match(HTML, /height:7\.6em;min-height:7\.6em;max-height:7\.6em/);
+  assert.match(HTML, /height:72px;min-height:72px;max-height:72px;resize:none/);
+  assert.match(APP_SCRIPT, /focus\(\{preventScroll:true\}\)/);
+  assert.match(APP_SCRIPT, /const start=Math\.max\(0/);
+  assert.match(APP_SCRIPT, /state\.text\+=/);
+  assert.match(APP_SCRIPT, /challenge="accuracy reset"/);
+});
+
+test("each session draws varied passages and avoids recently used source text", () => {
+  assert.match(APP_SCRIPT, /PASSAGES\.balanced\.push/);
+  assert.match(APP_SCRIPT, /PASSAGES\.punctuation\.push/);
+  assert.match(APP_SCRIPT, /PASSAGES\.numbers\.push/);
+  assert.match(APP_SCRIPT, /PASSAGE_HISTORY_KEY="minescout\.flowtype\.passages\.v1"/);
+  assert.match(APP_SCRIPT, /function shuffle\(items\)/);
+  assert.match(APP_SCRIPT, /function loadPassageHistory\(\)/);
+  assert.match(APP_SCRIPT, /function rememberPassages\(ids\)/);
+  assert.match(APP_SCRIPT, /const available=src\.filter/);
+  assert.match(APP_SCRIPT, /while\(base\.length<850\)/);
+});
