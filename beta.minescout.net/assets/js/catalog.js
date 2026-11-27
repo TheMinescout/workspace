@@ -245,6 +245,40 @@
         { date: '2025-10-01', title: 'AI News Synthesis v1 archived', note: 'Superseded by Cognisearch v5.' },
       ],
     },
+    {
+      id: 'cron-bench',
+      title: 'Cron Bench',
+      shortTitle: 'Cron Bench',
+      tagline: 'Read, validate, and preview any five-field cron expression in the browser.',
+      summary: 'A single-file workbench for cron schedules. It parses the expression, explains each field in plain terms, applies the POSIX day-matching rule, and lists the next eight runs from your local clock. No dependencies, no build step, no network calls.',
+      status: 'experimental',
+      version: 'v0.1',
+      released: '2026-11-27',
+      updated: '2026-11-27',
+      category: 'Developer tool',
+      stack: 'Single-file HTML · offline',
+      launch: { label: 'OPEN CRON-BENCH.HTML', href: 'content/projects/cron-bench', kind: 'app' },
+      docs: { label: 'USAGE NOTES', href: 'content/projects/cron-bench#how' },
+      source: 'Readable in the single HTML file',
+      note: 'Evaluated against your local clock. The file works offline and sends nothing anywhere.',
+      features: [
+        'Parses five-field cron with ranges, lists, steps and month or weekday names.',
+        'Explains every field in plain terms instead of echoing the pattern back.',
+        'Applies the POSIX day rule: restricted day-of-month and day-of-week match as OR.',
+        'Lists the next eight runs with absolute dates and a relative offset.',
+        'Rejects malformed expressions with a specific message naming the field.',
+        'Reports schedules that are valid but can never fire, such as 31 February.',
+      ],
+      history: [
+        { date: '2026-11-27', label: 'CONCEPT', title: 'Reading a schedule back', body: 'A cron line is quick to write and slow to read. The useful question is never "is this valid?" but "when will this actually run, and did I mean that?".' },
+        { date: '2026-11-27', label: 'BUILD', title: 'Parser plus scheduler', body: 'The parser resolves each field into a value set and records whether the field was a bare asterisk, because that flag decides the day-matching rule. The scheduler then walks real local dates and skips whole days and hours that cannot match.' },
+        { date: '2026-11-27', label: 'BUILD', title: 'v0.1 published', body: 'The workbench shipped as one offline HTML file: expression input, field breakdown, next-run preview, and a syntax reference on the same page.' },
+        { date: 'NEXT', label: 'ROADMAP', title: 'What v0.1 leaves out', body: 'No seconds field, no @reboot, and no named timezones: the preview always uses the clock of the machine it runs on. A timezone selector is the obvious next step, not a promised one.' },
+      ],
+      updates: [
+        { date: '2026-11-27', title: 'Cron Bench v0.1 released', note: 'A single-file cron parser, field explainer, and next-run preview that runs offline.' },
+      ],
+    },
   ];
 
   const articles = [
