@@ -3,26 +3,26 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import { test } from "node:test";
 
-const HTML = readFileSync(new URL("../public/typing/index.html", import.meta.url), "utf8");
+const HTML = readFileSync(new URL("../public/services/typing/index.html", import.meta.url), "utf8");
 const SITEMAP = readFileSync(new URL("../public/sitemap.xml", import.meta.url), "utf8");
 const MANIFEST = JSON.parse(readFileSync(new URL("../public/seo/manifest.json", import.meta.url), "utf8"));
 const OVERRIDES = JSON.parse(readFileSync(new URL("../seo/overrides.json", import.meta.url), "utf8"));
-const META = MANIFEST.pages.find((page) => page.path === "/typing");
+const META = MANIFEST.pages.find((page) => page.path === "/services/typing");
 const APP_SCRIPT = [...HTML.matchAll(/<script>([\s\S]*?)<\/script>/g)].at(-1)?.[1] ?? "";
 
 test("FlowType is a standalone, indexable page with complete metadata", () => {
   assert.match(HTML, /<title>Adaptive Typing Coach \| FlowType by Minescout<\/title>/);
-  assert.match(HTML, /<link rel="canonical" href="https:\/\/minescout\.net\/typing">/);
+  assert.match(HTML, /<link rel="canonical" href="https:\/\/minescout\.net\/services\/typing">/);
   assert.match(HTML, /<meta name="robots" content="index, follow">/);
   assert.equal((HTML.match(/<h1\b/g) ?? []).length, 1);
-  assert.ok(META, "SEO manifest is missing /typing");
-  assert.equal(META.canonical, "https://minescout.net/typing");
+  assert.ok(META, "SEO manifest is missing /services/typing");
+  assert.equal(META.canonical, "https://minescout.net/services/typing");
   assert.equal(META.indexable, true);
   assert.ok(META.title.length <= 60);
   assert.ok(META.description.length >= 50 && META.description.length <= 160);
-  assert.equal(OVERRIDES.pages["/typing"].title, META.title);
-  assert.equal(OVERRIDES.pages["/typing"].description, META.description);
-  assert.match(SITEMAP, /<loc>https:\/\/minescout\.net\/typing<\/loc>/);
+  assert.equal(OVERRIDES.pages["/services/typing"].title, META.title);
+  assert.equal(OVERRIDES.pages["/services/typing"].description, META.description);
+  assert.match(SITEMAP, /<loc>https:\/\/minescout\.net\/services\/typing<\/loc>/);
 });
 
 test("the typing engine parses and exposes the expected training features", () => {
