@@ -135,6 +135,12 @@
   </url>
   <!-- Blog Posts -->
   <url>
+    <loc>https://minescout.net/blog/custom-website-vs-wix-squarespace.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://minescout.net/blog/slow-websites-cost-customers.html</loc>
     <lastmod>2026-11-19</lastmod>
     <changefreq>yearly</changefreq>
